@@ -75,7 +75,11 @@ class RelatedActionListener extends BaseActionListener
         }
 
         if ((bool)$event->getSubject()->request->getQuery(static::FLAG_INCLUDE_MENUS)) {
-            $this->attachMenu($resultSet, $table, $event->getSubject()->Auth->user());
+            $this->attachRelatedMenu($resultSet, $table, $event->getSubject()->Auth->user(), [
+                'associationController' => $event->getSubject()->request->getParam('controller'),
+                'associationName' => $table->getRegistryAlias(),
+                'associationId' => $event->getSubject()->request->getParam('pass.0'),
+            ]);
         }
     }
 
