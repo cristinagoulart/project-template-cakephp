@@ -334,4 +334,32 @@ abstract class BaseActionListener implements EventListenerInterface
             ]));
         }
     }
+
+    /**
+     * Method that retrieves and attaches menu elements to API response.
+     *
+     * @param \Cake\Datasource\ResultSetInterface $resultSet ResultSet object
+     * @param \Cake\Datasource\RepositoryInterface $table Table instance
+     * @param array $user User info
+     * @param array $data for extra fields like origin Id
+     * @return void
+     */
+    protected function attachRelatedMenu(ResultSetInterface $resultSet, RepositoryInterface $table, array $user, array $data)
+    {
+        $view = new View();
+        $controllerName = App::shortName(get_class($table), 'Model/Table', 'Table');
+
+        foreach ($resultSet as $entity) {
+            $entity->set(static::MENU_PROPERTY_NAME, $view->element('Module/Menu/related_actions', [
+                'plugin' => false,
+                'controller' => $controllerName,
+                'displayField' => $table->getDisplayField(),
+                'entity' => $entity,
+                'user' => $user,
+                'associationController' => $data['associationController'],
+                'associationName' => $data['associationName'],
+                'associationId' => $data['associationId'],
+            ]));
+        }
+    }
 }
