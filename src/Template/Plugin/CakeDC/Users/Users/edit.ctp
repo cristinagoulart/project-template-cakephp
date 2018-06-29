@@ -7,7 +7,9 @@ $fhf = new FieldHandlerFactory($this);
 echo $this->Html->css(
     [
         'AdminLTE./plugins/iCheck/all',
-        'AdminLTE./plugins/datepicker/datepicker3'
+        'AdminLTE./plugins/datepicker/datepicker3',
+        'AdminLTE./plugins/select2/select2.min',
+        'Qobo/Utils.select2-bootstrap.min'
     ],
     [
         'block' => 'css'
@@ -15,8 +17,11 @@ echo $this->Html->css(
 );
 echo $this->Html->script(
     [
+        'CsvMigrations.dom-observer',
         'AdminLTE./plugins/iCheck/icheck.min',
-        'AdminLTE./plugins/datepicker/bootstrap-datepicker'
+        'AdminLTE./plugins/datepicker/bootstrap-datepicker',
+        'AdminLTE./plugins/select2/select2.full.min',
+        'CsvMigrations.select2.init'
     ],
     [
         'block' => 'scriptBottom'
@@ -27,6 +32,16 @@ echo $this->Html->scriptBlock(
         checkboxClass: "icheckbox_square",
         radioClass: "iradio_square"
     });',
+    ['block' => 'scriptBottom']
+);
+
+echo $this->Html->scriptBlock(
+    'csv_migrations_select2.setup(' . json_encode(
+        array_merge(
+            Configure::read('CsvMigrations.select2'),
+            Configure::read('API')
+        )
+    ) . ');',
     ['block' => 'scriptBottom']
 );
 ?>
@@ -174,6 +189,55 @@ echo $this->Html->scriptBlock(
                         </div>
                         <div class="col-xs-12 col-md-6">
                             <?= $this->Form->input('phone_mobile'); ?>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-xs-12 col-md-6">
+                            <?= $this->Form->input('phone_extension'); ?>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="box box-primary">
+                <div class="box-header with-border">
+                    <h3 class="box-title"><?= __('Company Details') ?></h3>
+                </div>
+                <div class="box-body">
+                    <div class="row">
+                        <div class="col-xs-12 col-md-6">
+                            <?= $this->Form->input('company'); ?>
+                        </div>
+                        <div class="col-xs-12 col-md-6">
+                            <?= $this->Form->input('department'); ?>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-xs-12 col-md-6">
+                            <?= $this->Form->input('team'); ?>
+                        </div>
+                        <div class="col-xs-12 col-md-6">
+                            <?= $this->Form->input('position'); ?>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-xs-12 col-md-6">
+                            <?= $fhf->renderInput('Users', 'reports_to', $Users, [
+                                'fieldDefinitions' => [
+                                    'name' => 'reports_to',
+                                    'type' => 'related(Users)',
+                                    'required' => false,
+                                ]
+                            ]); ?>
+                        </div>
+                        <div class="col-xs-12 col-md-6">
+                            <?= $this->Form->input('is_supervisor', [
+                                'type' => 'checkbox',
+                                'class' => 'square',
+                                'label' => false,
+                                'templates' => [
+                                    'inputContainer' => '<div class="{{required}}">' . $this->Form->label('Users.is_supervisor') . '<div class="clearfix"></div>{{content}}</div>'
+                                ]
+                            ]); ?>
                         </div>
                     </div>
                 </div>
