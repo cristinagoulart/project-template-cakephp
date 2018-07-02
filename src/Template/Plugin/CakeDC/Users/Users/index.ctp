@@ -28,6 +28,9 @@ $fhf = new FieldHandlerFactory($this);
                 <th><?= $this->Paginator->sort('last_name') ?></th>
                 <th><?= $this->Paginator->sort('gender') ?></th>
                 <th><?= $this->Paginator->sort('birthdate') ?></th>
+                <th><?= $this->Paginator->sort('is_supervisor') ?></th>
+                <th><?= $this->Paginator->sort('is_superuser') ?></th>
+                <th><?= $this->Paginator->sort('active') ?></th>
                 <th class="actions"><?= __d('Users', 'Actions') ?></th>
                     </tr>
                 </thead>
@@ -47,6 +50,9 @@ $fhf = new FieldHandlerFactory($this);
                             echo $fhf->renderValue('Users', 'gender', $user, ['fieldDefinitions' => $definition]);
                         ?></td>
                         <td><?= $user->has('birthdate') ? $user->birthdate->i18nFormat('yyyy-MM-dd') : '' ?></td>
+                        <td><?= $user->is_supervisor ? 'Yes' : 'No' ?></td>
+                        <td><?= $user->is_superuser ? 'Yes' : 'No' ?></td>
+                        <td><?= $user->active ? 'Yes' : 'No' ?></td>
                         <td class="actions">
                             <div class="btn-group btn-group-xs" role="group">
                             <?= $this->Html->link(
