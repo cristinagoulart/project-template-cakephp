@@ -1,14 +1,14 @@
 <?php
 use CsvMigrations\FieldHandlers\FieldHandlerFactory;
 
-$fhf = new FieldHandlerFactory($this);
+$factory = new FieldHandlerFactory($this);
 ?>
 <section class="content-header">
     <h1><?= $this->Html->link(__('Users'), ['action' => 'index']) . ' &raquo; ' . h($Users->username) ?></h1>
 </section>
 <section class="content">
     <div class="row">
-        <div class="col-md-12 col-lg-4">
+        <div class="col-md-6">
             <div class="box box-primary">
                 <div class="box-header with-border">
                     <i class="fa fa-user"></i>
@@ -34,7 +34,7 @@ $fhf = new FieldHandlerFactory($this);
             </div>
             <!-- /.box -->
         </div>
-        <div class="col-md-6 col-lg-4">
+        <div class="col-md-6">
             <div class="box box-primary">
                 <div class="box-header with-border">
                     <i class="fa fa-info-circle"></i>
@@ -49,25 +49,19 @@ $fhf = new FieldHandlerFactory($this);
                         <dt><?= __('Last Name') ?></dt>
                         <dd><?= $Users->has('last_name') ? h($Users->last_name) : '&nbsp;' ?></dd>
                         <dt><?= __('Country') ?></dt>
-                        <dd><?php
-                            $definition = [
-                                'name' => 'country',
-                                'type' => 'list(countries)',
-                                'required' => false
-                            ];
-                            echo $fhf->renderValue('Users', 'country', $Users, ['fieldDefinitions' => $definition]);
-                        ?></dd>
+                        <dd><?= $factory->renderValue('Users', 'country', $Users, ['fieldDefinitions' => [
+                            'name' => 'country',
+                            'type' => 'list(countries)',
+                            'required' => false
+                        ]]) ?></dd>
                         <dt><?= __('Initials') ?></dt>
                         <dd><?= $Users->has('initials') ? h($Users->initials) : '&nbsp;' ?></dd>
                         <dt><?= __('Gender') ?></dt>
-                        <dd><?php
-                            $definition = [
-                                'name' => 'gender',
-                                'type' => 'list(genders)',
-                                'required' => false
-                            ];
-                            echo $fhf->renderValue('Users', 'gender', $Users, ['fieldDefinitions' => $definition]);
-                        ?></dd>
+                        <dd><?= $factory->renderValue('Users', 'gender', $Users, ['fieldDefinitions' => [
+                            'name' => 'gender',
+                            'type' => 'list(genders)',
+                            'required' => false
+                        ]]) ?></dd>
                         <dt><?= __('Birthdate') ?></dt>
                         <dd><?= $Users->has('birthdate') ? $Users->birthdate->i18nFormat('yyyy-MM-dd') : '&nbsp;' ?></dd>
                     </dl>
@@ -76,7 +70,9 @@ $fhf = new FieldHandlerFactory($this);
             </div>
             <!-- /.box -->
         </div>
-        <div class="col-md-6 col-lg-4">
+    </div>
+    <div class="row">
+        <div class="col-md-6">
             <div class="box box-primary">
                 <div class="box-header with-border">
                     <i class="fa fa-phone"></i>
@@ -94,6 +90,40 @@ $fhf = new FieldHandlerFactory($this);
                         <dd><?= $Users->has('phone_home') ? h($Users->phone_home) : '&nbsp;' ?></dd>
                         <dt><?= __('Phone Mobile') ?></dt>
                         <dd><?= $Users->has('phone_mobile') ? h($Users->phone_mobile) : '&nbsp;' ?></dd>
+                        <dt><?= __('Phone Extension') ?></dt>
+                        <dd><?= $Users->has('phone_extension') ? h($Users->phone_extension) : '&nbsp;' ?></dd>
+                    </dl>
+                </div>
+                <!-- /.box-body -->
+            </div>
+            <!-- /.box -->
+        </div>
+        <div class="col-md-6">
+            <div class="box box-primary">
+                <div class="box-header with-border">
+                    <i class="fa fa-building"></i>
+
+                    <h3 class="box-title">Company Details</h3>
+                </div>
+                <!-- /.box-header -->
+                <div class="box-body">
+                    <dl class="dl-horizontal">
+                        <dt><?= __('Company') ?></dt>
+                        <dd><?= $Users->has('company') ? h($Users->company) : '&nbsp;' ?></dd>
+                        <dt><?= __('Department') ?></dt>
+                        <dd><?= $Users->has('department') ? h($Users->department) : '&nbsp;' ?></dd>
+                        <dt><?= __('Team') ?></dt>
+                        <dd><?= $Users->has('team') ? h($Users->team) : '&nbsp;' ?></dd>
+                        <dt><?= __('Position') ?></dt>
+                        <dd><?= $Users->has('position') ? h($Users->position) : '&nbsp;' ?></dd>
+                        <dt><?= __('Reports To') ?></dt>
+                        <dd><?= $factory->renderValue('Users', 'reports_to', $Users, ['fieldDefinitions' => [
+                            'name' => 'reports_to',
+                            'type' => 'related(Users)',
+                            'required' => false
+                        ]]) ?></dd>
+                        <dt><?= __('Is Supervisor') ?></dt>
+                        <dd><?= $Users->has('is_supervisor') && $Users->get('is_supervisor') ? __('Yes') : __('No') ?></dd>
                     </dl>
                 </div>
                 <!-- /.box-body -->
