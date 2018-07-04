@@ -136,6 +136,7 @@ $factory = new FieldHandlerFactory($this);
         <div class="col-xs-12">
             <div class="nav-tabs-custom">
                 <ul id="relatedTabs" class="nav nav-tabs" role="tablist">
+                <?php if (! empty($userGroups)) : ?>
                     <li role="presentation" class="active">
                         <?= $this->Html->link(__('Groups'), '#groups', [
                             'aria-controls' => 'groups',
@@ -143,32 +144,79 @@ $factory = new FieldHandlerFactory($this);
                             'data-toggle' => 'tab',
                         ]);?>
                     </li>
+                <?php endif ?>
+                <?php if (! empty($subordinates)) : ?>
+                    <li role="presentation">
+                        <?= $this->Html->link(__('Subordinates'), '#subordinates', [
+                            'aria-controls' => 'subordinates',
+                            'role' => 'tab',
+                            'data-toggle' => 'tab',
+                        ]);?>
+                    </li>
+                <?php endif ?>
                 </ul>
                 <div class="tab-content">
+                <?php if (! empty($userGroups)) : ?>
                     <div role="tabpanel" class="tab-pane active" id="groups">
-                        <?php if (empty($userGroups)) : ?>
-                            <?= __('User currently not assigned to any of available groups');?>
-                        <?php else: ?>
-                            <div class="table-responsive">
-                                <table class="table table-hover table-condensed table-vertical-align">
-                                    <thead>
+                        <div class="table-responsive">
+                            <table class="table table-hover table-condensed table-vertical-align">
+                                <thead>
+                                    <tr>
+                                        <th><?= __('Name');?></th>
+                                        <th><?= __('Description');?></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <?php foreach ($userGroups as $group) : ?>
                                         <tr>
-                                            <th><?= __('Name');?></th>
-                                            <th><?= __('Description');?></th>
+                                            <td><?= $this->Html->link($group->get('name'), [
+                                                'plugin' => 'Groups',
+                                                'controller' => 'Groups',
+                                                'action' => 'view',
+                                                $group->get('id')
+                                            ]) ?></td>
+                                            <td><?= $group->get('description') ?></td>
                                         </tr>
-                                    </thead>
-                                    <tbody>
-                                        <?php foreach ($userGroups as $group) : ?>
-                                            <tr>
-                                                <td><?= $this->Html->link($group->name, ['plugin' => 'Groups', 'controller' => 'Groups', 'action' => 'view', $group->id]);?></td>
-                                                <td><?= $group->description;?></td>
-                                            </tr>
-                                        <?php endforeach; ?>
-                                    </tbody>
-                                </table>
-                            </div>
-                        <?php endif; ?>
+                                    <?php endforeach; ?>
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
+                <?php endif ?>
+                <?php if (! empty($subordinates)) : ?>
+                    <div role="tabpanel" class="tab-pane" id="subordinates">
+                        <div class="table-responsive">
+                            <table class="table table-hover table-condensed table-vertical-align">
+                                <thead>
+                                    <tr>
+                                        <th><?= __('Name') ?></th>
+                                        <th><?= __('Department') ?></th>
+                                        <th><?= __('Team') ?></th>
+                                        <th><?= __('Position') ?></th>
+                                        <th><?= __('Phone Office') ?></th>
+                                        <th><?= __('Phone Extension') ?></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <?php foreach ($subordinates as $subordinate) : ?>
+                                        <tr>
+                                            <td><?= $this->Html->link($subordinate->get('name'), [
+                                                'controller' => 'Users',
+                                                'action' => 'view',
+                                                $subordinate->get('id')
+                                            ]) ?></td>
+                                            <td><?= $subordinate->get('department') ?></td>
+                                            <td><?= $subordinate->get('team') ?></td>
+                                            <td><?= $subordinate->get('position') ?></td>
+                                            <td><?= $subordinate->get('phone_office') ?></td>
+                                            <td><?= $subordinate->get('phone_extension') ?></td>
+                                        </tr>
+                                    <?php endforeach; ?>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                <?php endif ?>
                 </div>
             </div>
         </div>
