@@ -196,4 +196,16 @@ class UsersController extends AppController
         $this->set('userGroups', $userGroups);
         $this->set('_serialize', [$tableAlias, $userGroups, 'tableAlias']);
     }
+
+    /**
+     * Allow/Prevent page rendering in iframe. In case of embed query param exists we allow iframe
+     *
+     * @return void
+     */
+    protected function _setIframeRendering()
+    {
+        if (empty($this->request->query['embed'])) {
+            parent::_setIframeRendering();
+        }
+    }
 }
