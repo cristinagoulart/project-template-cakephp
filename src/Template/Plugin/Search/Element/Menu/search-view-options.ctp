@@ -4,6 +4,11 @@ use RolesCapabilities\Access\AccessFactory;
 
 $accessFactory = new AccessFactory();
 
+$url = ['plugin' => $this->plugin, 'controller' => $this->name, 'action' => 'search'];
+echo $this->Html->link('<i class="fa fa-undo"></i> ' . __('Reset'), $url, [
+    'class' => 'btn btn-default', 'escape' => false
+]) . '&nbsp;';
+
 $url = ['plugin' => $this->plugin, 'controller' => $this->name, 'action' => 'exportSearch'];
 if ($accessFactory->hasAccess($url, $user)) {
     $url[] = $id;
