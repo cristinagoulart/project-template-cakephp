@@ -4,8 +4,8 @@
  */
 
 // create logo HTML img tags
-$logo = '<img src="/img/logo.png" alt="Site Logo" />';
-$logoMini = '<img src="/img/logo-mini.png" alt="Site Logo" />';
+$logo = '<img src="/img/logo.png" alt="Site Logo" height="50" />';
+$logoMini = '<img src="/img/logo-mini.png" alt="Site Logo"height="50" />';
 
 return [
     'Theme' => [
