@@ -6,6 +6,7 @@ return [
             // List of tables that should be skipped during record access check.
             'skipTables' => [
                 'byInstance' => [
+                    App\Model\Table\UsersTable::class,
                     Menu\Model\Table\MenuItemsTable::class,
                     Menu\Model\Table\MenusTable::class
                 ]

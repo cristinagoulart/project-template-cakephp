@@ -194,6 +194,7 @@ class UsersController extends AppController
         $this->set($tableAlias, $entity);
         $this->set('tableAlias', $tableAlias);
         $this->set('userGroups', $userGroups);
+        $this->set('subordinates', $this->Users->find('all')->where(['reports_to' => $id])->toArray());
         $this->set('_serialize', [$tableAlias, $userGroups, 'tableAlias']);
     }
 

@@ -10,7 +10,7 @@ class UsersControllerTest extends IntegrationTestCase
 {
     public $fixtures = [
         'app.log_audit',
-        'plugin.CakeDC/Users.users',
+        'app.users',
         'plugin.Groups.groups',
         'plugin.Groups.groups_users',
         'plugin.Menu.menus',
