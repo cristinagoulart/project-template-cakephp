@@ -1,6 +1,11 @@
 <?php
 /**
  * AdminLTE plugin configuration
+ *
+ * Note: in case you want to use custom CSS skin,
+ * you should set `skin` as `custom`
+ * and defined `skinUrl` as `skins/skin-custom`
+ * so it would be loaded locally.
  */
 
 // create logo HTML img tags
@@ -22,7 +27,7 @@ return [
         ],
         'version' => 'dark',
         'skin' => 'blue',
-        'skinUrl' => 'AdminLTE.skins/skin-',
+        'skinUrl' => 'AdminLTE.skins/skin-blue.min',
         'backgroundImages' => 'qobo',
     ],
 ];

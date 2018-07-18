@@ -17,8 +17,9 @@ use Cake\Core\Configure;
 
 $cakeDescription = 'CakePHP: the rapid development php framework';
 
-$skinPath = Configure::read('Theme.skinUrl');
+$skinUrl = Configure::read('Theme.skinUrl');
 $skinName = Configure::read('Theme.skin');
+
 ?>
 <!DOCTYPE html>
 <html>
@@ -33,7 +34,7 @@ $skinName = Configure::read('Theme.skin');
     <?php echo $this->Html->css('/plugins/ionicons/css/ionicons.min'); ?>
     <!-- Theme style -->
     <?php echo $this->Html->css('AdminLTE.AdminLTE.min'); ?>
-    <?php echo $this->Html->css($skinPath . $skinName . '.min'); ?>
+    <?php echo $this->Html->css($skinUrl);?>
 
     <?php echo $this->fetch('css'); ?>
 
