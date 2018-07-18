@@ -21,6 +21,6 @@ return [
             'show_social' => false,
         ],
         'version' => 'dark',
-        'backgroundImages' => 'custom',
+        'backgroundImages' => 'qobrix',
     ],
 ];
