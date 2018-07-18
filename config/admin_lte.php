@@ -21,6 +21,8 @@ return [
             'show_social' => false,
         ],
         'version' => 'dark',
+        'skin' => 'blue',
+        'skinUrl' => 'AdminLTE.skins/skin-',
         'backgroundImages' => 'qobo',
     ],
 ];
