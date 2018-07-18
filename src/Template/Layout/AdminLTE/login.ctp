@@ -2,6 +2,10 @@
 use Cake\Core\Configure;
 
 $this->Html->css('login-' . (string)(Configure::read('Theme.version') ?: 'light'), ['block' => 'css']);
+
+$skinUrl = Configure::read('Theme.skinUrl');
+$skinName = Configure::read('Theme.skin');
+
 ?>
 <!DOCTYPE html>
 <html>
@@ -16,7 +20,7 @@ $this->Html->css('login-' . (string)(Configure::read('Theme.version') ?: 'light'
         <?php echo $this->Html->css('/plugins/ionicons/css/ionicons.min'); ?>
         <!-- Theme style -->
         <?php echo $this->Html->css('AdminLTE.AdminLTE.min'); ?>
-        <?php echo $this->Html->css('AdminLTE.skins/skin-' . Configure::read('Theme.skin') . '.min'); ?>
+        <?php echo $this->Html->css($skinUrl); ?>
 
         <?php echo $this->fetch('css'); ?>
 
