@@ -28,6 +28,11 @@ $this->Html->css('login-' . (string)(Configure::read('Theme.version') ?: 'light'
         <![endif]-->
     </head>
     <body class="hold-transition skin-<?php echo Configure::read('Theme.skin'); ?> login-page">
+        <?php
+        if ('dark' == Configure::read('Theme.version')) {
+            echo $this->element('background-image-dark');
+        }
+        ?>
         <div class="login-box">
             <div class="login-logo">
                 <a href="<?php echo $this->Url->build('/'); ?>"><?php echo $theme['logo']['large'] ?></a>

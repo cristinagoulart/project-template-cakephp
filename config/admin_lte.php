@@ -20,6 +20,7 @@ return [
             'show_register' => false,
             'show_social' => false,
         ],
-        'version' => 'dark'
+        'version' => 'dark',
+        'backgroundImages' => 'qobo',
     ],
 ];
