@@ -1,8 +1,3 @@
-<?php
-use Cake\Core\Configure;
-
-echo $this->element('background-image-dark');
-?>
 <?= $this->Form->create('User') ?>
 <fieldset>
     <div class="form-group">
