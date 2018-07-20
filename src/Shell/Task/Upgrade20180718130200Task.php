@@ -32,13 +32,7 @@ class Upgrade20180718130200Task extends Shell
      */
     public function main()
     {
-        if (! Configure::read('ForeignKeyGenerator')) {
-            $this->warn('Skipping, foreign key generator flag is disabled');
-
-            return;
-        }
-
-        if (! $this->isValidDatabaseSystem()) {
+        if (! $this->needToRun()) {
             return;
         }
 
@@ -48,20 +42,28 @@ class Upgrade20180718130200Task extends Shell
     }
 
     /**
-     * Validates database system.
+     * Check if we can or should run.
      *
      * @return bool
      */
-    private function isValidDatabaseSystem()
+    private function needToRun()
     {
         $connection = ConnectionManager::get('default');
-        if ($connection->getDriver() instanceof Mysql) {
-            return true;
+        if (! $connection->getDriver() instanceof Mysql) {
+            $this->warn('Skipping, not a MySQL database');
+
+            return false;
         }
 
-        $this->warn('Skipping, not a MySQL database');
+        $config = $connection->config();
+        $generateForeignKeys = isset($config['generateForeignKeys']) ? (bool)$config['generateForeignKeys'] : false;
+        if (! $generateForeignKeys) {
+            $this->warn('Skipping, due to configuration');
 
-        return false;
+            return false;
+        }
+
+        return true;
     }
 
     /**

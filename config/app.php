@@ -357,6 +357,12 @@ return [
             * which is the recommended value in production environments
             */
             //'init' => ['SET GLOBAL innodb_stats_on_metadata = 0'],
+
+            /*
+             * Whether or not to automatically generate foreign key constraints
+             * during the application upgrade.
+             */
+            'generateForeignKeys' => false,
         ],
 
         /**
@@ -446,5 +452,4 @@ return [
     'Swagger' => [
         'crawl' => (bool)getenv('SWAGGER_CRAWL')
     ],
-    'ForeignKeyGenerator' => false,
 ];
