@@ -15,6 +15,11 @@ use DirectoryIterator;
 class Upgrade20180718130200Task extends Shell
 {
     /**
+     * @var string $dbConnection Connection name
+     */
+    private $dbConnection = 'default';
+
+    /**
      * {@inheritDoc}
      */
     public function getOptionParser()
@@ -48,7 +53,7 @@ class Upgrade20180718130200Task extends Shell
      */
     private function needToRun()
     {
-        $connection = ConnectionManager::get('default');
+        $connection = ConnectionManager::get($this->dbConnection);
         if (! $connection->getDriver() instanceof Mysql) {
             $this->warn('Skipping, not a MySQL database');
 
@@ -256,8 +261,8 @@ class Upgrade20180718130200Task extends Shell
      */
     private function getForeignKeysByTable(RepositoryInterface $table)
     {
-        $connection = ConnectionManager::get('default');
-        $config = ConnectionManager::getConfig('default');
+        $connection = ConnectionManager::get($this->dbConnection);
+        $config = $connection->config();
 
         $query = $connection->newQuery();
         $query->select([
@@ -280,7 +285,7 @@ class Upgrade20180718130200Task extends Shell
      */
     private function addForeignKey(RepositoryInterface $table, array $config)
     {
-        $connection = ConnectionManager::get('default');
+        $connection = ConnectionManager::get($this->dbConnection);
         $command = sprintf(
             'ALTER TABLE `%s` ADD FOREIGN KEY (`%s`) REFERENCES `%s`(`%s`)',
             $table->getTable(),
