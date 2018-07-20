@@ -89,8 +89,12 @@ class CronShell extends Shell
                 $state = $instance->run($entity->options);
                 $this->info("Finished Scheduled Task [{$entity->name}]");
                 $this->verbose("Scheduled Task [" . $entity->name . "] finished with: " . print_r($state, true));
-                $this->ScheduledJobLogs->logJob($entity, $state, $now);
+                if ($state['state'] > 0) {
+                    $this->ScheduledJobLogs->logJob($entity, $state, $now);
+                }
                 $this->info("Logged Scheduled Task [{$entity->name}]");
+                $entity = $this->ScheduledJobs->patchEntity($entity, ['last_run_date' => Time::now()]);
+                $this->ScheduledJobs->save($entity);
             } catch (Exception $e) {
                 $this->info("Scheduled Task [{$entity->name}] is already in progress. Skipping.");
                 continue;
