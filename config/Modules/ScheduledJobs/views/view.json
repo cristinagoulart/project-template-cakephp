@@ -12,7 +12,8 @@
         ],
         [
             "Recurrence",
-            "recurrence"
+            "recurrence",
+            "last_run_date"
         ],
         [
             "Recurrence",
