@@ -446,4 +446,5 @@ return [
     'Swagger' => [
         'crawl' => (bool)getenv('SWAGGER_CRAWL')
     ],
+    'ForeignKeyGenerator' => false,
 ];
