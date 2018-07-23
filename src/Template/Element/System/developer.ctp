@@ -15,6 +15,7 @@ $localChanges = Git::getLocalChanges();
 $localChangesOutput = "<b>$ " . $localChangesCommand . "</b>\n\n";
 $localChangesOutput .= !empty($localChanges) ? implode("\n", $localChanges) : "All good, no local modifications found.";
 
+$localFeatures = file_exists(CONFIG . 'features_local.php');
 ?>
 <div class="row">
     <div class="col-md-3">
@@ -61,7 +62,25 @@ $localChangesOutput .= !empty($localChanges) ? implode("\n", $localChanges) : "A
             </div>
             <div class="box-body">
                 <div class="row">
-                    <div class="col-md-4">
+                    <div class="col-md-3">
+                        <div class="info-box">
+                        <?php if (!$localFeatures) : ?>
+                            <span class="info-box-icon bg-green"><i class="fa fa-thumbs-up"></i></span>
+                            <div class="info-box-content">
+                                <span class="info-box-text">Standard Features</span>
+                                <span class="info-box-number"></span>
+                            </div>
+                        <?php else : ?>
+                            <span class="info-box-icon bg-red"><i class="fa fa-exclamation-circle"></i></span>
+                            <div class="info-box-content">
+                                <span class="info-box-text">Local Features</span>
+                                <span class="info-box-number"></span>
+                            </div>
+                        <?php endif; ?>
+                        </div>
+                    </div>
+
+                    <div class="col-md-3">
                         <div class="info-box">
                         <?php if (empty($localChanges)) : ?>
                             <span class="info-box-icon bg-green"><i class="fa fa-thumbs-up"></i></span>
@@ -78,7 +97,8 @@ $localChangesOutput .= !empty($localChanges) ? implode("\n", $localChanges) : "A
                         <?php endif; ?>
                         </div>
                     </div>
-                    <div class="col-md-8">
+
+                    <div class="col-md-6">
                         <pre><?php echo $localChangesOutput; ?></pre>
                     </div>
                 </div>
