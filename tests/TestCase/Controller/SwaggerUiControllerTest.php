@@ -18,7 +18,7 @@ class SwaggerUiControllerTest extends IntegrationTestCase
     public function testIndex()
     {
         if (! Plugin::loaded('Alt3/Swagger')) {
-            return;
+            $this->markTestSkipped('Swagger plugin is not loaded.');
         }
 
         $this->get('/swagger');
