@@ -36,6 +36,10 @@ class App extends AbstractCommand
             $this->exitError("Failed to do app:install");
         }
 
+        if (isset($env['CRON_ENABLED']) && $env['CRON_ENABLED']) {
+            $this->installCron($env);
+        }
+
         return $this->postInstall();
     }
 
@@ -58,6 +62,10 @@ class App extends AbstractCommand
 
         if (!$result) {
             $this->exitError("Failed to do app:update");
+        }
+
+        if (isset($env['CRON_ENABLED']) && $env['CRON_ENABLED']) {
+            $this->installCron($env);
         }
 
         return $this->postInstall();
@@ -102,6 +110,8 @@ class App extends AbstractCommand
         if (!file_exists('.env') || !unlink('.env')) {
             $this->exitError("Failed to do app:remove");
         }
+
+        $this->uninstallCron($env);
 
         return true;
     }
@@ -574,5 +584,34 @@ class App extends AbstractCommand
             return $result->getData()['data'][0]['message'];
         }
         return "Unknown";
+    }
+
+    /**
+     * Install system cron job for the project
+     */
+    protected function installCron($env)
+    {
+        $projectPath = "{$env['NGINX_ROOT_PREFIX']}/{$env['NGINX_SITE_MAIN']}";
+
+        if (!file_exists("$projectPath/bin/cron.sh") || file_exists("/etc/cron.d/{$env['NGINX_SITE_MAIN']}")) {
+            return;
+        }
+
+        $this->taskExec('echo "* * * * * root ' . $projectPath . '/bin/cron.sh >> ' . $projectPath . '/logs/cron.log 2>&1" > /etc/cron.d/' . $env['NGINX_SITE_MAIN'])->run();
+        if (!is_dir("$projectPath/logs")) {
+            $this->taskExec('mkdir ' . $projectPath . '/logs')->run();
+        }
+        $this->taskExec('service crond reload')->run();
+    }
+
+    /**
+     * Uninstall system cron job for the project
+     */
+    protected function uninstallCron($env)
+    {
+        if (!file_exists("/etc/cron.d/{$env['NGINX_SITE_MAIN']}")) {
+            return;
+        }
+        $this->taskExec("rm -f '/etc/cron.d/{$env['NGINX_SITE_MAIN']}'")->run();
     }
 }
