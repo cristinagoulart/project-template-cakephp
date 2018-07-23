@@ -11,7 +11,7 @@ class SwaggerUiControllerTest extends IntegrationTestCase
 {
 
     /**
-     * Test display method
+     * Test index method
      *
      * @return void
      */
