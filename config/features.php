@@ -2,6 +2,6 @@
 // Features configuration
 return [
     'Features' => [
-        'Module' . DS . 'ScheduledJobs' => ['active' => false],
+        'Module' . DS . 'ScheduledJobs' => ['active' => true],
     ],
 ];
