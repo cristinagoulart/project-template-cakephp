@@ -26,5 +26,7 @@ class SwaggerDocsControllerTest extends IntegrationTestCase
 
         $this->get('/swagger/docs/api');
         $this->assertResponseCode(200);
+
+        $this->assertJson($this->_getBodyAsString());
     }
 }
