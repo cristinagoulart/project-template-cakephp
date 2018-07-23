@@ -13,4 +13,5 @@ logs/
 webroot/uploads/
 config/Migrations/schema-dump-default.lock
 config/Migrations/schema-dump-test.lock
+config/features_local.php
 .DS_Store
