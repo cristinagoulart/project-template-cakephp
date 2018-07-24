@@ -37,7 +37,7 @@ class ScheduledJobLogsTable extends Table
         parent::initialize($config);
 
         $this->setTable('scheduled_job_logs');
-        $this->setDisplayField('id');
+        $this->setDisplayField('context');
         $this->setPrimaryKey('id');
 
         $this->addBehavior('Timestamp');
