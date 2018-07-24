@@ -5,10 +5,16 @@ use Cake\Core\App;
 use Cake\Database\Exception;
 use Cake\ORM\TableRegistry;
 use Cake\Utility\Inflector;
+use Cake\Utility\Text;
 use Qobo\Utils\Utility;
 
 class Annotation
 {
+    /**
+     * Default property type
+     */
+    const DEFAULT_TYPE = 'string';
+
     /**
      * Annotation content.
      *
@@ -22,8 +28,38 @@ class Annotation
      * @var array
      */
     protected $_db2swagger = [
-        'datetime' => 'dateTime',
-        'decimal' => 'float'
+        'uuid' => [
+            'type' => 'string',
+            'format' => 'uuid'
+        ],
+        'string' => [
+            'type' => 'string'
+        ],
+        'text' => [
+            'type' => 'string'
+        ],
+        'boolean' => [
+            'type' => 'boolean'
+        ],
+        'datetime' => [
+            'type' => 'string',
+            'format' => 'date-time'
+        ],
+        'date' => [
+            'type' => 'string',
+            'format' => 'date'
+        ],
+        'time' => [
+            'type' => 'string',
+            'format' => 'time'
+        ],
+        'decimal' => [
+            'type' => 'number',
+            'format' => 'float'
+        ],
+        'integer' => [
+            'type' => 'integer'
+        ],
     ];
 
     /**
@@ -80,7 +116,7 @@ class Annotation
         'property' => '
             @SWG\Property(
                 property="{{property}}",
-                type="{{type}}"
+                {{options}}
             )',
         'paths' => '/**
             @SWG\Get(
@@ -322,7 +358,6 @@ class Annotation
      */
     protected function _getProperties()
     {
-        $result = null;
         $table = TableRegistry::get($this->_className);
 
         $entity = $table->newEntity();
@@ -331,17 +366,16 @@ class Annotation
             $columns = $table->schema()->columns();
             $columns = array_diff($columns, $hiddenProperties);
         } catch (Exception $e) {
-            return $result;
+            return '';
         }
 
+        $result = [];
         foreach ($columns as $column) {
-            $data = $table->schema()->column($column);
             $placeholders = [
                 '{{property}}' => $column,
-                '{{type}}' => array_key_exists($data['type'], $this->_db2swagger) ?
-                    $this->_db2swagger[$data['type']] :
-                    $data['type']
+                '{{options}}' => $this->getPropertyOptionsAsString($column, $table->schema()->getColumn($column))
             ];
+
             $result[] = str_replace(
                 array_keys($placeholders),
                 array_values($placeholders),
@@ -349,9 +383,118 @@ class Annotation
             );
         }
 
-        $result = implode(',', $result);
+        return implode(',', $result);
+    }
 
-        return $result;
+    /**
+     * Returns property options as stirng.
+     *
+     * @param string $column Column name
+     * @param array $data Column data
+     * @return string
+     */
+    protected function getPropertyOptionsAsString($column, array $data)
+    {
+        $result = [];
+        foreach ($this->getPropertyOptions($column, $data['type']) as $key => $value) {
+            switch (gettype($value)) {
+                case 'boolean':
+                    $value = $value ? 'true' : 'false';
+                    break;
+
+                case 'string':
+                    $value = '"' . $value . '"';
+                    break;
+            }
+
+            $result[] = sprintf('%s=%s', $key, $value);
+        }
+
+        return implode(',', $result);
+    }
+
+    /**
+     * Returns property options.
+     *
+     * @param string $column Column name
+     * @param string $type Column data
+     * @return array
+     */
+    protected function getPropertyOptions($column, $type)
+    {
+        return [
+            'type' => $this->getPropertyType($type),
+            'format' => $this->getPropertyFormat($type),
+            'example' => $this->getPropertyExample($type)
+        ];
+    }
+
+    /**
+     * Returns property Swagger type.
+     *
+     * @param property $type Column type
+     * @return string
+     */
+    protected function getPropertyType($type)
+    {
+        $type = array_key_exists($type, $this->_db2swagger) ? $type : static::DEFAULT_TYPE;
+
+        return $this->_db2swagger[$type]['type'];
+    }
+
+    /**
+     * Returns property Swagger format.
+     *
+     * @param property $type Column type
+     * @return string
+     */
+    protected function getPropertyFormat($type)
+    {
+        $type = array_key_exists($type, $this->_db2swagger) ? $type : static::DEFAULT_TYPE;
+
+        return array_key_exists('format', $this->_db2swagger[$type]) ?
+            $this->_db2swagger[$type]['format'] :
+            $this->getPropertyType($type);
+    }
+
+    /**
+     * Property example getter.
+     *
+     * @param [type] $type [description]
+     * @return [type] [description]
+     */
+    protected function getPropertyExample($type)
+    {
+        switch ($type) {
+            case 'uuid':
+                return Text::uuid();
+
+            case 'date':
+                return date('Y-m-d');
+
+            case 'datetime':
+                return date('Y-m-d H:i:s');
+
+            case 'time':
+                return date('H:i:s');
+
+            case 'string':
+                return 'Lorem ipsum';
+
+            case 'text':
+                return 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.';
+
+            case 'boolean':
+                return true;
+
+            case 'integer':
+                return random_int(0, 100000);
+
+            case 'decimal':
+                return random_int(0, 100000) . '.' . random_int(0, 100);
+        }
+
+        return '';
     }
 
     /**
