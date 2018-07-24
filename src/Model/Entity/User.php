@@ -48,6 +48,7 @@ class User extends BaseUser
         $type = Configure::read('Avatar.default');
         $options = (array)Configure::read('Avatar.options.' . $type);
         $options['email'] = (string)$this->get('email');
+        $options['name'] = $this->get('name');
 
         $service = new AvatarService(new $type($options));
 

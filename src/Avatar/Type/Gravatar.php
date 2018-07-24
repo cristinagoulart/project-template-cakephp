@@ -2,7 +2,6 @@
 namespace App\Avatar\Type;
 
 use App\Avatar\AvatarInterface;
-use Cake\Core\Configure;
 
 final class Gravatar implements AvatarInterface
 {
