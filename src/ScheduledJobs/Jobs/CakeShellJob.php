@@ -32,11 +32,29 @@ class CakeShellJob implements JobInterface
 
         $command = $this->operator . ' ' . implode(' ', $parts) . ' ' . $this->arguments;
 
-        exec($command, $output, $state);
+        $descriptors = [
+            0 => ['pipe', 'r'], // stdin
+            1 => ['pipe', 'w'], // stdout
+            2 => ['pipe', 'w'], // stderr
+        ];
+        $pipes = [];
+
+        $process = proc_open($command, $descriptors, $pipes, dirname(__FILE__), null);
+
+        $stdout = stream_get_contents($pipes[1]);
+        fclose($pipes[1]);
+
+        $stderr = stream_get_contents($pipes[2]);
+        fclose($pipes[2]);
+
+        $status = proc_close($process);
 
         $result = [
-            'state' => $state,
-            'response' => $output,
+            'state' => $status,
+            'response' => [
+                'stdout' => trim($stdout),
+                'stderr' => trim($stderr)
+            ],
         ];
 
         return $result;
