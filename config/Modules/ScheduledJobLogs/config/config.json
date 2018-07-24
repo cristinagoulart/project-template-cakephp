@@ -1,6 +1,6 @@
 {
     "table": {
-        "icon": "clock",
+        "icon": "clock-o",
         "searchable": false,
         "display_field": "context"
     }
