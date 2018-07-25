@@ -21,7 +21,7 @@ class Annotation
      *
      * @var string
      */
-    protected $_content = null;
+    protected $content = null;
 
     /**
      * Supported property types.
@@ -35,14 +35,14 @@ class Annotation
      *
      * @var string
      */
-    protected $_className = '';
+    protected $className = '';
 
     /**
      * Full path name of the file to generate annotations for.
      *
      * @var string
      */
-    protected $_path = '';
+    protected $path = '';
 
     /**
      * Flag for including Swagger Info annotation.
@@ -56,7 +56,7 @@ class Annotation
      *
      * @var array
      */
-    protected $_annotations = [
+    protected $annotations = [
         'info' => '/**
             @SWG\Swagger(
                 @SWG\Info(
@@ -239,9 +239,9 @@ class Annotation
      */
     public function __construct($className, $path, $withInfo = false)
     {
-        $this->_className = $className;
+        $this->className = $className;
 
-        $this->_path = $path;
+        $this->path = $path;
         $this->withInfo = $withInfo;
     }
 
@@ -252,11 +252,11 @@ class Annotation
      */
     public function getContent()
     {
-        if (empty($this->_content)) {
-            $this->_generateContent();
+        if (empty($this->content)) {
+            $this->generateContent();
         }
 
-        return $this->_content;
+        return $this->content;
     }
 
     /**
@@ -267,7 +267,7 @@ class Annotation
      */
     public function setContent($content)
     {
-        $this->_content = $content;
+        $this->content = $content;
     }
 
     /**
@@ -275,17 +275,17 @@ class Annotation
      *
      * @return void
      */
-    protected function _generateContent()
+    protected function generateContent()
     {
-        $result = file_get_contents($this->_path);
+        $result = file_get_contents($this->path);
 
         $info = $this->getInfo();
 
-        $properties = $this->_getProperties();
+        $properties = $this->getProperties();
 
-        $definition = $this->_getDefinition($properties);
+        $definition = $this->getDefinition($properties);
 
-        $paths = $this->_getPaths();
+        $paths = $this->getPaths();
 
         $result = preg_replace('/(^class\s)/im', implode("\n", [$info, $definition, $paths]) . "\n$1", $result);
 
@@ -312,7 +312,7 @@ class Annotation
         return str_replace(
             array_keys($placeholders),
             array_values($placeholders),
-            $this->_annotations['info']
+            $this->annotations['info']
         );
     }
 
@@ -324,9 +324,9 @@ class Annotation
      *
      * @return string
      */
-    protected function _getProperties()
+    protected function getProperties()
     {
-        $table = TableRegistry::get($this->_className);
+        $table = TableRegistry::get($this->className);
 
         $entity = $table->newEntity();
         $hiddenProperties = $entity->hiddenProperties();
@@ -347,7 +347,7 @@ class Annotation
             $result[] = str_replace(
                 array_keys($placeholders),
                 array_values($placeholders),
-                $this->_annotations['property']
+                $this->annotations['property']
             );
         }
 
@@ -481,10 +481,10 @@ class Annotation
      * @param  string $properties Swagger properties annotations
      * @return string
      */
-    protected function _getDefinition($properties)
+    protected function getDefinition($properties)
     {
         $result = null;
-        $table = TableRegistry::get($this->_className);
+        $table = TableRegistry::get($this->className);
 
         $entity = $table->newEntity();
         $hiddenProperties = $entity->hiddenProperties();
@@ -505,7 +505,7 @@ class Annotation
         }
 
         $placeholders = [
-            '{{definition}}' => Inflector::singularize($this->_className),
+            '{{definition}}' => Inflector::singularize($this->className),
             '{{required}}' => implode(',', $required),
             '{{properties}}' => (string)$properties
         ];
@@ -513,7 +513,7 @@ class Annotation
         $result = str_replace(
             array_keys($placeholders),
             array_values($placeholders),
-            $this->_annotations['definition']
+            $this->annotations['definition']
         );
 
         return $result;
@@ -528,10 +528,10 @@ class Annotation
      *
      * @return array
      */
-    protected function _getPaths()
+    protected function getPaths()
     {
         $result = null;
-        $table = TableRegistry::get($this->_className);
+        $table = TableRegistry::get($this->className);
 
         $entity = $table->newEntity();
         $hiddenProperties = $entity->hiddenProperties();
@@ -544,17 +544,17 @@ class Annotation
         }
 
         $placeholders = [
-            '{{module_human_singular}}' => Inflector::singularize(Inflector::humanize(Inflector::underscore($this->_className))),
-            '{{module_human_plural}}' => Inflector::pluralize(Inflector::humanize(Inflector::underscore($this->_className))),
-            '{{module_singular}}' => Inflector::singularize($this->_className),
-            '{{module_url}}' => Inflector::dasherize($this->_className),
+            '{{module_human_singular}}' => Inflector::singularize(Inflector::humanize(Inflector::underscore($this->className))),
+            '{{module_human_plural}}' => Inflector::pluralize(Inflector::humanize(Inflector::underscore($this->className))),
+            '{{module_singular}}' => Inflector::singularize($this->className),
+            '{{module_url}}' => Inflector::dasherize($this->className),
             '{{sort_fields}}' => '"' . implode('", "', $fields) . '"'
         ];
 
         $result = str_replace(
             array_keys($placeholders),
             array_values($placeholders),
-            $this->_annotations['paths']
+            $this->annotations['paths']
         );
 
         return $result;
