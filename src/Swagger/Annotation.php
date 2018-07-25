@@ -3,42 +3,46 @@ namespace App\Swagger;
 
 use Cake\Core\App;
 use Cake\Database\Exception;
+use Cake\I18n\Time;
 use Cake\ORM\TableRegistry;
 use Cake\Utility\Inflector;
+use Cake\Utility\Text;
 use Qobo\Utils\Utility;
 
 class Annotation
 {
     /**
+     * Default property type
+     */
+    const DEFAULT_TYPE = 'string';
+
+    /**
      * Annotation content.
      *
      * @var string
      */
-    protected $_content = null;
+    protected $content = null;
 
     /**
-     * Mapping of database column types to swagger types.
+     * Supported property types.
      *
      * @var array
      */
-    protected $_db2swagger = [
-        'datetime' => 'dateTime',
-        'decimal' => 'float'
-    ];
+    protected $supportedTypes = ['uuid', 'string', 'text', 'boolean', 'datetime', 'date', 'time', 'decimal', 'integer'];
 
     /**
      * Class name to generate annotations for.
      *
      * @var string
      */
-    protected $_className = '';
+    protected $className = '';
 
     /**
      * Full path name of the file to generate annotations for.
      *
      * @var string
      */
-    protected $_path = '';
+    protected $path = '';
 
     /**
      * Flag for including Swagger Info annotation.
@@ -52,7 +56,7 @@ class Annotation
      *
      * @var array
      */
-    protected $_annotations = [
+    protected $annotations = [
         'info' => '/**
             @SWG\Swagger(
                 @SWG\Info(
@@ -80,7 +84,7 @@ class Annotation
         'property' => '
             @SWG\Property(
                 property="{{property}}",
-                type="{{type}}"
+                {{options}}
             )',
         'paths' => '/**
             @SWG\Get(
@@ -235,9 +239,9 @@ class Annotation
      */
     public function __construct($className, $path, $withInfo = false)
     {
-        $this->_className = $className;
+        $this->className = $className;
 
-        $this->_path = $path;
+        $this->path = $path;
         $this->withInfo = $withInfo;
     }
 
@@ -248,11 +252,11 @@ class Annotation
      */
     public function getContent()
     {
-        if (empty($this->_content)) {
-            $this->_generateContent();
+        if (empty($this->content)) {
+            $this->generateContent();
         }
 
-        return $this->_content;
+        return $this->content;
     }
 
     /**
@@ -263,7 +267,7 @@ class Annotation
      */
     public function setContent($content)
     {
-        $this->_content = $content;
+        $this->content = $content;
     }
 
     /**
@@ -271,17 +275,17 @@ class Annotation
      *
      * @return void
      */
-    protected function _generateContent()
+    protected function generateContent()
     {
-        $result = file_get_contents($this->_path);
+        $result = file_get_contents($this->path);
 
         $info = $this->getInfo();
 
-        $properties = $this->_getProperties();
+        $properties = $this->getProperties();
 
-        $definition = $this->_getDefinition($properties);
+        $definition = $this->getDefinition($properties);
 
-        $paths = $this->_getPaths();
+        $paths = $this->getPaths();
 
         $result = preg_replace('/(^class\s)/im', implode("\n", [$info, $definition, $paths]) . "\n$1", $result);
 
@@ -308,7 +312,7 @@ class Annotation
         return str_replace(
             array_keys($placeholders),
             array_values($placeholders),
-            $this->_annotations['info']
+            $this->annotations['info']
         );
     }
 
@@ -320,10 +324,9 @@ class Annotation
      *
      * @return string
      */
-    protected function _getProperties()
+    protected function getProperties()
     {
-        $result = null;
-        $table = TableRegistry::get($this->_className);
+        $table = TableRegistry::get($this->className);
 
         $entity = $table->newEntity();
         $hiddenProperties = $entity->hiddenProperties();
@@ -331,25 +334,139 @@ class Annotation
             $columns = $table->schema()->columns();
             $columns = array_diff($columns, $hiddenProperties);
         } catch (Exception $e) {
-            return $result;
+            return '';
         }
 
+        $result = [];
         foreach ($columns as $column) {
-            $data = $table->schema()->column($column);
             $placeholders = [
                 '{{property}}' => $column,
-                '{{type}}' => array_key_exists($data['type'], $this->_db2swagger) ?
-                    $this->_db2swagger[$data['type']] :
-                    $data['type']
+                '{{options}}' => $this->getPropertyOptionsAsString($column, $table->schema()->getColumn($column))
             ];
+
             $result[] = str_replace(
                 array_keys($placeholders),
                 array_values($placeholders),
-                $this->_annotations['property']
+                $this->annotations['property']
             );
         }
 
-        $result = implode(',', $result);
+        return implode(',', $result);
+    }
+
+    /**
+     * Returns property options as stirng.
+     *
+     * @param string $column Column name
+     * @param array $data Column data
+     * @return string
+     */
+    protected function getPropertyOptionsAsString($column, array $data)
+    {
+        $result = [];
+        foreach ($this->getPropertyOptions($column, $data['type']) as $key => $value) {
+            switch (gettype($value)) {
+                case 'boolean':
+                    $value = $value ? 'true' : 'false';
+                    break;
+
+                case 'string':
+                    $value = '"' . $value . '"';
+                    break;
+            }
+
+            $result[] = sprintf('%s=%s', $key, $value);
+        }
+
+        return implode(',', $result);
+    }
+
+    /**
+     * Returns property options.
+     *
+     * @param string $column Column name
+     * @param string $type Column data
+     * @return array
+     */
+    protected function getPropertyOptions($column, $type)
+    {
+        $type = in_array($type, $this->supportedTypes) ? $type : static::DEFAULT_TYPE;
+
+        $result = [];
+        switch ($type) {
+            case 'uuid':
+                $result = [
+                    'type' => 'string',
+                    'format' => 'uuid',
+                    'example' => Text::uuid()
+                ];
+                break;
+
+            case 'string':
+                $result = [
+                    'type' => 'string',
+                    'format' => 'string',
+                    'example' => 'Lorem ipsum'
+                ];
+                break;
+
+            case 'text':
+                $result = [
+                    'type' => 'string',
+                    'format' => 'string',
+                    'example' => 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod ' .
+                        'tempor incididunt ut labore et dolore magna aliqua.'
+                ];
+                break;
+
+            case 'boolean':
+                $result = [
+                    'type' => 'boolean',
+                    'format' => 'boolean',
+                    'example' => true
+                ];
+                break;
+
+            case 'datetime':
+                $result = [
+                    'type' => 'string',
+                    'format' => 'date-time',
+                    'example' => Time::now()->i18nFormat('yyyy-MM-dd HH:mm:ss')
+                ];
+                break;
+
+            case 'date':
+                $result = [
+                    'type' => 'string',
+                    'format' => 'date',
+                    'example' => Time::now()->i18nFormat('yyyy-MM-dd')
+                ];
+                break;
+
+            case 'time':
+                $result = [
+                    'type' => 'string',
+                    'format' => 'time',
+                    'example' => Time::now()->i18nFormat('HH:mm:ss')
+                ];
+                break;
+
+            case 'decimal':
+                $result = [
+                    'type' => 'number',
+                    'format' => 'float',
+                    'example' => (mt_rand() / mt_getrandmax()) * (mt_getrandmax() / 1000)
+                ];
+                break;
+
+            case 'integer':
+                $result = [
+                    'type' => 'integer',
+                    'format' => 'integer',
+                    'example' => mt_rand()
+                ];
+                break;
+        }
 
         return $result;
     }
@@ -364,10 +481,10 @@ class Annotation
      * @param  string $properties Swagger properties annotations
      * @return string
      */
-    protected function _getDefinition($properties)
+    protected function getDefinition($properties)
     {
         $result = null;
-        $table = TableRegistry::get($this->_className);
+        $table = TableRegistry::get($this->className);
 
         $entity = $table->newEntity();
         $hiddenProperties = $entity->hiddenProperties();
@@ -388,7 +505,7 @@ class Annotation
         }
 
         $placeholders = [
-            '{{definition}}' => Inflector::singularize($this->_className),
+            '{{definition}}' => Inflector::singularize($this->className),
             '{{required}}' => implode(',', $required),
             '{{properties}}' => (string)$properties
         ];
@@ -396,7 +513,7 @@ class Annotation
         $result = str_replace(
             array_keys($placeholders),
             array_values($placeholders),
-            $this->_annotations['definition']
+            $this->annotations['definition']
         );
 
         return $result;
@@ -411,10 +528,10 @@ class Annotation
      *
      * @return array
      */
-    protected function _getPaths()
+    protected function getPaths()
     {
         $result = null;
-        $table = TableRegistry::get($this->_className);
+        $table = TableRegistry::get($this->className);
 
         $entity = $table->newEntity();
         $hiddenProperties = $entity->hiddenProperties();
@@ -427,17 +544,17 @@ class Annotation
         }
 
         $placeholders = [
-            '{{module_human_singular}}' => Inflector::singularize(Inflector::humanize(Inflector::underscore($this->_className))),
-            '{{module_human_plural}}' => Inflector::pluralize(Inflector::humanize(Inflector::underscore($this->_className))),
-            '{{module_singular}}' => Inflector::singularize($this->_className),
-            '{{module_url}}' => Inflector::dasherize($this->_className),
+            '{{module_human_singular}}' => Inflector::singularize(Inflector::humanize(Inflector::underscore($this->className))),
+            '{{module_human_plural}}' => Inflector::pluralize(Inflector::humanize(Inflector::underscore($this->className))),
+            '{{module_singular}}' => Inflector::singularize($this->className),
+            '{{module_url}}' => Inflector::dasherize($this->className),
             '{{sort_fields}}' => '"' . implode('", "', $fields) . '"'
         ];
 
         $result = str_replace(
             array_keys($placeholders),
             array_values($placeholders),
-            $this->_annotations['paths']
+            $this->annotations['paths']
         );
 
         return $result;
