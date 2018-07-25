@@ -3,6 +3,7 @@ namespace App\Swagger;
 
 use Cake\Core\App;
 use Cake\Database\Exception;
+use Cake\I18n\Time;
 use Cake\ORM\TableRegistry;
 use Cake\Utility\Inflector;
 use Cake\Utility\Text;
@@ -23,44 +24,11 @@ class Annotation
     protected $_content = null;
 
     /**
-     * Mapping of database column types to swagger types.
+     * Supported property types.
      *
      * @var array
      */
-    protected $_db2swagger = [
-        'uuid' => [
-            'type' => 'string',
-            'format' => 'uuid'
-        ],
-        'string' => [
-            'type' => 'string'
-        ],
-        'text' => [
-            'type' => 'string'
-        ],
-        'boolean' => [
-            'type' => 'boolean'
-        ],
-        'datetime' => [
-            'type' => 'string',
-            'format' => 'date-time'
-        ],
-        'date' => [
-            'type' => 'string',
-            'format' => 'date'
-        ],
-        'time' => [
-            'type' => 'string',
-            'format' => 'time'
-        ],
-        'decimal' => [
-            'type' => 'number',
-            'format' => 'float'
-        ],
-        'integer' => [
-            'type' => 'integer'
-        ],
-    ];
+    protected $supportedTypes = ['uuid', 'string', 'text', 'boolean', 'datetime', 'date', 'time', 'decimal', 'integer'];
 
     /**
      * Class name to generate annotations for.
@@ -422,79 +390,85 @@ class Annotation
      */
     protected function getPropertyOptions($column, $type)
     {
-        return [
-            'type' => $this->getPropertyType($type),
-            'format' => $this->getPropertyFormat($type),
-            'example' => $this->getPropertyExample($type)
-        ];
-    }
+        $type = in_array($type, $this->supportedTypes) ? $type : static::DEFAULT_TYPE;
 
-    /**
-     * Returns property Swagger type.
-     *
-     * @param property $type Column type
-     * @return string
-     */
-    protected function getPropertyType($type)
-    {
-        $type = array_key_exists($type, $this->_db2swagger) ? $type : static::DEFAULT_TYPE;
-
-        return $this->_db2swagger[$type]['type'];
-    }
-
-    /**
-     * Returns property Swagger format.
-     *
-     * @param property $type Column type
-     * @return string
-     */
-    protected function getPropertyFormat($type)
-    {
-        $type = array_key_exists($type, $this->_db2swagger) ? $type : static::DEFAULT_TYPE;
-
-        return array_key_exists('format', $this->_db2swagger[$type]) ?
-            $this->_db2swagger[$type]['format'] :
-            $this->getPropertyType($type);
-    }
-
-    /**
-     * Property example getter.
-     *
-     * @param [type] $type [description]
-     * @return [type] [description]
-     */
-    protected function getPropertyExample($type)
-    {
+        $result = [];
         switch ($type) {
             case 'uuid':
-                return Text::uuid();
-
-            case 'date':
-                return date('Y-m-d');
-
-            case 'datetime':
-                return date('Y-m-d H:i:s');
-
-            case 'time':
-                return date('H:i:s');
+                $result = [
+                    'type' => 'string',
+                    'format' => 'uuid',
+                    'example' => Text::uuid()
+                ];
+                break;
 
             case 'string':
-                return 'Lorem ipsum';
+                $result = [
+                    'type' => 'string',
+                    'format' => 'string',
+                    'example' => 'Lorem ipsum'
+                ];
+                break;
 
             case 'text':
-                return 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.';
+                $result = [
+                    'type' => 'string',
+                    'format' => 'string',
+                    'example' => 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod ' .
+                        'tempor incididunt ut labore et dolore magna aliqua.'
+                ];
+                break;
 
             case 'boolean':
-                return true;
+                $result = [
+                    'type' => 'boolean',
+                    'format' => 'boolean',
+                    'example' => true
+                ];
+                break;
 
-            case 'integer':
-                return random_int(0, 100000);
+            case 'datetime':
+                $result = [
+                    'type' => 'string',
+                    'format' => 'date-time',
+                    'example' => Time::now()->i18nFormat('yyyy-MM-dd HH:mm:ss')
+                ];
+                break;
+
+            case 'date':
+                $result = [
+                    'type' => 'string',
+                    'format' => 'date',
+                    'example' => Time::now()->i18nFormat('yyyy-MM-dd')
+                ];
+                break;
+
+            case 'time':
+                $result = [
+                    'type' => 'string',
+                    'format' => 'time',
+                    'example' => Time::now()->i18nFormat('HH:mm:ss')
+                ];
+                break;
 
             case 'decimal':
-                return random_int(0, 100000) . '.' . random_int(0, 100);
+                $result = [
+                    'type' => 'number',
+                    'format' => 'float',
+                    'example' => (mt_rand() / mt_getrandmax()) * (mt_getrandmax() / 1000)
+                ];
+                break;
+
+            case 'integer':
+                $result = [
+                    'type' => 'integer',
+                    'format' => 'integer',
+                    'example' => mt_rand()
+                ];
+                break;
         }
 
-        return '';
+        return $result;
     }
 
     /**
