@@ -35,6 +35,10 @@ class EncodedFileType extends Type
      */
     public function toDatabase($value, Driver $driver)
     {
+        if (is_null($value)) {
+            return null;
+        }
+
         if (! is_array($value)) {
             throw new InvalidArgumentException('Encoded file value must be an array');
         }
