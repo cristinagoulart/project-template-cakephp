@@ -55,7 +55,7 @@ echo $this->Html->scriptBlock(
             <div class="box box-primary">
                 <div class="box-body">
                     <?php
-                    $userImage = $Users->get('image');
+                    $userImage = $Users->get('image_src');
                     if ($userImage) {
                         echo '<img src="' . $userImage . '" class="profile-user-img img-responsive img-circle" />';
                     } else {

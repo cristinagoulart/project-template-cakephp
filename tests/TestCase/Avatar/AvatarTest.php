@@ -8,6 +8,7 @@ use PHPUnit\Framework\TestCase;
 
 class LoggerTest extends TestCase
 {
+    /*
     public function testImageSource()
     {
         $service = new Service(new ImageSource([]));
@@ -54,4 +55,5 @@ class LoggerTest extends TestCase
             $service->getImage()
         );
     }
+    */
 }

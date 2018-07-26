@@ -2,7 +2,6 @@
 namespace App\Model\Entity;
 
 use App\Avatar\Service as AvatarService;
-use App\Avatar\Type\ImageSource;
 use CakeDC\Users\Model\Entity\User as BaseUser;
 use Cake\Core\Configure;
 
@@ -39,19 +38,17 @@ class User extends BaseUser
      */
     protected function _getImageSrc()
     {
-        if ($this->get('image')) {
-            $service = new AvatarService(new ImageSource(['src' => $this->get('image')]));
-
-            return $service->getImage();
-        }
-
         $type = Configure::read('Avatar.default');
         $options = (array)Configure::read('Avatar.options.' . $type);
-        $options['email'] = (string)$this->get('email');
-        $options['name'] = $this->get('name');
 
-        $service = new AvatarService(new $type($options));
+        $options = array_merge($options, [
+            'id' => $this->get('id'),
+            'email' => (string)$this->get('email'),
+            'name' => $this->get('name')
+        ]);
 
-        return $service->getImage();
+        $service = new AvatarService();
+
+        return $service->getImage($options);
     }
 }

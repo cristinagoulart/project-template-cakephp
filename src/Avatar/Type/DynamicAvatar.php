@@ -5,7 +5,7 @@ use App\Avatar\AvatarInterface;
 use Cake\Core\Configure;
 use \LasseRafn\InitialAvatarGenerator\InitialAvatar;
 
-final class DynamicAvatar implements AvatarInterface
+final class DynamicAvatar extends AvatarInterface
 {
     /**
      * Gravatar default options.
@@ -27,8 +27,14 @@ final class DynamicAvatar implements AvatarInterface
      */
     public function get()
     {
+        $result = false;
+
+        $filename = $this->getAvatarUrl($this->options);
+        $file = WWW_ROOT . $filename;
+
         $source = !empty($this->options['name']) ? $this->options['name'] : $this->options['email'];
         $avatar = new InitialAvatar();
+
         $image = $avatar->name($source)
             ->size($this->options['size'])
             ->length($this->options['length'])
@@ -36,6 +42,13 @@ final class DynamicAvatar implements AvatarInterface
             ->generate()
             ->stream('data-url');
 
-        return $image->getContents();
+        $resource = imagecreatefromstring(file_get_contents($image->getContents()));
+        $saved = $this->processAvatarResource($file, $resource);
+
+        if ($saved) {
+            $result = $filename;
+        }
+
+        return $result;
     }
 }

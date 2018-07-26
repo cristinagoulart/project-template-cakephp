@@ -76,6 +76,8 @@ class UsersController extends AppController
 
         $user = $this->Users->get($id);
 
+        $directory = WWW_ROOT . Configure::read('Avatar.directory');
+
         // user already has image flag
         $hasImage = $user->get('image');
 
@@ -102,17 +104,27 @@ class UsersController extends AppController
             return $this->redirect($this->request->referer());
         }
 
-        $user = $this->Users->patchEntity($user, ['image' => $data]);
+        $extension = pathinfo($data['name'], PATHINFO_EXTENSION);
 
-        if ($this->Users->save($user)) {
-            if ($hasImage) {
-                $this->Flash->success(__('The image has been replaced.'));
-            } else {
-                $this->Flash->success(__('The image has been uploaded.'));
-            }
-        } else {
-            $this->Flash->error(__('Failed to upload image, please try again.'));
+        if ('png' == $extension) {
+            $source = imagecreatefrompng($data['tmp_name']);
         }
+
+        if (in_array($extension, ['jpg', 'jpeg'])) {
+            $source = imagecreatefromjpeg($data['tmp_name']);
+        }
+
+        imagealphablending($source, false);
+        imagetruecolortopalette($source, false, 256);
+        $extension = Configure::read('Avatar.extension');
+
+        if (imagepng($source, $directory . $id . $extension, 6, PNG_NO_FILTER)) {
+            $this->Flash->success(__('The image has been uploaded.'));
+        } else {
+            $this->Flash->error(__('Couldn\'t upload the image'));
+        }
+
+        imagedestroy($source);
 
         return $this->redirect($this->request->referer());
     }

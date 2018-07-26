@@ -4,7 +4,7 @@ namespace App\Avatar\Type;
 use App\Avatar\AvatarInterface;
 use Cake\Core\Configure;
 
-final class ImageSource implements AvatarInterface
+final class ImageSource extends AvatarInterface
 {
     /**
      * Image default options.
@@ -12,7 +12,7 @@ final class ImageSource implements AvatarInterface
      * @var array
      */
     private $options = [
-        'src' => '/img/user-image-160x160.png',
+        'src' => '',
     ];
 
     /**
@@ -28,6 +28,12 @@ final class ImageSource implements AvatarInterface
      */
     public function get()
     {
+        $directory = Configure::read('Avatar.directory');
+
+        if (file_exists(WWW_ROOT . $directory . $this->options['filename'])) {
+            $this->options['src'] = $directory . $this->options['filename'];
+        }
+
         return sprintf('%s', $this->options['src']);
     }
 }
