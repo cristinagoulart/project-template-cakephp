@@ -29,8 +29,9 @@ final class ImageSource extends AvatarInterface
     public function get()
     {
         $directory = Configure::read('Avatar.directory');
+        $filename = $this->getAvatarUrl($this->options);
 
-        if (file_exists(WWW_ROOT . $directory . $this->options['filename'])) {
+        if (file_exists(WWW_ROOT . $filename)) {
             $this->options['src'] = $directory . $this->options['filename'];
         }
 
