@@ -24,7 +24,7 @@ class Upgrade201807260843Task extends Shell
     /**
      * main() method
      *
-     * @retun void
+     * @return void
      */
     public function main()
     {
@@ -65,7 +65,5 @@ class Upgrade201807260843Task extends Shell
                 $this->warn("User [" . $entity->get('email') . "] avatar failed");
             }
         }
-
-        return;
     }
 }
