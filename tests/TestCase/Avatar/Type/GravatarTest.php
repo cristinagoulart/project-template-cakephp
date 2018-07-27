@@ -11,10 +11,10 @@ class GravatarTest extends TestCase
      */
     public function testGet($data, $expected, $msg)
     {
-       $object = new Gravatar($data);
+        $object = new Gravatar($data);
 
-       $result = $object->get();
-       $this->assertEquals($result, $expected, $msg);
+        $result = $object->get();
+        $this->assertEquals($result, $expected, $msg);
     }
 
     public function testGetProvider()
