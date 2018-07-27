@@ -32,7 +32,6 @@ class AvatarsSyncShell extends Shell
      */
     public function main()
     {
-
         $this->Users = TableRegistry::get('CakeDC/Users.Users');
 
         $query = $this->Users->find()->all();
