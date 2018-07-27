@@ -77,6 +77,7 @@ class UsersController extends AppController
         $user = $this->Users->get($id);
 
         $directory = WWW_ROOT . Configure::read('Avatar.directory');
+        $customDirectory = WWW_ROOT . Configure::read('Avatar.customDirectory');
 
         // user already has image flag
         $hasImage = $user->get('image');
@@ -119,6 +120,7 @@ class UsersController extends AppController
         $extension = Configure::read('Avatar.extension');
 
         if (imagepng($source, $directory . $id . $extension, 6, PNG_NO_FILTER)) {
+            imagepng($source, $customDirectory . $id . $extension, 6, PNG_NO_FILTER);
             $this->Flash->success(__('The image has been uploaded.'));
         } else {
             $this->Flash->error(__('Couldn\'t upload the image'));

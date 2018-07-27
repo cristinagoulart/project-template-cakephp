@@ -8,6 +8,7 @@ return [
         'default' => 'Gravatar',
         'defaultImage' => '/img/user-image-160x160.png', // sets the default/fallback image
         'directory' => '/uploads' . DS . 'avatars' . DS,
+        'customDirectory' => '/uploads' . DS . 'avatars' . DS . 'custom' . DS,
         'extension' => '.png',
         'options' => [
             'ImageSource' => [],
