@@ -1,8 +1,4 @@
 <?php
-use App\Avatar\Type\Gravatar;
-use App\Avatar\Type\ImageSource;
-use App\Avatar\Type\DynamicAvatar;
-
 return [
     'Avatar' => [
         'default' => 'Gravatar',
