@@ -1,11 +1,11 @@
 <?php
 namespace App\Avatar\Type;
 
-use App\Avatar\AvatarInterface;
+use App\Avatar\AbstractAvatar;
 use Cake\Core\Configure;
 use \LasseRafn\InitialAvatarGenerator\InitialAvatar;
 
-final class DynamicAvatar extends AvatarInterface
+final class DynamicAvatar extends AbstractAvatar
 {
     /**
      * Gravatar default options.

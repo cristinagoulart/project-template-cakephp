@@ -1,10 +1,10 @@
 <?php
 namespace App\Avatar\Type;
 
-use App\Avatar\AvatarInterface;
+use App\Avatar\AbstractAvatar;
 use Cake\Core\Configure;
 
-final class Gravatar extends AvatarInterface
+final class Gravatar extends AbstractAvatar
 {
     /**
      * Gravatar default options.

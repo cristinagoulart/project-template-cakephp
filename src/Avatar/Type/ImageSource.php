@@ -1,10 +1,10 @@
 <?php
 namespace App\Avatar\Type;
 
-use App\Avatar\AvatarInterface;
+use App\Avatar\AbstractAvatar;
 use Cake\Core\Configure;
 
-final class ImageSource extends AvatarInterface
+final class ImageSource extends AbstractAvatar
 {
     /**
      * Image default options.
