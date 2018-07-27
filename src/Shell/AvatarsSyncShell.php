@@ -40,7 +40,7 @@ class AvatarsSyncShell extends Shell
         if (!$query->count()) {
             $this->out("No users found for avatar sync. Exiting...");
 
-            return;
+            return null;
         }
 
         $avatarsDir = Configure::read('Avatar.directory');
@@ -65,7 +65,5 @@ class AvatarsSyncShell extends Shell
         }
 
         $this->out("Avatar sync. Updated: $updated. Generated: $generated. Users: $usersCount");
-
-        return;
     }
 }
