@@ -233,7 +233,7 @@ Plugin::load('DatabaseLog', ['routes' => true]);
 Plugin::load('Search', ['bootstrap' => true, 'routes' => true]);
 Plugin::load('Burzum/FileStorage');
 if (Configure::read('Swagger.crawl') && Configure::read('API.auth')) {
-    Plugin::load('Alt3/Swagger', ['routes' => true]);
+    Plugin::load('Alt3/Swagger', ['bootstrap' => true, 'routes' => true]);
 }
 Plugin::load('AdminLTE', ['bootstrap' => true, 'routes' => true]);
 
