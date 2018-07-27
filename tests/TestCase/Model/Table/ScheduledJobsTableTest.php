@@ -52,16 +52,6 @@ class ScheduledJobsTableTest extends TestCase
     }
 
     /**
-     * Test initialize method
-     *
-     * @return void
-     */
-    public function testInitialize()
-    {
-        $this->markTestIncomplete('Not implemented yet.');
-    }
-
-    /**
      * Test getActiveJobs method
      *
      * @return void
