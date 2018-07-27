@@ -57,7 +57,7 @@ final class Gravatar extends AvatarInterface
         $httpCode = curl_getinfo($curl, CURLINFO_HTTP_CODE);
 
         if (404 == $httpCode) {
-            return null;
+            return $result;
         }
 
         $resource = imagecreatefromstring(file_get_contents($imageUrl));
