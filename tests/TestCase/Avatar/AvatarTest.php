@@ -8,52 +8,25 @@ use PHPUnit\Framework\TestCase;
 
 class LoggerTest extends TestCase
 {
-    /*
     public function testImageSource()
     {
-        $service = new Service(new ImageSource([]));
+        $service = new Service(new ImageSource(['src' => '']));
+        $options = [
+            'id' => '1',
+            'email' => 'foo@example.com',
+        ];
 
-        $this->assertEquals('/img/user-image-160x160.png', $service->getImage());
+        $this->assertEquals('/uploads/avatars/1.png', $service->getImage($options));
     }
 
     public function testImageSourceWithOptions()
     {
-        $service = new Service(new ImageSource(['src' => '/img/foo.png']));
-
-        $this->assertEquals('/img/foo.png', $service->getImage());
-    }
-
-    public function testGravatar()
-    {
-        $service = new Service(new Gravatar([]));
-
-        $this->assertEquals(
-            sprintf('https://www.gravatar.com/avatar/%s?size=160&default=mm&rating=g', md5('')),
-            $service->getImage()
-        );
-    }
-
-    public function testGravatarWithOptions()
-    {
+        $service = new Service(new ImageSource([]));
         $options = [
-            'email' => 'john.smith@company.com',
-            'size' => 256,
-            'default' => 'identicon',
-            'rating' => 'pg'
+            'id' => '1',
+            'email' => 'foo@example.com',
         ];
 
-        $service = new Service(new Gravatar($options));
-
-        $this->assertEquals(
-            sprintf(
-                'https://www.gravatar.com/avatar/%s?size=%d&default=%s&rating=%s',
-                md5($options['email']),
-                $options['size'],
-                $options['default'],
-                $options['rating']
-            ),
-            $service->getImage()
-        );
+        $this->assertEquals('/uploads/avatars/1.png', $service->getImage($options));
     }
-    */
 }
