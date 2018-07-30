@@ -49,18 +49,20 @@ class Upgrade201807260843Task extends Shell
 
             $processed = $this->Users->saveCustomAvatar($entity, $source);
 
-            if ($processed) {
-                $this->info("User [" . $entity->get('email') . "] is saved");
-
-                $entity = $this->Users->patchEntity($entity, ['image' => null]);
-
-                if ($this->Users->save($entity)) {
-                    $this->info("User [" . $entity->get('email') . "] image field cleared");
-                } else {
-                    $this->warn($entity->getErrors());
-                }
-            } else {
+            if (!$processed) {
                 $this->warn("User [" . $entity->get('email') . "] avatar failed");
+
+                continue;
+            }
+
+            $this->info("User [" . $entity->get('email') . "] is saved");
+
+            $entity = $this->Users->patchEntity($entity, ['image' => null]);
+
+            if ($this->Users->save($entity)) {
+                $this->info("User [" . $entity->get('email') . "] image field cleared");
+            } else {
+                $this->warn($entity->getErrors());
             }
         }
     }
