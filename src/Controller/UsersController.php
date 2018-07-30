@@ -1,6 +1,7 @@
 <?php
 namespace App\Controller;
 
+use App\Avatar\Service as AvatarService;
 use App\Controller\AppController;
 use CakeDC\Users\Controller\Traits\CustomUsersTableTrait;
 use CakeDC\Users\Exception\UserNotActiveException;
@@ -76,9 +77,6 @@ class UsersController extends AppController
 
         $user = $this->Users->get($id);
 
-        $directory = WWW_ROOT . Configure::read('Avatar.directory');
-        $customDirectory = WWW_ROOT . Configure::read('Avatar.customDirectory');
-
         // user already has image flag
         $hasImage = $user->get('image');
 
@@ -90,43 +88,28 @@ class UsersController extends AppController
             return $this->redirect($this->request->referer());
         }
 
-        if (524288 < $data['size']) {
+        $avatarService = new AvatarService();
+
+        if (!$avatarService->isAllowedSize($data)) {
             $this->Flash->error(__('Image is too large. Max size 512kb.'));
 
             return $this->redirect($this->request->referer());
         }
 
-        list($mimeGroup, ) = explode('/', $data['type']);
-
-        // show error and redirect if uploaded file is not an image
-        if ('image' !== strtolower($mimeGroup)) {
+        if (!$avatarService->isImage($data)) {
             $this->Flash->error(__('Unsupported image type.'));
 
             return $this->redirect($this->request->referer());
         }
 
-        $extension = strtolower(pathinfo($data['name'], PATHINFO_EXTENSION));
+        $resource = $avatarService->getImageResource($data);
+        $processed = $this->Users->saveCustomAvatar($user, $resource);
 
-        if ('png' == $extension) {
-            $source = imagecreatefrompng($data['tmp_name']);
-        }
-
-        if (in_array($extension, ['jpg', 'jpeg'])) {
-            $source = imagecreatefromjpeg($data['tmp_name']);
-        }
-
-        imagealphablending($source, false);
-        imagetruecolortopalette($source, false, 256);
-        $extension = Configure::read('Avatar.extension');
-
-        if (imagepng($source, $directory . $id . $extension, 6, PNG_NO_FILTER)) {
-            imagepng($source, $customDirectory . $id . $extension, 6, PNG_NO_FILTER);
+        if ($processed) {
             $this->Flash->success(__('The image has been uploaded.'));
         } else {
             $this->Flash->error(__('Couldn\'t upload the image'));
         }
-
-        imagedestroy($source);
 
         return $this->redirect($this->request->referer());
     }

@@ -42,21 +42,14 @@ class AvatarsSyncShell extends Shell
             return null;
         }
 
-        $avatarsDir = Configure::read('Avatar.directory');
-        $customDir = Configure::read('Avatar.customDirectory');
-        $avatarsPath = WWW_ROOT . $avatarsDir;
-        $customPath = WWW_ROOT . $customDir;
-
         $usersCount = $query->count();
         $generated = $updated = 0;
 
         foreach ($query as $entity) {
-            $filename = $entity->id . '.png';
-
-            if (file_exists($customPath . $filename)) {
-                // overwriting whatever the user has with custom avatar being uploaded
-                copy($customPath . $filename, $avatarsPath . $filename);
-                $updated++;
+            if ($this->Users->isCustomAvatarExists($entity)) {
+                if ($this->Users->copyCustomAvatar($entity)) {
+                    $updated++;
+                }
             } else {
                 $imageSource = $entity->get('image_src');
                 $generated++;

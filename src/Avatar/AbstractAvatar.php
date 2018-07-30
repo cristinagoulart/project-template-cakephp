@@ -25,9 +25,19 @@ abstract class AbstractAvatar implements AvatarInterface
             $processed = true;
         }
 
-        imagedestroy($resource);
-
         return $processed;
+    }
+
+    /**
+     * Remove image resource from the memory
+     *
+     * @param resource $resource of the file.
+     *
+     * @return bool on imagedestroy()
+     */
+    public function removeAvatarResource($resource)
+    {
+        return imagedestroy($resource);
     }
 
     /**

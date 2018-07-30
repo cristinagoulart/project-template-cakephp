@@ -6,6 +6,7 @@ return [
         'directory' => '/uploads' . DS . 'avatars' . DS,
         'customDirectory' => '/uploads' . DS . 'avatars' . DS . 'custom' . DS,
         'extension' => '.png',
+        'fileSize' => 524288,
         'options' => [
             'ImageSource' => [],
             'Gravatar' => [

@@ -1,6 +1,7 @@
 <?php
 namespace App\Shell\Task;
 
+use App\Avatar\Service as AvatarService;
 use Cake\Console\ConsoleOptionParser;
 use Cake\Console\Shell;
 use Cake\Core\Configure;
@@ -41,25 +42,22 @@ class Upgrade201807260843Task extends Shell
             return;
         }
 
-        $extension = Configure::read('Avatar.extension');
-        $directory = WWW_ROOT . Configure::read('Avatar.directory');
+        $avatarService = new AvatarService();
 
         foreach ($query->all() as $entity) {
-            $id = $entity->get('id');
-            $decodedImage = file_get_contents($entity->get('image'));
-            $source = imagecreatefromstring($decodedImage);
+            $source = $avatarService->getImageResource($entity->get('image'), true);
 
-            imagealphablending($source, false);
-            imagetruecolortopalette($source, false, 256);
+            $processed = $this->Users->saveCustomAvatar($entity, $source);
 
-            if (imagepng($source, $directory . $id . $extension, 6, PNG_NO_FILTER)) {
+            if ($processed) {
                 $this->info("User [" . $entity->get('email') . "] is saved");
 
                 $entity = $this->Users->patchEntity($entity, ['image' => null]);
+
                 if ($this->Users->save($entity)) {
                     $this->info("User [" . $entity->get('email') . "] image field cleared");
                 } else {
-                    dd($entity->getErrors());
+                    $this->warn($entity->getErrors());
                 }
             } else {
                 $this->warn("User [" . $entity->get('email') . "] avatar failed");

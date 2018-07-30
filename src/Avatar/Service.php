@@ -19,6 +19,10 @@ final class Service
      */
     public function __construct(AvatarInterface $avatar = null)
     {
+        if (!$avatar) {
+            $avatar = new ImageSource();
+        }
+
         $this->avatar = $avatar;
     }
 
@@ -36,6 +40,8 @@ final class Service
 
     /**
      * Fetches avatar image.
+     *
+     * @param array $options if any present on the avatar provider
      *
      * @return string
      */
@@ -98,5 +104,97 @@ final class Service
         $name = $options['id'] . $extension;
 
         return $name;
+    }
+
+    /**
+     * Saving image resource
+     *
+     * @param string $file path including its name
+     * @param resource $resource of the file
+     *
+     * @return bool $status of the file save.
+     */
+    public function saveImage($file, $resource)
+    {
+        $status = $this->avatar->processAvatarResource($file, $resource);
+
+        return $status;
+    }
+
+    /**
+     * Remove image resource from memory
+     *
+     * @param resource $resource of the file
+     *
+     * @return bool whether the resource was removed from the memory
+     */
+    public function removeImageResource($resource)
+    {
+        return $this->avatar->removeAvatarResource($resource);
+    }
+
+    /**
+     * is uploading resource is Image
+     *
+     * @param array $data from the form
+     *
+     * @return bool $result whether mime type is image.
+     */
+    public function isImage($data)
+    {
+        $result = false;
+        list($mimeGroup, ) = explode('/', $data['type']);
+
+        if ('image' == strtolower($mimeGroup)) {
+            $result = true;
+        }
+
+        return $result;
+    }
+
+    /**
+     * File size check
+     *
+     * @param array $data of the image from the form
+     *
+     * @return bool $result comparing with config/avatar.
+     */
+    public function isAllowedSize($data)
+    {
+        $result = false;
+        $allowedSize = Configure::read('Avatar.fileSize');
+
+        if ($allowedSize > $data['size']) {
+            $result = true;
+        }
+
+        return $result;
+    }
+
+    /**
+     * Get Image resource stream
+     *
+     * @param mixed $data of the file origin (form, base64 data)
+     * @param bool $isBase64 flag to check how to handle $data
+     *
+     * @return resource $source of the image
+     */
+    public function getImageResource($data, $isBase64 = false)
+    {
+        if (!$isBase64) {
+            $extension = strtolower(pathinfo($data['name'], PATHINFO_EXTENSION));
+
+            if ('png' == $extension) {
+                $source = imagecreatefrompng($data['tmp_name']);
+            }
+
+            if (in_array($extension, ['jpg', 'jpeg'])) {
+                $source = imagecreatefromjpeg($data['tmp_name']);
+            }
+        } else {
+            $source = imagecreatefromstring(file_get_contents($data));
+        }
+
+        return $source;
     }
 }

@@ -18,7 +18,7 @@ final class ImageSource extends AbstractAvatar
     /**
      * {@inheritDoc}
      */
-    public function __construct(array $options)
+    public function __construct(array $options = [])
     {
         $this->options = array_merge($this->options, $options);
     }
