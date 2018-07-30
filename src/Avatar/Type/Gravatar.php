@@ -52,8 +52,8 @@ final class Gravatar extends AbstractAvatar
 
         $curl = curl_init($imageUrl);
         curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+        curl_exec($curl);
 
-        $response = curl_exec($curl);
         $httpCode = curl_getinfo($curl, CURLINFO_HTTP_CODE);
 
         if (404 == $httpCode) {
