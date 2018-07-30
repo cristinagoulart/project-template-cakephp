@@ -43,7 +43,7 @@ class User extends BaseUser
 
         $options = array_merge($options, [
             'id' => $this->get('id'),
-            'email' => (string)$this->get('email'),
+            'email' => $this->get('email'),
             'name' => $this->get('name')
         ]);
 
