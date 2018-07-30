@@ -76,13 +76,9 @@ class UsersController extends AppController
         $this->request->allowMethod(['patch', 'post', 'put']);
 
         $user = $this->Users->get($id);
-
-        // user already has image flag
-        $hasImage = $user->get('image');
-
         $data = $this->request->data('Users.image');
 
-        if (!$data) {
+        if (! $data) {
             $this->Flash->error(__('Failed to upload image, please try again.'));
 
             return $this->redirect($this->request->referer());
@@ -90,13 +86,13 @@ class UsersController extends AppController
 
         $avatarService = new AvatarService();
 
-        if (!$avatarService->isAllowedSize($data)) {
+        if (! $avatarService->isAllowedSize($data)) {
             $this->Flash->error(__('Image is too large. Max size 512kb.'));
 
             return $this->redirect($this->request->referer());
         }
 
-        if (!$avatarService->isImage($data)) {
+        if (! $avatarService->isImage($data)) {
             $this->Flash->error(__('Unsupported image type.'));
 
             return $this->redirect($this->request->referer());
