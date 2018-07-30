@@ -126,7 +126,6 @@ class UsersTable extends Table
         $avatarService = new AvatarService();
         $filename = $avatarService->getImageName(['id' => $entity->id]);
 
-        $directory = WWW_ROOT . Configure::read('Avatar.directory');
         $customDir = WWW_ROOT . Configure::read('Avatar.customDirectory');
 
         $result = $avatarService->saveImage($customDir . $filename, $resource);
