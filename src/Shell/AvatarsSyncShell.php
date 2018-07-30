@@ -33,27 +33,28 @@ class AvatarsSyncShell extends Shell
     public function main()
     {
         $this->Users = TableRegistry::get('CakeDC/Users.Users');
+        $generated = $updated = 0;
 
         $query = $this->Users->find()->all();
+        $usersCount = $query->count();
 
-        if (!$query->count()) {
+        if (!$usersCount) {
             $this->out("No users found for avatar sync. Exiting...");
 
             return null;
         }
-
-        $usersCount = $query->count();
-        $generated = $updated = 0;
 
         foreach ($query as $entity) {
             if ($this->Users->isCustomAvatarExists($entity)) {
                 if ($this->Users->copyCustomAvatar($entity)) {
                     $updated++;
                 }
-            } else {
-                $imageSource = $entity->get('image_src');
-                $generated++;
+
+                continue;
             }
+
+            $imageSource = $entity->get('image_src');
+            $generated++;
         }
 
         $this->out("Avatar sync. Updated: $updated. Generated: $generated. Users: $usersCount");
