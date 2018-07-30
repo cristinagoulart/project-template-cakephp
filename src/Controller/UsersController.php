@@ -105,7 +105,7 @@ class UsersController extends AppController
             return $this->redirect($this->request->referer());
         }
 
-        $extension = pathinfo($data['name'], PATHINFO_EXTENSION);
+        $extension = strtolower(pathinfo($data['name'], PATHINFO_EXTENSION));
 
         if ('png' == $extension) {
             $source = imagecreatefrompng($data['tmp_name']);
