@@ -53,7 +53,7 @@ class AvatarsSyncShell extends Shell
                 continue;
             }
 
-            $imageSource = $entity->get('image_src');
+            $entity->get('image_src');
             $generated++;
         }
 
