@@ -1,6 +1,7 @@
 <?php
 namespace App\Controller;
 
+use App\Avatar\Service as AvatarService;
 use App\Controller\AppController;
 use CakeDC\Users\Controller\Traits\CustomUsersTableTrait;
 use CakeDC\Users\Exception\UserNotActiveException;
@@ -75,43 +76,35 @@ class UsersController extends AppController
         $this->request->allowMethod(['patch', 'post', 'put']);
 
         $user = $this->Users->get($id);
-
-        // user already has image flag
-        $hasImage = $user->get('image');
-
         $data = $this->request->data('Users.image');
 
-        if (!$data) {
+        if (! $data) {
             $this->Flash->error(__('Failed to upload image, please try again.'));
 
             return $this->redirect($this->request->referer());
         }
 
-        if (524288 < $data['size']) {
+        $avatarService = new AvatarService();
+
+        if (! $avatarService->isAllowedSize($data)) {
             $this->Flash->error(__('Image is too large. Max size 512kb.'));
 
             return $this->redirect($this->request->referer());
         }
 
-        list($mimeGroup, ) = explode('/', $data['type']);
-
-        // show error and redirect if uploaded file is not an image
-        if ('image' !== strtolower($mimeGroup)) {
+        if (! $avatarService->isImage($data)) {
             $this->Flash->error(__('Unsupported image type.'));
 
             return $this->redirect($this->request->referer());
         }
 
-        $user = $this->Users->patchEntity($user, ['image' => $data]);
+        $resource = $avatarService->getImageResource($data);
+        $processed = $this->Users->saveCustomAvatar($user, $resource);
 
-        if ($this->Users->save($user)) {
-            if ($hasImage) {
-                $this->Flash->success(__('The image has been replaced.'));
-            } else {
-                $this->Flash->success(__('The image has been uploaded.'));
-            }
+        if ($processed) {
+            $this->Flash->success(__('The image has been uploaded.'));
         } else {
-            $this->Flash->error(__('Failed to upload image, please try again.'));
+            $this->Flash->error(__('Couldn\'t upload the image'));
         }
 
         return $this->redirect($this->request->referer());

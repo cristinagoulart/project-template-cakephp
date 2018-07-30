@@ -10,7 +10,12 @@ etc/ssl/*
 /config/app.php
 tmp/
 logs/
-webroot/uploads/
+!webroot/uploads/
+webroot/uploads/*
+!webroot/uploads/avatars/
+webroot/uploads/avatars/*
+!webroot/uploads/avatars/custom/
+webroot/uploads/avatars/custom/*
 config/Migrations/schema-dump-default.lock
 config/Migrations/schema-dump-test.lock
 config/features_local.php

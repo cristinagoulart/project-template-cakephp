@@ -1,10 +1,10 @@
 <?php
 namespace App\Avatar\Type;
 
-use App\Avatar\AvatarInterface;
+use App\Avatar\AbstractAvatar;
 use Cake\Core\Configure;
 
-final class Gravatar implements AvatarInterface
+final class Gravatar extends AbstractAvatar
 {
     /**
      * Gravatar default options.
@@ -14,8 +14,8 @@ final class Gravatar implements AvatarInterface
     private $options = [
         'email' => '',
         'size' => 160,
-        'default' => 'mm',
-        'rating' => 'g'
+        'default' => '404',
+        'rating' => 'g',
     ];
 
     /**
@@ -33,12 +33,40 @@ final class Gravatar implements AvatarInterface
      */
     public function get()
     {
-        return sprintf(
+        $result = false;
+
+        $filename = $this->getAvatarUrl($this->options);
+        $file = WWW_ROOT . $filename;
+
+        if (file_exists($file)) {
+            return $filename;
+        }
+
+        $imageUrl = sprintf(
             'https://www.gravatar.com/avatar/%s?size=%d&default=%s&rating=%s',
             $this->options['email'],
             $this->options['size'],
             $this->options['default'],
             $this->options['rating']
         );
+
+        $curl = curl_init($imageUrl);
+        curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+        curl_exec($curl);
+
+        $httpCode = curl_getinfo($curl, CURLINFO_HTTP_CODE);
+
+        if (404 == $httpCode) {
+            return $result;
+        }
+
+        $resource = imagecreatefromstring(file_get_contents($imageUrl));
+        $saved = $this->processAvatarResource($file, $resource);
+
+        if ($saved) {
+            $result = $filename;
+        }
+
+        return $result;
     }
 }
