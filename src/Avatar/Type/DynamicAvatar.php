@@ -34,11 +34,12 @@ final class DynamicAvatar extends AbstractAvatar
 
         $source = !empty($this->options['name']) ? $this->options['name'] : $this->options['email'];
         $avatar = new InitialAvatar();
+        $key = array_rand($this->options['background'], 1);
 
         $image = $avatar->name($source)
             ->size($this->options['size'])
             ->length($this->options['length'])
-            ->background($this->options['background'])
+            ->background($this->options['background'][$key])
             ->generate()
             ->stream('data-url');
 

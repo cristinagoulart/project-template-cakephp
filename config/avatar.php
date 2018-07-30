@@ -17,7 +17,7 @@ return [
             'App\Avatar\Type\DynamicAvatar' => [
                 'size' => 160,
                 'length' => 2,
-                'background' => '#00c0ef',
+                'background' => ['#00c0ef', '#00a65a', '#d81b60', '#605ca8', '#39CCCC', '#f56954'],
             ]
         ],
         'order' => [
