@@ -18,6 +18,11 @@ return [
                 'length' => 2,
                 'background' => '#00c0ef',
             ]
+        ],
+        'order' => [
+            'ImageSource',
+            'Gravatar',
+            'DynamicAvatar',
         ]
     ]
 ];

@@ -44,7 +44,9 @@ final class Service
         $filename = $this->getImageName($options);
         $options['filename'] = $filename;
 
-        foreach (['ImageSource', 'Gravatar', 'DynamicAvatar'] as $classType) {
+        $order = Configure::read('Avatar.order');
+
+        foreach ($order as $classType) {
             $defaultOptions = Configure::read('Avatar.options.' . $classType);
             $options = array_merge($defaultOptions, $options);
             $source = $this->getAvatarSource($classType, $options);
