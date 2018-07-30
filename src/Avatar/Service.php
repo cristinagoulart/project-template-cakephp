@@ -179,18 +179,20 @@ final class Service
      */
     public function getImageResource($data, $isBase64 = false)
     {
-        if (!$isBase64) {
-            $extension = strtolower(pathinfo($data['name'], PATHINFO_EXTENSION));
-
-            if ('png' == $extension) {
-                $source = imagecreatefrompng($data['tmp_name']);
-            }
-
-            if (in_array($extension, ['jpg', 'jpeg'])) {
-                $source = imagecreatefromjpeg($data['tmp_name']);
-            }
-        } else {
+        if ($isBase64) {
             $source = imagecreatefromstring(file_get_contents($data));
+
+            return $source;
+        }
+
+        $extension = strtolower(pathinfo($data['name'], PATHINFO_EXTENSION));
+
+        if ('png' == $extension) {
+            $source = imagecreatefrompng($data['tmp_name']);
+        }
+
+        if (in_array($extension, ['jpg', 'jpeg'])) {
+            $source = imagecreatefromjpeg($data['tmp_name']);
         }
 
         return $source;
