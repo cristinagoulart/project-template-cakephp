@@ -56,8 +56,8 @@ final class Service
             $defaultOptions = Configure::read('Avatar.options.' . $classType);
             $options = array_merge($defaultOptions, $options);
             $source = $this->getAvatarSource($classType, $options);
-
             $image = $source->get();
+
             if (!empty($image)) {
                 return $image;
             }
@@ -74,15 +74,13 @@ final class Service
     /**
      * Initiate class object base on its name
      *
-     * @param string $name of the class
+     * @param string $class name
      * @param array $options if any required
      *
      * @return \App\Avatar\AvatarInterface $instance of the class
      */
-    public function getAvatarSource($name, $options)
+    public function getAvatarSource($class, $options)
     {
-        $class = __NAMESPACE__ . '\\Type\\' . $name;
-
         if (class_exists($class)) {
             $instance = new $class($options);
         }
