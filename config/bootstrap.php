@@ -48,6 +48,7 @@ use App\Event\Controller\Api\ViewActionListener;
 use App\Event\Model\LookupListener;
 use App\Event\Plugin\CsvMigrations\Controller\BatchActionListener;
 use App\Event\Plugin\CsvMigrations\FieldHandlers\MagicDefaultValueListener;
+use App\Event\Plugin\CsvMigrations\Model\DatabaseListsListener;
 use App\Event\Plugin\Menu\View\MenuListener;
 use App\Event\Plugin\Search\Model\ChildListItemsListener;
 use App\Event\Plugin\Search\Model\ReportsListener;
@@ -261,6 +262,7 @@ EventManager::instance()->on(new AddActionListener());
 EventManager::instance()->on(new BatchActionListener());
 EventManager::instance()->on(new EditActionListener());
 EventManager::instance()->on(new ChildListItemsListener());
+EventManager::instance()->on(new DatabaseListsListener());
 EventManager::instance()->on(new IndexActionListener());
 // @link https://github.com/burzum/cakephp-file-storage/blob/master/docs/Documentation/Included-Event-Listeners.md
 EventManager::instance()->on(new LocalListener([
