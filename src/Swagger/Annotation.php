@@ -77,7 +77,7 @@ class Annotation
         'definition' => '/**
             @SWG\Definition(
                 definition="{{definition}}",
-                required={"{{required}}"},
+                required={{required}},
                 {{properties}}
             )
          */',
@@ -506,7 +506,7 @@ class Annotation
 
         $placeholders = [
             '{{definition}}' => Inflector::singularize($this->className),
-            '{{required}}' => implode(',', $required),
+            '{{required}}' => json_encode($required, JSON_FORCE_OBJECT),
             '{{properties}}' => (string)$properties
         ];
 
