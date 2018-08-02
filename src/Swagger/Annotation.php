@@ -21,7 +21,7 @@ class Annotation
      *
      * @var string
      */
-    protected $content = null;
+    protected $content = '';
 
     /**
      * Supported property types.
@@ -252,9 +252,19 @@ class Annotation
      */
     public function getContent()
     {
-        if (empty($this->content)) {
-            $this->generateContent();
+        if ('' !== trim($this->content)) {
+            return $this->content;
         }
+
+        $pattern = '/(^class\s)/im';
+        $replacement = [$this->getInfo(), $this->getDefinition($this->getProperties()), $this->getPaths()];
+        $replacement = implode("\n", $replacement) . "\n$1";
+        $content = file_get_contents($this->path);
+
+        $content = preg_replace($pattern, $replacement, $content);
+        $content = trim($content);
+
+        $this->setContent($content);
 
         return $this->content;
     }
@@ -268,28 +278,6 @@ class Annotation
     public function setContent($content)
     {
         $this->content = $content;
-    }
-
-    /**
-     * Method that generates and sets swagger annotation content.
-     *
-     * @return void
-     */
-    protected function generateContent()
-    {
-        $result = file_get_contents($this->path);
-
-        $info = $this->getInfo();
-
-        $properties = $this->getProperties();
-
-        $definition = $this->getDefinition($properties);
-
-        $paths = $this->getPaths();
-
-        $result = preg_replace('/(^class\s)/im', implode("\n", [$info, $definition, $paths]) . "\n$1", $result);
-
-        $this->setContent(trim($result));
     }
 
     /**
