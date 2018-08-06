@@ -5,30 +5,25 @@ use Cake\Core\App;
 use Cake\Database\Exception;
 use Cake\I18n\Time;
 use Cake\ORM\TableRegistry;
+use Cake\Routing\Router;
 use Cake\Utility\Inflector;
 use Cake\Utility\Text;
+use CsvMigrations\FieldHandlers\Config\ListConfig;
+use CsvMigrations\FieldHandlers\CsvField;
+use CsvMigrations\FieldHandlers\FieldHandlerFactory;
+use CsvMigrations\FieldHandlers\Provider\SelectOptions\ListSelectOptions;
+use Qobo\Utils\ModuleConfig\ConfigType;
+use Qobo\Utils\ModuleConfig\ModuleConfig;
 use Qobo\Utils\Utility;
 
 class Annotation
 {
     /**
-     * Default property type
-     */
-    const DEFAULT_TYPE = 'string';
-
-    /**
      * Annotation content.
      *
      * @var string
      */
-    protected $content = null;
-
-    /**
-     * Supported property types.
-     *
-     * @var array
-     */
-    protected $supportedTypes = ['uuid', 'string', 'text', 'boolean', 'datetime', 'date', 'time', 'decimal', 'integer'];
+    protected $content = '';
 
     /**
      * Class name to generate annotations for.
@@ -77,7 +72,7 @@ class Annotation
         'definition' => '/**
             @SWG\Definition(
                 definition="{{definition}}",
-                required={"{{required}}"},
+                required={{required}},
                 {{properties}}
             )
          */',
@@ -252,11 +247,21 @@ class Annotation
      */
     public function getContent()
     {
-        if (empty($this->content)) {
-            $this->generateContent();
+        if ('' !== trim($this->content)) {
+            return $this->content;
         }
 
-        return $this->content;
+        $pattern = '/(^class\s)/im';
+        $replacement = [$this->getInfo(), $this->getDefinition($this->getProperties()), $this->getPaths()];
+        $replacement = implode("\n", $replacement) . "\n$1";
+        $content = file_get_contents($this->path);
+
+        $content = preg_replace($pattern, $replacement, $content);
+        $content = trim($content);
+
+        $this->setContent($content);
+
+        return $content;
     }
 
     /**
@@ -268,28 +273,6 @@ class Annotation
     public function setContent($content)
     {
         $this->content = $content;
-    }
-
-    /**
-     * Method that generates and sets swagger annotation content.
-     *
-     * @return void
-     */
-    protected function generateContent()
-    {
-        $result = file_get_contents($this->path);
-
-        $info = $this->getInfo();
-
-        $properties = $this->getProperties();
-
-        $definition = $this->getDefinition($properties);
-
-        $paths = $this->getPaths();
-
-        $result = preg_replace('/(^class\s)/im', implode("\n", [$info, $definition, $paths]) . "\n$1", $result);
-
-        $this->setContent(trim($result));
     }
 
     /**
@@ -326,22 +309,11 @@ class Annotation
      */
     protected function getProperties()
     {
-        $table = TableRegistry::get($this->className);
-
-        $entity = $table->newEntity();
-        $hiddenProperties = $entity->hiddenProperties();
-        try {
-            $columns = $table->schema()->columns();
-            $columns = array_diff($columns, $hiddenProperties);
-        } catch (Exception $e) {
-            return '';
-        }
-
         $result = [];
-        foreach ($columns as $column) {
+        foreach ($this->getModuleFields() as $conf) {
             $placeholders = [
-                '{{property}}' => $column,
-                '{{options}}' => $this->getPropertyOptionsAsString($column, $table->schema()->getColumn($column))
+                '{{property}}' => $conf['db_field']->getName(),
+                '{{options}}' => $this->getPropertyOptionsAsString($conf)
             ];
 
             $result[] = str_replace(
@@ -355,16 +327,37 @@ class Annotation
     }
 
     /**
+     * Module fields getter.
+     *
+     * @return array
+     */
+    private function getModuleFields()
+    {
+        $factory = new FieldHandlerFactory();
+        $table = TableRegistry::getTableLocator()->get($this->className);
+        $config = (new ModuleConfig(ConfigType::MIGRATION(), $this->className))->parse();
+
+        $result = [];
+        foreach ($config as $column) {
+            $csvField = new CsvField((array)$column);
+            foreach ($factory->fieldToDb(new CsvField((array)$column), $table) as $field) {
+                $result[] = ['field' => $csvField, 'db_field' => $field];
+            }
+        }
+
+        return $result;
+    }
+
+    /**
      * Returns property options as stirng.
      *
-     * @param string $column Column name
-     * @param array $data Column data
+     * @param array $conf Field conf
      * @return string
      */
-    protected function getPropertyOptionsAsString($column, array $data)
+    protected function getPropertyOptionsAsString(array $conf)
     {
         $result = [];
-        foreach ($this->getPropertyOptions($column, $data['type']) as $key => $value) {
+        foreach ($this->getPropertyOptions($conf) as $key => $value) {
             switch (gettype($value)) {
                 case 'boolean':
                     $value = $value ? 'true' : 'false';
@@ -373,61 +366,63 @@ class Annotation
                 case 'string':
                     $value = '"' . $value . '"';
                     break;
+
+                case 'array':
+                    $value = json_encode($value, JSON_FORCE_OBJECT);
+                    break;
+
+                default:
+                    $value = '"' . $value . '"';
             }
 
             $result[] = sprintf('%s=%s', $key, $value);
         }
 
-        return implode(',', $result);
+        return implode(",\n\t\t", $result);
     }
 
     /**
      * Returns property options.
      *
-     * @param string $column Column name
-     * @param string $type Column data
+     * @param array $conf Field conf
      * @return array
      */
-    protected function getPropertyOptions($column, $type)
+    protected function getPropertyOptions(array $conf)
     {
-        $type = in_array($type, $this->supportedTypes) ? $type : static::DEFAULT_TYPE;
+        $type = $conf['field']->getType();
+        if (in_array($conf['field']->getType(), ['money', 'metric'])) {
+            $type = 'string' === $conf['db_field']->getType() ? 'list' : $conf['db_field']->getType();
+        }
 
         $result = [];
         switch ($type) {
             case 'uuid':
-                $result = [
-                    'type' => 'string',
-                    'format' => 'uuid',
-                    'example' => Text::uuid()
-                ];
+                $result = ['type' => 'string', 'format' => 'uuid', 'description' => 'UUID', 'example' => Text::uuid()];
                 break;
 
-            case 'string':
+            case 'related':
+            case 'files':
+            case 'images':
                 $result = [
-                    'type' => 'string',
-                    'format' => 'string',
-                    'example' => 'Lorem ipsum'
+                    'type' => 'string', 'format' => 'uuid', 'description' => 'UUID (related)', 'example' => Text::uuid()
                 ];
                 break;
 
             case 'text':
                 $result = [
                     'type' => 'string',
-                    'format' => 'string',
+                    'format' => 'text',
                     'example' => 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod ' .
                         'tempor incididunt ut labore et dolore magna aliqua.'
                 ];
                 break;
 
             case 'boolean':
-                $result = [
-                    'type' => 'boolean',
-                    'format' => 'boolean',
-                    'example' => true
-                ];
+                $result = ['type' => 'boolean', 'format' => 'boolean', 'example' => true];
                 break;
 
             case 'datetime':
+            case 'reminder':
                 $result = [
                     'type' => 'string',
                     'format' => 'date-time',
@@ -436,19 +431,11 @@ class Annotation
                 break;
 
             case 'date':
-                $result = [
-                    'type' => 'string',
-                    'format' => 'date',
-                    'example' => Time::now()->i18nFormat('yyyy-MM-dd')
-                ];
+                $result = ['type' => 'string', 'format' => 'date', 'example' => Time::now()->i18nFormat('yyyy-MM-dd')];
                 break;
 
             case 'time':
-                $result = [
-                    'type' => 'string',
-                    'format' => 'time',
-                    'example' => Time::now()->i18nFormat('HH:mm:ss')
-                ];
+                $result = ['type' => 'string', 'format' => 'time', 'example' => Time::now()->i18nFormat('HH:mm:ss')];
                 break;
 
             case 'decimal':
@@ -460,15 +447,88 @@ class Annotation
                 break;
 
             case 'integer':
+                $result = ['type' => 'integer', 'format' => 'integer', 'example' => mt_rand()];
+                break;
+
+            case 'list':
+            case 'sublist':
+                $options = $this->getList($conf['field']->getLimit());
+                $options = array_keys($options);
                 $result = [
-                    'type' => 'integer',
-                    'format' => 'integer',
-                    'example' => mt_rand()
+                    'type' => 'string',
+                    'format' => 'list',
+                    'example' => $options[array_rand($options)],
+                    'enum' => $options
                 ];
                 break;
+
+            case 'dblist':
+                $options = $this->getDatabaseList($conf['field']->getLimit());
+                $options = array_keys($options);
+                $result = [
+                    'type' => 'string',
+                    'format' => 'list',
+                    'example' => $options[array_rand($options)],
+                    'enum' => $options
+                ];
+                break;
+
+            case 'email':
+                $result = ['type' => 'string', 'format' => 'email', 'example' => str_shuffle('abcdef') . '@qobo.biz'];
+                break;
+
+            case 'phone':
+                $result = [
+                    'type' => 'string', 'format' => 'phone', 'example' => '+357-' . (string)rand(95000000, 99999999)
+                ];
+                break;
+
+            case 'url':
+                $result = ['type' => 'string', 'format' => 'url', 'example' => Router::url('/', true) . uniqid()];
+                break;
+
+            case 'blob':
+                $result = [
+                    'type' => 'string',
+                    'format' => 'blob',
+                    'example' => 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeCAYAAAA7MK6iAAAAK0lEQV' .
+                        'R42u3NMQEAAAQAMA79wwhIDI6twLKqJw6kWCwWi8VisVgsFov/xgt4rjQnLeKjCAAAAABJRU5ErkJggg=='
+                ];
+                break;
+
+            case 'string':
+            default:
+                $result = ['type' => 'string', 'format' => 'string', 'example' => 'Lorem ipsum'];
         }
 
         return $result;
+    }
+
+    /**
+     * File based list getter.
+     *
+     * @param string $listName List name
+     * @return array
+     */
+    private function getList($listName)
+    {
+        $provider = new ListSelectOptions(new ListConfig($listName));
+        $options = $provider->provide($listName, ['flatten' => true, 'filter' => true]);
+
+        return $options;
+    }
+
+    /**
+     * Database list getter.
+     *
+     * @param string $listName List name
+     * @return array
+     */
+    private function getDatabaseList($listName)
+    {
+        $table = TableRegistry::getTableLocator()->get('CsvMigrations.Dblists');
+
+        return $table->find('options', ['name' => $listName])->toArray();
     }
 
     /**
@@ -484,7 +544,7 @@ class Annotation
     protected function getDefinition($properties)
     {
         $result = null;
-        $table = TableRegistry::get($this->className);
+        $table = TableRegistry::getTableLocator()->get($this->className);
 
         $entity = $table->newEntity();
         $hiddenProperties = $entity->hiddenProperties();
@@ -506,7 +566,7 @@ class Annotation
 
         $placeholders = [
             '{{definition}}' => Inflector::singularize($this->className),
-            '{{required}}' => implode(',', $required),
+            '{{required}}' => json_encode($required, JSON_FORCE_OBJECT),
             '{{properties}}' => (string)$properties
         ];
 
@@ -531,7 +591,7 @@ class Annotation
     protected function getPaths()
     {
         $result = null;
-        $table = TableRegistry::get($this->className);
+        $table = TableRegistry::getTableLocator()->get($this->className);
 
         $entity = $table->newEntity();
         $hiddenProperties = $entity->hiddenProperties();
