@@ -3,6 +3,7 @@ namespace App\Swagger;
 
 use Cake\Core\App;
 use Cake\Database\Exception;
+use Cake\Database\Type;
 use Cake\I18n\Time;
 use Cake\ORM\TableRegistry;
 use Cake\Routing\Router;
@@ -309,11 +310,16 @@ class Annotation
      */
     protected function getProperties()
     {
+        $columns = $this->getColumnsFromConfig();
+        if (empty($columns)) {
+            $columns = $this->getColumnsFromSchema();
+        }
+
         $result = [];
-        foreach ($this->getModuleFields() as $conf) {
+        foreach ($columns as $column) {
             $placeholders = [
-                '{{property}}' => $conf['db_field']->getName(),
-                '{{options}}' => $this->getPropertyOptionsAsString($conf)
+                '{{property}}' => $column['db_field']->getName(),
+                '{{options}}' => $this->getPropertyOptionsAsString($column)
             ];
 
             $result[] = str_replace(
@@ -327,11 +333,11 @@ class Annotation
     }
 
     /**
-     * Module fields getter.
+     * Retrieve column definitions from module configuration.
      *
      * @return array
      */
-    private function getModuleFields()
+    private function getColumnsFromConfig()
     {
         $factory = new FieldHandlerFactory();
         $table = TableRegistry::getTableLocator()->get($this->className);
@@ -341,6 +347,39 @@ class Annotation
         foreach ($config as $column) {
             $csvField = new CsvField((array)$column);
             foreach ($factory->fieldToDb(new CsvField((array)$column), $table) as $field) {
+                $result[] = ['field' => $csvField, 'db_field' => $field];
+            }
+        }
+
+        return $result;
+    }
+
+    /**
+     * Retrieve column definitions from table schema.
+     *
+     * @return array
+     */
+    private function getColumnsFromSchema()
+    {
+        $factory = new FieldHandlerFactory();
+        $table = TableRegistry::getTableLocator()->get($this->className);
+        $columns = array_diff($table->getSchema()->columns(), $table->newEntity()->hiddenProperties());
+        foreach ($columns as $column) {
+            $type = $table->getSchema()->getColumnType($column);
+            // handle custom database types
+            if (false === strpos(Type::map($type), 'Cake\\Database\\Type\\')) {
+                $type = 'string';
+            }
+            $column = [
+                'name' => $column,
+                'type' => $type,
+                'required' => ! $table->getSchema()->isNullable($column),
+                'non-searchable' => null,
+                'unique' => null
+            ];
+
+            $csvField = new CsvField($column);
+            foreach ($factory->fieldToDb(new CsvField($column), $table) as $field) {
                 $result[] = ['field' => $csvField, 'db_field' => $field];
             }
         }
