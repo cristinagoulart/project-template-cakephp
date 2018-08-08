@@ -57,7 +57,8 @@ Router::scope('/', function ($routes) {
      */
     $routes->connect('/', ['plugin' => 'Search', 'controller' => 'Dashboards', 'action' => 'index']);
 
-    $routes->connect('/users/', ['plugin' => 'CakeDC/Users', 'controller' => 'Users', 'action' => 'index']);
+    $routes->connect('/users/', ['controller' => 'Users', 'action' => 'index']);
+    $routes->connect('/users/index', ['controller' => 'Users', 'action' => 'index']);
     $routes->connect('/users/change-user-password/*', ['controller' => 'Users', 'action' => 'changeUserPassword']);
     $routes->connect('/users/upload-image/*', ['controller' => 'Users', 'action' => 'uploadImage']);
     $routes->connect('/users/edit-profile/*', ['controller' => 'Users', 'action' => 'editProfile']);
