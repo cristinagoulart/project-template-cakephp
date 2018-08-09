@@ -3,8 +3,10 @@ namespace App\Controller;
 
 use App\Avatar\Service as AvatarService;
 use App\Controller\AppController;
-use CakeDC\Users\Controller\Traits\CustomUsersTableTrait;
-use CakeDC\Users\Exception\UserNotActiveException;
+use CakeDC\Users\Controller\Traits\LoginTrait;
+use CakeDC\Users\Controller\Traits\PasswordManagementTrait;
+use CakeDC\Users\Controller\Traits\ProfileTrait;
+use CakeDC\Users\Controller\Traits\SimpleCrudTrait;
 use CakeDC\Users\Exception\UserNotFoundException;
 use CakeDC\Users\Exception\WrongPasswordException;
 use Cake\Core\Configure;
@@ -18,7 +20,11 @@ use Exception;
  */
 class UsersController extends AppController
 {
-    use CustomUsersTableTrait;
+    // Use any of traits provided by CakeDC to extend the provided functionality
+    use LoginTrait;
+    use PasswordManagementTrait;
+    use ProfileTrait;
+    use SimpleCrudTrait;
 
     /**
      * changeUserPassword method
@@ -32,7 +38,7 @@ class UsersController extends AppController
     {
         $user = $this->getUsersTable()->newEntity();
         $user->id = $id;
-        $redirect = ['plugin' => 'CakeDC/Users', 'controller' => 'Users', 'action' => 'index'];
+        $redirect = ['controller' => 'Users', 'action' => 'index'];
 
         if ($this->request->is('post')) {
             try {

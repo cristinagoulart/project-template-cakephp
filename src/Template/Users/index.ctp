@@ -34,7 +34,7 @@ echo $this->Html->scriptBlock(
                 <div class="btn-group btn-group-sm" role="group">
                     <?= $this->Html->link(
                         '<i class="fa fa-plus"></i> ' . __('Add'),
-                        ['plugin' => 'CakeDC/Users', 'controller' => 'Users', 'action' => 'add'],
+                        ['controller' => 'Users', 'action' => 'add'],
                         ['escape' => false, 'title' => __('Add'), 'class' => 'btn btn-default']
                     ); ?>
                 </div>
@@ -81,12 +81,12 @@ echo $this->Html->scriptBlock(
                             <div class="btn-group btn-group-xs" role="group">
                                 <?= $this->Html->link(
                                     '<i class="fa fa-eye"></i>',
-                                    ['plugin' => 'CakeDC/Users', 'controller' => 'Users', 'action' => 'view', $user->id],
+                                    ['controller' => 'Users', 'action' => 'view', $user->id],
                                     ['title' => __('View'), 'class' => 'btn btn-default btn-sm', 'escape' => false]
                                 ); ?>
                                 <?= $this->Html->link(
                                     '<i class="fa fa-pencil"></i>',
-                                    ['plugin' => 'CakeDC/Users', 'controller' => 'Users', 'action' => 'edit', $user->id],
+                                    ['controller' => 'Users', 'action' => 'edit', $user->id],
                                     ['title' => __('Edit'), 'class' => 'btn btn-default btn-sm', 'escape' => false]
                                 ); ?>
                                 <?= $this->Html->link(
@@ -96,7 +96,7 @@ echo $this->Html->scriptBlock(
                                 ) ?>
                                 <?= $this->Form->postLink(
                                     '<i class="fa fa-trash"></i>',
-                                    ['plugin' => 'CakeDC/Users', 'controller' => 'Users', 'action' => 'delete', $user->id],
+                                    ['controller' => 'Users', 'action' => 'delete', $user->id],
                                     [
                                         'confirm' => __('Are you sure you want to delete # {0}?', $user->id),
                                         'title' => __('Delete'),

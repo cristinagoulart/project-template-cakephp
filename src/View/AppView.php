@@ -35,5 +35,6 @@ class AppView extends View
         $this->loadHelper('Form', ['className' => 'AdminLTE.Form']);
         $this->loadHelper('HtmlEmail');
         $this->loadHelper('SystemInfo');
+        $this->loadHelper('CakeDC/Users.User');
     }
 }

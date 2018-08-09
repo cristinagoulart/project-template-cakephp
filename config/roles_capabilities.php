@@ -16,7 +16,26 @@ return [
             'skipActions' => [
                 'App\Controller\SystemController' => [
                     'error',
-                ]
+                ],
+                'App\Controller\UsersController' => [
+                    'changePassword',
+                    'failedSocialLogin',
+                    'failedSocialLoginListener',
+                    'getUsersTable',
+                    'login',
+                    'logout',
+                    'register',
+                    'requestResetPassword',
+                    'resendTokenValidation',
+                    'resetPassword',
+                    'setUsersTable',
+                    'socialEmail',
+                    'socialLogin',
+                    'twitterLogin',
+                    'validate',
+                    'validateEmail',
+                    'validateReCaptcha',
+                ],
             ],
         ],
     ]

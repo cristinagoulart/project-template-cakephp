@@ -2,6 +2,8 @@
 
 return [
     'Users.table' => 'Users',
+    // Controller used to manage users plugin features & actions
+    'controller' => 'Users',
     'Users.GoogleAuthenticator.login' => false,
     // disable remember-me functionality because currently it affects google authenticator functionality:
     // https://github.com/CakeDC/users/issues/488
