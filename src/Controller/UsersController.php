@@ -4,8 +4,8 @@ namespace App\Controller;
 use App\Avatar\Service as AvatarService;
 use App\Controller\AppController;
 use CakeDC\Users\Controller\Traits\LoginTrait;
-use CakeDC\Users\Controller\Traits\PasswordManagementTrait;
 use CakeDC\Users\Controller\Traits\ProfileTrait;
+use CakeDC\Users\Controller\Traits\RegisterTrait;
 use CakeDC\Users\Controller\Traits\SimpleCrudTrait;
 use CakeDC\Users\Exception\UserNotFoundException;
 use CakeDC\Users\Exception\WrongPasswordException;
@@ -22,8 +22,8 @@ class UsersController extends AppController
 {
     // Use any of traits provided by CakeDC to extend the provided functionality
     use LoginTrait;
-    use PasswordManagementTrait;
     use ProfileTrait;
+    use RegisterTrait;
     use SimpleCrudTrait;
 
     /**
