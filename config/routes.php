@@ -57,10 +57,7 @@ Router::scope('/', function ($routes) {
      */
     $routes->connect('/', ['plugin' => 'Search', 'controller' => 'Dashboards', 'action' => 'index']);
 
-    $routes->connect('/users/:action/*', ['controller' => 'Users']);
-    $routes->connect('/users/change-user-password/*', ['controller' => 'Users', 'action' => 'changeUserPassword']);
-    $routes->connect('/users/upload-image/*', ['controller' => 'Users', 'action' => 'uploadImage']);
-    $routes->connect('/users/edit-profile/*', ['controller' => 'Users', 'action' => 'editProfile']);
+    $routes->connect('/users/:action/*', ['controller' => 'Users'], ['routeClass' => 'DashedRoute']);
     $routes->connect('/profile/*', ['controller' => 'Users', 'action' => 'profile']);
     $routes->connect('/login', ['controller' => 'Users', 'action' => 'login']);
     $routes->connect('/logout', ['controller' => 'Users', 'action' => 'logout']);
