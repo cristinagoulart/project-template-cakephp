@@ -151,6 +151,7 @@ class UsersControllerTest extends IntegrationTestCase
 
     public function testChangeUserPassword()
     {
+        $this->enableSecurityToken();
         $this->enableCsrfToken();
         $data = [
             'password' => 'cakephp',
@@ -168,6 +169,7 @@ class UsersControllerTest extends IntegrationTestCase
 
     public function testChangeUserPasswordWithoutSession()
     {
+        $this->enableSecurityToken();
         $this->enableCsrfToken();
         $data = [
             'password' => 'cakephp',
@@ -183,6 +185,7 @@ class UsersControllerTest extends IntegrationTestCase
 
     public function testChangeUserPasswordWithInvalidData()
     {
+        $this->enableSecurityToken();
         $this->enableCsrfToken();
         $this->enableRetainFlashMessages();
         $data = [
@@ -211,7 +214,6 @@ class UsersControllerTest extends IntegrationTestCase
 
     public function testAdd()
     {
-        $this->markTestSkipped('Fails on Travis CI with this message: The request has been black-holed');
         $this->enableCsrfToken();
         $this->enableSecurityToken();
         $this->withSession();
@@ -236,7 +238,6 @@ class UsersControllerTest extends IntegrationTestCase
 
     public function testAddWithInvalidData()
     {
-        $this->markTestSkipped('Fails on Travis CI with this message: The request has been black-holed');
         $this->enableCsrfToken();
         $this->enableSecurityToken();
         $this->withSession();
@@ -271,7 +272,6 @@ class UsersControllerTest extends IntegrationTestCase
 
     public function testEdit()
     {
-        $this->markTestSkipped('Fails on Travis CI with this message: The request has been black-holed');
         $this->enableCsrfToken();
         $this->enableSecurityToken();
         $this->withSession();
@@ -290,7 +290,6 @@ class UsersControllerTest extends IntegrationTestCase
 
     public function testEditWithInvalidData()
     {
-        $this->markTestSkipped('Fails on Travis CI with this message: The request has been black-holed');
         $this->enableCsrfToken();
         $this->enableSecurityToken();
         $this->withSession();
@@ -323,7 +322,6 @@ class UsersControllerTest extends IntegrationTestCase
 
     public function testDelete()
     {
-        $this->markTestSkipped('Fails on Travis CI: asserting that the query is empty does not validate to true');
         $this->enableCsrfToken();
         $this->enableSecurityToken();
         $this->withSession();
