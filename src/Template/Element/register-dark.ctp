@@ -1,15 +1,14 @@
-<?php
-use Cake\Core\Configure;
-?>
+<?php use Cake\Core\Configure; ?>
 <?= $this->Form->create($user); ?>
 <fieldset>
+    <legend><?= __d('CakeDC/Users', 'Registration') ?></legend>
     <?= $this->Form->input('username', ['placeholder' => 'Username', 'required' => true, 'label' => false]); ?>
     <?= $this->Form->input('email', ['placeholder' => 'Email', 'required' => true, 'label' => false]); ?>
     <?= $this->Form->input('password', ['placeholder' => 'Password', 'required' => true, 'label' => false]); ?>
     <?= $this->Form->input('password_confirm', ['type' => 'password', 'placeholder' => 'Confirm password', 'required' => true, 'label' => false]); ?>
     <?= $this->Form->input('first_name', ['placeholder' => 'First name', 'label' => false]); ?>
     <?= $this->Form->input('last_name', ['placeholder' => 'Last name', 'label' => false]); ?>
-    <?php if (!Configure::read('Users.Tos.required')) : ?>
+    <?php if (!(bool)Configure::read('Users.Tos.required')) : ?>
         <div class="form-group">
         <?php
             $label = $this->Form->label('tos', __d('Users', 'Accept TOS conditions?'));
@@ -26,7 +25,7 @@ use Cake\Core\Configure;
         </div>
     <?php endif; ?>
     <?php
-    if (Configure::read('Users.Registration.reCaptcha') && Configure::read('Users.reCaptcha.registration')) {
+    if ((bool)Configure::read('Users.Registration.reCaptcha') && (bool)Configure::read('Users.reCaptcha.registration')) {
         echo $this->User->addReCaptcha();
     }
     ?>

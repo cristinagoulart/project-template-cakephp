@@ -1,5 +1,6 @@
 <?= $this->Form->create('User') ?>
 <fieldset>
+    <legend><?= __d('CakeDC/Users', 'Reset password') ?></legend>
     <div class="form-group">
         <div class="input-group">
             <span class="input-group-addon">
