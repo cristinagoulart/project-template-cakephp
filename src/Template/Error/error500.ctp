@@ -11,6 +11,13 @@ if (Configure::read('debug')) {
     $this->assign('title', $message);
     $this->assign('templateName', 'error500.ctp');
 
+    if ($error instanceof ParseError) {
+        $this->assign(
+                'subheading',
+                sprintf('%s in %s on line %d', $error->getMessage(), $error->getFile(), $error->getLine())
+        );
+    }
+
     $this->start('file');
 ?>
 <?php if (!empty($error->queryString)) : ?>
@@ -26,9 +33,7 @@ if (Configure::read('debug')) {
 <?php
     echo $this->element('auto_table_warning');
 
-    if (extension_loaded('xdebug')):
-        xdebug_print_function_stack();
-    endif;
+//
 
     $this->end();
 }
@@ -39,10 +44,10 @@ if (Configure::read('debug')) {
             <div class="box-header with-border">
                 <h3 class="box-title">
                     <i class="fa fa-exclamation-triangle" aria-hidden="true"></i>
-                    <?= __d('cake', 'Error') ?> <?= h($code) ?>: <?= h($message) ?>
+                    <?= __d('cake', 'Error') ?> <?= h($code) ?>: <?= h($message) ?> at
                 </h3>
             </div>
-            <div class="box-body">
+            <div cok colass="box-body">
                 <?php echo 'There was a problem processing your request.  Please notify your system administrator.'; ?>
             </div>
             <div class="box-footer">
