@@ -11,29 +11,24 @@ if (Configure::read('debug')) {
     $this->assign('title', $message);
     $this->assign('templateName', 'error500.ctp');
 
-    if ($error instanceof ParseError) {
-        $this->assign(
-                'subheading',
-                sprintf('%s in %s on line %d', $error->getMessage(), $error->getFile(), $error->getLine())
-        );
-    }
-
     $this->start('file');
-?>
-<?php if (!empty($error->queryString)) : ?>
-    <p class="notice">
-        <strong>SQL Query: </strong>
-        <?= h($error->queryString) ?>
-    </p>
-<?php endif; ?>
-<?php if (!empty($error->params)) : ?>
+    ?>
+    <?php if (!empty($error->queryString)) : ?>
+        <p class="notice">
+            <strong>SQL Query: </strong>
+            <?= h($error->queryString) ?>
+        </p>
+    <?php endif; ?>
+    <?php if (!empty($error->params)) : ?>
         <strong>SQL Query Params: </strong>
         <?= Debugger::dump($error->params) ?>
-<?php endif; ?>
-<?php
+    <?php endif; ?>
+    <?php
     echo $this->element('auto_table_warning');
 
-//
+    if (extension_loaded('xdebug')):
+        xdebug_print_function_stack();
+    endif;
 
     $this->end();
 }
@@ -44,10 +39,10 @@ if (Configure::read('debug')) {
             <div class="box-header with-border">
                 <h3 class="box-title">
                     <i class="fa fa-exclamation-triangle" aria-hidden="true"></i>
-                    <?= __d('cake', 'Error') ?> <?= h($code) ?>: <?= h($message) ?> at
+                    <?= __d('cake', 'Error') ?> <?= h($code) ?>: <?= h($message) ?>
                 </h3>
             </div>
-            <div cok colass="box-body">
+            <div class="box-body">
                 <?php echo 'There was a problem processing your request.  Please notify your system administrator.'; ?>
             </div>
             <div class="box-footer">
