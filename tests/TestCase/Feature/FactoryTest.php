@@ -52,6 +52,5 @@ class FactoryTest extends TestCase
         $features = Factory::getList();
         $this->assertTrue(is_array($features));
         $this->assertEmpty($features);
-
     }
 }
