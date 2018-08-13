@@ -32,6 +32,9 @@ class ModuleMenuListener implements EventListenerInterface
 
     /**
      * @inheritdoc
+     *
+     * @return array associative array or event key names pointing to the function
+     * that should be called in the object when the respective event is fired
      */
     public function implementedEvents()
     {

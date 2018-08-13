@@ -38,6 +38,7 @@ class AccessMenuListener implements EventListenerInterface
      * @param array $user Current user
      * @param bool $fullBaseUrl Flag for fullbase url on menu links
      * @param array $modules Modules to fetch menu items for
+     * @param MenuInterface|null $menu Menu object to be updated
      * @return void
      */
     public function getMenuItems(Event $event, $name, array $user, $fullBaseUrl = false, array $modules = [], MenuInterface $menu = null)
@@ -57,6 +58,7 @@ class AccessMenuListener implements EventListenerInterface
      *
      * @param MenuItemContainerInterface $container Starting menu container
      * @param array $user Current user
+     * @return void
      */
     private function disableUnauthorisedItems(MenuItemContainerInterface $container, array $user)
     {
