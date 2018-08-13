@@ -8,7 +8,7 @@
     <?= $this->Form->input('password_confirm', ['type' => 'password', 'placeholder' => 'Confirm password', 'required' => true, 'label' => false]); ?>
     <?= $this->Form->input('first_name', ['placeholder' => 'First name', 'label' => false]); ?>
     <?= $this->Form->input('last_name', ['placeholder' => 'Last name', 'label' => false]); ?>
-    <?php if (!(bool)Configure::read('Users.Tos.required')) : ?>
+    <?php if ((bool)Configure::read('Users.Tos.required')) : ?>
         <div class="form-group">
         <?php
             $label = $this->Form->label('tos', __d('Users', 'Accept TOS conditions?'));

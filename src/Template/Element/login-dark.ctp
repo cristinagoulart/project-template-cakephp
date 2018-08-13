@@ -62,7 +62,7 @@ if (!(bool)Configure::read('Ldap.enabled')) {
     echo $this->Html->link(__d('users', 'I forgot my password'), ['action' => 'requestResetPassword']);
 }
 
-if ((bool)Configure::read('Users.resendValidationEmail.active')) {
+if ((bool)Configure::read('Users.Email.validate')) {
     echo $this->Html->link(__d('users', 'Resend Activation Email'), [
         'controller' => 'Users',
         'action' => 'resendTokenValidation'
