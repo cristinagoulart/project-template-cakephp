@@ -4,8 +4,8 @@ namespace App\Test\TestCase\Feature;
 use App\Feature\Factory;
 use App\Feature\FeatureInterface;
 use App\Feature\Type\BaseFeature;
-use Cake\TestSuite\TestCase;
 use Cake\Core\Configure;
+use Cake\TestSuite\TestCase;
 
 /**
  * App\Feature\Factory Test Case
