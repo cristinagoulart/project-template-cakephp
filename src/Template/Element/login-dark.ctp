@@ -3,6 +3,7 @@ use Cake\Core\Configure;
 ?>
 <?= $this->Form->create() ?>
 <fieldset>
+    <legend><?= __d('CakeDC/Users', 'Login') ?></legend>
     <div class="form-group">
         <div class="input-group">
             <span class="input-group-addon">
@@ -57,10 +58,20 @@ use Cake\Core\Configure;
 <?= implode(' ', $this->User->socialLoginList()); ?>
 <?= $this->Form->end() ?>
 <?php
-if (Configure::read('Users.Email.required') && !(bool)Configure::read('Ldap.enabled')) {
-    echo $this->Html->link(__d('users', 'I forgot my password'), ['action' => 'requestResetPassword']) . '<br />';
+if (!(bool)Configure::read('Ldap.enabled')) {
+    echo $this->Html->link(__d('users', 'I forgot my password'), ['action' => 'requestResetPassword']);
 }
-if (Configure::read('Users.Registration.active')) {
+
+if ((bool)Configure::read('Users.Email.validate')) {
+    echo $this->Html->link(__d('users', 'Resend Activation Email'), [
+        'controller' => 'Users',
+        'action' => 'resendTokenValidation'
+        ], ['class' => 'pull-right']
+    );
+}
+
+if ((bool)Configure::read('Users.Registration.active')) {
+    echo '<hr />';
     echo $this->Html->link(__d('users', 'Register a new membership'), ['action' => 'register']);
 }
 ?>

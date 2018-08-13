@@ -1,6 +1,6 @@
-<?= $this->Form->create('User') ?>
+<?= $this->Form->create($user); ?>
 <fieldset>
-    <legend><?= __d('CakeDC/Users', 'Reset password') ?></legend>
+    <legend><?= __d('CakeDC/Users', 'Resend Validation Email') ?></legend>
     <div class="form-group">
         <div class="input-group">
             <span class="input-group-addon">
@@ -9,7 +9,7 @@
             <?= $this->Form->input('reference', [
                 'required' => true,
                 'label' => false,
-                'placeholder' => 'Username',
+                'placeholder' => 'Email',
                 'templates' => [
                     'inputContainer' => '{{content}}'
                 ]
@@ -20,7 +20,7 @@
         <div class="col-xs-8 col-xs-offset-2 col-sm-6 col-sm-offset-3 col-md-4 col-md-offset-4">
             <?= $this->Form->button(
                 '<span class="glyphicon glyphicon-envelope" aria-hidden="true"></span> ' . __d('Users', 'Submit'),
-                ['class' => 'btn btn-primary btn-block btn-flat']
+                ['class' => 'btn btn-primary btn-block']
             ); ?>
         </div>
     </div>
