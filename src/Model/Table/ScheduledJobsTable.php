@@ -5,8 +5,8 @@ use Cake\Datasource\EntityInterface;
 use Cake\Event\Event;
 use Cake\Event\EventManager;
 use Cake\Filesystem\Folder;
-use Cake\Log\Log;
 use Cake\I18n\Time;
+use Cake\Log\Log;
 use Cake\ORM\Table;
 use Cake\Utility\Inflector;
 use CsvMigrations\Event\EventName;
@@ -129,7 +129,7 @@ class ScheduledJobsTable extends AppTable
         $dir = Inflector::camelize(Inflector::pluralize($type));
         $suffix = Inflector::camelize(Inflector::singularize($type));
 
-        $path = dirname(dirname(dirname(__FILE__))) . DS . 'ScheduledJobs' . DS . $dir . DS;
+        $path = APP . 'ScheduledJobs' . DS . $dir . DS;
         $path = $path . $handlerName . $suffix . '.php';
 
         if (file_exists($path)) {
@@ -175,7 +175,7 @@ class ScheduledJobsTable extends AppTable
         $result = $handlers = [];
 
         $namespace = 'App\\ScheduledJobs\\Handlers\\';
-        $path = dirname(dirname(dirname(__FILE__))) . DS . 'ScheduledJobs' . DS . 'Handlers';
+        $path = APP . 'ScheduledJobs' . DS . 'Handlers';
 
         $handlers = $this->scanDir($path);
 
