@@ -55,7 +55,7 @@ class CronShell extends Shell
         $this->ScheduledJobs = TableRegistry::get('ScheduledJobs');
         $this->ScheduledJobLogs = TableRegistry::get('ScheduledJobLogs');
 
-        $jobs = $this->ScheduledJobs->getActiveJobs();
+        $jobs = $this->ScheduledJobs->getJobs(true);
 
         if (empty($jobs)) {
             $this->info("No active Scheduled Tasks found.  Nothing to do.");
