@@ -5,6 +5,7 @@ use Cake\Datasource\EntityInterface;
 use Cake\Event\Event;
 use Cake\Event\EventManager;
 use Cake\Filesystem\Folder;
+use Cake\Log\Log;
 use Cake\I18n\Time;
 use Cake\ORM\Table;
 use Cake\Utility\Inflector;
@@ -186,7 +187,7 @@ class ScheduledJobsTable extends AppTable
 
                 $result = array_merge($result, $object->getList());
             } catch (RuntimeException $e) {
-                pr($e->getMessage());
+                Log::warning($e->getMessage());
             }
         }
 
