@@ -15,5 +15,6 @@ return [
         'CakeDC/Users.ApiKey',
         // 'CakeDC/Users.RememberMe',
         'Form',
-    ]
+    ],
+    'Users.resendValidationEmail.active' => false,
 ];
