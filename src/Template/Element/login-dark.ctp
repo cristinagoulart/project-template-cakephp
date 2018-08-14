@@ -63,7 +63,7 @@ if (!(bool)Configure::read('Ldap.enabled')) {
 }
 
 if ((bool)Configure::read('Users.Email.validate')) {
-    echo $this->Html->link(__d('users', 'Resend Activation Email'), [
+    echo $this->Html->link(__d('users', 'Resend validation email'), [
         'controller' => 'Users',
         'action' => 'resendTokenValidation'
         ], ['class' => 'pull-right']
