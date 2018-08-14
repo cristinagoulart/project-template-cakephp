@@ -350,10 +350,11 @@ class UsersControllerTest extends IntegrationTestCase
         $this->enableCsrfToken();
         $this->enableSecurityToken();
 
-        $this->delete('/users/delete/' . $this->userId);
+        $userId = '00000000-0000-0000-0000-000000000001';
+        $this->delete('/users/delete/' . $userId);
         $this->assertRedirect();
 
-        $query = $this->table->find()->where(['id' => $this->userId]);
+        $query = $this->table->find()->where(['id' => $userId]);
         $this->assertFalse($query->isEmpty());
     }
 }
