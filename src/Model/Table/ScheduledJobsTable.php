@@ -203,7 +203,7 @@ class ScheduledJobsTable extends AppTable
 
                 $result = array_merge($result, $object->getList());
             } catch (RuntimeException $e) {
-                Log::warning($e->getMessage());
+                Log::error($e->getMessage());
             }
         }
 
