@@ -94,16 +94,18 @@ echo $this->Html->scriptBlock(
                                     ['action' => 'change-user-password', $user->id],
                                     ['title' => __('Change User Password'), 'class' => 'btn btn-default btn-sm', 'escape' => false]
                                 ) ?>
-                                <?= $this->Form->postLink(
-                                    '<i class="fa fa-trash"></i>',
-                                    ['controller' => 'Users', 'action' => 'delete', $user->id],
-                                    [
-                                        'confirm' => __('Are you sure you want to delete # {0}?', $user->id),
-                                        'title' => __('Delete'),
-                                        'class' => 'btn btn-default btn-sm',
-                                        'escape' => false
-                                    ]
-                                ) ?>
+                                <?php if (!in_array($user->username, $lockedUsers)): ?>
+                                    <?= $this->Form->postLink(
+                                        '<i class="fa fa-trash"></i>',
+                                        ['controller' => 'Users', 'action' => 'delete', $user->id],
+                                        [
+                                            'confirm' => __('Are you sure you want to delete # {0}?', $user->id),
+                                            'title' => __('Delete'),
+                                            'class' => 'btn btn-default btn-sm',
+                                            'escape' => false,
+                                        ]
+                                    ) ?>
+                                <?php endif; ?>
                             </div>
                         </td>
                     </tr>

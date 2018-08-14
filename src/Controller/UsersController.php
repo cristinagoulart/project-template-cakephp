@@ -10,6 +10,7 @@ use CakeDC\Users\Controller\Traits\SimpleCrudTrait;
 use CakeDC\Users\Exception\UserNotFoundException;
 use CakeDC\Users\Exception\WrongPasswordException;
 use Cake\Core\Configure;
+use Cake\Network\Exception\ForbiddenException;
 use Cake\Network\Exception\UnauthorizedException;
 use Cake\ORM\TableRegistry;
 use Cake\Validation\Validator;
@@ -24,7 +25,9 @@ class UsersController extends AppController
     use LoginTrait;
     use ProfileTrait;
     use RegisterTrait;
-    use SimpleCrudTrait;
+    use SimpleCrudTrait {
+        SimpleCrudTrait::delete as defaultDelete;
+    }
 
     /**
      * changeUserPassword method
@@ -165,6 +168,7 @@ class UsersController extends AppController
         $tableAlias = $table->alias();
         $users = $table->find()->all();
         $this->set($tableAlias, $users);
+        $this->set('lockedUsers', $this->getLockedUsers());
         $this->set('tableAlias', $tableAlias);
         $this->set('_serialize', [$tableAlias, 'tableAlias']);
     }
@@ -198,6 +202,28 @@ class UsersController extends AppController
     }
 
     /**
+     * Delete method
+     *
+     * @param string|null $id User id.
+     * @return void
+     * @throws ForbiddenException When user is locked.
+     */
+    public function delete($id = null)
+    {
+        $table = $this->loadModel();
+        $entity = $table->get($id, [
+            'contain' => []
+        ]);
+
+        $username = $entity->get('username');
+        if (in_array($username, $this->getLockedUsers())) {
+            throw new ForbiddenException();
+        }
+
+        $this->defaultDelete($id);
+    }
+
+    /**
      * Allow/Prevent page rendering in iframe. In case of embed query param exists we allow iframe
      *
      * @return void
@@ -207,5 +233,18 @@ class UsersController extends AppController
         if (empty($this->request->query['embed'])) {
             parent::_setIframeRendering();
         }
+    }
+
+    /**
+     * Returns an array including the usernames of the currently locked users.
+     *
+     * @return array List of locked users
+     */
+    private function getLockedUsers()
+    {
+        return [
+            $this->Auth->user('username'),
+            getenv('DEV_USER')
+        ];
     }
 }
