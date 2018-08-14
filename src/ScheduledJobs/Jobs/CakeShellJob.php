@@ -1,9 +1,9 @@
 <?php
 namespace App\ScheduledJobs\Jobs;
 
-use App\ScheduledJobs\Jobs\JobInterface;
+use App\ScheduledJobs\Jobs\AbstractShellJob;
 
-class CakeShellJob implements JobInterface
+class CakeShellJob extends AbstractShellJob
 {
     protected $operator = './bin/cake';
 

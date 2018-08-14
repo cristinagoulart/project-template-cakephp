@@ -2,6 +2,7 @@
 namespace App\Shell;
 
 use App\Feature\Factory as FeatureFactory;
+use App\Model\Table\ScheduledJobsTable;
 use Cake\Console\Shell;
 use Cake\I18n\Time;
 use Cake\Log\Log;
@@ -10,6 +11,7 @@ use Cake\ORM\TableRegistry;
 use Qobo\Utils\Utility\Lock\FileLock;
 use \DateTime;
 use \Exception;
+use \RRule\RRule;
 use \RuntimeException;
 
 /**
@@ -55,7 +57,7 @@ class CronShell extends Shell
         $this->ScheduledJobs = TableRegistry::get('ScheduledJobs');
         $this->ScheduledJobLogs = TableRegistry::get('ScheduledJobLogs');
 
-        $jobs = $this->ScheduledJobs->getActiveJobs();
+        $jobs = $this->ScheduledJobs->getJobs(ScheduledJobsTable::JOB_ACTIVE);
 
         if (empty($jobs)) {
             $this->info("No active Scheduled Tasks found.  Nothing to do.");
@@ -66,8 +68,12 @@ class CronShell extends Shell
         $now = Time::now();
 
         foreach ($jobs as $entity) {
+            $shouldRun = false;
+
             $rrule = $this->ScheduledJobs->getRRule($entity);
-            $shouldRun = $this->ScheduledJobs->timeToInvoke($now, $rrule);
+            if ($rrule instanceof RRule) {
+                $shouldRun = $this->ScheduledJobs->timeToInvoke($now, $rrule);
+            }
 
             if (!$shouldRun) {
                 $this->verbose("Skipping Scheduled Task [{$entity->name}]");

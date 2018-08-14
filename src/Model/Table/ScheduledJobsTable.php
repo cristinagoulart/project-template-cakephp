@@ -6,6 +6,7 @@ use Cake\Event\Event;
 use Cake\Event\EventManager;
 use Cake\Filesystem\Folder;
 use Cake\I18n\Time;
+use Cake\Log\Log;
 use Cake\ORM\Table;
 use Cake\Utility\Inflector;
 use CsvMigrations\Event\EventName;
@@ -16,6 +17,8 @@ use RuntimeException;
 
 class ScheduledJobsTable extends AppTable
 {
+    const JOB_ACTIVE = 1;
+
     /**
      * Initialize method
      *
@@ -83,23 +86,37 @@ class ScheduledJobsTable extends AppTable
     /**
      * Get Activated Job records
      *
+     * @deprecated v39.10 Please use getJobs() method instead
+     *
      * @return array $result containing record entities.
      */
     public function getActiveJobs()
     {
+        return $this->getJobs(self::JOB_ACTIVE);
+    }
+
+    /**
+     * Find Scheduled Jobs base on its `active` state
+     *
+     * @param int $state of the instance
+     *
+     * @return \Cake\ORM\ResultSet $result entities
+     */
+    public function getJobs($state = self::JOB_ACTIVE)
+    {
         $result = [];
 
+        $state = (bool)$state;
+
         $query = $this->find()
-            ->where(['active' => 1])
+            ->where(['active' => $state])
             ->order(['priority' => 'ASC']);
 
-        $entities = $query->all();
-
-        if (empty($entities)) {
+        if (!$query->count()) {
             return $result;
         }
 
-        $result = $entities;
+        $result = $query->all();
 
         return $result;
     }
@@ -128,7 +145,7 @@ class ScheduledJobsTable extends AppTable
         $dir = Inflector::camelize(Inflector::pluralize($type));
         $suffix = Inflector::camelize(Inflector::singularize($type));
 
-        $path = dirname(dirname(dirname(__FILE__))) . DS . 'ScheduledJobs' . DS . $dir . DS;
+        $path = APP . 'ScheduledJobs' . DS . $dir . DS;
         $path = $path . $handlerName . $suffix . '.php';
 
         if (file_exists($path)) {
@@ -174,7 +191,7 @@ class ScheduledJobsTable extends AppTable
         $result = $handlers = [];
 
         $namespace = 'App\\ScheduledJobs\\Handlers\\';
-        $path = dirname(dirname(dirname(__FILE__))) . DS . 'ScheduledJobs' . DS . 'Handlers';
+        $path = APP . 'ScheduledJobs' . DS . 'Handlers';
 
         $handlers = $this->scanDir($path);
 
@@ -186,7 +203,7 @@ class ScheduledJobsTable extends AppTable
 
                 $result = array_merge($result, $object->getList());
             } catch (RuntimeException $e) {
-                pr($e->getMessage());
+                Log::error($e->getMessage());
             }
         }
 
