@@ -66,7 +66,7 @@ class ScheduledJobsTableTest extends TestCase
 
     public function testGetJobs()
     {
-        $result = $this->ScheduledJobsTable->getJobs(false);
+        $result = $this->ScheduledJobsTable->getJobs(0);
         $this->assertEquals($result, []);
 
         $result = $this->ScheduledJobsTable->getJobs(3);
