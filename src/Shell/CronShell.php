@@ -66,8 +66,12 @@ class CronShell extends Shell
         $now = Time::now();
 
         foreach ($jobs as $entity) {
+            $shouldRun = false;
+
             $rrule = $this->ScheduledJobs->getRRule($entity);
-            $shouldRun = $this->ScheduledJobs->timeToInvoke($now, $rrule);
+            if ($rrule instanceof \RRule\RRule) {
+                $shouldRun = $this->ScheduledJobs->timeToInvoke($now, $rrule);
+            }
 
             if (!$shouldRun) {
                 $this->verbose("Skipping Scheduled Task [{$entity->name}]");

@@ -88,7 +88,7 @@ class ScheduledJobsFixture extends TestFixture
             'name' => 'Test Job',
             'job' => 'CakeShell::App:foobar',
             'options' => '',
-            'recurrence' => 'FREQ=HOURLY;INTERVAL=1',
+            'recurrence' => null,
             'active' => 1,
             'priority' => 100,
             'start_date' => null,
