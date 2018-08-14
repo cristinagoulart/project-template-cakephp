@@ -64,6 +64,15 @@ class ScheduledJobsTableTest extends TestCase
         $this->assertInstanceOf('\Cake\ORM\ResultSet', $result);
     }
 
+    public function testGetJobs()
+    {
+        $result = $this->ScheduledJobsTable->getJobs(0);
+        $this->assertEquals($result, []);
+
+        $result = $this->ScheduledJobsTable->getJobs(3);
+        $this->assertNotEmpty($result);
+    }
+
     public function testGetInstance()
     {
         $result = $this->ScheduledJobsTable->getInstance();
