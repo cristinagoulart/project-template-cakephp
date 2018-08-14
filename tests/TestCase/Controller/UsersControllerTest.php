@@ -320,17 +320,28 @@ class UsersControllerTest extends IntegrationTestCase
         $this->assertEquals($entity, $this->table->get($this->userId));
     }
 
-    public function testDelete()
+    public function testDeleteAnyUser()
+    {
+        $this->enableCsrfToken();
+        $this->enableSecurityToken();
+        $this->withSession();
+
+        $userId = '00000000-0000-0000-0000-000000000001';
+        $this->delete('/users/delete/' . $userId);
+        $this->assertRedirect();
+
+        $query = $this->table->find()->where(['id' => $userId]);
+        $this->assertTrue($query->isEmpty());
+    }
+
+    public function testDeleteSameUser()
     {
         $this->enableCsrfToken();
         $this->enableSecurityToken();
         $this->withSession();
 
         $this->delete('/users/delete/' . $this->userId);
-        $this->assertRedirect();
-
-        $query = $this->table->find()->where(['id' => $this->userId]);
-        $this->assertTrue($query->isEmpty());
+        $this->assertResponseError();
     }
 
     public function testDeleteWithoutSession()
