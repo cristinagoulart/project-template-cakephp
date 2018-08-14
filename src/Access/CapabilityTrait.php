@@ -4,6 +4,7 @@ namespace App\Access;
 
 use Cake\Core\Configure;
 use Cake\Routing\Router;
+use InvalidArgumentException;
 use RolesCapabilities\CapabilityTrait as DefaultCapabilityTrait;
 
 /**
@@ -34,7 +35,7 @@ trait CapabilityTrait
         } elseif (is_string($url)) {
             $stringUrl = $url;
         } else {
-            throw new \InvalidArgumentException();
+            throw new InvalidArgumentException();
         }
 
         foreach ((array)Configure::read('Menu.routes.blacklist') as $route) {
