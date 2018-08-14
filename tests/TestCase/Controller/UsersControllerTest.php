@@ -3,6 +3,7 @@ namespace App\Test\TestCase\Controller;
 
 use App\Controller\DblistsController;
 use Cake\Core\Configure;
+use Cake\Network\Exception\ForbiddenException;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\IntegrationTestCase;
 
@@ -340,10 +341,13 @@ class UsersControllerTest extends IntegrationTestCase
         $this->enableSecurityToken();
         $this->withSession();
 
-        $this->disableErrorHandlerMiddleware();
-        $this->delete('/users/delete/' . $this->userId);
-        $this->assertResponseError();
-        $this->assertResponseCode(403);
+        try {
+            $this->disableErrorHandlerMiddleware();
+            $this->delete('/users/delete/' . $this->userId);
+            $this->fail('Expected ForbiddenException');
+        } catch (ForbiddenException $e) {
+            $this->assertTrue(true);
+        }
     }
 
     public function testDeleteWithoutSession()
