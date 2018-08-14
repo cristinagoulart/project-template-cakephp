@@ -23,7 +23,7 @@ class ModuleMenuListener implements EventListenerInterface
     protected $defaults = [
         'url' => '#',
         'label' => 'Undefined',
-        'icon' => 'circle-o',
+        'icon' => 'cube',
         'order' => 0,
         'target' => '_self',
         'children' => [],
