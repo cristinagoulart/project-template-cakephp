@@ -3,15 +3,11 @@
 namespace App\Event\Plugin\Menu\View;
 
 use App\Access\CapabilityTrait;
-use Cake\Core\Configure;
 use Cake\Event\Event;
 use Cake\Event\EventListenerInterface;
-use Cake\ORM\TableRegistry;
-use Groups\Model\Table\GroupsTable;
 use Menu\Event\EventName as MenuEventName;
 use Menu\MenuBuilder\Menu;
 use Menu\MenuBuilder\MenuInterface;
-use RolesCapabilities\Model\Table\CapabilitiesTable;
 
 class ApplicationMenuListener implements EventListenerInterface
 {
@@ -50,24 +46,11 @@ class ApplicationMenuListener implements EventListenerInterface
             return;
         }
 
-        // Ugly hack to hide admin menu from non superusers
-        if ($name == MENU_ADMIN) {
-            $isSuperuser = false && $user['is_superuser'];
+        // Only administrators can access the admin menu
+        if ($name === MENU_ADMIN && !$user['is_admin']) {
+            $event->stopPropagation();
 
-            /** @var CapabilitiesTable $capabilities */
-            $capabilities = TableRegistry::get('RolesCapabilities.Capabilities');
-            $userGroups = $capabilities->getUserGroups($user['id']);
-            $userRoles = $capabilities->getGroupsRoles($userGroups);
-            $isAdmin = in_array(Configure::read('RolesCapabilities.Roles.Admin.name'), $userRoles);
-
-            // User can have access to admin menu only and only if
-            // a) is a superuser
-            // b) belongs to Admins role
-            if (!$isSuperuser && !$isAdmin) {
-                $event->stopPropagation();
-
-                return;
-            }
+            return;
         }
 
         // We are creating the Menu within the listener to be backwards compatible with MenuListener
