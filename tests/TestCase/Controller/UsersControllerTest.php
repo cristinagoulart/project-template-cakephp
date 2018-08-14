@@ -340,6 +340,7 @@ class UsersControllerTest extends IntegrationTestCase
         $this->enableSecurityToken();
         $this->withSession();
 
+        $this->disableErrorHandlerMiddleware();
         $this->delete('/users/delete/' . $this->userId);
         $this->assertResponseError();
         $this->assertResponseCode(403);
