@@ -342,6 +342,7 @@ class UsersControllerTest extends IntegrationTestCase
 
         $this->delete('/users/delete/' . $this->userId);
         $this->assertResponseError();
+        $this->assertResponseCode(403);
     }
 
     public function testDeleteWithoutSession()
