@@ -341,13 +341,9 @@ class UsersControllerTest extends IntegrationTestCase
         $this->enableSecurityToken();
         $this->withSession();
 
-        try {
-            $this->disableErrorHandlerMiddleware();
-            $this->delete('/users/delete/' . $this->userId);
-            $this->fail('Expected ForbiddenException');
-        } catch (ForbiddenException $e) {
-            $this->assertTrue(true);
-        }
+        $this->disableErrorHandlerMiddleware();
+        $this->expectException(ForbiddenException::class);
+        $this->delete('/users/delete/' . $this->userId);
     }
 
     public function testDeleteWithoutSession()
