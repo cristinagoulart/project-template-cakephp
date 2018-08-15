@@ -75,7 +75,7 @@ class User extends BaseUser
             $capabilities = TableRegistry::get('RolesCapabilities.Capabilities');
             $userGroups = $capabilities->getUserGroups($this->get('id'));
             $userRoles = $capabilities->getGroupsRoles($userGroups);
-            $isAdmin = in_array(Configure::read('RolesCapabilities.Roles.Admin.name'), $userRoles);
+            $isAdmin = in_array(Configure::readOrFail('RolesCapabilities.Roles.Admin.name'), $userRoles);
 
             return $isAdmin;
         } catch (Exception $e) {
