@@ -18,7 +18,7 @@ echo $this->Html->scriptBlock(
     '$(".table-datatable").DataTable({
         stateSave:true,
         paging:true,
-        searching:true
+        searching:false
     });',
     ['block' => 'scriptBottom']
 );
