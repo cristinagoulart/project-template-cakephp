@@ -111,7 +111,7 @@ echo $this->Html->scriptBlock(
                                         '<i class="fa fa-trash"></i>',
                                         ['controller' => 'Users', 'action' => 'delete', $user->id],
                                         [
-                                            'confirm' => __('Are you sure you want to delete # {0}?', $user->id),
+                                            'confirm' => __('Are you sure you want to delete user {0}?', $user->username),
                                             'title' => __('Delete'),
                                             'class' => 'btn btn-default btn-sm',
                                             'escape' => false,
