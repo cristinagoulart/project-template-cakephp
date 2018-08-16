@@ -18,7 +18,7 @@ echo $this->Html->scriptBlock(
     '$(".table-datatable").DataTable({
         stateSave:true,
         paging:true,
-        searching:true
+        searching:false
     });',
     ['block' => 'scriptBottom']
 );
@@ -94,16 +94,30 @@ echo $this->Html->scriptBlock(
                                     ['action' => 'change-user-password', $user->id],
                                     ['title' => __('Change User Password'), 'class' => 'btn btn-default btn-sm', 'escape' => false]
                                 ) ?>
-                                <?= $this->Form->postLink(
-                                    '<i class="fa fa-trash"></i>',
-                                    ['controller' => 'Users', 'action' => 'delete', $user->id],
-                                    [
-                                        'confirm' => __('Are you sure you want to delete # {0}?', $user->id),
-                                        'title' => __('Delete'),
-                                        'class' => 'btn btn-default btn-sm',
-                                        'escape' => false
-                                    ]
-                                ) ?>
+                                <?php if (in_array($user->username, $lockedUsers)): ?>
+                                    <?= $this->Form->postLink(
+                                        '<i class="fa fa-trash"></i>',
+                                        [],
+                                        [
+                                            'title' => __('User can not be deleted'),
+                                            'class' => 'btn btn-default btn-sm',
+                                            'escape' => false,
+                                            'disabled' => true,
+                                            'onClick' => 'return false',
+                                        ]
+                                    ) ?>
+                                <?php else: ?>
+                                    <?= $this->Form->postLink(
+                                        '<i class="fa fa-trash"></i>',
+                                        ['controller' => 'Users', 'action' => 'delete', $user->id],
+                                        [
+                                            'confirm' => __('Are you sure you want to delete user {0}?', $user->username),
+                                            'title' => __('Delete'),
+                                            'class' => 'btn btn-default btn-sm',
+                                            'escape' => false,
+                                        ]
+                                    ) ?>
+                                <?php endif; ?>
                             </div>
                         </td>
                     </tr>

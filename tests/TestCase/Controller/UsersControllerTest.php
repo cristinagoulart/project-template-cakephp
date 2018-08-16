@@ -3,6 +3,7 @@ namespace App\Test\TestCase\Controller;
 
 use App\Controller\DblistsController;
 use Cake\Core\Configure;
+use Cake\Network\Exception\ForbiddenException;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\IntegrationTestCase;
 
@@ -320,17 +321,29 @@ class UsersControllerTest extends IntegrationTestCase
         $this->assertEquals($entity, $this->table->get($this->userId));
     }
 
-    public function testDelete()
+    public function testDeleteAnyUser()
     {
         $this->enableCsrfToken();
         $this->enableSecurityToken();
         $this->withSession();
 
-        $this->delete('/users/delete/' . $this->userId);
+        $userId = '00000000-0000-0000-0000-000000000001';
+        $this->delete('/users/delete/' . $userId);
         $this->assertRedirect();
 
-        $query = $this->table->find()->where(['id' => $this->userId]);
+        $query = $this->table->find()->where(['id' => $userId]);
         $this->assertTrue($query->isEmpty());
+    }
+
+    public function testDeleteSameUser()
+    {
+        $this->enableCsrfToken();
+        $this->enableSecurityToken();
+        $this->withSession();
+
+        $this->disableErrorHandlerMiddleware();
+        $this->expectException(ForbiddenException::class);
+        $this->delete('/users/delete/' . $this->userId);
     }
 
     public function testDeleteWithoutSession()
@@ -338,10 +351,11 @@ class UsersControllerTest extends IntegrationTestCase
         $this->enableCsrfToken();
         $this->enableSecurityToken();
 
-        $this->delete('/users/delete/' . $this->userId);
+        $userId = '00000000-0000-0000-0000-000000000001';
+        $this->delete('/users/delete/' . $userId);
         $this->assertRedirect();
 
-        $query = $this->table->find()->where(['id' => $this->userId]);
+        $query = $this->table->find()->where(['id' => $userId]);
         $this->assertFalse($query->isEmpty());
     }
 }
