@@ -10,6 +10,7 @@ use Menu\Event\EventName as MenuEventName;
 use Menu\MenuBuilder\MenuInterface;
 use Menu\MenuBuilder\MenuItemContainerInterface;
 use Menu\MenuBuilder\MenuItemFactory;
+use Search\Model\Table\DashboardsTable;
 
 class DashboardMenuListener implements EventListenerInterface
 {
@@ -40,7 +41,7 @@ class DashboardMenuListener implements EventListenerInterface
     public function getMenuItems(Event $event, $name, array $user, $fullBaseUrl = false, array $modules = [], MenuInterface $menu = null)
     {
         if ($name === MENU_MAIN && empty($modules)) {
-            $this->addDashboardItems($menu);
+            $this->addDashboardItems($menu, $user);
             $event->setResult($menu);
         }
     }
@@ -52,7 +53,7 @@ class DashboardMenuListener implements EventListenerInterface
      * @param MenuInterface $menu The menu to add the created dashboard menu items.
      * @return void
      */
-    private function addDashboardItems(MenuInterface $menu)
+    private function addDashboardItems(MenuInterface $menu, array $user)
     {
         $link = MenuItemFactory::createMenuItem([
             'label' => 'Dashboard',
@@ -69,7 +70,7 @@ class DashboardMenuListener implements EventListenerInterface
         ]);
         $link->addMenuItem($createLink);
 
-        $this->addDashboardItemsFromTable($link, 10);
+        $this->addDashboardItemsFromTable($link, $user, 10);
     }
 
     /**
@@ -80,10 +81,11 @@ class DashboardMenuListener implements EventListenerInterface
      * @param int $startAt Starting order position
      * @return void
      */
-    private function addDashboardItemsFromTable(MenuItemContainerInterface $container, $startAt)
+    private function addDashboardItemsFromTable(MenuItemContainerInterface $container, array $user, $startAt)
     {
+        /** @var DashboardsTable $table */
         $table = TableRegistry::get('Search.Dashboards');
-        $query = $table->find('all')->order(['name' => 'ASC']);
+        $query = $table->getUserDashboards($user);
 
         /**
          * @var int $i
