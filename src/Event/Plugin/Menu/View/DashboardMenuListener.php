@@ -10,7 +10,6 @@ use Menu\Event\EventName as MenuEventName;
 use Menu\MenuBuilder\MenuInterface;
 use Menu\MenuBuilder\MenuItemContainerInterface;
 use Menu\MenuBuilder\MenuItemFactory;
-use Search\Model\Table\DashboardsTable;
 
 class DashboardMenuListener implements EventListenerInterface
 {
@@ -83,7 +82,6 @@ class DashboardMenuListener implements EventListenerInterface
      */
     private function addDashboardItemsFromTable(MenuItemContainerInterface $container, array $user, $startAt)
     {
-        /** @var DashboardsTable $table */
         $table = TableRegistry::get('Search.Dashboards');
         $query = $table->getUserDashboards($user);
 
