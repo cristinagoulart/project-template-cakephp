@@ -46,13 +46,11 @@ class ApplicationMenuListener implements EventListenerInterface
             return;
         }
 
-        // Ugly hack to hide admin menu from non superusers
-        if ($name == MENU_ADMIN) {
-            if (!$user['is_superuser']) {
-                $event->stopPropagation();
+        // Only administrators can access the admin menu
+        if ($name === MENU_ADMIN && !$user['is_admin']) {
+            $event->stopPropagation();
 
-                return;
-            }
+            return;
         }
 
         // We are creating the Menu within the listener to be backwards compatible with MenuListener
