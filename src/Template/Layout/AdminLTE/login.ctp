@@ -1,7 +1,7 @@
 <?php
 use Cake\Core\Configure;
 
-$this->Html->css('login-' . (string)(Configure::read('Theme.version') ?: 'light'), ['block' => 'css']);
+$this->Html->css('login', ['block' => 'css']);
 
 $skinUrl = Configure::read('Theme.skinUrl');
 $skinName = Configure::read('Theme.skin');
