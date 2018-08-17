@@ -54,9 +54,9 @@ class UpgradeFileTask extends BakeTask
         parent::main();
 
         $timestamp = Time::now();
-        // @NOTE: adding HH:mm to timestamp to avoid overwriting
+        // @NOTE: adding HH:mm:ss to timestamp to avoid overwriting
         // multiple upgrade files in the same date
-        $timestamp = $timestamp->i18nFormat('yyyyMMddHHmm');
+        $timestamp = $timestamp->i18nFormat('yyyyMMddHHmmss');
 
         $filename = 'Upgrade' . $timestamp . 'Task.php';
         $data = [
