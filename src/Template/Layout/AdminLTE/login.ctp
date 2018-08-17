@@ -1,7 +1,8 @@
 <?php
 use Cake\Core\Configure;
+use Cake\Filesystem\Folder;
 
-$this->Html->css('login-' . (string)(Configure::read('Theme.version') ?: 'light'), ['block' => 'css']);
+$this->Html->css('login', ['block' => 'css']);
 
 $skinUrl = Configure::read('Theme.skinUrl');
 $skinName = Configure::read('Theme.skin');
@@ -33,9 +34,15 @@ $skinName = Configure::read('Theme.skin');
     </head>
     <body class="hold-transition skin-<?php echo Configure::read('Theme.skin'); ?> login-page">
         <?php
-        if ('dark' == Configure::read('Theme.version')) {
-            echo $this->element('background-image-dark');
-        }
+            $path = '/img/login/' . (string)Configure::read('Theme.backgroundImages') . '/';
+            $images = (new Folder(WWW_ROOT . $path))->find('.*\.png|jpg|jpeg', true);
+
+            if (! empty($images)) {
+                echo $this->Html->tag('style', sprintf(
+                    '.login-page {%s}',
+                    $this->Html->style(['background-image' => 'url(' . $path . '/' . $images[array_rand($images)] . ')'])
+                ));
+            }
         ?>
         <div class="login-box">
             <div class="login-logo">
