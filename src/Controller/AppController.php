@@ -34,7 +34,9 @@ use Qobo\Utils\ModuleConfig\ModuleConfig;
 use RolesCapabilities\Access\AccessFactory;
 use RolesCapabilities\Capability;
 use RolesCapabilities\CapabilityTrait;
+use RuntimeException;
 use Search\Controller\SearchTrait;
+use Search\Model\Entity\SavedSearch;
 use Search\Utility as SearchUtility;
 use Search\Utility\Search;
 use Search\Utility\Validator as SearchValidator;
@@ -151,12 +153,7 @@ class AppController extends Controller
      */
     public function index()
     {
-        $table = TableRegistry::getTableLocator()->get('Search.SavedSearches');
-
-        $entity = $table->find()
-            ->where(['SavedSearches.model' => $this->name, 'SavedSearches.system' => true])
-            ->firstOrFail();
-
+        $entity = $this->getSystemSearch();
         $searchData = json_decode($entity->content, true);
 
         // return json response and skip any further processing.
@@ -184,6 +181,56 @@ class AppController extends Controller
         ]);
 
         $this->render('/Module/index');
+    }
+
+    /**
+     * System search getter.
+     *
+     * @return \Search\Model\Entity\SavedSearch
+     */
+    private function getSystemSearch()
+    {
+        $table = TableRegistry::getTableLocator()->get('Search.SavedSearches');
+
+        $entity = $table->find()
+            ->where(['SavedSearches.model' => $this->name, 'SavedSearches.system' => true])
+            ->first();
+
+        if ($entity instanceof SavedSearch) {
+            return $entity;
+        }
+
+        return $this->createSystemSearch();
+    }
+
+    /**
+     * Creates system search for provided module.
+     *
+     * @return \Search\Model\Entity\SavedSearch
+     * @throws \RuntimeException when failed to create system search
+     */
+    private function createSystemSearch()
+    {
+        $table = TableRegistry::getTableLocator()->get('Search.SavedSearches');
+        $user = TableRegistry::getTableLocator()->get('CakeDC/Users.Users')
+            ->find()
+            ->where(['is_superuser' => true])
+            ->firstOrFail()
+            ->toArray();
+
+        $id = (new Search($this->{$this->name}, $user))->create(['system' => true]);
+
+        $entity = $table->get($id);
+        $entity = $table->patchEntity($entity, [
+            'name' => sprintf('Default %s search', Inflector::humanize(Inflector::underscore($this->name))),
+            'system' => true
+        ]);
+
+        if (! $table->save($entity)) {
+            throw new RuntimeException(sprintf('Failed to create "%s" system search', $this->name));
+        }
+
+        return $entity;
     }
 
     /**

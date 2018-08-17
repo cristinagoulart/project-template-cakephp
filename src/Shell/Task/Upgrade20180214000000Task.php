@@ -14,7 +14,7 @@ use RuntimeException;
 /**
  *  This class is responsible for handling migration of INI/CSV configurations to JSON.
  */
-class Upgrade20180214Task extends Shell
+class Upgrade20180214000000Task extends Shell
 {
     const EXTENSION = 'json';
 

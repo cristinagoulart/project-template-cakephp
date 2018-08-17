@@ -7,7 +7,7 @@ use Cake\Console\Shell;
 use Cake\Core\Configure;
 use Cake\ORM\TableRegistry;
 
-class Upgrade201807260843Task extends Shell
+class Upgrade20180726084300Task extends Shell
 {
     /**
      * Manage the available sub-commands along with their arguments and help

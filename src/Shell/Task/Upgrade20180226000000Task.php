@@ -15,7 +15,7 @@ use stdClass;
  *  This class is responsible for migrating many-to-many relations to standalone Modules
  *  and getting rid of "manyToMany" section from the Module(s) config.json file.
  */
-class Upgrade20180226Task extends Shell
+class Upgrade20180226000000Task extends Shell
 {
     /**
      * Tasks to be loaded by this Task
