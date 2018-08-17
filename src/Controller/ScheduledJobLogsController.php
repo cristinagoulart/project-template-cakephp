@@ -1,6 +1,8 @@
 <?php
 namespace App\Controller;
 
+use Cake\Datasource\Exception\RecordNotFoundException;
+use Cake\Validation\Validation;
 use CsvMigrations\Controller\AppController as BaseController;
 
 /**
@@ -33,10 +35,17 @@ class ScheduledJobLogsController extends BaseController
             ->where([$this->{$this->name}->getPrimaryKey() => $id])
             ->first();
 
-        if (empty($entity)) {
+        if (empty($entity) && ! Validation::uuid($id)) {
             $entity = $this->{$this->name}->find()
                 ->applyOptions(['lookup' => true, 'value' => $id])
                 ->firstOrFail();
+        }
+
+        if (empty($entity)) {
+            throw new RecordNotFoundException(sprintf(
+                'Record not found in table "%s"',
+                $this->{$this->name}->getTable()
+            ));
         }
 
         $this->set('entity', $entity);

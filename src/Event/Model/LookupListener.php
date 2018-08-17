@@ -54,6 +54,12 @@ class LookupListener implements EventListenerInterface
 
         $config = (new ModuleConfig(ConfigType::MODULE(), $event->getSubject()->getAlias()))->parse();
         if (empty($config->table->lookup_fields)) {
+            // fail-safe binding of primary key to query's where clause, if lookup
+            // fields are not defined, to avoid random record retrieval.
+            $query->where([
+                $event->getSubject()->aliasField($event->getSubject()->getPrimaryKey()) => $options['value']
+            ]);
+
             return;
         }
 
