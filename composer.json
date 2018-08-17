@@ -25,6 +25,7 @@
     },
     "require": {
         "aws/aws-sdk-php": "^3.52",
+        "brainmaestro/composer-git-hooks": "^2.4",
         "cakephp/migrations": "^1.6",
         "cakephp/plugin-installer": "^1.1",
         "dereuromark/cakephp-databaselog": "^2.1",
@@ -44,7 +45,6 @@
         "vlucas/phpdotenv": "^1.1"
     },
     "require-dev": {
-        "brainmaestro/composer-git-hooks": "^2.4",
         "cakephp/bake": "~1.0",
         "cakephp/cakephp-codesniffer": "^3.0",
         "phpunit/phpunit": "*",
