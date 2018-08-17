@@ -452,4 +452,7 @@ return [
     'Swagger' => [
         'crawl' => (bool)getenv('SWAGGER_CRAWL')
     ],
+    'Whoops' => [
+        'editor' => true
+    ]
 ];
