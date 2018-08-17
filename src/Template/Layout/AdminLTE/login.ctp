@@ -34,7 +34,7 @@ $skinName = Configure::read('Theme.skin');
     </head>
     <body class="hold-transition skin-<?php echo Configure::read('Theme.skin'); ?> login-page">
         <?php
-            $path = '/img/login/qobo/';
+            $path = '/img/login/' . (string)Configure::read('Theme.backgroundImages') . '/';
             $images = (new Folder(WWW_ROOT . $path))->find('.*\.png|jpg|jpeg', true);
 
             if (! empty($images)) {
