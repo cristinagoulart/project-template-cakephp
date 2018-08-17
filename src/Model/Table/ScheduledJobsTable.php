@@ -60,6 +60,8 @@ class ScheduledJobsTable extends AppTable
         if ($entity->isNew()) {
             $entity->set('created_by', $user['id']);
         }
+
+        $entity->start_date = $this->getStartDate($entity->start_date);
     }
 
     /**
@@ -294,5 +296,23 @@ class ScheduledJobsTable extends AppTable
         $rrule = new RRule($config);
 
         return $rrule;
+    }
+
+    /**
+     * Get Start Date right
+     *
+     * Avoid using second in case it might mismatch timeToInvoke() method
+     *
+     * @param mixed $time of the entity
+     *
+     * @return \Cake\I18n\Time with zero-value seconds.
+     */
+    public function getStartDate($time)
+    {
+        if (is_string($time)) {
+            return Time::parse($time)->second(0);
+        }
+
+        return $time->second(0);
     }
 }

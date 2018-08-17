@@ -65,7 +65,7 @@ class CronShell extends Shell
             return true;
         }
 
-        $now = Time::now();
+        $now = $this->ScheduledJobs->getStartDate(Time::now());
 
         foreach ($jobs as $entity) {
             $shouldRun = false;

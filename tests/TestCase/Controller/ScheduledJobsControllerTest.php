@@ -3,6 +3,7 @@ namespace App\Test\TestCase\Controller;
 
 use App\Controller\ScheduledJobsController;
 use App\Feature\Factory;
+use Cake\I18n\Time;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\IntegrationTestCase;
 
@@ -55,13 +56,27 @@ class ScheduledJobsControllerTest extends IntegrationTestCase
         }
 
         $data = [
-            'name' => 'App::Foo:bar test scheduled job'
+            'name' => 'App::Foo:bar test scheduled job',
+            'start_date' => '2018-09-01 15:31:23',
         ];
 
         $this->post('/scheduled-jobs/add', $data);
 
+        $entity = $this->table->find()->where(['name' => $data['name']])->first();
         $this->assertRedirect(['action' => 'index']);
         $this->assertSession('Scheduled Job has been saved.', 'Flash.flash.0.message');
+        $this->assertEquals($this->table->getStartDate($data['start_date']), $entity->start_date);
+
+        $time = Time::now();
+
+        $data = [
+            'name' => 'App::Foo:bar test scheduled job - 2',
+            'start_date' => $time,
+        ];
+
+        $this->post('/scheduled-jobs/add', $data);
+        $entity = $this->table->find()->where(['name' => $data['name']])->first();
+        $this->assertEquals($this->table->getStartDate($data['start_date']), $entity->start_date);
     }
 
     public function testEdit()
@@ -76,14 +91,18 @@ class ScheduledJobsControllerTest extends IntegrationTestCase
 
         $data = [
             'name' => 'Foo Job',
+            'start_date' => '2018-09-01 15:31:23',
         ];
 
         $this->post('/scheduled-jobs/edit/' . $id, $data);
+
+        $entity = $this->table->find()->where(['name' => $id])->first();
 
         $this->assertRedirect(['action' => 'view', $id]);
         $this->assertSession('The record has been saved.', 'Flash.flash.0.message');
 
         $entity = $this->table->get($id);
         $this->assertEquals($entity->get('name'), $data['name']);
+        $this->assertEquals($this->table->getStartDate($data['start_date']), $entity->start_date);
     }
 }
