@@ -17,7 +17,7 @@ use Search\Utility\Search;
 /**
  *  This class is responsible for creating system searches for all system Modules.
  */
-class Upgrade20180404Task extends Shell
+class Upgrade20180404000000Task extends Shell
 {
     /**
      * Configure option parser

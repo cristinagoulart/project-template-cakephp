@@ -4,7 +4,7 @@ namespace App\Shell\Task;
 use Cake\Console\ConsoleOptionParser;
 use Cake\Console\Shell;
 
-class Upgrade20170119Task extends Shell
+class Upgrade20170119000000Task extends Shell
 {
 
     /**

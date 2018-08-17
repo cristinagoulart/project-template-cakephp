@@ -8,32 +8,27 @@ use Cake\Console\Shell;
 use Cake\I18n\Time;
 use Cake\ORM\TableRegistry;
 
-class Upgrade201805111353Task extends Shell
+class Upgrade20180806132300Task extends Shell
 {
     /**
      * @var array $commandsToAdd for default deploy commands
      */
     public $commandsToAdd = [
-        'CakeShell::App:database_log' => [
-            // every 12 hours
-            'recurrence' => 'FREQ=HOURLY;INTERVAL=12',
-            'options' => 'cleanup',
+        'CakeShell::App:avatars_sync' => [
+            'recurrence' => 'FREQ=HOURLY;INTERVAL=1',
         ],
-        'CakeShell::CsvMigrations:import' => [
-            // every 5 minutes
-            'recurrence' => 'FREQ=MINUTELY;INTERVAL=5'
-        ]
     ];
 
     /**
      * Manage the available sub-commands along with their arguments and help
      *
+     * @see http://book.cakephp.org/3.0/en/console-and-shells.html#configuring-options-and-generating-help
      * @return \Cake\Console\ConsoleOptionParser
      */
     public function getOptionParser()
     {
         $parser = new ConsoleOptionParser('console');
-        $parser->setDescription('Adding default scheduled jobs to db, if not added before.');
+        $parser->setDescription('Adding avatars sync scheduled job');
 
         return $parser;
     }
@@ -41,7 +36,7 @@ class Upgrade201805111353Task extends Shell
     /**
      * main() method
      *
-     * @return null
+     * @retun void
      */
     public function main()
     {

@@ -8,7 +8,7 @@ use Cake\Datasource\ConnectionManager;
 /**
  *  Set value of the datetime field in case it allows null and it has value 0000-00-00 00:00:0
  */
-class Upgrade20170316Task extends Shell
+class Upgrade20170316000000Task extends Shell
 {
     /**
      *  Default datetime field name
