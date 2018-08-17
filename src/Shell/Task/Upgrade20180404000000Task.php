@@ -80,9 +80,6 @@ class Upgrade20180404000000Task extends Shell
         }
 
         $config = (new ModuleConfig(ConfigType::MODULE(), $module, null, ['cacheSkip' => true]))->parse();
-        if (! $config->table->searchable) {
-            return false;
-        }
 
         if ('module' !== $config->table->type) {
             return false;
