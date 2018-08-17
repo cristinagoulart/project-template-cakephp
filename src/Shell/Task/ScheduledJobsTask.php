@@ -40,7 +40,7 @@ class ScheduledJobsTask extends Shell
             'name' => sprintf('System [%s] command', $job),
             'job' => $job,
             'active' => true,
-            'start_date' => Time::now()
+            'start_date' => Time::now()->second(0)
         ]));
 
         $saved = (bool)$table->save($entity);
