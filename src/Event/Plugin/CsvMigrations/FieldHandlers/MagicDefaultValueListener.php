@@ -121,7 +121,7 @@ class MagicDefaultValueListener implements EventListenerInterface
      */
     protected function getNextWeekDateValue($fieldHandler = null)
     {
-        return $this->getFutureDateValue($fieldHandler);
+        return $this->getFutureDateValue();
     }
 
     /**
@@ -132,7 +132,7 @@ class MagicDefaultValueListener implements EventListenerInterface
      */
     protected function getNextMonthDateValue($fieldHandler = null)
     {
-        return $this->getFutureDateValue($fieldHandler, 'month');
+        return $this->getFutureDateValue('month');
     }
 
     /**
@@ -143,18 +143,17 @@ class MagicDefaultValueListener implements EventListenerInterface
      */
     protected function getNextYearDateValue($fieldHandler = null)
     {
-        return $this->getFutureDateValue($fieldHandler, 'year');
+        return $this->getFutureDateValue('year');
     }
 
     /**
      * Get future magic value strings
      *
-     * @param object $fieldHandler instance
      * @param string $duration of the next timestamp
      *
      * @return string
      */
-    private function getFutureDateValue($fieldHandler = null, $duration = 'week')
+    private function getFutureDateValue($duration = 'week')
     {
         $duration = strtolower($duration);
 
