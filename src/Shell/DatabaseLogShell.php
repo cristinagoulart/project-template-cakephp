@@ -36,19 +36,10 @@ class DatabaseLogShell extends BaseShell
     public function stats()
     {
         $logLevels = $this->getLogLevels();
+        $statsConfig = $this->getStatsConfig();
 
-        $since = Configure::read('DatabaseLog.stats.period');
-        if (empty($since)) {
-            $this->warn("Missing stats period configuration");
-            $since = '-1 day';
-        }
-        $since = new Time($since);
-
-        $limit = Configure::read('DatabaseLog.stats.limit');
-        if (empty($limit)) {
-            $this->warn("Missing stats limit configuration");
-            $limit = 10;
-        }
+        $since = new Time($statsConfig['period']);
+        $limit = $statsConfig['limit'];
 
         foreach ($logLevels as $logLevel) {
             $logs = $this->getLogStats($logLevel, $since, $limit);
@@ -61,10 +52,34 @@ class DatabaseLogShell extends BaseShell
                 $count = number_format($result['count']);
                 // Thanks to: https://stackoverflow.com/a/9097959/151647
                 $message = strtok($result['message'], "\n");
+                // NOTE: Log grouping in the database is done based on full log
+                //       message, while the printout shows only the first line.
+                //       This might sometimes cause the printout of identical
+                //       messages as separate entries with different counts.
+                //       If there is a reliable way to group by the first line
+                //       of the log message in database, then this can be easily
+                //       fixed.
                 $this->out(sprintf("%5s : %s\n", number_format($count), $message));
             }
             $this->hr();
         }
+    }
+
+    /**
+     * Get stats log configuration
+     *
+     * @return array
+     */
+    protected function getStatsConfig()
+    {
+        $defaultConfig = [
+            'period' => '-1 day',
+            'limit' => 10,
+        ];
+        $statsConfig = Configure::read('DatabaseLog.stats');
+        $result = is_array($statsConfig) ? array_merge($defaultConfig, $statsConfig) : $defaultConfig;
+
+        return $result;
     }
 
     /**
