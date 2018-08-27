@@ -45,6 +45,11 @@ return [
                 'icon' => 'fa fa-wrench bg-gray',
                 'header' => 'bg-gray',
             ],
+        ],
+        // Settings for the log stats shell
+        'stats' => [
+            'period' => '-1 day',
+            'limit' => 10,
         ]
     ]
 ];
