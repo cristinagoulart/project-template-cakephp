@@ -29,6 +29,90 @@ class DatabaseLogShell extends BaseShell
     }
 
     /**
+     * Report stats/summary for logs
+     *
+     * @return void
+     */
+    public function stats()
+    {
+        $logLevels = $this->getLogLevels();
+
+        $since = Configure::read('DatabaseLog.stats.period');
+        if (empty($since)) {
+            $this->warn("Missing stats period configuration");
+            $since = '-1 day';
+        }
+        $since = new Time($since);
+
+        $limit = Configure::read('DatabaseLog.stats.limit');
+        if (empty($limit)) {
+            $this->warn("Missing stats limit configuration");
+            $limit = 10;
+        }
+
+        foreach ($logLevels as $logLevel) {
+            $logs = $this->getLogStats($logLevel, $since, $limit);
+            if ($logs->count() <= 0) {
+                continue;
+            }
+
+            $this->info("Log level: $logLevel");
+            foreach ($logs->toArray() as $result) {
+                $count = number_format($result['count']);
+                // Thanks to: https://stackoverflow.com/a/9097959/151647
+                $message = strtok($result['message'], "\n");
+                $this->out(sprintf("%5s : %s\n", number_format($count), $message));
+            }
+            $this->hr();
+        }
+    }
+
+    /**
+     * Get the list of log levels
+     *
+     * @return array
+     */
+    protected function getLogLevels()
+    {
+        $result = [];
+
+        $logLevels = Configure::read('DatabaseLog.typeStyles');
+        if (empty($logLevels) || !is_array($logLevels)) {
+            $this->abort("Missing log levels configuration");
+        }
+
+        $result = array_keys($logLevels);
+
+        return $result;
+    }
+
+    /**
+     * Get log stats for a given level
+     *
+     * @param string $logLevel Log level (e.g.: error, info, debug)
+     * @param \Cake\I18n\Time $since Time limit (e.g.: -1 day)
+     * @param int $limit Records limit
+     * @return \Cake\ORM\Query
+     */
+    protected function getLogStats($logLevel, $since, $limit)
+    {
+        $query = $this->DatabaseLogs->find();
+        $query = $query->select([
+            'count' => $query->func()->count('*'),
+            'message',
+        ]);
+        $query = $query->where([
+            'type' => $logLevel,
+            'created >= ' => $since
+        ]);
+        $query = $query->group(['message']);
+        $query = $query->order(['count' => 'DESC']);
+        $query = $query->limit($limit);
+
+        return $query;
+    }
+
+    /**
      * @return \Cake\Console\ConsoleOptionParser
      */
     public function getOptionParser()
@@ -37,6 +121,9 @@ class DatabaseLogShell extends BaseShell
 
         $parser->addSubcommand('gc', [
             'help' => 'Garbage collector.',
+        ]);
+        $parser->addSubcommand('stats', [
+            'help' => 'Show log stats',
         ]);
 
         return $parser;
