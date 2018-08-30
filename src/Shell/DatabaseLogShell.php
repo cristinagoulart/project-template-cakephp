@@ -79,6 +79,10 @@ class DatabaseLogShell extends BaseShell
         $statsConfig = Configure::read('DatabaseLog.stats');
         $result = is_array($statsConfig) ? array_merge($defaultConfig, $statsConfig) : $defaultConfig;
 
+        if (isset($this->params['since'])) {
+            $result['period'] = $this->params['since'];
+        }
+
         return $result;
     }
 
@@ -139,6 +143,14 @@ class DatabaseLogShell extends BaseShell
         ]);
         $parser->addSubcommand('stats', [
             'help' => 'Show log stats',
+            'parser' => [
+                'options' => [
+                    'since' => [
+                        'help' => __('Period to be exported. Example "-1 day"'),
+                        'required' => false,
+                    ]
+                ]
+            ],
         ]);
 
         return $parser;
