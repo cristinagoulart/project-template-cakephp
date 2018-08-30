@@ -192,6 +192,43 @@ class LookupActionListener extends BaseActionListener
     }
 
     /**
+     * Get module's virtual fields.
+     *
+     * @param \Cake\Datasource\RepositoryInterface $table Table instance
+     * @return array
+     */
+    protected function _getVirtualFields(RepositoryInterface $table)
+    {
+        $config = (new ModuleConfig(ConfigType::MODULE(), $table->getRegistryAlias()))->parse();
+
+        return $config->virtualFields;
+    }
+
+    /**
+     * Updates the provided list of mixed real and virtual fields, so that the final list includes only real fields.
+     * This is done by taking into consideration the corresponding section in config.json
+     *
+     * @param RepositoryInterface $table Table instance
+     * @param array $fields List of mixed real and virtual fields
+     * @return array
+     */
+    public function extractVirtualFields(RepositoryInterface $table, array $fields)
+    {
+        $virtualFields = $this->_getVirtualFields($table);
+
+        $extractedFields = [];
+        foreach ($fields as $fieldName) {
+            if (isset($virtualFields->{$fieldName})) {
+                $extractedFields = array_merge($extractedFields, $virtualFields->{$fieldName});
+            } else {
+                $extractedFields[] = $fieldName;
+            }
+        }
+
+        return array_unique($extractedFields);
+    }
+
+    /**
      * Get module's type-ahead fields.
      *
      * @param \Cake\Datasource\RepositoryInterface $table Table instance
@@ -205,6 +242,8 @@ class LookupActionListener extends BaseActionListener
             $config->table->typeahead_fields :
             [$table->getDisplayField()];
 
+        // Extract the virtual fields to actual db fields before asking for an alias
+        $fields = $this->extractVirtualFields($table, $fields);
         foreach ($fields as $k => $v) {
             $fields[$k] = $table->aliasField($v);
         }
@@ -224,7 +263,7 @@ class LookupActionListener extends BaseActionListener
     {
         $parentModule = $this->_getParentModule($table);
         if ('' === $parentModule) {
-            return $fields;
+            return $this->extractVirtualFields($table, $fields);
         }
 
         $parentAssociation = null;
@@ -237,7 +276,7 @@ class LookupActionListener extends BaseActionListener
         }
 
         if (is_null($parentAssociation)) {
-            return $fields;
+            return $this->extractVirtualFields($table, $fields);
         }
 
         $targetTable = $parentAssociation->target();
@@ -247,7 +286,7 @@ class LookupActionListener extends BaseActionListener
 
         $fields = $this->_getOrderByFields($targetTable, $query, $fields);
 
-        return $fields;
+        return $this->extractVirtualFields($table, $fields);
     }
 
     /**
