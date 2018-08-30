@@ -146,7 +146,7 @@ class DatabaseLogShell extends BaseShell
             'parser' => [
                 'options' => [
                     'since' => [
-                        'help' => __('Period to be exported i.e. 1 day'),
+                        'help' => __('Period to be exported. Example "-1 day"'),
                         'required' => false,
                     ]
                 ]
