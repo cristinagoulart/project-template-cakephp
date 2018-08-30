@@ -212,7 +212,7 @@ class LookupActionListener extends BaseActionListener
      * @param array $fields List of mixed real and virtual fields
      * @return array
      */
-    public function extractVirtualFields(RepositoryInterface $table, array $fields)
+    private function extractVirtualFields(RepositoryInterface $table, array $fields)
     {
         $virtualFields = $this->_getVirtualFields($table);
 
