@@ -17,6 +17,7 @@ class HttpErrorHandler extends WhoopsHandler
     /**
      * Extends default implementation to add data tables related to CakePHP
      * @param \Exception $exception Caught exception to be handled
+     * @return void
      */
     protected function _displayException($exception)
     {

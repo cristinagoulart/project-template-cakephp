@@ -50,6 +50,7 @@ class DashboardMenuListener implements EventListenerInterface
      * All newly created items are added to the specified container
      *
      * @param MenuInterface $menu The menu to add the created dashboard menu items.
+     * @param array $user Current user
      * @return void
      */
     private function addDashboardItems(MenuInterface $menu, array $user)
@@ -77,6 +78,7 @@ class DashboardMenuListener implements EventListenerInterface
      * The newly created items will be added under the specified Menu container
      *
      * @param MenuItemContainerInterface $container Menu Container
+     * @param array $user Current user
      * @param int $startAt Starting order position
      * @return void
      */
