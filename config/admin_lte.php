@@ -28,5 +28,6 @@ return [
         'skin' => 'blue',
         'skinUrl' => 'AdminLTE.skins/skin-blue.min',
         'backgroundImages' => 'qobo',
+        'prependAvatars' => true,
     ],
 ];
