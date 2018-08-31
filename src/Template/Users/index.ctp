@@ -63,8 +63,8 @@ echo $this->Html->scriptBlock(
                 <?php foreach ($Users as $user) : ?>
                     <tr>
                         <td>
-                            <?php if (Configure::read('Theme.prependAvatars', true) && isset($user->image_src)): ?>
-                            <img alt="User Image" src="<?= $user->image_src ?>" style="width: 20px; height: 20px;" class="img-circle">
+                            <?php if (Configure::read('Theme.prependAvatars', true) && !empty($user->image_src)): ?>
+                            <img alt="Thumbnail" src="<?= $user->image_src ?>" style="width: 20px; height: 20px;" class="img-circle">
                             <?php endif; ?>
                             <?= h($user->username) ?>
                         </td>
