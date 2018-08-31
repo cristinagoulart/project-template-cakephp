@@ -92,6 +92,8 @@ $factory = new FieldHandlerFactory($this);
                         <dd><?= $Users->has('phone_mobile') ? h($Users->phone_mobile) : '&nbsp;' ?></dd>
                         <dt><?= __('Phone Extension') ?></dt>
                         <dd><?= $Users->has('phone_extension') ? h($Users->phone_extension) : '&nbsp;' ?></dd>
+                        <dt><?= __('Fax') ?></dt>
+                        <dd><?= $Users->has('fax') ? h($Users->fax) : '&nbsp;' ?></dd>
                     </dl>
                 </div>
                 <!-- /.box-body -->
