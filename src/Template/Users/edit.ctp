@@ -195,6 +195,9 @@ echo $this->Html->scriptBlock(
                         <div class="col-xs-12 col-md-6">
                             <?= $this->Form->input('phone_extension'); ?>
                         </div>
+                        <div class="col-xs-12 col-md-6">
+                            <?= $this->Form->input('fax'); ?>
+                        </div>
                     </div>
                 </div>
             </div>
