@@ -62,7 +62,12 @@ echo $this->Html->scriptBlock(
                 <tbody>
                 <?php foreach ($Users as $user) : ?>
                     <tr>
-                        <td><?= h($user->username) ?></td>
+                        <td>
+                            <?php if (Configure::read('Theme.prependAvatars', true) && isset($user->image_src)): ?>
+                            <img alt="User Image" src="<?= $user->image_src ?>" style="width: 20px; height: 20px;" class="img-circle">
+                            <?php endif; ?>
+                            <?= h($user->username) ?>
+                        </td>
                         <td><?= h($user->email) ?></td>
                         <td><?= h($user->first_name) ?></td>
                         <td><?= h($user->last_name) ?></td>
