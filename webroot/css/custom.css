@@ -78,3 +78,8 @@
 .control-sidebar-settings-tab {
     margin: -10px -15px;
 }
+
+/** Make sure that the row can fit a button **/
+.box-primary .col-md-2, .box-primary .col-md-4 {
+    min-height: 24px;
+}
