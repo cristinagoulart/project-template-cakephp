@@ -18,9 +18,9 @@
  * @license       http://www.opensource.org/licenses/mit-license.php MIT License
  */
 
+use App\Routing\ApiRouter;
 use Cake\Core\Plugin;
 use Cake\Routing\Router;
-use App\Routing\ApiRouter;
 
 /**
  * The default class to use for all routes
@@ -48,14 +48,13 @@ Router::defaultRouteClass('Route');
 $apiRouter = new ApiRouter();
 $apiRouter->setRoutes();
 
-
 Router::scope('/', function ($routes) {
     /**
      * Here, we are connecting '/' (base path) to a controller called 'Pages',
      * its action called 'display', and we pass a param to select the view file
      * to use (in this case, src/Template/Pages/home.ctp)...
      */
-    $routes->connect('/', ['plugin' => 'Search', 'controller' => 'Dashboards', 'action' => 'index']);
+    $routes->connect('/', ['controller' => 'System', 'action' => 'home']);
 
     $routes->connect('/users/:action/*', ['controller' => 'Users'], ['routeClass' => 'DashedRoute']);
     $routes->connect('/profile/*', ['controller' => 'Users', 'action' => 'profile']);
