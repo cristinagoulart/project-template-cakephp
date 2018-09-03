@@ -3,7 +3,11 @@ namespace App\Controller;
 
 use App\Feature\Factory;
 use Cake\Core\Configure;
+use Cake\Event\Event;
 use Cake\ORM\TableRegistry;
+use Menu\Event\EventName;
+use Menu\MenuBuilder\MenuItemContainerInterface;
+use Menu\MenuBuilder\MenuItemInterface;
 
 /**
  * System Controller
@@ -60,5 +64,51 @@ class SystemController extends AppController
         }
 
         $this->set('entities', $entities);
+    }
+
+    /**
+     * By taking into consideration the main menu, it attempts to dynamically define a home page.
+     * Then redirects user to the real home page.
+     * Otherwise, it displays an error message explaining what went wrong
+     *
+     * @return \Cake\Http\Response|null
+     */
+    public function home()
+    {
+        // Raise event for main menu
+        $event = new Event((string)EventName::GET_MENU_ITEMS(), $this, [
+            'name' => MENU_MAIN,
+            'user' => $this->Auth->user(),
+        ]);
+        $this->getEventManager()->dispatch($event);
+
+        if (!empty($event->result)) {
+            $firstMenuItem = $this->getFirstMenuItem($event->result);
+            if (!empty($firstMenuItem)) {
+                return $this->redirect($firstMenuItem->getUrl());
+            }
+        }
+    }
+
+    /**
+     * Goes through the provided menu container and attempts to find a menu item that has a URL assigned.
+     * Returns the first match, null otherwise.
+     *
+     * @param MenuItemContainerInterface $container Menu container to be iterated
+     * @return MenuItemInterface|null
+     */
+    public function getFirstMenuItem(MenuItemContainerInterface $container)
+    {
+        foreach ($container->getMenuItems() as $menuItem) {
+            if (!empty($menuItem->getMenuItems())) {
+                return $this->getFirstMenuItem($menuItem);
+            }
+
+            if (!empty($menuItem->getUrl())) {
+                return $menuItem;
+            }
+        }
+
+        return null;
     }
 }
