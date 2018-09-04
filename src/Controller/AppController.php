@@ -120,9 +120,11 @@ class AppController extends Controller
                 throw new ForbiddenException();
             }
         } catch (ForbiddenException $e) {
+            $event->stopPropagation();
             if (empty($this->Auth->user())) {
                 $this->Auth->config('authError', false);
-                $this->redirect('/login');
+
+                return $this->redirect('/login');
             } else {
                 // send empty response for embedded forms
                 if ($this->request->query('embedded')) {
