@@ -101,6 +101,10 @@ class SystemController extends AppController
     public function getFirstMenuItem(MenuItemContainerInterface $container)
     {
         foreach ($container->getMenuItems() as $menuItem) {
+            if (!$menuItem->isEnabled()) {
+                continue;
+            }
+
             if (!empty($menuItem->getMenuItems())) {
                 return $this->getFirstMenuItem($menuItem);
             }
