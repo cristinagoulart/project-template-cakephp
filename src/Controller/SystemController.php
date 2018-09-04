@@ -4,6 +4,7 @@ namespace App\Controller;
 use App\Feature\Factory;
 use Cake\Core\Configure;
 use Cake\Event\Event;
+use Cake\Network\Exception\ForbiddenException;
 use Cake\ORM\TableRegistry;
 use Menu\Event\EventName;
 use Menu\MenuBuilder\MenuItemContainerInterface;
@@ -110,5 +111,22 @@ class SystemController extends AppController
         }
 
         return null;
+    }
+
+    /**
+     * Overwrites default access checking to provide access to homepage.
+     * User have access to home action only and only if is already logged in.
+     *
+     * @param array $url Url to be checked
+     * @param array $user Current user, if any
+     * @return bool
+     */
+    protected function _checkAccess($url, $user)
+    {
+        if (empty($user) && $url['action'] === 'home') {
+            return false;
+        }
+
+        return parent::_checkAccess($url, $user);
     }
 }

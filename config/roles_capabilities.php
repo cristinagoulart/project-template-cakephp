@@ -16,6 +16,7 @@ return [
             'skipActions' => [
                 'App\Controller\SystemController' => [
                     'error',
+                    'home',
                 ],
                 'App\Controller\UsersController' => [
                     'changePassword',
