@@ -120,6 +120,7 @@ class AppController extends Controller
                 throw new ForbiddenException();
             }
         } catch (ForbiddenException $e) {
+            $event->stopPropagation();
             if (empty($this->Auth->user())) {
                 $this->Auth->config('authError', false);
 
