@@ -1,12 +1,12 @@
 <?php
 
-use App\Menu\MenuType;
+use App\Menu\MenuName;
 use Cake\Event\Event;
 use Menu\Event\EventName;
 use Menu\MenuBuilder\MenuInterface;
 
 $event = new Event((string)EventName::GET_MENU_ITEMS(), $entity, [
-    'name' => MenuType::SEARCH_VIEW,
+    'name' => MenuName::SEARCH_VIEW,
     'user' => $user,
 ]);
 $this->eventManager()->dispatch($event);

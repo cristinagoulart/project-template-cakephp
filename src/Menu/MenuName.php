@@ -3,11 +3,11 @@
 namespace App\Menu;
 
 /**
- * Class MenuType
+ * Class MenuName
  * Holds all the available menu types and positions
  * @package App\Menu
  */
-class MenuType
+class MenuName
 {
     const ADMIN = 'admin_menu';
     const MAIN = 'main_menu';
