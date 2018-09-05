@@ -2,6 +2,7 @@
 
 namespace App\Event\Plugin\Menu\View;
 
+use App\Menu\MenuType;
 use Cake\Core\Configure;
 use Cake\Event\Event;
 use Cake\Event\EventListenerInterface;
@@ -40,7 +41,7 @@ class ModuleIndexListener implements EventListenerInterface
      */
     public function getMenuItems(Event $event, $name, array $user, $fullBaseUrl = false, array $modules = [], MenuInterface $menu = null)
     {
-        if ($name !== 'module_index_top') {
+        if ($name !== MenuType::MODULE_INDEX_TOP) {
             return;
         }
 

@@ -1,11 +1,12 @@
 <?php
 
+use App\Menu\MenuType;
 use Cake\Event\Event;
 use Menu\Event\EventName;
 use Menu\MenuBuilder\MenuInterface;
 
 $event = new Event((string)EventName::GET_MENU_ITEMS(), null, [
-    'name' => 'module_index_top',
+    'name' => MenuType::MODULE_INDEX_TOP,
     'user' => $user,
 ]);
 $this->eventManager()->dispatch($event);

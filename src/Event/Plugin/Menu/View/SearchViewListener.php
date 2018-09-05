@@ -2,6 +2,7 @@
 
 namespace App\Event\Plugin\Menu\View;
 
+use App\Menu\MenuType;
 use Cake\Datasource\EntityInterface;
 use Cake\Event\Event;
 use Cake\Event\EventListenerInterface;
@@ -40,7 +41,7 @@ class SearchViewListener implements EventListenerInterface
      */
     public function getMenuItems(Event $event, $name, array $user, $fullBaseUrl = false, array $modules = [], MenuInterface $menu = null)
     {
-        if ($name !== 'search_view') {
+        if ($name !== MenuType::SEARCH_VIEW) {
             return;
         }
 
