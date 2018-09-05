@@ -41,7 +41,8 @@ class SearchViewListener implements EventListenerInterface
      */
     public function getMenuItems(Event $event, $name, array $user, $fullBaseUrl = false, array $modules = [], MenuInterface $menu = null)
     {
-        if ($name !== MenuName::SEARCH_VIEW) {
+        $listens = [MenuName::SEARCH_VIEW, MenuName::MODULE_VIEW];
+        if (!in_array($name, $listens)) {
             return;
         }
 
@@ -55,6 +56,11 @@ class SearchViewListener implements EventListenerInterface
         $menu->addMenuItem($this->getViewMenuItem($entity, $request));
         $menu->addMenuItem($this->getEditMenuItem($entity, $request));
         $menu->addMenuItem($this->getDeleteMenuItem($entity, $request));
+
+        if ($name === MenuName::MODULE_VIEW) {
+            $menu->addMenuItem($this->getPermissionsMenuItem($entity, $request));
+            $menu->addMenuItem($this->getChangelogMenuItem($entity, $request));
+        }
 
         $event->setResult($event);
     }
@@ -77,7 +83,7 @@ class SearchViewListener implements EventListenerInterface
             'icon' => 'eye',
             'label' => __('View'),
             'type' => 'link_button',
-            'order' => 10
+            'order' => 100
         ]);
     }
 
@@ -99,7 +105,7 @@ class SearchViewListener implements EventListenerInterface
             'icon' => 'pencil',
             'label' => __('Edit'),
             'type' => 'link_button',
-            'order' => 20
+            'order' => 110
         ]);
     }
 
@@ -130,7 +136,53 @@ class SearchViewListener implements EventListenerInterface
                 'Are you sure you want to delete {0}?',
                 empty(trim($displayName)) ? 'this record' : strip_tags($displayName)
             ),
-            'order' => 30
+            'order' => 120
+        ]);
+    }
+
+    /**
+     * Creates and returns the menu item for the permissions action
+     *
+     * @param EntityInterface $entity Entity to be deleted
+     * @param ServerRequest $request Current server request
+     * @return \Menu\MenuBuilder\MenuItemInterface
+     */
+    public function getPermissionsMenuItem(EntityInterface $entity, ServerRequest $request)
+    {
+        $plugin = $request->param('plugin');
+        $controller = $request->param('controller');
+        $id = $entity->get('id');
+
+        return MenuItemFactory::createMenuItem([
+            'url' => ['plugin' => $plugin, 'controller' => $controller, 'action' => 'managePermissions'],
+            'label' => __('Permissions'),
+            'icon' => 'shield',
+            'type' => 'link_button_modal',
+            'modal_target' => 'permissions-modal-add',
+            'order' => 50,
+            'viewElement' => ['modal-permissions', ['id' => $id]]
+        ]);
+    }
+
+    /**
+     * Creates and returns the menu item for the changelog action
+     *
+     * @param EntityInterface $entity Entity to be deleted
+     * @param ServerRequest $request Current server request
+     * @return \Menu\MenuBuilder\MenuItemInterface
+     */
+    public function getChangelogMenuItem(EntityInterface $entity, ServerRequest $request)
+    {
+        $plugin = $request->param('plugin');
+        $controller = $request->param('controller');
+        $id = $entity->get('id');
+
+        return MenuItemFactory::createMenuItem([
+            'url' => ['plugin' => $plugin, 'controller' => $controller, 'action' => 'changelog', $id],
+            'label' => __('Changelog'),
+            'icon' => 'book',
+            'type' => 'link_button',
+            'order' => 60
         ]);
     }
 }
