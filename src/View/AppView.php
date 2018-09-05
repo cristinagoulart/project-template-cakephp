@@ -56,9 +56,9 @@ class AppView extends View
      */
     protected function _render($viewFile, $data = [])
     {
-        array_push($this->trace, $viewFile);
+        array_push($this->backtrace, $viewFile);
         $output = parent::_render($viewFile, $data);
-        array_pop($this->trace);
+        array_pop($this->backtrace);
 
         return $output;
     }
