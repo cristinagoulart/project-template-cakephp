@@ -1,33 +1,20 @@
 <?php
-$menu = [];
 
-$url = ['prefix' => false, 'plugin' => $plugin, 'controller' => $controller, 'action' => 'view', $entity->id];
-$menu[] = ['url' => $url, 'icon' => 'eye', 'label' => __('View'), 'type' => 'link_button', 'order' => 10];
+use App\Menu\MenuName;
+use Cake\Event\Event;
+use Menu\Event\EventName;
+use Menu\MenuBuilder\MenuInterface;
 
-$url = ['prefix' => false, 'plugin' => $plugin, 'controller' => $controller, 'action' => 'edit', $entity->id];
-$menu[] = ['url' => $url, 'icon' => 'pencil', 'label' => __('Edit'), 'type' => 'link_button', 'order' => 20];
+$event = new Event((string)EventName::GET_MENU_ITEMS(), $entity, [
+    'name' => MenuName::SEARCH_VIEW,
+    'user' => $user,
+]);
+$this->eventManager()->dispatch($event);
 
-$url = [
-    'prefix' => 'api',
-    'plugin' => $plugin,
-    'controller' => $controller,
-    'action' => 'delete',
-    '_ext' => 'json',
-    $entity->id
-];
-$menu[] = [
-    'url' => $url,
-    'icon' => 'trash',
-    'label' => __('Delete'),
-    'dataType' => 'ajax-delete-record',
-    'type' => 'link_button',
-    'confirmMsg' => __(
-        'Are you sure you want to delete {0}?',
-        $entity->has($displayField) && !empty($entity->{$displayField}) ?
-                strip_tags($entity->{$displayField}) :
-                'this record'
-    ),
-    'order' => 30
-];
+/** @var \Menu\MenuBuilder\Menu $menu */
+$menu = $event->getResult();
+if (!($menu instanceof MenuInterface)) {
+    return;
+}
 
 echo $this->element('menu-render', ['menu' => $menu, 'user' => $user, 'menuType' => 'actions']);
