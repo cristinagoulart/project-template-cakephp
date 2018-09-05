@@ -21,6 +21,11 @@ use Cake\View\View;
 class AppView extends View
 {
     /**
+     * @var array Holds all the views that are currently being rendered
+     */
+    private $backtrace = [];
+
+    /**
      * Initialization hook method.
      *
      * For e.g. use this method to load a helper for all views:
@@ -36,5 +41,35 @@ class AppView extends View
         $this->loadHelper('HtmlEmail');
         $this->loadHelper('SystemInfo');
         $this->loadHelper('CakeDC/Users.User');
+    }
+
+    /**
+     * Extends render method to log backtrace information
+     *
+     * @param string $viewFile Filename of the view
+     * @param array $data Data to include in rendered view. If empty the current
+     *   View::$viewVars will be used.
+     * @return string Rendered output
+     * @throws \LogicException When a block is left open.
+     * @triggers View.beforeRenderFile $this, [$viewFile]
+     * @triggers View.afterRenderFile $this, [$viewFile, $content]
+     */
+    protected function _render($viewFile, $data = [])
+    {
+        array_push($this->trace, $viewFile);
+        $output = parent::_render($viewFile, $data);
+        array_pop($this->trace);
+
+        return $output;
+    }
+
+    /**
+     * Returns the backtrace for this view.
+     *
+     * @return array The backtrace
+     */
+    public function getBacktrace()
+    {
+        return $this->backtrace;
     }
 }
