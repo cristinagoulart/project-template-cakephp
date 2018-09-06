@@ -57,7 +57,11 @@ class SearchViewListener implements EventListenerInterface
         $request = Router::getRequest();
         $menu->addMenuItem($this->getViewMenuItem($entity, $request));
         $menu->addMenuItem($this->getEditMenuItem($entity, $request));
-        $menu->addMenuItem($this->getDeleteMenuItem($entity, $request, true));
+        $deleteMenuItem = $this->getDeleteMenuItem($entity, $request, true);
+        $deleteMenuItem->setViewElement('Search.Menu/search-view-actions-delete', [
+            'menuItem' => $deleteMenuItem
+        ]);
+        $menu->addMenuItem($deleteMenuItem);
 
         $event->setResult($event);
     }

@@ -1,6 +1,8 @@
 <?php
 use CsvMigrations\FieldHandlers\FieldHandlerFactory;
 
+trigger_error('"CsvMigrations.Menu/related_actions" element is deprecated.', E_USER_DEPRECATED);
+
 $factory = new FieldHandlerFactory();
 
 $primaryKey = $table->getPrimaryKey();

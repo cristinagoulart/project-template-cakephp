@@ -87,11 +87,11 @@ trait MenuEntityTrait
             'icon' => 'trash',
             'label' => __('Delete'),
             'type' => 'postlink_button',
+            'order' => 120,
             'confirmMsg' => __(
                 'Are you sure you want to delete {0}?',
                 empty(trim($displayName)) ? 'this record' : strip_tags($displayName)
-            ),
-            'order' => 120
+            )
         ];
 
         if ($useApi) {
