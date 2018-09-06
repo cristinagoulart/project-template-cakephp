@@ -38,7 +38,6 @@ if (!extension_loaded('intl')) {
     trigger_error('You must enable the intl extension to use CakePHP.', E_USER_ERROR);
 }
 
-use App\Error\HttpErrorHandler;
 use App\Event\Component\UserIdentifyListener;
 use App\Event\Controller\Api\AddActionListener;
 use App\Event\Controller\Api\EditActionListener;
@@ -60,6 +59,7 @@ use App\Event\Plugin\Search\Model\SearchableFieldsListener;
 use App\Event\Plugin\Search\Model\SearchResultsListener;
 use App\Feature\Factory as FeatureFactory;
 use Burzum\FileStorage\Storage\Listener\LocalListener;
+use CakephpWhoops\Error\WhoopsHandler;
 use Cake\Cache\Cache;
 use Cake\Console\ConsoleErrorHandler;
 use Cake\Core\App;
@@ -138,7 +138,7 @@ $isCli = php_sapi_name() === 'cli';
 if ($isCli) {
     (new ConsoleErrorHandler(Configure::read('Error')))->register();
 } else {
-    (new HttpErrorHandler(Configure::read('Error')))->register();
+    (new WhoopsHandler(Configure::read('Error')))->register();
 }
 
 // Include the CLI bootstrap overrides.
