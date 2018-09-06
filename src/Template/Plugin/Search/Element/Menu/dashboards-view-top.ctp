@@ -1,17 +1,20 @@
 <?php
-$menu = [];
 
-$url = ['plugin' => 'Search', 'controller' => 'Dashboards', 'action' => 'edit', $entity->get('id')];
-$menu[] = ['url' => $url, 'label' => __('Edit'), 'icon' => 'pencil', 'type' => 'link_button', 'order' => 10];
+use App\Menu\MenuName;
+use Cake\Event\Event;
+use Menu\Event\EventName;
+use Menu\MenuBuilder\MenuInterface;
 
-$url = ['plugin' => 'Search', 'controller' => 'Dashboards', 'action' => 'delete', $entity->get('id')];
-$menu[] = [
-    'url' => $url,
-    'label' => __('Delete'),
-    'icon' => 'trash',
-    'type' => 'postlink_button',
-    'order' => 20,
-    'confirmMsg' => __('Are you sure you want to delete {0}?', $entity->get('name'))
-];
+$event = new Event((string)EventName::GET_MENU_ITEMS(), $entity, [
+    'name' => MenuName::DASHBOARD_VIEW,
+    'user' => $user,
+]);
+$this->eventManager()->dispatch($event);
 
-echo $this->element('menu-render', ['menu' => $menu, 'user' => $user]);
+/** @var \Menu\MenuBuilder\Menu $menu */
+$menu = $event->getResult();
+if (!($menu instanceof MenuInterface)) {
+    return;
+}
+
+echo $this->element('menu-render', ['menu' => $menu, 'user' => $user, 'menuType' => 'buttons']);

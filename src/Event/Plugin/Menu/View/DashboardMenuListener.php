@@ -2,10 +2,14 @@
 
 namespace App\Event\Plugin\Menu\View;
 
+use App\Menu\MenuName;
 use Cake\Datasource\EntityInterface;
+use Cake\Datasource\RepositoryInterface;
 use Cake\Event\Event;
 use Cake\Event\EventListenerInterface;
+use Cake\Http\ServerRequest;
 use Cake\ORM\TableRegistry;
+use Cake\Routing\Router;
 use Menu\Event\EventName as MenuEventName;
 use Menu\MenuBuilder\MenuInterface;
 use Menu\MenuBuilder\MenuItemContainerInterface;
@@ -13,6 +17,8 @@ use Menu\MenuBuilder\MenuItemFactory;
 
 class DashboardMenuListener implements EventListenerInterface
 {
+    use MenuEntityTrait;
+
     /**
      * @inheritdoc
      *
@@ -39,9 +45,22 @@ class DashboardMenuListener implements EventListenerInterface
      */
     public function getMenuItems(Event $event, $name, array $user, $fullBaseUrl = false, array $modules = [], MenuInterface $menu = null)
     {
-        if ($name === MENU_MAIN && empty($modules)) {
-            $this->addDashboardItems($menu, $user);
+        if ($name === MenuName::MAIN && empty($modules)) {
+            $this->addAdminMenuItems($menu, $user);
             $event->setResult($menu);
+
+            return;
+        }
+
+        if ($name === MenuName::DASHBOARD_VIEW) {
+            $request = Router::getRequest();
+            $entity = $event->getSubject() instanceof EntityInterface ? $event->getSubject() : null;
+
+            $menu->addMenuItem($this->getEditMenuItem($entity, $request));
+            $menu->addMenuItem($this->getDeleteMenuItem($entity, $request));
+            $event->setResult($menu);
+
+            return;
         }
     }
 
@@ -53,7 +72,7 @@ class DashboardMenuListener implements EventListenerInterface
      * @param array $user Current user
      * @return void
      */
-    private function addDashboardItems(MenuInterface $menu, array $user)
+    private function addAdminMenuItems(MenuInterface $menu, array $user)
     {
         $link = MenuItemFactory::createMenuItem([
             'label' => 'Dashboard',
