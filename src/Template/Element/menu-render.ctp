@@ -21,6 +21,8 @@ if ($menu instanceof MenuInterface) {
     return;
 }
 
+trigger_error('Using arrays for menu is deprecated.', E_USER_DEPRECATED);
+
 $menuBuilder = new Menu();
 $accessFactory = new AccessFactory();
 if (!isset($menuType)) {
