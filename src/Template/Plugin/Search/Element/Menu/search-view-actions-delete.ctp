@@ -1,35 +1,8 @@
-<?= $this->cell('Menu.Menu', [
-    'name' => \App\Menu\MenuName::SEARCH_VIEW,
-    'user' => $user,
-    'fullBaseUrl' => false,
-    'renderer' => \Menu\MenuBuilder\MenuActionsRender::class,
-    'context' => $entity,
-]);
+<?php
 
-/*return; ?><?php
-
-use App\Menu\MenuName;
 use Cake\Core\Configure;
-use Cake\Event\Event;
-use Menu\Event\EventName;
-use Menu\MenuBuilder\MenuInterface;
-
-$event = new Event((string)EventName::GET_MENU_ITEMS(), $entity, [
-    'name' => MenuName::SEARCH_VIEW,
-    'user' => $user,
-]);
-$this->eventManager()->dispatch($event);
-
-$menu = $event->getResult();
-if (!($menu instanceof MenuInterface)) {
-    return;
-}
-
-echo $this->element('menu-render', ['menu' => $menu, 'user' => $user, 'menuType' => 'actions']);
 
 $this->Html->scriptStart();
-
-foreach ($menu->getMenuItems() as $menuItem):
 ?>
     // trigger deletion of the record from the dynamic DataTables entries
     $("a[data-type='ajax-delete-record'][href='<?= $this->Url->build($menuItem->getUrl()) ?>']").click(function (e) {
@@ -55,7 +28,4 @@ foreach ($menu->getMenuItems() as $menuItem):
             }
         });
     });
-<?php
-endforeach;
-echo $this->Html->scriptEnd(); */
-?>
+<?= $this->Html->scriptEnd() ?>
