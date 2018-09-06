@@ -15,4 +15,5 @@ class MenuName
     const MODULE_INDEX_ROW = 'module_index_row_menu';
     const MODULE_VIEW = 'module_view_menu';
     const SEARCH_VIEW = 'search_view_menu';
+    const DASHBOARD_VIEW = 'dashboard_view_menu';
 }

@@ -15,6 +15,8 @@ use Menu\MenuBuilder\MenuItemFactory;
 
 class SearchViewListener implements EventListenerInterface
 {
+    use MenuEntityTrait;
+
     /**
      * @inheritdoc
      *
@@ -41,7 +43,8 @@ class SearchViewListener implements EventListenerInterface
      */
     public function getMenuItems(Event $event, $name, array $user, $fullBaseUrl = false, array $modules = [], MenuInterface $menu = null)
     {
-        if ($name !== MenuName::SEARCH_VIEW) {
+        $listens = [MenuName::SEARCH_VIEW];
+        if (!in_array($name, $listens)) {
             return;
         }
 
@@ -54,83 +57,8 @@ class SearchViewListener implements EventListenerInterface
         $request = Router::getRequest();
         $menu->addMenuItem($this->getViewMenuItem($entity, $request));
         $menu->addMenuItem($this->getEditMenuItem($entity, $request));
-        $menu->addMenuItem($this->getDeleteMenuItem($entity, $request));
+        $menu->addMenuItem($this->getDeleteMenuItem($entity, $request, true));
 
         $event->setResult($event);
-    }
-
-    /**
-     * Creates and returns the menu item for the view action
-     *
-     * @param EntityInterface $entity Entity to be viewed
-     * @param ServerRequest $request Current server request
-     * @return \Menu\MenuBuilder\MenuItemInterface
-     */
-    public function getViewMenuItem(EntityInterface $entity, ServerRequest $request)
-    {
-        $plugin = $request->param('plugin');
-        $controller = $request->param('controller');
-        $id = $entity->get('id');
-
-        return MenuItemFactory::createMenuItem([
-            'url' => ['prefix' => false, 'plugin' => $plugin, 'controller' => $controller, 'action' => 'view', $id],
-            'icon' => 'eye',
-            'label' => __('View'),
-            'type' => 'link_button',
-            'order' => 10
-        ]);
-    }
-
-    /**
-     * Creates and returns the menu item for the edit action
-     *
-     * @param EntityInterface $entity Entity to be edited
-     * @param ServerRequest $request Current server request
-     * @return \Menu\MenuBuilder\MenuItemInterface
-     */
-    public function getEditMenuItem(EntityInterface $entity, ServerRequest $request)
-    {
-        $plugin = $request->param('plugin');
-        $controller = $request->param('controller');
-        $id = $entity->get('id');
-
-        return MenuItemFactory::createMenuItem([
-            'url' => ['prefix' => false, 'plugin' => $plugin, 'controller' => $controller, 'action' => 'edit', $id],
-            'icon' => 'pencil',
-            'label' => __('Edit'),
-            'type' => 'link_button',
-            'order' => 20
-        ]);
-    }
-
-    /**
-     * Creates and returns the menu item for the delete action
-     *
-     * @param EntityInterface $entity Entity to be deleted
-     * @param ServerRequest $request Current server request
-     * @return \Menu\MenuBuilder\MenuItemInterface
-     */
-    public function getDeleteMenuItem(EntityInterface $entity, ServerRequest $request)
-    {
-        $plugin = $request->param('plugin');
-        $controller = $request->param('controller');
-        $id = $entity->get('id');
-
-        $table = TableRegistry::get($entity->getSource());
-        $displayField = $table->getDisplayField();
-        $displayName = $entity->has($displayField) ? $entity->get($displayField) : null;
-
-        return MenuItemFactory::createMenuItem([
-            'url' => ['prefix' => 'api', 'plugin' => $plugin, 'controller' => $controller, 'action' => 'delete', '_ext' => 'json', $id],
-            'icon' => 'trash',
-            'label' => __('Delete'),
-            'dataType' => 'ajax-delete-record',
-            'type' => 'link_button',
-            'confirmMsg' => __(
-                'Are you sure you want to delete {0}?',
-                empty(trim($displayName)) ? 'this record' : strip_tags($displayName)
-            ),
-            'order' => 30
-        ]);
     }
 }
