@@ -1,0 +1,110 @@
+<?php
+
+namespace App\Event\Plugin\Menu\View;
+
+use App\Menu\MenuName;
+use Cake\Datasource\EntityInterface;
+use Cake\Event\Event;
+use Cake\Event\EventListenerInterface;
+use Cake\Http\ServerRequest;
+use Cake\Routing\Router;
+use Menu\Event\EventName as MenuEventName;
+use Menu\MenuBuilder\MenuInterface;
+use Menu\MenuBuilder\MenuItemFactory;
+
+class ModuleViewListener implements EventListenerInterface
+{
+    use MenuEntityTrait;
+
+    /**
+     * @inheritdoc
+     *
+     * @return array associative array or event key names pointing to the function
+     * that should be called in the object when the respective event is fired
+     */
+    public function implementedEvents()
+    {
+        return [
+            (string)MenuEventName::GET_MENU_ITEMS() => 'getMenuItems'
+        ];
+    }
+
+    /**
+     * Method that returns the menu for Search View
+     *
+     * @param Event $event Event object
+     * @param string $name Menu name
+     * @param array $user Current user
+     * @param bool $fullBaseUrl Flag for fullbase url on menu links
+     * @param array $modules Modules to fetch menu items for
+     * @param MenuInterface|null $menu Menu object to be updated
+     * @return void
+     */
+    public function getMenuItems(Event $event, $name, array $user, $fullBaseUrl = false, array $modules = [], MenuInterface $menu = null)
+    {
+        $listens = [MenuName::MODULE_VIEW];
+        if (!in_array($name, $listens)) {
+            return;
+        }
+
+        // Actions are available only when viewing an entity
+        $entity = $event->getSubject();
+        if (!($entity instanceof EntityInterface)) {
+            return;
+        }
+
+        $request = Router::getRequest();
+        $menu->addMenuItem($this->getPermissionsMenuItem($entity, $request));
+        $menu->addMenuItem($this->getChangelogMenuItem($entity, $request));
+        $menu->addMenuItem($this->getEditMenuItem($entity, $request));
+        $menu->addMenuItem($this->getDeleteMenuItem($entity, $request));
+
+        $event->setResult($event);
+    }
+
+    /**
+     * Creates and returns the menu item for the permissions action
+     *
+     * @param EntityInterface $entity Entity to be deleted
+     * @param ServerRequest $request Current server request
+     * @return \Menu\MenuBuilder\MenuItemInterface
+     */
+    public function getPermissionsMenuItem(EntityInterface $entity, ServerRequest $request)
+    {
+        $plugin = $request->param('plugin');
+        $controller = $request->param('controller');
+        $id = $entity->get('id');
+
+        return MenuItemFactory::createMenuItem([
+            'url' => ['plugin' => $plugin, 'controller' => $controller, 'action' => 'managePermissions'],
+            'label' => __('Permissions'),
+            'icon' => 'shield',
+            'type' => 'link_button_modal',
+            'modal_target' => 'permissions-modal-add',
+            'order' => 50,
+            'viewElement' => ['modal-permissions', ['id' => $id]]
+        ]);
+    }
+
+    /**
+     * Creates and returns the menu item for the changelog action
+     *
+     * @param EntityInterface $entity Entity to be deleted
+     * @param ServerRequest $request Current server request
+     * @return \Menu\MenuBuilder\MenuItemInterface
+     */
+    public function getChangelogMenuItem(EntityInterface $entity, ServerRequest $request)
+    {
+        $plugin = $request->param('plugin');
+        $controller = $request->param('controller');
+        $id = $entity->get('id');
+
+        return MenuItemFactory::createMenuItem([
+            'url' => ['plugin' => $plugin, 'controller' => $controller, 'action' => 'changelog', $id],
+            'label' => __('Changelog'),
+            'icon' => 'book',
+            'type' => 'link_button',
+            'order' => 60
+        ]);
+    }
+}

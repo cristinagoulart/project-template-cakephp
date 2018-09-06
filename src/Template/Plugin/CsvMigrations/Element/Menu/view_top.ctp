@@ -6,7 +6,7 @@ use Menu\Event\EventName;
 use Menu\MenuBuilder\MenuInterface;
 
 $event = new Event((string)EventName::GET_MENU_ITEMS(), $options['entity'], [
-    'name' => MenuName::SEARCH_VIEW,
+    'name' => MenuName::MODULE_VIEW,
     'user' => $user,
 ]);
 $this->eventManager()->dispatch($event);
@@ -17,4 +17,4 @@ if (!($menu instanceof MenuInterface)) {
     return;
 }
 
-echo $this->element('menu-render', ['menu' => $menu, 'user' => $user, 'menuType' => 'actions']);
+echo $this->element('menu-render', ['menu' => $menu, 'user' => $user, 'menuType' => 'buttons']);
