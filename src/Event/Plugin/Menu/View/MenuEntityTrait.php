@@ -87,10 +87,6 @@ trait MenuEntityTrait
             'icon' => 'trash',
             'label' => __('Delete'),
             'type' => 'postlink_button',
-            'confirmMsg' => __(
-                'Are you sure you want to delete {0}?',
-                empty(trim($displayName)) ? 'this record' : strip_tags($displayName)
-            ),
             'order' => 120
         ];
 
@@ -99,6 +95,11 @@ trait MenuEntityTrait
             $config['url']['_ext_'] = '_json';
             $config['type'] = 'link_button';
             $config['dataType'] = 'ajax-delete-record';
+        } else {
+            $config['confirmMsg'] = __(
+                'Are you sure you want to delete {0}?',
+                empty(trim($displayName)) ? 'this record' : strip_tags($displayName)
+            );
         }
 
         return MenuItemFactory::createMenuItem($config);
