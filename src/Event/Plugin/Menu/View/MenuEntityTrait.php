@@ -97,6 +97,7 @@ trait MenuEntityTrait
         if ($useApi) {
             $config['url']['prefix'] = 'api';
             $config['url']['_ext_'] = '_json';
+            $config['type'] = 'link_button';
             $config['dataType'] = 'ajax-delete-record';
         }
 
