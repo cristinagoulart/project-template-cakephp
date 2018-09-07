@@ -83,3 +83,12 @@
 .box-primary .col-md-2, .box-primary .col-md-4 {
     min-height: 24px;
 }
+
+/** improve jumbotron which is not included in AdminLTE **/
+.container .jumbotron, .container-fluid .jumbotron {
+    border-radius: 3px;
+    background: #ffffff;
+    border-top: 3px solid #d2d6de;
+    margin-top: 24px;
+    padding-top: 24px;
+}

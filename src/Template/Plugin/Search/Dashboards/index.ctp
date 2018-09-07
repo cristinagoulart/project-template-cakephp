@@ -13,7 +13,7 @@
 <div class="container-fluid">
     <div class="row">
         <div class="col-xs-12">
-            <div class="jumbotron" style="border-radius: 3px; background: #ffffff; border-top: 3px solid #d2d6de; margin-top: 24px; padding: 24px;">
+            <div class="jumbotron">
                 <h1><?= __('Dashboards') ?></h1>
                 <p><?= __('There are no configured Dashboards for you. Please contact the system administrator.') ?></p>
                 <p><?= $this->Html->link(__('{0} Create Dashboard', '<i class="fa fa-plus"></i>'), ['action' => 'add'], ['class' => 'btn btn-primary', 'escape' => false]) ?><p>
