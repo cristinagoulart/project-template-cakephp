@@ -41,9 +41,10 @@ class Upgrade20180907123600Task extends Shell
 
         $this->modules = $modules;
 
-        if (empty($this->modules)) {
+        if (! empty($this->modules)) {
             $this->out("<warning>Couldn't find CSV modules to parse</warning>");
-            exit();
+
+            return;
         }
 
         $dblists = [];
@@ -60,7 +61,8 @@ class Upgrade20180907123600Task extends Shell
 
         if (empty($dblists)) {
             $this->out("<info>No dblist fields found in the application.</info>");
-            exit();
+
+            return;
         }
 
         foreach ($dblists as $module => $lists) {
