@@ -10,10 +10,7 @@ use Qobo\Utils\ModuleConfig\ModuleConfig;
 use Qobo\Utils\Utility;
 
 /**
- * DblistsAdd shell command.
- *
- * Adding dblists(<list_name>) records into dblists table
- * in case the record doesn't exist.
+ *  This class is responsible for adding database lists defined in modules configuration to the database.
  */
 class Upgrade20180907123600Task extends Shell
 {
