@@ -1,5 +1,5 @@
 <?php
-namespace App\Shell;
+namespace App\Shell\Task;
 
 use Cake\Console\Shell;
 use Cake\Core\Configure;
@@ -13,20 +13,19 @@ use Qobo\Utils\ModuleConfig\ModuleConfig;
  * Adding dblists(<list_name>) records into dblists table
  * in case the record doesn't exist.
  */
-class DblistsAddShell extends Shell
+class Upgrade20180907123600Task extends Shell
 {
     protected $modules;
 
     /**
-     * Manage the available sub-commands along with their arguments and help
-     *
-     * @see http://book.cakephp.org/3.0/en/console-and-shells.html#configuring-options-and-generating-help
+     * Configure option parser
      *
      * @return \Cake\Console\ConsoleOptionParser
      */
     public function getOptionParser()
     {
         $parser = parent::getOptionParser();
+        $parser->description('Create Database List records from CSV migrations');
 
         return $parser;
     }
@@ -38,9 +37,6 @@ class DblistsAddShell extends Shell
      */
     public function main()
     {
-        $this->out("Shell: Adding Dblist records from CSV migrations");
-        $this->hr();
-
         $modules = $this->_findCsvModules();
 
         $this->modules = $modules;
@@ -88,7 +84,7 @@ class DblistsAddShell extends Shell
             }
         }
 
-        $this->out("<success>Completed Dblist addition script</success>");
+        $this->success(sprintf('%s completed.', $this->getOptionParser()->getDescription()));
     }
 
     /**
