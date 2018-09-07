@@ -81,15 +81,16 @@ class DashboardMenuListener implements EventListenerInterface
         ]);
         $menu->addMenuItem($link);
 
+        $this->addDashboardItemsFromTable($link, $user, 10);
+
+        $createUrl = empty($link->getMenuItems()) ? '/search/dashboards/index' : '/search/dashboards/add';
         $createLink = MenuItemFactory::createMenuItem([
             'label' => 'Create',
-            'url' => '/search/dashboards/add',
+            'url' => $createUrl,
             'icon' => 'plus',
-            'order' => 999999999
+            'order' => PHP_INT_MAX,
         ]);
         $link->addMenuItem($createLink);
-
-        $this->addDashboardItemsFromTable($link, $user, 10);
     }
 
     /**
