@@ -9,6 +9,9 @@
  * @copyright     Copyright (c) Qobo Ltd. (https://www.qobo.biz)
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
+
+use RolesCapabilities\Access\AccessFactory;
+
 ?>
 <div class="container-fluid">
     <div class="row">
@@ -16,7 +19,13 @@
             <div class="jumbotron">
                 <h1><?= __('Dashboards') ?></h1>
                 <p><?= __('There are no configured Dashboards for you. Please contact the system administrator.') ?></p>
-                <p><?= $this->Html->link(__('{0} Create Dashboard', '<i class="fa fa-plus"></i>'), ['action' => 'add'], ['class' => 'btn btn-primary', 'escape' => false]) ?><p>
+                <?php
+                    $factory = new AccessFactory();
+                    $url = [ 'controller' => $this->request->controller, 'action' => 'add'];
+                    if ($factory->hasAccess($url, $user)):
+                ?>
+                <p><?= $this->Html->link(__('{0} Create Dashboard', '<i class="fa fa-plus"></i>'), $url, ['class' => 'btn btn-primary', 'escape' => false]) ?><p>
+                <?php endif; ?>
             </div>
         </div>
     </div>
