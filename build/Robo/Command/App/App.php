@@ -232,7 +232,6 @@ class App extends AbstractCommand
             'role import',
             'capability assign',
             'menu import',
-            'dblists_add',
             'validate' // run after dblists are populated
         ];
 
@@ -401,7 +400,6 @@ class App extends AbstractCommand
             'role import',
             'capability assign',
             'menu import',
-            'dblists_add',
             'validate' // run after dblists are populated
         ];
 
