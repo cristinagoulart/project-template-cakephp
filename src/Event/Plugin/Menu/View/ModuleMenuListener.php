@@ -24,7 +24,6 @@ class ModuleMenuListener implements EventListenerInterface
     protected $defaults = [
         'url' => '#',
         'label' => 'Undefined',
-        'icon' => 'cube',
         'order' => 0,
         'target' => '_self',
         'children' => [],
@@ -187,7 +186,7 @@ class ModuleMenuListener implements EventListenerInterface
             $config = json_decode(json_encode($moduleConfig->parse()), true);
 
             if (empty($config) || empty($config['table']['icon'])) {
-                $icon = Configure::read('Icons.default');
+                $icon = Configure::read('Menu.default_menu_item_icon');
             } else {
                 $icon = $config['table']['icon'];
             }
