@@ -43,7 +43,7 @@ class SearchViewListener implements EventListenerInterface
      */
     public function getMenuItems(Event $event, $name, array $user, $fullBaseUrl = false, array $modules = [], MenuInterface $menu = null)
     {
-        $listens = [MenuName::SEARCH_VIEW];
+        $listens = [MenuName::SEARCH_VIEW, MenuName::MODULE_INDEX_ROW];
         if (!in_array($name, $listens)) {
             return;
         }
