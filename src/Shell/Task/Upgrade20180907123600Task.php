@@ -4,8 +4,10 @@ namespace App\Shell\Task;
 use Cake\Console\Shell;
 use Cake\Core\Configure;
 use Cake\ORM\TableRegistry;
+use CsvMigrations\FieldHandlers\CsvField;
 use Qobo\Utils\ModuleConfig\ConfigType;
 use Qobo\Utils\ModuleConfig\ModuleConfig;
+use Qobo\Utils\Utility;
 
 /**
  * DblistsAdd shell command.
@@ -15,8 +17,6 @@ use Qobo\Utils\ModuleConfig\ModuleConfig;
  */
 class Upgrade20180907123600Task extends Shell
 {
-    protected $modules;
-
     /**
      * Configure option parser
      *
@@ -37,82 +37,61 @@ class Upgrade20180907123600Task extends Shell
      */
     public function main()
     {
-        $modules = $this->_findCsvModules();
-
-        $this->modules = $modules;
-
-        if (! empty($this->modules)) {
-            $this->out("<warning>Couldn't find CSV modules to parse</warning>");
+        $modules = Utility::findDirs(Configure::read('CsvMigrations.modules.path'));
+        if (empty($modules)) {
+            $this->err('No CSV modules found.');
 
             return;
         }
 
-        $dblists = [];
-
-        foreach ($modules as $k => $module) {
-            $lists = $this->_getDbListsFromCsv($module);
-
-            if (!empty($lists)) {
-                $dblists[$module] = $lists;
-            }
-        }
-
-        $table = TableRegistry::get('Dblists');
-
-        if (empty($dblists)) {
-            $this->out("<info>No dblist fields found in the application.</info>");
+        $lists = $this->getDatabaseLists($modules);
+        if (empty($lists)) {
+            $this->info('No database list fields found in the application.');
 
             return;
         }
 
-        foreach ($dblists as $module => $lists) {
-            foreach ($lists as $list) {
-                $record = $table->find()
-                    ->where(['name' => $list])->first();
-
-                if (!empty($record)) {
-                    $this->out("<info>Dblist record [$list] already exists in the dblists table</info>");
-                    continue;
-                }
-
-                $dblistEntity = $table->newEntity();
-                $dblistEntity->name = $list;
-                $dblistEntity->created = date('Y-m-d H:i:s', time());
-                $dblistEntity->modified = date('Y-m-d H:i:s', time());
-
-                if ($table->save($dblistEntity)) {
-                    $this->out("<success>Added [$list] to dblists table</success>");
-                }
-            }
-        }
+        $this->createDatabaseLists($lists);
 
         $this->success(sprintf('%s completed.', $this->getOptionParser()->getDescription()));
     }
 
     /**
-     * Get an array of dblists from migrations config
+     * Retrieves database list names for specified modules.
      *
-     * @param string $module where to look for dblists
-     * @return array $result containing indexed array of dblists
+     * @param array $modules Module names
+     * @return array
      */
-    protected function _getDbListsFromCsv($module = null)
+    protected function getDatabaseLists(array $modules)
     {
         $result = [];
-
-        if (empty($module)) {
-            return $result;
+        foreach ($modules as $module) {
+            $result[$module] = $this->getDatabaseListsByModule($module);
         }
 
-        $mc = new ModuleConfig(ConfigType::MIGRATION(), $module);
-        $fields = json_decode(json_encode($mc->parse()), true);
+        return array_filter($result);
+    }
 
-        if (empty($fields)) {
-            return $result;
+    /**
+     * Get an array of database lists from migrations config.
+     *
+     * @param string $module Module name
+     * @return array
+     */
+    protected function getDatabaseListsByModule($module)
+    {
+        $config = (new ModuleConfig(ConfigType::MIGRATION(), $module))->parse();
+        $config = json_decode(json_encode($config), true);
+
+        if (empty($config)) {
+            return [];
         }
 
-        foreach ($fields as $field) {
-            if (preg_match('/^dblist\((.+)\)$/', $field['type'], $matches)) {
-                $result[] = $matches[1];
+        $result = [];
+        foreach ($config as $conf) {
+            $field = new CsvField($conf);
+            if ('dblist' === $field->getType()) {
+                $result[] = $field->getLimit();
             }
         }
 
@@ -120,30 +99,43 @@ class Upgrade20180907123600Task extends Shell
     }
 
     /**
-     * Find the list of CSV modules
+     * Creates database lists records for all relevant fields found in the application.
      *
-     * @return array List of modules
+     * @param array $lists Database lists from all modules
+     * @return void
      */
-    protected function _findCsvModules()
+    protected function createDatabaseLists(array $lists)
     {
-        $result = [];
-
-        $path = Configure::read('CsvMigrations.modules.path');
-        if (!is_readable($path)) {
-            throw new \RuntimeException("[$path] is not readable");
+        foreach ($lists as $moduleLists) {
+            $this->createDatabaseListsByModule($moduleLists);
         }
-        if (!is_dir($path)) {
-            throw new \RuntimeException("[$path] is not a directory");
-        }
+    }
 
-        foreach (new \DirectoryIterator($path) as $fileinfo) {
-            if ($fileinfo->isDot()) {
+    /**
+     * Creates database lists for a specific module.
+     *
+     * @param array $lists Module relevant database lists
+     * @return void
+     */
+    protected function createDatabaseListsByModule(array $lists)
+    {
+        $table = TableRegistry::get('CsvMigrations.Dblists');
+
+        foreach ($lists as $list) {
+            $count = $table->find('all')
+                ->where(['name' => $list])
+                ->count();
+
+            if (0 < $count) {
+                $this->info(sprintf('Database list record "%s" already exists.', $list));
                 continue;
             }
-            $result[] = $fileinfo->getFilename();
-        }
-        asort($result);
 
-        return $result;
+            $entity = $table->newEntity(['name' => $list]);
+
+            if ($table->save($entity)) {
+                $this->success(sprintf('Added "%s" to database lists table.', $list));
+            }
+        }
     }
 }
