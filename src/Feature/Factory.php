@@ -2,9 +2,7 @@
 namespace App\Feature;
 
 use App\Feature\Config;
-use Cake\Controller\Component\AuthComponent;
 use Cake\Core\Configure;
-use Cake\Http\ServerRequest;
 use InvalidArgumentException;
 use RuntimeException;
 

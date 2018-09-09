@@ -2,7 +2,6 @@
 
 namespace App\Shell;
 
-use Cake\Console\ConsoleOptionParser;
 use Cake\Shell\PluginShell as CorePluginShell;
 
 /**

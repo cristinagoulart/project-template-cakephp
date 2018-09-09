@@ -6,12 +6,10 @@ use Cake\Controller\ComponentRegistry;
 use Cake\Core\Configure;
 use Cake\Log\LogTrait;
 use Cake\Network\Exception\InternalErrorException;
-use Cake\Network\Exception\UnauthorizedException;
 use Cake\Network\Request;
 use Cake\Network\Response;
 use Cake\ORM\TableRegistry;
 use Cake\Utility\Hash;
-use ErrorException;
 use Psr\Log\LogLevel;
 
 class LdapAuthenticate extends BaseAuthenticate

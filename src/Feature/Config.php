@@ -1,7 +1,6 @@
 <?php
 namespace App\Feature;
 
-use Cake\Utility\Hash;
 use InvalidArgumentException;
 
 class Config

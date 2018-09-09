@@ -6,12 +6,9 @@ use App\Menu\MenuName;
 use Cake\Datasource\EntityInterface;
 use Cake\Event\Event;
 use Cake\Event\EventListenerInterface;
-use Cake\Http\ServerRequest;
-use Cake\ORM\TableRegistry;
 use Cake\Routing\Router;
 use Menu\Event\EventName as MenuEventName;
 use Menu\MenuBuilder\MenuInterface;
-use Menu\MenuBuilder\MenuItemFactory;
 
 class SearchViewListener implements EventListenerInterface
 {

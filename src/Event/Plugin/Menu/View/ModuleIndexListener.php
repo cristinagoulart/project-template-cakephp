@@ -11,7 +11,6 @@ use Cake\Routing\Router;
 use Menu\Event\EventName as MenuEventName;
 use Menu\MenuBuilder\MenuInterface;
 use Menu\MenuBuilder\MenuItemFactory;
-use Menu\MenuBuilder\MenuItemInterface;
 
 class ModuleIndexListener implements EventListenerInterface
 {
@@ -56,8 +55,8 @@ class ModuleIndexListener implements EventListenerInterface
     /**
      * Creates and returns the menu item for the batch operations
      *
-     * @param ServerRequest $request Current server request
-     * @return MenuItemInterface
+     * @param Cake\Http\ServerRequest $request Current server request
+     * @return Menu\MenuBuilder\MenuItemInterface
      */
     private function getBatchMenuItem(ServerRequest $request)
     {
@@ -105,8 +104,8 @@ class ModuleIndexListener implements EventListenerInterface
     /**
      * Creates and returns the menu item for the import action
      *
-     * @param ServerRequest $request Current server request
-     * @return MenuItemInterface
+     * @param Cake\Http\ServerRequest $request Current server request
+     * @return Menu\MenuBuilder\MenuItemInterface
      */
     private function getImportMenuItem(ServerRequest $request)
     {
@@ -125,8 +124,8 @@ class ModuleIndexListener implements EventListenerInterface
     /**
      * Creates and returns the menu item for the add action
      *
-     * @param ServerRequest $request Current server request
-     * @return MenuItemInterface
+     * @param Cake\Http\ServerRequest $request Current server request
+     * @return Menu\MenuBuilder\MenuItemInterface
      */
     private function getAddMenuItem(ServerRequest $request)
     {

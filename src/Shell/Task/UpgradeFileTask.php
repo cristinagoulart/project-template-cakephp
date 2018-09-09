@@ -12,7 +12,6 @@
 namespace App\Shell\Task;
 
 use Bake\Shell\Task\BakeTask;
-use Cake\Console\Shell;
 use Cake\I18n\Time;
 
 /**

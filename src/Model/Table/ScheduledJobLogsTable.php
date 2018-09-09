@@ -3,7 +3,6 @@ namespace App\Model\Table;
 
 use Cake\Datasource\EntityInterface;
 use Cake\I18n\Time;
-use Cake\ORM\Query;
 use Cake\ORM\RulesChecker;
 use Cake\ORM\Table;
 use Cake\Validation\Validator;
