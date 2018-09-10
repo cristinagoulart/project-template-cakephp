@@ -2,8 +2,7 @@
 namespace App\Avatar\Type;
 
 use App\Avatar\AbstractAvatar;
-use Cake\Core\Configure;
-use \LasseRafn\InitialAvatarGenerator\InitialAvatar;
+use LasseRafn\InitialAvatarGenerator\InitialAvatar;
 
 final class DynamicAvatar extends AbstractAvatar
 {

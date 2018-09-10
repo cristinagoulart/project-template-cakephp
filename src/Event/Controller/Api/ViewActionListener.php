@@ -3,10 +3,8 @@ namespace App\Event\Controller\Api;
 
 use App\Event\EventName;
 use Cake\Event\Event;
-use Cake\Network\Request;
 use Cake\ORM\Entity;
 use Cake\ORM\Query;
-use Cake\ORM\Table;
 
 class ViewActionListener extends BaseActionListener
 {

@@ -31,15 +31,12 @@ use Exception;
 use Firebase\JWT\JWT;
 use Qobo\Utils\ModuleConfig\ConfigType;
 use Qobo\Utils\ModuleConfig\ModuleConfig;
-use RolesCapabilities\Access\AccessFactory;
-use RolesCapabilities\Capability;
 use RolesCapabilities\CapabilityTrait;
 use RuntimeException;
 use Search\Controller\SearchTrait;
 use Search\Model\Entity\SavedSearch;
 use Search\Utility as SearchUtility;
 use Search\Utility\Search;
-use Search\Utility\Validator as SearchValidator;
 
 /**
  * Application Controller

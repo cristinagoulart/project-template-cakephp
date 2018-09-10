@@ -2,7 +2,6 @@
 namespace App\Crud\Action;
 
 use Cake\Core\App;
-use Cake\Datasource\QueryInterface;
 use Cake\Datasource\RepositoryInterface;
 use Cake\ORM\Association;
 use Cake\ORM\TableRegistry;

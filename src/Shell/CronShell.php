@@ -6,13 +6,11 @@ use App\Model\Table\ScheduledJobsTable;
 use Cake\Console\Shell;
 use Cake\I18n\Time;
 use Cake\Log\Log;
-use Cake\Network\Exception\NotFoundException;
 use Cake\ORM\TableRegistry;
+use Exception;
 use Qobo\Utils\Utility\Lock\FileLock;
-use \DateTime;
-use \Exception;
-use \RRule\RRule;
-use \RuntimeException;
+use RRule\RRule;
+use RuntimeException;
 
 /**
  * Cron shell command.

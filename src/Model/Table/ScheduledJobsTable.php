@@ -7,7 +7,6 @@ use Cake\Event\EventManager;
 use Cake\Filesystem\Folder;
 use Cake\I18n\Time;
 use Cake\Log\Log;
-use Cake\ORM\Table;
 use Cake\Utility\Inflector;
 use CsvMigrations\Event\EventName;
 use DateTime;

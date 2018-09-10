@@ -14,7 +14,6 @@ use CsvMigrations\FieldHandlers\RelatedFieldTrait;
 use CsvMigrations\FieldHandlers\Setting;
 use Qobo\Utils\ModuleConfig\ConfigType;
 use Qobo\Utils\ModuleConfig\ModuleConfig;
-use RuntimeException;
 
 class LookupActionListener extends BaseActionListener
 {

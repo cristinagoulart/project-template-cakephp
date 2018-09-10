@@ -4,11 +4,9 @@ namespace App\Controller;
 use App\Feature\Factory;
 use Cake\Core\Configure;
 use Cake\Event\Event;
-use Cake\Network\Exception\ForbiddenException;
 use Cake\ORM\TableRegistry;
 use Menu\Event\EventName;
 use Menu\MenuBuilder\MenuItemContainerInterface;
-use Menu\MenuBuilder\MenuItemInterface;
 
 /**
  * System Controller
@@ -95,8 +93,8 @@ class SystemController extends AppController
      * Goes through the provided menu container and attempts to find a menu item that has a URL assigned.
      * Returns the first match, null otherwise.
      *
-     * @param MenuItemContainerInterface $container Menu container to be iterated
-     * @return MenuItemInterface|null
+     * @param \Menu\MenuBuilder\MenuItemContainerInterface $container Menu container to be iterated
+     * @return \Menu\MenuBuilder\MenuItemInterface|null
      */
     public function getFirstMenuItem(MenuItemContainerInterface $container)
     {
