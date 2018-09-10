@@ -1,7 +1,6 @@
-<?= $this->cell('Menu.Menu', [
+<?= $this->element('Menu.menu', [
     'name' => \App\Menu\MenuName::MODULE_VIEW,
     'user' => $user,
-    'fullBaseUrl' => false,
     'renderer' => \Menu\MenuBuilder\MenuButtonsRender::class,
-    'content' => $options['entity'],
+    'context' => $options['entity'],
 ]) ?>
