@@ -1,6 +1,5 @@
-<?= $this->cell('Menu.Menu', [
+<?= $this->element('Menu.menu', [
     'name' => MENU_MAIN,
     'user' => $user,
-    'fullBaseUrl' => false,
     'renderer' => 'Menu\\MenuBuilder\\MainMenuRenderAdminLte'
 ]) ?>
