@@ -2,6 +2,7 @@
 
 namespace App\Event\Plugin\Menu\View;
 
+use App\Feature\Config;
 use App\Feature\Factory as FeatureFactory;
 use Cake\Core\Configure;
 use Cake\Event\Event;
@@ -23,7 +24,6 @@ class ModuleMenuListener implements EventListenerInterface
     protected $defaults = [
         'url' => '#',
         'label' => 'Undefined',
-        'icon' => 'cube',
         'order' => 0,
         'target' => '_self',
         'children' => [],
@@ -125,6 +125,7 @@ class ModuleMenuListener implements EventListenerInterface
 
         $result = [];
         foreach ($config[$menuName] as $item) {
+            $item['icon'] = empty($item['icon']) ? $this->getIcon($module) : $this->getIcon($module, $item['icon']);
             $result[] = $item;
         }
 
@@ -164,5 +165,32 @@ class ModuleMenuListener implements EventListenerInterface
         }
 
         return $result;
+    }
+
+    /**
+     * Provides an alternative icon in case the menu item was blank.
+     * Here is order:
+     * - menu icon
+     * - table icon
+     * - default icon
+     *
+     * @param string $module The module name
+     * @param string $icon Icon to suggest alternatives
+     * @return string
+     * @throws \Exception
+     */
+    private function getIcon($module, $icon = null)
+    {
+        if (!empty($icon)) {
+            return $icon;
+        }
+
+        $moduleConfig = new ModuleConfig(ConfigType::MODULE(), $module);
+        $config = json_decode(json_encode($moduleConfig->parse()), true);
+        if (!empty($config) && !empty($config['table']['icon'])) {
+            return $config['table']['icon'];
+        }
+
+        return $icon = Configure::read('Menu.default_menu_item_icon');
     }
 }
