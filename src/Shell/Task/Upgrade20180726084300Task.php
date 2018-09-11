@@ -4,7 +4,6 @@ namespace App\Shell\Task;
 use App\Avatar\Service as AvatarService;
 use Cake\Console\ConsoleOptionParser;
 use Cake\Console\Shell;
-use Cake\Core\Configure;
 use Cake\ORM\TableRegistry;
 
 class Upgrade20180726084300Task extends Shell

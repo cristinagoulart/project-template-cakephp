@@ -2,8 +2,6 @@
 namespace App\Shell;
 
 use Cake\Console\Shell;
-use Cake\Core\Configure;
-use Cake\I18n\Time;
 use Cake\Log\Log;
 use Cake\ORM\ResultSet;
 use Cake\ORM\TableRegistry;

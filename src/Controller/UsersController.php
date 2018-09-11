@@ -9,7 +9,6 @@ use CakeDC\Users\Controller\Traits\RegisterTrait;
 use CakeDC\Users\Controller\Traits\SimpleCrudTrait;
 use CakeDC\Users\Exception\UserNotFoundException;
 use CakeDC\Users\Exception\WrongPasswordException;
-use Cake\Core\Configure;
 use Cake\Network\Exception\ForbiddenException;
 use Cake\Network\Exception\UnauthorizedException;
 use Cake\ORM\TableRegistry;
@@ -127,8 +126,8 @@ class UsersController extends AppController
      * by logged in user
      *
      * @return \Cake\Network\Response
-     * @throws \CakeDC\Users\Exception\UserNotFoundException\UserNotFoundException When user not found.
-     * @throws \Cake\Network\Exception\UnauthorizedException\UnauthorizedException When user is not authorized.
+     * @throws \CakeDC\Users\Exception\UserNotFoundException When user not found.
+     * @throws \Cake\Network\Exception\UnauthorizedException When user is not authorized.
      */
     public function editProfile()
     {
@@ -206,7 +205,7 @@ class UsersController extends AppController
      *
      * @param string|null $id User id.
      * @return void
-     * @throws ForbiddenException When user is locked.
+     * @throws \Cake\Network\Exception\ForbiddenException When user is locked.
      */
     public function delete($id = null)
     {

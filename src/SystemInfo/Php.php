@@ -1,7 +1,6 @@
 <?php
 namespace App\SystemInfo;
 
-use InvalidArgumentException;
 use Qobo\Utils\Utility;
 
 /**

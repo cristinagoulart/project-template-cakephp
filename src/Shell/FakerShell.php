@@ -1,14 +1,11 @@
 <?php
 namespace App\Shell;
 
-use Cake\Console\ConsoleOptionParser;
 use Cake\Console\Shell;
 use Cake\ORM\Table;
 use Cake\ORM\TableRegistry;
 use Cake\Utility\Inflector;
 use Faker\Factory;
-use Faker\Generator;
-use Faker\ORM\CakePHP\Populator;
 use ReflectionClass;
 use ReflectionMethod;
 

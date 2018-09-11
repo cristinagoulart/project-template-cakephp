@@ -2,7 +2,6 @@
 namespace App\Avatar\Type;
 
 use App\Avatar\AbstractAvatar;
-use Cake\Core\Configure;
 
 final class Gravatar extends AbstractAvatar
 {

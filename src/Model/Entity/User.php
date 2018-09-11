@@ -6,7 +6,6 @@ use CakeDC\Users\Model\Entity\User as BaseUser;
 use Cake\Core\Configure;
 use Cake\ORM\TableRegistry;
 use Exception;
-use RolesCapabilities\Model\Table\CapabilitiesTable;
 
 class User extends BaseUser
 {

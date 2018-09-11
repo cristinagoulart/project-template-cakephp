@@ -3,7 +3,6 @@ namespace App\Shell\Task;
 
 use Cake\Console\Shell;
 use Cake\Core\App;
-use Cake\Core\Configure;
 use Cake\Core\Plugin;
 use Cake\Database\Driver\Mysql;
 use Cake\Datasource\ConnectionManager;

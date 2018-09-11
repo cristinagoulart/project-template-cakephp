@@ -3,9 +3,7 @@ namespace App\Event\Plugin\Search\Model;
 
 use Cake\Event\Event;
 use Cake\Event\EventListenerInterface;
-use Cake\ORM\Table;
 use Cake\ORM\TableRegistry;
-use Cake\Utility\Inflector;
 use Qobo\Utils\ModuleConfig\ConfigType;
 use Qobo\Utils\ModuleConfig\ModuleConfig;
 use Search\Event\EventName;

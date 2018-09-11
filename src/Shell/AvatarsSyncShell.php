@@ -2,7 +2,6 @@
 namespace App\Shell;
 
 use Cake\Console\Shell;
-use Cake\Core\Configure;
 use Cake\ORM\TableRegistry;
 
 /**
