@@ -181,17 +181,16 @@ class ModuleMenuListener implements EventListenerInterface
      */
     private function getIcon($module, $icon = null)
     {
-        if (empty($icon)) {
-            $moduleConfig = new ModuleConfig(ConfigType::MODULE(), $module);
-            $config = json_decode(json_encode($moduleConfig->parse()), true);
-
-            if (empty($config) || empty($config['table']['icon'])) {
-                $icon = Configure::read('Menu.default_menu_item_icon');
-            } else {
-                $icon = $config['table']['icon'];
-            }
+        if (!empty($icon)) {
+            return $icon;
         }
 
-        return $icon;
+        $moduleConfig = new ModuleConfig(ConfigType::MODULE(), $module);
+        $config = json_decode(json_encode($moduleConfig->parse()), true);
+        if (!empty($config) && !empty($config['table']['icon'])) {
+            return $config['table']['icon'];
+        }
+
+        return $icon = Configure::read('Menu.default_menu_item_icon');
     }
 }
