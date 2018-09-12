@@ -8,6 +8,7 @@ use Cake\Core\Configure;
 use Cake\Event\Event;
 use Cake\Event\EventListenerInterface;
 use Menu\Event\EventName as MenuEventName;
+use Menu\MenuBuilder\MenuFactory;
 use Menu\MenuBuilder\MenuInterface;
 use Menu\MenuBuilder\MenuItemFactory;
 use Qobo\Utils\ModuleConfig\ConfigType;
@@ -65,12 +66,7 @@ class ModuleMenuListener implements EventListenerInterface
     ) {
         if (empty($modules)) {
             $modules = Utility::findDirs(Configure::readOrFail('CsvMigrations.modules.path'));
-
-            $menuItems = $this->normalizeMenuItems($this->getModulesMenuItems($modules, $name));
-            foreach ($menuItems as $menuItem) {
-                $menu->addMenuItem(MenuItemFactory::createMenuItem($menuItem));
-            }
-
+            MenuFactory::addToMenu($menu, $this->getModulesMenuItems($modules, $name));
             $event->setResult($menu);
         } else {
             $menuItems = $this->getModulesMenuItems($modules, $name);
@@ -123,74 +119,56 @@ class ModuleMenuListener implements EventListenerInterface
             return [];
         }
 
-        $result = [];
-        foreach ($config[$menuName] as $item) {
-            $item['icon'] = empty($item['icon']) ? $this->getIcon($module) : $this->getIcon($module, $item['icon']);
-            $result[] = $item;
-        }
+        $result = $config[$menuName];
+        $result = $this->applyModuleDefaults($module, $result);
 
         return $result;
     }
 
     /**
-     * Menu items normalization method.
+     * Applies the module defaults on the provided menu item
      *
-     * @param array $items Menu items
-     * @return array
+     * @param string $module Module's name
+     * @param array $items List of menu items
+     * @return array The provided list of menu items including the defaults
+     * @throws \Exception
      */
-    protected function normalizeMenuItems(array $items)
+    private function applyModuleDefaults($module, array $items)
     {
-        // merge item properties with defaults
-        $func = function (&$item, $k) use (&$func) {
-            if (!empty($item['children'])) {
-                array_walk($item['children'], $func);
-            }
+        return MenuFactory::applyDefaults($items, $this->getModuleDefaults($module));
+    }
 
-            $item = array_merge($this->defaults, $item);
-        };
-        array_walk($items, $func);
-
-        // merge duplicated labels recursively
-        $result = [];
-        foreach ($items as $item) {
-            if (!array_key_exists($item['label'], $result)) {
-                $result[$item['label']] = $item;
-                continue;
-            }
-
-            $result[$item['label']]['children'] = array_merge_recursive(
-                $item['children'],
-                $result[$item['label']]['children']
-            );
-        }
-
-        return $result;
+    /**
+     * Returns the default values for the specified module.
+     *
+     * @param string $module Module's name
+     * @return array The defaults
+     * @throws \Exception
+     */
+    private function getModuleDefaults($module)
+    {
+        return [
+            'icon' => $this->getModuleIcon($module)
+        ];
     }
 
     /**
      * Provides an alternative icon in case the menu item was blank.
-     * Here is order:
-     * - menu icon
-     * - table icon
-     * - default icon
+     * The alternative icon is taken from table config
      *
      * @param string $module The module name
-     * @param string $icon Icon to suggest alternatives
      * @return string
      * @throws \Exception
      */
-    private function getIcon($module, $icon = null)
+    private function getModuleIcon($module)
     {
-        if (!empty($icon)) {
-            return $icon;
-        }
-
+        // Table icon
         $moduleConfig = new ModuleConfig(ConfigType::MODULE(), $module);
         $config = json_decode(json_encode($moduleConfig->parse()), true);
         if (!empty($config) && !empty($config['table']['icon'])) {
             return $config['table']['icon'];
         }
 
-        return $icon = Configure::read('Menu.default_menu_item_icon');
+        return null;
     }
 }
