@@ -125,31 +125,23 @@ class ModuleMenuListener implements EventListenerInterface
 
         $result = [];
         foreach ($config[$menuName] as $item) {
-            $item['icon'] = empty($item['icon']) ? $this->getIcon($module) : $this->getIcon($module, $item['icon']);
             $result[] = $item;
         }
+
+        $result = $this->applyModuleDefaults($module, $result);
 
         return $result;
     }
 
     /**
-     * Menu items normalization method.
+     * Normalises the provided array menu items for the given module
+     * Part of the normalisation is to merge duplicated labels, recursively
      *
      * @param array $items Menu items
      * @return array
      */
     protected function normalizeMenuItems(array $items)
     {
-        // merge item properties with defaults
-        $func = function (&$item, $k) use (&$func) {
-            if (!empty($item['children'])) {
-                array_walk($item['children'], $func);
-            }
-
-            $item = array_merge($this->defaults, $item);
-        };
-        array_walk($items, $func);
-
         // merge duplicated labels recursively
         $result = [];
         foreach ($items as $item) {
@@ -168,29 +160,64 @@ class ModuleMenuListener implements EventListenerInterface
     }
 
     /**
-     * Provides an alternative icon in case the menu item was blank.
-     * Here is order:
-     * - menu icon
+     * Applies the module defaults on the provided menu item
+     *
+     * @param string $module Module's name
+     * @param array $items List of menu items
+     * @return array The provided list of menu items including the defaults
+     */
+    private function applyModuleDefaults($module, array $items)
+    {
+        // merge item properties with defaults
+        $func = function (&$item, $k) use (&$func, $module) {
+            if (!empty($item['children'])) {
+                array_walk($item['children'], $func);
+            }
+
+            $item = array_merge($this->getModuleDefaults($module), $item);
+        };
+        array_walk($items, $func);
+
+        return $items;
+    }
+
+    /**
+     * Returns the default values for the specified module.
+     * The default icon is provided with the following lookup order
      * - table icon
      * - default icon
      *
+     * @param string $module Module's name
+     * @return array The defaults
+     * @throws \Exception
+     */
+    private function getModuleDefaults($module)
+    {
+        return array_merge($this->defaults, [
+            'icon' => $this->getModuleIcon($module)
+        ]);
+    }
+
+    /**
+     * Provides an alternative icon in case the menu item was blank.
+     * Here is order:
+     * - table icon
+     * - menu default icon
+     *
      * @param string $module The module name
-     * @param string $icon Icon to suggest alternatives
      * @return string
      * @throws \Exception
      */
-    private function getIcon($module, $icon = null)
+    private function getModuleIcon($module)
     {
-        if (!empty($icon)) {
-            return $icon;
-        }
-
+        // Table icon
         $moduleConfig = new ModuleConfig(ConfigType::MODULE(), $module);
         $config = json_decode(json_encode($moduleConfig->parse()), true);
         if (!empty($config) && !empty($config['table']['icon'])) {
             return $config['table']['icon'];
         }
 
+        // Menu default icon
         return $icon = Configure::read('Menu.default_menu_item_icon');
     }
 }
