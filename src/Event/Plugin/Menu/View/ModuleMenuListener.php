@@ -8,6 +8,7 @@ use Cake\Core\Configure;
 use Cake\Event\Event;
 use Cake\Event\EventListenerInterface;
 use Menu\Event\EventName as MenuEventName;
+use Menu\MenuBuilder\MenuFactory;
 use Menu\MenuBuilder\MenuInterface;
 use Menu\MenuBuilder\MenuItemFactory;
 use Qobo\Utils\ModuleConfig\ConfigType;
@@ -65,12 +66,7 @@ class ModuleMenuListener implements EventListenerInterface
     ) {
         if (empty($modules)) {
             $modules = Utility::findDirs(Configure::readOrFail('CsvMigrations.modules.path'));
-
-            $menuItems = $this->normalizeMenuItems($this->getModulesMenuItems($modules, $name));
-            foreach ($menuItems as $menuItem) {
-                $menu->addMenuItem(MenuItemFactory::createMenuItem($menuItem));
-            }
-
+            MenuFactory::addToMenu($menu, $this->getModulesMenuItems($modules, $name));
             $event->setResult($menu);
         } else {
             $menuItems = $this->getModulesMenuItems($modules, $name);
@@ -123,38 +119,8 @@ class ModuleMenuListener implements EventListenerInterface
             return [];
         }
 
-        $result = [];
-        foreach ($config[$menuName] as $item) {
-            $result[] = $item;
-        }
-
+        $result = $config[$menuName];
         $result = $this->applyModuleDefaults($module, $result);
-
-        return $result;
-    }
-
-    /**
-     * Normalises the provided array menu items for the given module
-     * Part of the normalisation is to merge duplicated labels, recursively
-     *
-     * @param array $items Menu items
-     * @return array
-     */
-    protected function normalizeMenuItems(array $items)
-    {
-        // merge duplicated labels recursively
-        $result = [];
-        foreach ($items as $item) {
-            if (!array_key_exists($item['label'], $result)) {
-                $result[$item['label']] = $item;
-                continue;
-            }
-
-            $result[$item['label']]['children'] = array_merge_recursive(
-                $item['children'],
-                $result[$item['label']]['children']
-            );
-        }
 
         return $result;
     }
@@ -165,27 +131,15 @@ class ModuleMenuListener implements EventListenerInterface
      * @param string $module Module's name
      * @param array $items List of menu items
      * @return array The provided list of menu items including the defaults
+     * @throws \Exception
      */
     private function applyModuleDefaults($module, array $items)
     {
-        // merge item properties with defaults
-        $func = function (&$item, $k) use (&$func, $module) {
-            if (!empty($item['children'])) {
-                array_walk($item['children'], $func);
-            }
-
-            $item = array_merge($this->getModuleDefaults($module), $item);
-        };
-        array_walk($items, $func);
-
-        return $items;
+        return MenuFactory::applyDefaults($items, $this->getModuleDefaults($module));
     }
 
     /**
      * Returns the default values for the specified module.
-     * The default icon is provided with the following lookup order
-     * - table icon
-     * - default icon
      *
      * @param string $module Module's name
      * @return array The defaults
@@ -193,16 +147,14 @@ class ModuleMenuListener implements EventListenerInterface
      */
     private function getModuleDefaults($module)
     {
-        return array_merge($this->defaults, [
+        return [
             'icon' => $this->getModuleIcon($module)
-        ]);
+        ];
     }
 
     /**
      * Provides an alternative icon in case the menu item was blank.
-     * Here is order:
-     * - table icon
-     * - menu default icon
+     * The alternative icon is taken from table config
      *
      * @param string $module The module name
      * @return string
@@ -217,7 +169,6 @@ class ModuleMenuListener implements EventListenerInterface
             return $config['table']['icon'];
         }
 
-        // Menu default icon
-        return $icon = Configure::read('Menu.default_menu_item_icon');
+        return null;
     }
 }
