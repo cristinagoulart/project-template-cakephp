@@ -38,28 +38,6 @@ if (!extension_loaded('intl')) {
     trigger_error('You must enable the intl extension to use CakePHP.', E_USER_ERROR);
 }
 
-use App\Event\Component\UserIdentifyListener;
-use App\Event\Controller\Api\AddActionListener;
-use App\Event\Controller\Api\EditActionListener;
-use App\Event\Controller\Api\IndexActionListener;
-use App\Event\Controller\Api\LookupActionListener;
-use App\Event\Controller\Api\RelatedActionListener;
-use App\Event\Controller\Api\ViewActionListener;
-use App\Event\Model\LookupListener;
-use App\Event\Plugin\CsvMigrations\Controller\BatchActionListener;
-use App\Event\Plugin\CsvMigrations\FieldHandlers\MagicDefaultValueListener;
-use App\Event\Plugin\CsvMigrations\Model\DatabaseListsListener;
-use App\Event\Plugin\Menu\View\AccessMenuListener;
-use App\Event\Plugin\Menu\View\ApplicationMenuListener;
-use App\Event\Plugin\Menu\View\DashboardMenuListener;
-use App\Event\Plugin\Menu\View\ModuleIndexListener;
-use App\Event\Plugin\Menu\View\ModuleMenuListener;
-use App\Event\Plugin\Menu\View\ModuleViewListener;
-use App\Event\Plugin\Menu\View\SearchViewListener;
-use App\Event\Plugin\Search\Model\ChildListItemsListener;
-use App\Event\Plugin\Search\Model\ReportsListener;
-use App\Event\Plugin\Search\Model\SearchableFieldsListener;
-use App\Event\Plugin\Search\Model\SearchResultsListener;
 use App\Feature\Factory as FeatureFactory;
 use Burzum\FileStorage\Storage\Listener\LocalListener;
 use CakephpWhoops\Error\WhoopsHandler;
@@ -264,12 +242,6 @@ DispatcherFactory::add('Asset');
 DispatcherFactory::add('Routing');
 DispatcherFactory::add('ControllerFactory');
 
-EventManager::instance()->on(new AddActionListener());
-EventManager::instance()->on(new BatchActionListener());
-EventManager::instance()->on(new EditActionListener());
-EventManager::instance()->on(new ChildListItemsListener());
-EventManager::instance()->on(new DatabaseListsListener());
-EventManager::instance()->on(new IndexActionListener());
 // @link https://github.com/burzum/cakephp-file-storage/blob/master/docs/Documentation/Included-Event-Listeners.md
 EventManager::instance()->on(new LocalListener([
     'imageProcessing' => true,
@@ -277,22 +249,34 @@ EventManager::instance()->on(new LocalListener([
         'pathPrefix' => Configure::read('FileStorage.pathBuilderOptions.pathPrefix')
     ]
 ]));
-EventManager::instance()->on(new LookupActionListener());
-EventManager::instance()->on(new LookupListener());
-EventManager::instance()->on(new MagicDefaultValueListener());
-EventManager::instance()->on(new ApplicationMenuListener());
-EventManager::instance()->on(new DashboardMenuListener());
-EventManager::instance()->on(new ModuleMenuListener());
-EventManager::instance()->on(new ModuleIndexListener());
-EventManager::instance()->on(new ModuleViewListener());
-EventManager::instance()->on(new SearchViewListener());
-EventManager::instance()->on(new AccessMenuListener());
-EventManager::instance()->on(new RelatedActionListener());
-EventManager::instance()->on(new ReportsListener());
-EventManager::instance()->on(new SearchableFieldsListener());
-EventManager::instance()->on(new SearchResultsListener());
-EventManager::instance()->on(new UserIdentifyListener());
-EventManager::instance()->on(new ViewActionListener());
+
+/**
+ * Loads all Event Listeners found in src/Event/ directory
+ */
+call_user_func(function () {
+    $Iterator = new RecursiveIteratorIterator(new RecursiveDirectoryIterator(APP . 'Event'));
+
+    foreach ($Iterator as $info) {
+        if (false === strpos($info->getFilename(), 'Listener.php')) {
+            continue;
+        }
+
+        $eventClassName = $info->getPathname();
+
+        $eventClassName = str_replace(APP, '', $eventClassName);
+        $eventClassName = str_replace('.' . $info->getExtension(), '', $eventClassName);
+        $eventClassName = str_replace(DS, '\\', $eventClassName);
+        $eventClassName = '\\App\\' . $eventClassName;
+
+        $reflectionClass = new ReflectionClass($eventClassName);
+        // skip abstract classes
+        if ($reflectionClass->isAbstract()) {
+            continue;
+        }
+
+        EventManager::instance()->on(new $eventClassName);
+    }
+});
 
 // load AdminLTE theme settings
 Configure::load('admin_lte', 'default');
