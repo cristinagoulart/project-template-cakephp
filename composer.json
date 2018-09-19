@@ -39,7 +39,7 @@
         "qobo/cakephp-menu": "^13.0",
         "qobo/cakephp-roles-capabilities": "^16.0",
         "qobo/cakephp-search": "^18.0",
-        "qobo/cakephp-utils": "^7.4",
+        "qobo/cakephp-utils": "^8.0",
         "qobo/qobo-robo": "^2.0",
         "qobo/qobo-robo-cakephp": "^2.0",
         "vlucas/phpdotenv": "^1.1"
