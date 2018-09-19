@@ -16,8 +16,8 @@ return [
         'all' => [
             'finder' => 'auth',
         ],
-        'CakeDC/Users.ApiKey',
-        // 'CakeDC/Users.RememberMe',
+        'CakeDC/Auth.ApiKey',
+        // 'CakeDC/Auth.RememberMe',
         'Form',
     ],
 ];
