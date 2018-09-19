@@ -49,18 +49,7 @@ class ScheduledJobsTable extends AppTable
      */
     public function beforeSave(Event $event, EntityInterface $entity, \ArrayObject $options)
     {
-        $user = $this->getCurrentUser();
-
-        if (empty($user['id'])) {
-            return;
-        }
-
-        $entity->set('modified_by', $user['id']);
-        if ($entity->isNew()) {
-            $entity->set('created_by', $user['id']);
-        }
-
-        $entity->start_date = $this->getStartDate($entity->start_date);
+        $entity->set('start_date', $this->getStartDate($entity->get('start_date')));
     }
 
     /**
