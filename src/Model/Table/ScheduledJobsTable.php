@@ -64,27 +64,6 @@ class ScheduledJobsTable extends AppTable
     }
 
     /**
-     * afterSave hook
-     *
-     * @param \Cake\Event\Event $event from the parent afterSave
-     * @param \Cake\Datasource\EntityInterface $entity from the parent afterSave
-     * @param \ArrayObject $options from the parent afterSave
-     * @return void
-     */
-    public function afterSave(Event $event, EntityInterface $entity, \ArrayObject $options)
-    {
-        $options['current_user'] = $this->getCurrentUser();
-
-        $afterSaveEvent = new Event(
-            (string)EventName::MODEL_AFTER_SAVE(),
-            $this,
-            ['entity' => $entity, 'options' => $options]
-        );
-
-        EventManager::instance()->dispatch($afterSaveEvent);
-    }
-
-    /**
      * Get Activated Job records
      *
      * @deprecated v39.10 Please use getJobs() method instead
