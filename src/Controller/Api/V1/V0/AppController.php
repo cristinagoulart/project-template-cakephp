@@ -87,10 +87,6 @@ class AppController extends Controller
 
         $this->_authentication();
 
-        $this->loadComponent('RolesCapabilities.Capability', [
-            'currentRequest' => $this->request->params
-        ]);
-
         // prevent access on disabled module
         $feature = FeatureFactory::get('Module' . DS . $this->name);
         if (!$feature->isActive()) {

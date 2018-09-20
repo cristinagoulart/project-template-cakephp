@@ -7,6 +7,7 @@ project-template-cakephp
 [![Latest Unstable Version](https://poser.pugx.org/qobo/project-template-cakephp/v/unstable)](https://packagist.org/packages/qobo/project-template-cakephp)
 [![License](https://poser.pugx.org/qobo/project-template-cakephp/license)](https://packagist.org/packages/qobo/project-template-cakephp)
 [![codecov](https://codecov.io/gh/QoboLtd/project-template-cakephp/branch/master/graph/badge.svg)](https://codecov.io/gh/QoboLtd/project-template-cakephp)
+[![BCH compliance](https://bettercodehub.com/edge/badge/QoboLtd/project-template-cakephp?branch=master)](https://bettercodehub.com/)
 
 About
 -----

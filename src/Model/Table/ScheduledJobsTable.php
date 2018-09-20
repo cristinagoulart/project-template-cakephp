@@ -49,39 +49,7 @@ class ScheduledJobsTable extends AppTable
      */
     public function beforeSave(Event $event, EntityInterface $entity, \ArrayObject $options)
     {
-        $user = $this->getCurrentUser();
-
-        if (empty($user['id'])) {
-            return;
-        }
-
-        $entity->set('modified_by', $user['id']);
-        if ($entity->isNew()) {
-            $entity->set('created_by', $user['id']);
-        }
-
-        $entity->start_date = $this->getStartDate($entity->start_date);
-    }
-
-    /**
-     * afterSave hook
-     *
-     * @param \Cake\Event\Event $event from the parent afterSave
-     * @param \Cake\Datasource\EntityInterface $entity from the parent afterSave
-     * @param \ArrayObject $options from the parent afterSave
-     * @return void
-     */
-    public function afterSave(Event $event, EntityInterface $entity, \ArrayObject $options)
-    {
-        $options['current_user'] = $this->getCurrentUser();
-
-        $afterSaveEvent = new Event(
-            (string)EventName::MODEL_AFTER_SAVE(),
-            $this,
-            ['entity' => $entity, 'options' => $options]
-        );
-
-        EventManager::instance()->dispatch($afterSaveEvent);
+        $entity->set('start_date', $this->getStartDate($entity->get('start_date')));
     }
 
     /**

@@ -82,10 +82,6 @@ class AppController extends Controller
         if (!$feature->isActive()) {
             throw new NotFoundException();
         }
-
-        $this->loadComponent('RolesCapabilities.Capability', [
-            'currentRequest' => $this->request->params
-        ]);
     }
 
     /**
