@@ -48,7 +48,23 @@ echo $this->Html->scriptBlock(
         <div class="col-xs-12 col-md-6">
             <div class="pull-right">
                 <div class="btn-group btn-group-sm" role="group">
-                    <?php echo $this->element('Module/Menu/index_top', ['user' => $user]);?>
+                    <?php 
+                        echo $this->element('Module/Menu/index_top', ['user' => $user]);
+                        
+                        $age = Configure::read('ScheduledLog.stats.age');
+
+                        echo $this->Form->postLink(
+                            '<i class="fa fa-trash-o"></i> ' . __('Delete old'),
+                            ['plugin' => false, 'controller' => 'ScheduledJobLogs', 'action' => 'gc'],
+                            [
+                                'title' => __('Delete old logs'),
+                                'confirm' => 'Are you sure? This action will delete all the Scheduled logs older than ' . ltrim($age, '-') . '.',
+                                'escape' => false,
+                                'class' => 'btn btn-danger'
+                            ]
+                        );
+                    
+                    ?>
                 </div>
             </div>
         </div>

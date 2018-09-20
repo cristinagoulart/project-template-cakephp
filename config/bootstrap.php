@@ -71,6 +71,7 @@ try {
     Configure::load('avatar', 'default');
     Configure::load('csv_migrations', 'default');
     Configure::load('database_log', 'default');
+    Configure::load('scheduled_log', 'default');
     Configure::load(file_exists(CONFIG . 'features_local.php') ? 'features_local' : 'features', 'default');
     Configure::load('file_storage', 'default');
     Configure::load('groups', 'default');
