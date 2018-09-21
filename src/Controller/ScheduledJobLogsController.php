@@ -25,7 +25,19 @@ class ScheduledJobLogsController extends BaseController
     public function index()
     {
     }
-
+    
+    /**
+     * Initialization hook method.
+     *
+     * Implement this method to avoid having to overwrite
+     * the constructor and call parent.
+     *
+     * @return void
+     */
+    public function initialize()
+    {
+        parent::initialize();
+    }
     /**
      * View method
      *
@@ -65,7 +77,7 @@ class ScheduledJobLogsController extends BaseController
      */
     public function gc()
     {
-        $this->request->allowMethod('post');
+        // $this->request->allowMethod('post');
 
         $age = Configure::read('ScheduledLog.stats.age');
         if (!$age) {
