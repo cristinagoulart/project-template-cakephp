@@ -43,14 +43,12 @@ echo $this->Html->scriptBlock(
 <section class="content-header">
     <div class="row">
         <div class="col-xs-12 col-md-6">
-            <h4><?php echo __('Scheduled Jobs'); ?></h4>
+            <h4><?= __('Scheduled Jobs'); ?></h4>
         </div>
         <div class="col-xs-12 col-md-6">
             <div class="pull-right">
                 <div class="btn-group btn-group-sm" role="group">
-                    <?php 
-                        echo $this->element('Module/Menu/index_top', ['user' => $user]);
-                    ?>
+                    <?= $this->element('Module/Menu/index_top', ['user' => $user]); ?>
                 </div>
             </div>
         </div>

@@ -47,24 +47,4 @@ class ScheduledLogShellTest extends ConsoleIntegrationTestCase
 
         parent::tearDown();
     }
-
-    /**
-     * Test getOptionParser method
-     *
-     * @return void
-     */
-    public function testGetOptionParser()
-    {
-        $this->markTestIncomplete('Not implemented yet.');
-    }
-
-    /**
-     * Test main method
-     *
-     * @return void
-     */
-    public function testMain()
-    {
-        $this->markTestIncomplete('Not implemented yet.');
-    }
 }
