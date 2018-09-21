@@ -156,8 +156,8 @@ class ModuleIndexListener implements EventListenerInterface
         $delLog = MenuItemFactory::createMenuItem([
             'url' => ['plugin' => false, 'controller' => 'ScheduledJobLogs', 'action' => 'gc'],
             'icon' => 'trash',
-            'label' => __('Delete old'),
-            'confirmMsg' => __('Are you sure? This action will delete all the Scheduled logs older than ' . ltrim($age, '-') . '.'),
+            'label' => __('Delete old logs'),
+            'confirmMsg' => __('Are you sure? This action will delete all the scheduled job logs older than ' . ltrim($age, '-') . '.'),
             'type' => 'postlink_button',
             'order' => 20,
         ]);
