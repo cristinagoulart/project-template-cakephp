@@ -27,18 +27,6 @@ class ScheduledJobLogsController extends BaseController
     }
 
     /**
-     * Initialization hook method.
-     *
-     * Implement this method to avoid having to overwrite
-     * the constructor and call parent.
-     *
-     * @return void
-     */
-    public function initialize()
-    {
-        parent::initialize();
-    }
-    /**
      * View method
      *
      * @param string|null $id Entity id.

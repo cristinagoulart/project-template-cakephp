@@ -63,22 +63,25 @@ class ScheduledLogShell extends Shell
 
         return null;
     }
+
     /**
      * Get stats log configuration
      *
-     * @return array
+     * @return string
      */
     protected function getDaysConfig()
     {
+        if (isset($this->params['age'])) {
+            $result = $this->params['age'];
+
+            return $result;
+        }
+
         $result = Configure::read('ScheduledLog.stats.age');
         if (!$result) {
             $this->info('Required parameter "age" is not defined (garbage collector)');
 
-            return;
-        }
-
-        if (isset($this->params['age'])) {
-            $result = $this->params['age'];
+            return null;
         }
 
         return $result;
