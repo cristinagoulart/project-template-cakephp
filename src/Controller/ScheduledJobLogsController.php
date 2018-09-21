@@ -25,7 +25,7 @@ class ScheduledJobLogsController extends BaseController
     public function index()
     {
     }
-    
+
     /**
      * Initialization hook method.
      *

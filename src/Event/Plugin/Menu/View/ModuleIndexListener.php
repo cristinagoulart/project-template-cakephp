@@ -153,6 +153,7 @@ class ModuleIndexListener implements EventListenerInterface
     private function getDelLogItem()
     {
         $age = Configure::read('ScheduledLog.stats.age');
+
         return MenuItemFactory::createMenuItem([
             'url' => ['plugin' => false, 'controller' => 'ScheduledJobLogs', 'action' => 'gc'],
             'icon' => 'trash',
