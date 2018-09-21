@@ -158,6 +158,7 @@ class ModuleIndexListener implements EventListenerInterface
             'icon' => 'trash',
             'label' => __('Delete old logs'),
             'confirmMsg' => __('Are you sure? This action will delete all the scheduled job logs older than ' . ltrim($age, '-') . '.'),
+            'attributes' => ['class' => 'btn btn-danger'],
             'type' => 'postlink_button',
             'order' => 20,
         ]);
