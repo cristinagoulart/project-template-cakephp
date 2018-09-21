@@ -1,13 +1,13 @@
 <?php
 namespace App\Test\TestCase\Shell;
 
-use App\Shell\SchedulerLogShell;
+use App\Shell\ScheduledLogShell;
 use Cake\TestSuite\ConsoleIntegrationTestCase;
 
 /**
- * App\Shell\SchedulerLogShell Test Case
+ * App\Shell\ScheduledLogShell Test Case
  */
-class SchedulerLogShellTest extends ConsoleIntegrationTestCase
+class ScheduledLogShellTest extends ConsoleIntegrationTestCase
 {
 
     /**
@@ -20,9 +20,9 @@ class SchedulerLogShellTest extends ConsoleIntegrationTestCase
     /**
      * Test subject
      *
-     * @var \App\Shell\SchedulerLogShell
+     * @var \App\Shell\ScheduledLogShell
      */
-    public $SchedulerLog;
+    public $ScheduledLog;
 
     /**
      * setUp method
@@ -33,7 +33,7 @@ class SchedulerLogShellTest extends ConsoleIntegrationTestCase
     {
         parent::setUp();
         $this->io = $this->getMockBuilder('Cake\Console\ConsoleIo')->getMock();
-        $this->SchedulerLog = new SchedulerLogShell($this->io);
+        $this->ScheduledLog = new ScheduledLogShell($this->io);
     }
 
     /**
@@ -43,7 +43,7 @@ class SchedulerLogShellTest extends ConsoleIntegrationTestCase
      */
     public function tearDown()
     {
-        unset($this->SchedulerLog);
+        unset($this->ScheduledLog);
 
         parent::tearDown();
     }
