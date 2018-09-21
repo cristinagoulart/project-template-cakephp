@@ -77,13 +77,12 @@ class ScheduledJobLogsController extends BaseController
      */
     public function gc()
     {
-        // $this->request->allowMethod('post');
+        $this->request->allowMethod('post');
 
         $age = Configure::read('ScheduledLog.stats.age');
         if (!$age) {
             $this->Flash->error("Max age is not configured.");
 
-            //return null;
             return $this->redirect(['controller' => 'ScheduledJobs', 'action' => 'index']);
         }
 
@@ -95,7 +94,6 @@ class ScheduledJobLogsController extends BaseController
         Log::write('info', "Clean up scheduled job logs older then $age.");
         $this->Flash->success('Removed ' . number_format($count) . ' log records older than ' . ltrim($age, '-') . '.');
 
-        //return null;
         return $this->redirect(['controller' => 'ScheduledJobs', 'action' => 'index']);
     }
 }

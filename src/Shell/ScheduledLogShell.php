@@ -28,16 +28,6 @@ class ScheduledLogShell extends Shell
         $parser = parent::getOptionParser();
 
         $parser->description('Sheduled job logs.');
-        /*
-        To add...
-
-        $parser->addOption('number', [
-            'short' => 'n',
-            'help' => 'Number records of logs to keep.',
-            'default' => 10
-        ]);
-        */
-
         $parser->addSubcommand('gc', [
             'help' => 'Clean scheduled jog logs',
             'parser' => [
