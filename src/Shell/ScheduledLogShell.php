@@ -72,18 +72,16 @@ class ScheduledLogShell extends Shell
     protected function getDaysConfig()
     {
         if (isset($this->params['age'])) {
-            $result = $this->params['age'];
-
-            return $result;
+            return $this->params['age'];
         }
 
         $result = Configure::read('ScheduledLog.stats.age');
-        if (!$result) {
-            $this->info('Required parameter "age" is not defined (garbage collector)');
-
-            return null;
+        if ($result) {
+            return $result;
         }
 
-        return $result;
-    }
+        $this->info('Parameter "age" is not set in config/ScheduledLog');
+
+        throw new RuntimeException('Parameter "age" is not set in config/ScheduledLog');
 }
+
