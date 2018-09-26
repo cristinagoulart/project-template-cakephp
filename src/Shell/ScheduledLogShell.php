@@ -47,7 +47,7 @@ class ScheduledLogShell extends Shell
     /**
      * main() method.
      *
-     * @return bool|int|null Success or error code.
+     * @return null Success or error code.
      */
     public function gc()
     {
@@ -68,6 +68,7 @@ class ScheduledLogShell extends Shell
      * Get stats log configuration
      *
      * @return string
+     * @throws RuntimeException
      */
     protected function getDaysConfig()
     {
@@ -83,5 +84,5 @@ class ScheduledLogShell extends Shell
         $this->info('Parameter "age" is not set in config/ScheduledLog');
 
         throw new RuntimeException('Parameter "age" is not set in config/ScheduledLog');
+    }
 }
-
