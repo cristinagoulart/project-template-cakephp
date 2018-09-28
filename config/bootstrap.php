@@ -71,6 +71,7 @@ try {
     Configure::load('avatar', 'default');
     Configure::load('csv_migrations', 'default');
     Configure::load('database_log', 'default');
+    Configure::load('event_listeners', 'default');
     Configure::load(file_exists(CONFIG . 'features_local.php') ? 'features_local' : 'features', 'default');
     Configure::load('file_storage', 'default');
     Configure::load('groups', 'default');
@@ -254,6 +255,11 @@ EventManager::instance()->on(new LocalListener([
  * Loads all Event Listeners found in src/Event/ directory
  */
 call_user_func(function () {
+    // create list of blacklisted event listeners
+    $blacklist = array_map(function ($value) {
+        return '\\' . trim($value, '\\');
+    }, (array)Configure::read('EventListeners.blacklist'));
+
     $Iterator = new RecursiveIteratorIterator(new RecursiveDirectoryIterator(APP . 'Event'));
 
     foreach ($Iterator as $info) {
@@ -271,6 +277,10 @@ call_user_func(function () {
         $eventClassName = str_replace('.' . $info->getExtension(), '', $eventClassName);
         $eventClassName = str_replace(DS, '\\', $eventClassName);
         $eventClassName = '\\App\\' . $eventClassName;
+
+        if (in_array($eventClassName, $blacklist)) {
+            continue;
+        }
 
         $reflectionClass = new ReflectionClass($eventClassName);
         // skip abstract classes
