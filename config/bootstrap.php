@@ -70,6 +70,7 @@ try {
     Configure::load('app', 'default', false);
     Configure::load('avatar', 'default');
     Configure::load('csv_migrations', 'default');
+    Configure::load('cron', 'default');
     Configure::load('database_log', 'default');
     Configure::load('event_listeners', 'default');
     Configure::load(file_exists(CONFIG . 'features_local.php') ? 'features_local' : 'features', 'default');
@@ -79,7 +80,6 @@ try {
     Configure::load('menu', 'default');
     Configure::load('roles_capabilities', 'default');
     Configure::load('scheduled_log', 'default');
-    Configure::load('cron', 'default');
 } catch (\Exception $e) {
     die($e->getMessage() . "\n");
 }
