@@ -257,6 +257,10 @@ call_user_func(function () {
     $Iterator = new RecursiveIteratorIterator(new RecursiveDirectoryIterator(APP . 'Event'));
 
     foreach ($Iterator as $info) {
+        if ('php' !== $info->getExtension()) {
+            continue;
+        }
+
         if (false === strpos($info->getFilename(), 'Listener.php')) {
             continue;
         }
