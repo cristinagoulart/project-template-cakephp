@@ -119,6 +119,7 @@ class App extends AbstractCommand
     /**
      * Do CakePHP related install things
      *
+     * @param array $env Environment
      * @return bool true on success or false on failure
      */
     protected function installCake($env)
@@ -260,6 +261,7 @@ class App extends AbstractCommand
     /**
      * Do CakePHP related update things
      *
+     * @param array $env Environment
      * @return bool true on success or false on failure
      */
     protected function updateCake($env)
@@ -530,6 +532,9 @@ class App extends AbstractCommand
 
     /**
      * Install system cron job for the project
+     *
+     * @param array $env Environment
+     * @return void
      */
     protected function installCron($env)
     {
@@ -548,6 +553,9 @@ class App extends AbstractCommand
 
     /**
      * Uninstall system cron job for the project
+     *
+     * @param array $env Environment
+     * @return void
      */
     protected function uninstallCron($env)
     {
@@ -559,6 +567,9 @@ class App extends AbstractCommand
 
     /**
      * Set correct paths permissions and ownerships
+     *
+     * @param array $env Environment
+     * @return bool
      */
     protected function setPathPermissions($env)
     {
