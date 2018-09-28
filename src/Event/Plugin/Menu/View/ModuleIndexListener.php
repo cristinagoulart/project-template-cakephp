@@ -48,6 +48,7 @@ class ModuleIndexListener implements EventListenerInterface
         $menu->addMenuItem($this->getBatchMenuItem($request));
         $menu->addMenuItem($this->getImportMenuItem($request));
         $menu->addMenuItem($this->getAddMenuItem($request));
+        $menu->addMenuItem($this->getDelLogItem($request));
 
         $event->setResult($menu);
     }
@@ -139,5 +140,33 @@ class ModuleIndexListener implements EventListenerInterface
             'type' => 'link_button',
             'order' => 20,
         ]);
+    }
+
+    /**
+     * Delete logs from Scheduler job page
+     *
+     * @param Cake\Http\ServerRequest $request Current server request
+     * @return Menu\MenuBuilder\MenuItemInterface
+     */
+    private function getDelLogItem(ServerRequest $request)
+    {
+        $age = Configure::read('ScheduledLog.stats.age');
+        $controller = $request->param('controller');
+
+        $delLog = MenuItemFactory::createMenuItem([
+            'url' => ['plugin' => false, 'controller' => 'ScheduledJobLogs', 'action' => 'gc'],
+            'icon' => 'trash',
+            'label' => __('Delete old logs'),
+            'confirmMsg' => __('Are you sure? This action will delete all the scheduled job logs older than ' . ltrim($age, '-') . '.'),
+            'attributes' => ['class' => 'btn btn-danger'],
+            'type' => 'postlink_button',
+            'order' => 20,
+        ]);
+
+        $delLog->disableIf(function () use ($controller) {
+            return !($controller == 'ScheduledJobs');
+        });
+
+        return $delLog;
     }
 }
