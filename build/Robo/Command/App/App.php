@@ -11,8 +11,8 @@ class App extends AbstractCommand
      * @var array $defaultEnv Default values if missing in env
      */
     protected $defaultEnv = [
-        'CHMOD_FILE_MODE'   => '0664',
-        'CHMOD_DIR_MODE'    => '02775'
+        'CHMOD_FILE_MODE' => '0664',
+        'CHMOD_DIR_MODE' => '02775'
     ];
 
     /**
@@ -141,16 +141,15 @@ class App extends AbstractCommand
         $tasks = [];
 
         // create DB
-        $tasks []= $this->taskMysqlDbCreate()
+        $tasks[] = $this->taskMysqlDbCreate()
             ->db($this->getValue('DB_NAME', $env))
             ->user($this->getValue('DB_ADMIN_USER', $env))
             ->pass($this->getValue('DB_ADMIN_PASS', $env))
             ->hide($this->getValue('DB_ADMIN_PASS', $env))
             ->host($this->getValue('DB_HOST', $env));
 
-
         // drop test DB
-        $tasks []= $this->taskMysqlDbDrop()
+        $tasks[] = $this->taskMysqlDbDrop()
              ->db($this->getValue('DB_NAME', $env) . "_test")
              ->user($this->getValue('DB_ADMIN_USER', $env))
              ->pass($this->getValue('DB_ADMIN_PASS', $env))
@@ -158,7 +157,7 @@ class App extends AbstractCommand
              ->host($this->getValue('DB_HOST', $env));
 
         // create test DB
-        $tasks []= $this->taskMysqlDbCreate()
+        $tasks[] = $this->taskMysqlDbCreate()
             ->db($this->getValue('DB_NAME', $env) . "_test")
             ->user($this->getValue('DB_ADMIN_USER', $env))
             ->pass($this->getValue('DB_ADMIN_PASS', $env))
@@ -183,17 +182,17 @@ class App extends AbstractCommand
 
         // test plugin migrations
         foreach ($plugins as $plugin) {
-            $tasks []= $this->taskCakephpMigration()
+            $tasks[] = $this->taskCakephpMigration()
                 ->connection('test')
                 ->plugin($plugin);
         }
 
         // test app migration
-        $tasks []= $this->taskCakephpMigration()
+        $tasks[] = $this->taskCakephpMigration()
             ->connection('test');
 
         // drop test DB
-        $tasks []= $this->taskMysqlDbDrop()
+        $tasks[] = $this->taskMysqlDbDrop()
              ->db($this->getValue('DB_NAME', $env) . "_test")
              ->user($this->getValue('DB_ADMIN_USER', $env))
              ->pass($this->getValue('DB_ADMIN_PASS', $env))
@@ -201,7 +200,7 @@ class App extends AbstractCommand
              ->host($this->getValue('DB_HOST', $env));
 
         // create test DB
-        $tasks []= $this->taskMysqlDbCreate()
+        $tasks[] = $this->taskMysqlDbCreate()
             ->db($this->getValue('DB_NAME', $env) . "_test")
             ->user($this->getValue('DB_ADMIN_USER', $env))
             ->pass($this->getValue('DB_ADMIN_PASS', $env))
@@ -209,18 +208,18 @@ class App extends AbstractCommand
             ->host($this->getValue('DB_HOST', $env));
 
         // cleanup database logs
-        $tasks []= $this->taskCakephpShellScript()->name('database_log')->param('gc');
+        $tasks[] = $this->taskCakephpShellScript()->name('database_log')->param('gc');
 
         // do plugin migrations
         foreach ($plugins as $plugin) {
-            $tasks []= $this->taskCakephpMigration()
+            $tasks[] = $this->taskCakephpMigration()
                 ->plugin($plugin);
         }
 
         // do app migrations
-        $tasks []= $this->taskCakephpMigration();
+        $tasks[] = $this->taskCakephpMigration();
 
-        $tasks []= $this->taskCakephpAdminAdd()
+        $tasks[] = $this->taskCakephpAdminAdd()
             ->username($this->getValue('DEV_USER', $env))
             ->password($this->getValue('DEV_PASS', $env))
             ->email($this->getValue('DEV_EMAIL', $env));
@@ -238,9 +237,9 @@ class App extends AbstractCommand
         foreach ($shellScripts as $script) {
             if (strstr($script, " ")) {
                 list($name, $param) = explode(" ", $script);
-                $tasks []= $this->taskCakephpShellScript()->name($name)->param($param);
+                $tasks[] = $this->taskCakephpShellScript()->name($name)->param($param);
             } else {
-                $tasks []= $this->taskCakephpShellScript()->name($script);
+                $tasks[] = $this->taskCakephpShellScript()->name($script);
             }
         }
 
@@ -286,7 +285,7 @@ class App extends AbstractCommand
         $tasks[] = $this->taskCakephpCacheClear();
 
         // drop test DB
-        $tasks []= $this->taskMysqlDbDrop()
+        $tasks[] = $this->taskMysqlDbDrop()
              ->db($this->getValue('DB_NAME', $env) . "_test")
              ->user($this->getValue('DB_ADMIN_USER', $env))
              ->pass($this->getValue('DB_ADMIN_PASS', $env))
@@ -294,7 +293,7 @@ class App extends AbstractCommand
              ->host($this->getValue('DB_HOST', $env));
 
         // create test DB
-        $tasks []= $this->taskMysqlDbCreate()
+        $tasks[] = $this->taskMysqlDbCreate()
             ->db($this->getValue('DB_NAME', $env) . "_test")
             ->user($this->getValue('DB_ADMIN_USER', $env))
             ->pass($this->getValue('DB_ADMIN_PASS', $env))
@@ -319,17 +318,17 @@ class App extends AbstractCommand
 
         // test plugin migrations
         foreach ($plugins as $plugin) {
-            $tasks []= $this->taskCakephpMigration()
+            $tasks[] = $this->taskCakephpMigration()
                 ->connection('test')
                 ->plugin($plugin);
         }
 
         // test app migration
-        $tasks []= $this->taskCakephpMigration()
+        $tasks[] = $this->taskCakephpMigration()
             ->connection('test');
 
         // drop test DB
-        $tasks []= $this->taskMysqlDbDrop()
+        $tasks[] = $this->taskMysqlDbDrop()
              ->db($this->getValue('DB_NAME', $env) . "_test")
              ->user($this->getValue('DB_ADMIN_USER', $env))
              ->pass($this->getValue('DB_ADMIN_PASS', $env))
@@ -337,7 +336,7 @@ class App extends AbstractCommand
              ->host($this->getValue('DB_HOST', $env));
 
         // create test DB
-        $tasks []= $this->taskMysqlDbCreate()
+        $tasks[] = $this->taskMysqlDbCreate()
             ->db($this->getValue('DB_NAME', $env) . "_test")
             ->user($this->getValue('DB_ADMIN_USER', $env))
             ->pass($this->getValue('DB_ADMIN_PASS', $env))
@@ -345,16 +344,16 @@ class App extends AbstractCommand
             ->host($this->getValue('DB_HOST', $env));
 
         // cleanup database logs
-        $tasks []= $this->taskCakephpShellScript()->name('database_log')->param('gc');
+        $tasks[] = $this->taskCakephpShellScript()->name('database_log')->param('gc');
 
         // do plugin migrations
         foreach ($plugins as $plugin) {
-            $tasks []= $this->taskCakephpMigration()
+            $tasks[] = $this->taskCakephpMigration()
                 ->plugin($plugin);
         }
 
         // do app migrations
-        $tasks []= $this->taskCakephpMigration();
+        $tasks[] = $this->taskCakephpMigration();
 
         $shellScripts = [
             'upgrade',
@@ -369,9 +368,9 @@ class App extends AbstractCommand
         foreach ($shellScripts as $script) {
             if (strstr($script, " ")) {
                 list($name, $param) = explode(" ", $script);
-                $tasks []= $this->taskCakephpShellScript()->name($name)->param($param);
+                $tasks[] = $this->taskCakephpShellScript()->name($name)->param($param);
             } else {
-                $tasks []= $this->taskCakephpShellScript()->name($script);
+                $tasks[] = $this->taskCakephpShellScript()->name($script);
             }
         }
 
@@ -389,7 +388,6 @@ class App extends AbstractCommand
         return true;
     }
 
-
     /**
      * Recreates and reloads environment
      *
@@ -400,7 +398,6 @@ class App extends AbstractCommand
     protected function getDotenv($env = '')
     {
         $batch = $this->collectionBuilder();
-
 
         $task = $batch->taskProjectDotenvCreate()
             ->env('.env')
@@ -414,7 +411,6 @@ class App extends AbstractCommand
             }
         }
 
-
         $result = $task->taskDotenvReload()
                 ->path('.env')
             ->run();
@@ -423,14 +419,14 @@ class App extends AbstractCommand
             return false;
         }
 
-		$env = $result->getData()['data'];
-		foreach ($this->defaultEnv as $k => $v) {
-			if (!array_key_exists($k, $env)) {
-				$env[$k] = $v;
-			}
-		}
+        $env = $result->getData()['data'];
+        foreach ($this->defaultEnv as $k => $v) {
+            if (!array_key_exists($k, $env)) {
+                $env[$k] = $v;
+            }
+        }
 
-		return $env;
+        return $env;
     }
 
     /**
@@ -463,6 +459,12 @@ class App extends AbstractCommand
         return null;
     }
 
+    /**
+     * Pre-install
+     *
+     * @param array $env Environment
+     * @return bool
+     */
     protected function preInstall($env)
     {
         // old :builder:init
@@ -480,20 +482,37 @@ class App extends AbstractCommand
             ->wasSuccessful();
     }
 
+    /**
+     * Post-install
+     *
+     * @return bool
+     */
     protected function postInstall()
     {
         return $this->versionBackup("build/version.ok");
     }
 
+    /**
+     * Backup version file
+     *
+     * @param string $path Path to version file
+     * @return bool
+     */
     protected function versionBackup($path)
     {
         $projectVersion = $this->getProjectVersion();
         if (file_exists($path)) {
             rename($path, "$path.bak");
         }
+
         return (file_put_contents($path, $projectVersion) === false) ? false : true;
     }
 
+    /**
+     * Get project version
+     *
+     * @return string
+     */
     protected function getProjectVersion()
     {
         $envVersion = getenv('GIT_BRANCH');
@@ -505,6 +524,7 @@ class App extends AbstractCommand
         if ($result->wasSuccessful()) {
             return $result->getData()['data'][0]['message'];
         }
+
         return "Unknown";
     }
 
@@ -552,7 +572,7 @@ class App extends AbstractCommand
         $user = $this->getValue('CHOWN_USER', $env);
         $group = $this->getValue('CHGRP_GROUP', $env);
 
-        $base = str_replace("build/Robo/Command/App", "",  __DIR__);
+        $base = str_replace("build/Robo/Command/App", "", __DIR__);
 
         $tasks = [];
 
@@ -563,7 +583,7 @@ class App extends AbstractCommand
                 }
 
                 // Chmod dir
-                $tasks []= $this->taskFileChmod()
+                $tasks[] = $this->taskFileChmod()
                     ->path("$base$path")
                     ->fileMode($fileMode)
                     ->dirMode($dirMode)
@@ -578,7 +598,7 @@ class App extends AbstractCommand
                 }
 
                 // Chown dir
-                $tasks []= $this->taskFileChown()
+                $tasks[] = $this->taskFileChown()
                     ->path("$base$path")
                     ->user($user)
                     ->recursive(true);
@@ -587,13 +607,12 @@ class App extends AbstractCommand
 
         if (!empty($group)) {
             foreach ($chgrpPaths as $path) {
-
                 if (!file_exists("$base$path")) {
                     continue;
                 }
 
                 // Chgrp dir
-                $tasks []= $this->taskFileChgrp()
+                $tasks[] = $this->taskFileChgrp()
                     ->path("$base$path")
                     ->group($group)
                     ->recursive(true);
