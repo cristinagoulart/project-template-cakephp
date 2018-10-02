@@ -14,6 +14,7 @@ use CsvMigrations\Controller\Traits\PanelsTrait;
 use CsvMigrations\Utility\FileUpload;
 use Qobo\Utils\ModuleConfig\ConfigType;
 use Qobo\Utils\ModuleConfig\ModuleConfig;
+use Qobo\Utils\Utility\User;
 use RolesCapabilities\CapabilityTrait;
 
 class AppController extends Controller
@@ -127,6 +128,9 @@ class AppController extends Controller
         // set auth user from token
         $user = $this->Auth->getAuthenticate('ADmad/JwtAuth.Jwt')->getUser($this->request);
         $this->Auth->setUser($user);
+
+        // set current user for access to all MVC layers
+        User::setCurrentUser((array)$this->Auth->user());
 
         // If API authentication is disabled, allow access to all actions. This is useful when using some
         // other kind of access control check.
