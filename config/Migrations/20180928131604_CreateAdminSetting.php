@@ -1,7 +1,7 @@
 <?php
 use Migrations\AbstractMigration;
 
-class AdminSetting extends AbstractMigration
+class CreateAdminSetting extends AbstractMigration
 {
     /**
      * Change Method.
@@ -16,6 +16,7 @@ class AdminSetting extends AbstractMigration
         $table->addColumn('key', 'string', [
             'default' => null,
             'null' => false,
+            'unique' => true,
         ]);
         $table->addColumn('value', 'string', [
             'default' => null,
@@ -24,10 +25,6 @@ class AdminSetting extends AbstractMigration
         ]);
         $table->addPrimaryKey([
             'id',
-        ]);
-        $table->addColumn('timestamp', 'timestamp', [
-            'default' => null,
-            'null' => false,
         ]);
         $table->create();
     }
