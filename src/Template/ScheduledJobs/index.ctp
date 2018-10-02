@@ -7,8 +7,7 @@ echo $this->Html->script(
     [
         'Qobo/Utils./plugins/datatables/datatables.min',
         'Qobo/Utils./plugins/datatables/js/dataTables.bootstrap.min',
-        'Qobo/Utils.dataTables.init',
-        'CsvMigrations.view-index'
+        'Qobo/Utils.dataTables.init'
     ],
     ['block' => 'scriptBottom']
 );
@@ -31,12 +30,7 @@ $dtOptions = [
 ];
 
 echo $this->Html->scriptBlock(
-    '// initialize index view functionality
-    view_index.init({
-        token: "' . Configure::read('API.token') . '",
-        // initialize dataTable
-        datatable: new DataTablesInit(' . json_encode($dtOptions) . ')
-    });',
+    'new DataTablesInit(' . json_encode($dtOptions) . ');',
     ['block' => 'scriptBottom']
 );
 ?>
