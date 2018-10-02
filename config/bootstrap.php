@@ -70,16 +70,17 @@ try {
     Configure::load('app', 'default', false);
     Configure::load('admin_setting', 'default', false);
     Configure::load('avatar', 'default');
+    Configure::load('cron', 'default');
     Configure::load('csv_migrations', 'default');
     Configure::load('database_log', 'default');
-    Configure::load('scheduled_log', 'default');
+    Configure::load('event_listeners', 'default');
     Configure::load(file_exists(CONFIG . 'features_local.php') ? 'features_local' : 'features', 'default');
     Configure::load('file_storage', 'default');
     Configure::load('groups', 'default');
     Configure::load('icons', 'default');
     Configure::load('menu', 'default');
     Configure::load('roles_capabilities', 'default');
-    Configure::load('cron', 'default');
+    Configure::load('scheduled_log', 'default');
 } catch (\Exception $e) {
     die($e->getMessage() . "\n");
 }
@@ -256,9 +257,18 @@ EventManager::instance()->on(new LocalListener([
  * Loads all Event Listeners found in src/Event/ directory
  */
 call_user_func(function () {
+    // create list of blacklisted event listeners
+    $blacklist = array_map(function ($value) {
+        return '\\' . trim($value, '\\');
+    }, (array)Configure::read('EventListeners.blacklist'));
+
     $Iterator = new RecursiveIteratorIterator(new RecursiveDirectoryIterator(APP . 'Event'));
 
     foreach ($Iterator as $info) {
+        if ('php' !== $info->getExtension()) {
+            continue;
+        }
+
         if (false === strpos($info->getFilename(), 'Listener.php')) {
             continue;
         }
@@ -269,6 +279,10 @@ call_user_func(function () {
         $eventClassName = str_replace('.' . $info->getExtension(), '', $eventClassName);
         $eventClassName = str_replace(DS, '\\', $eventClassName);
         $eventClassName = '\\App\\' . $eventClassName;
+
+        if (in_array($eventClassName, $blacklist)) {
+            continue;
+        }
 
         $reflectionClass = new ReflectionClass($eventClassName);
         // skip abstract classes
