@@ -4,14 +4,13 @@ namespace App\Model\Entity;
 use Cake\ORM\Entity;
 
 /**
- * AdminSetting Entity
+ * Setting Entity
  *
  * @property int $id
  * @property string $key
  * @property string $value
- * @property \Cake\I18n\Time $timestamp
  */
-class AdminSetting extends Entity
+class Setting extends Entity
 {
 
     /**
@@ -25,7 +24,6 @@ class AdminSetting extends Entity
      */
     protected $_accessible = [
         'key' => true,
-        'value' => true,
-        'timestamp' => true
+        'value' => true
     ];
 }

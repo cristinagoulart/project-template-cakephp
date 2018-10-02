@@ -7,17 +7,17 @@ use Cake\ORM\Table;
 use Cake\Validation\Validator;
 
 /**
- * AdminSettings Model
+ * Settings Model
  *
- * @method \App\Model\Entity\AdminSetting get($primaryKey, $options = [])
- * @method \App\Model\Entity\AdminSetting newEntity($data = null, array $options = [])
- * @method \App\Model\Entity\AdminSetting[] newEntities(array $data, array $options = [])
- * @method \App\Model\Entity\AdminSetting|bool save(\Cake\Datasource\EntityInterface $entity, $options = [])
- * @method \App\Model\Entity\AdminSetting patchEntity(\Cake\Datasource\EntityInterface $entity, array $data, array $options = [])
- * @method \App\Model\Entity\AdminSetting[] patchEntities($entities, array $data, array $options = [])
- * @method \App\Model\Entity\AdminSetting findOrCreate($search, callable $callback = null, $options = [])
+ * @method \App\Model\Entity\Setting get($primaryKey, $options = [])
+ * @method \App\Model\Entity\Setting newEntity($data = null, array $options = [])
+ * @method \App\Model\Entity\Setting[] newEntities(array $data, array $options = [])
+ * @method \App\Model\Entity\Setting|bool save(\Cake\Datasource\EntityInterface $entity, $options = [])
+ * @method \App\Model\Entity\Setting patchEntity(\Cake\Datasource\EntityInterface $entity, array $data, array $options = [])
+ * @method \App\Model\Entity\Setting[] patchEntities($entities, array $data, array $options = [])
+ * @method \App\Model\Entity\Setting findOrCreate($search, callable $callback = null, $options = [])
  */
-class AdminSettingsTable extends Table
+class SettingsTable extends Table
 {
 
     /**
@@ -30,7 +30,7 @@ class AdminSettingsTable extends Table
     {
         parent::initialize($config);
 
-        $this->setTable('admin_settings');
+        $this->setTable('settings');
         $this->setDisplayField('id');
         $this->setPrimaryKey('id');
     }
@@ -58,11 +58,6 @@ class AdminSettingsTable extends Table
             ->maxLength('value', 255)
             ->requirePresence('value', 'create')
             ->notEmpty('value');
-
-        $validator
-            ->dateTime('timestamp')
-            ->requirePresence('timestamp', 'create')
-            ->notEmpty('timestamp');
 
         return $validator;
     }

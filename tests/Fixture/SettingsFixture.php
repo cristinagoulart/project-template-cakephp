@@ -20,7 +20,9 @@ class SettingsFixture extends TestFixture
         'id' => ['type' => 'integer', 'length' => 11, 'unsigned' => false, 'null' => false, 'default' => null, 'comment' => '', 'autoIncrement' => true, 'precision' => null],
         'key' => ['type' => 'string', 'length' => 255, 'null' => false, 'default' => null, 'collate' => 'latin1_swedish_ci', 'comment' => '', 'precision' => null, 'fixed' => null],
         'value' => ['type' => 'string', 'length' => 255, 'null' => false, 'default' => null, 'collate' => 'latin1_swedish_ci', 'comment' => '', 'precision' => null, 'fixed' => null],
-        'timestamp' => ['type' => 'timestamp', 'length' => null, 'null' => false, 'default' => 'CURRENT_TIMESTAMP', 'comment' => '', 'precision' => null],
+        '_indexes' => [
+            'key' => ['type' => 'index', 'columns' => ['key'], 'length' => []],
+        ],
         '_constraints' => [
             'primary' => ['type' => 'primary', 'columns' => ['id'], 'length' => []],
         ],
@@ -42,8 +44,7 @@ class SettingsFixture extends TestFixture
             [
                 'id' => 1,
                 'key' => 'Lorem ipsum dolor sit amet',
-                'value' => 'Lorem ipsum dolor sit amet',
-                'timestamp' => 1538462344
+                'value' => 'Lorem ipsum dolor sit amet'
             ],
         ];
         parent::init();

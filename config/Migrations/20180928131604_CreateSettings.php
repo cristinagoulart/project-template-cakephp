@@ -1,7 +1,7 @@
 <?php
 use Migrations\AbstractMigration;
 
-class CreateAdminSetting extends AbstractMigration
+class CreateSettings extends AbstractMigration
 {
     /**
      * Change Method.
@@ -12,10 +12,15 @@ class CreateAdminSetting extends AbstractMigration
      */
     public function change()
     {
-        $table = $this->table('admin_settings');
+        $table = $this->table('settings');
         $table->addColumn('key', 'string', [
             'default' => null,
             'null' => false,
+        ]);
+        $table->addIndex([
+            'key',
+        ], [
+            'name' => 'BY_KEY',
             'unique' => true,
         ]);
         $table->addColumn('value', 'string', [

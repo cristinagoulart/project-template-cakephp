@@ -1,22 +1,22 @@
 <?php
 namespace App\Test\TestCase\Model\Table;
 
-use App\Model\Table\AdminSettingsTable;
+use App\Model\Table\SettingsTable;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
 
 /**
- * App\Model\Table\AdminSettingsTable Test Case
+ * App\Model\Table\SettingsTable Test Case
  */
-class AdminSettingsTableTest extends TestCase
+class SettingsTableTest extends TestCase
 {
 
     /**
      * Test subject
      *
-     * @var \App\Model\Table\AdminSettingsTable
+     * @var \App\Model\Table\SettingsTable
      */
-    public $AdminSettings;
+    public $Settings;
 
     /**
      * Fixtures
@@ -24,7 +24,7 @@ class AdminSettingsTableTest extends TestCase
      * @var array
      */
     public $fixtures = [
-        'app.admin_settings'
+        'app.settings'
     ];
 
     /**
@@ -35,8 +35,8 @@ class AdminSettingsTableTest extends TestCase
     public function setUp()
     {
         parent::setUp();
-        $config = TableRegistry::exists('AdminSettings') ? [] : ['className' => AdminSettingsTable::class];
-        $this->AdminSettings = TableRegistry::get('AdminSettings', $config);
+        $config = TableRegistry::exists('Settings') ? [] : ['className' => SettingsTable::class];
+        $this->Settings = TableRegistry::get('Settings', $config);
     }
 
     /**
@@ -46,7 +46,7 @@ class AdminSettingsTableTest extends TestCase
      */
     public function tearDown()
     {
-        unset($this->AdminSettings);
+        unset($this->Settings);
 
         parent::tearDown();
     }
