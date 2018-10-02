@@ -1,9 +1,4 @@
-<?php
-
-use Cake\Core\Configure;
-
-$this->Html->scriptStart();
-?>
+<?php $this->Html->scriptStart(); ?>
     // trigger deletion of the record from the dynamic DataTables entries
     $("a[data-type='ajax-delete-record'][href='<?= $this->Url->build($menuItem->getUrl()) ?>']").click(function (e) {
         e.preventDefault();
@@ -20,7 +15,7 @@ $this->Html->scriptStart();
             dataType: "json",
             contentType: "application/json",
             headers: {
-                Authorization: "Bearer <?= Configure::read("API.token") ?>"
+                Authorization: "<?= $this->request->getHeaderLine('authorization') ?>"
             },
             success: function (data) {
                 // traverse upwards on the tree to find table instance and reload it
