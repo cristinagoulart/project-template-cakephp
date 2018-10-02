@@ -82,23 +82,6 @@ class ScheduledJobsFixture extends TestFixture
             'created_by' => '00000000-0000-0000-0000-000000000001',
             'modified_by' => '00000000-0000-0000-0000-000000000001',
             'trashed' => null
-        ],
-        [
-            'id' => '00000000-0000-0000-0000-000000000003',
-            'name' => 'Test Job',
-            'job' => 'CakeShell::App:foobar',
-            'options' => '',
-            'recurrence' => null,
-            'active' => 1,
-            'priority' => 100,
-            'start_date' => null,
-            'end_date' => null,
-            'created' => '2018-01-18 15:47:16',
-            'modified' => '2018-01-18 15:47:16',
-            'created_by' => '00000000-0000-0000-0000-000000000001',
-            'modified_by' => '00000000-0000-0000-0000-000000000001',
-            'trashed' => null
-        ],
-
+        ]
     ];
 }
