@@ -54,7 +54,7 @@ $iconColors = [
         $user = $usersTable->findById($record->user_id)->first();
         $username = empty($user) ? $record->user_id : $user->name;
         $url = $this->Url->build([
-            'plugin' => 'CakeDC/Users',
+            'plugin' => false,
             'controller' => 'Users',
             'action' => 'view',
             $record->user_id
