@@ -153,7 +153,6 @@ class ScheduledJobsTableTest extends TestCase
         return [
             ['00000000-0000-0000-0000-000000000001', '\RRule\RRule'],
             ['00000000-0000-0000-0000-000000000002', '\RRule\RRule'],
-            ['00000000-0000-0000-0000-000000000003', null],
         ];
     }
 }
