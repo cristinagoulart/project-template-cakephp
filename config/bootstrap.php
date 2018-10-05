@@ -68,6 +68,7 @@ use Cake\Utility\Security;
 try {
     Configure::config('default', new PhpConfig());
     Configure::load('app', 'default', false);
+    Configure::load('settings', 'default', false);
     Configure::load('avatar', 'default');
     Configure::load('cron', 'default');
     Configure::load('csv_migrations', 'default');
