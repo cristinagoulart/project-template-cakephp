@@ -491,19 +491,10 @@ class Annotation
 
             case 'list':
             case 'sublist':
-                $options = $this->getList($conf['field']->getLimit());
-                $options = empty($options) ? [''] : $options;
-                $options = array_keys($options);
-                $result = [
-                    'type' => 'string',
-                    'format' => 'list',
-                    'example' => $options[array_rand($options)],
-                    'enum' => $options
-                ];
-                break;
-
             case 'dblist':
-                $options = $this->getDatabaseList($conf['field']->getLimit());
+                $options = 'dblist' === $type ?
+                    $this->getDatabaseList($conf['field']->getLimit()) :
+                    $this->getList($conf['field']->getLimit());
                 $options = empty($options) ? [''] : $options;
                 $options = array_keys($options);
                 $result = [
