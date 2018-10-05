@@ -209,10 +209,6 @@ class LookupListener implements EventListenerInterface
             $query->orWhere([$field => $data[$association->getForeignKey()]]);
         }
 
-        if ($query->isEmpty()) {
-            return null;
-        }
-
         return $query->first();
     }
 }
