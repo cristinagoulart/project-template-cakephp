@@ -206,7 +206,7 @@ class LookupListener implements EventListenerInterface
             ->limit(1);
 
         foreach ($fields as $field) {
-            $query->orWhere([$field => $entity->get($association->getForeignKey())]);
+            $query->orWhere([$field => $data[$association->getForeignKey()]]);
         }
 
         if ($query->isEmpty()) {
