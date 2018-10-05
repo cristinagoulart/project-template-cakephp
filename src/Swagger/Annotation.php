@@ -553,7 +553,7 @@ class Annotation
      */
     private function getList($listName)
     {
-        $provider = new ListSelectOptions(new ListConfig($listName));
+        $provider = new ListSelectOptions(new ListConfig($listName, $this->className));
         $options = $provider->provide($listName, ['flatten' => true, 'filter' => true]);
 
         return $options;
