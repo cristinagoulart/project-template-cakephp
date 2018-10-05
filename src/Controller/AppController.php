@@ -133,6 +133,7 @@ class AppController extends Controller
 
         $this->_setIframeRendering();
 
+        // for audit-stash functionality
         EventManager::instance()->on(new RequestMetadata($this->request, $this->Auth->user('id')));
 
         $this->_generateApiToken();
