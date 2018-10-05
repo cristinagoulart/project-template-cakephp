@@ -558,9 +558,10 @@ class Annotation
      */
     private function getDatabaseList($listName)
     {
-        $table = TableRegistry::getTableLocator()->get('CsvMigrations.Dblists');
+        $result = TableRegistry::get('CsvMigrations.Dblists')
+            ->find('options', ['name' => $listName]);
 
-        return $table->find('options', ['name' => $listName])->toArray();
+        return is_array($result) ? $result : $result->toArray();
     }
 
     /**
