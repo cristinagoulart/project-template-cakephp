@@ -1,6 +1,7 @@
 <?php
 namespace App\Model\Table;
 
+use Cake\Core\Configure;
 use Cake\ORM\Query;
 use Cake\ORM\RulesChecker;
 use Cake\ORM\Table;
@@ -51,7 +52,8 @@ class SettingsTable extends Table
             ->scalar('key')
             ->maxLength('key', 255)
             ->requirePresence('key', 'create')
-            ->notEmpty('key');
+            ->notEmpty('key')
+            ->add('name', 'unique', ['rule' => 'validateUnique', 'provider' => 'table']);
 
         $validator
             ->scalar('value')
@@ -60,5 +62,31 @@ class SettingsTable extends Table
             ->notEmpty('value');
 
         return $validator;
+    }
+
+    /**
+     * getAliasDiff() return the missing alias in the DB
+     *
+     * @param array $settings Array with settings
+     * @return array
+     * @throws \Exception
+     */
+    public function getAliasDiff($settings = [])
+    {
+        // Array with all the alias from the config
+        $alias = [];
+        foreach ($settings as $field => $data) {
+            // check is the alias exist in the Configure
+            if (null == Configure::read($data['alias'])) {
+                throw new \Exception($data['alias'] . " is not set in the settings.php");
+            }
+            $alias[] = $data['alias'];
+        }
+
+        // Array with all the alias from the db
+        $fromDB = $this->find()->extract('key')->toArray();
+        $diff = array_values(array_diff($alias, $fromDB));
+
+        return $diff;
     }
 }

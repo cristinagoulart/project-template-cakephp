@@ -18,6 +18,8 @@ class SettingsTableTest extends TestCase
      */
     public $Settings;
 
+    public $configSettings;
+
     /**
      * Fixtures
      *
@@ -51,23 +53,56 @@ class SettingsTableTest extends TestCase
         parent::tearDown();
     }
 
-    /**
-     * Test initialize method
-     *
-     * @return void
-     */
-    public function testInitialize()
+    public function testGetAlias()
     {
-        $this->markTestIncomplete('Not implemented yet.');
+        $configSettings = [
+            'SchedulerLogAge' => [
+                'default' => '1',
+                'alias' => 'ScheduledLog.stats.age'
+            ],
+            'Avatar' => [
+                'default' => '1',
+                'alias' => 'Avatar.defaultImage'
+            ]
+        ];
+
+        $this->assertEmpty($this->Settings->getAliasDiff($configSettings));
     }
 
-    /**
-     * Test validationDefault method
-     *
-     * @return void
-     */
-    public function testValidationDefault()
+    public function testGetNewRecord()
     {
-        $this->markTestIncomplete('Not implemented yet.');
+        $configSettings = [
+            'SchedulerLogAge' => [
+                'default' => '1',
+                'alias' => 'ScheduledLog.stats.age'
+            ],
+            'FileStorage' => [
+                'default' => '1',
+                'alias' => 'FileStorage.defaultImageSize'
+            ],
+            'Avatar' => [
+                'default' => '1',
+                'alias' => 'Avatar.defaultImage'
+            ]
+        ];
+
+        $this->assertEquals(['FileStorage.defaultImageSize'], $this->Settings->getAliasDiff($configSettings));
+    }
+
+    public function testGetException()
+    {
+        $configSettings = [
+            'Pizza' => [
+                'default' => '1',
+                'alias' => 'Pizza.With.Pinapple'
+            ],
+            'Avatar' => [
+                'default' => '1',
+                'alias' => 'Avatar.defaultImage'
+            ]
+        ];
+
+        $this->expectException('\Exception');
+        $this->Settings->getAliasDiff($configSettings);
     }
 }

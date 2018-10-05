@@ -1,15 +1,14 @@
 <?php
 namespace App\Shell;
 
-use App\Model\Entity\Setting;
 use Cake\Console\Shell;
 use Cake\Core\Configure;
 use Cake\ORM\TableRegistry;
-use Cake\Utility\Hash;
 
 /**
  * Settings shell command.
  */
+
 class SettingsShell extends Shell
 {
 
@@ -24,16 +23,16 @@ class SettingsShell extends Shell
     {
         $parser = parent::getOptionParser();
         $parser->addSubcommand('reset', [
-            'help' => 'Reset configuartion',
-            'parser' => [
-                'options' => [
-                    'reset' => [
-                        'help' => __('Truncate table Settings'),
-                        'required' => false,
+                'help' => 'Reset configuartion',
+                'parser' => [
+                    'options' => [
+                        'reset' => [
+                            'help' => __('Truncate table Settings'),
+                            'required' => false,
+                        ]
                     ]
-                ]
-            ],
-        ]);
+                ],
+            ]);
 
         return $parser;
     }
@@ -41,30 +40,29 @@ class SettingsShell extends Shell
     /**
      * main() method.
      *
-     * @return null Success or error code.
+     * @return null
+     * @throws RuntimeException
      */
     public function main()
     {
-        $this->out('Populating the DB');
-
-        $settings = Configure::read('Settings');
         $query = TableRegistry::get('Settings');
-        foreach ($settings as $field => $data) {
-            $unit = $query->newEntity([
-                'key' => $data['alias'],
-                'value' => Configure::read($data['alias']),
-            ]);
+        $settings = $query->getAliasDiff(Configure::read('Settings'));
 
-            try {
-                $query->save($unit);
-                $this->out(sprintf("|%5.5s |%-40.40s | %-40.40s |", $unit->id, $unit->key, $unit->value));
-            } catch (\Exception $e) {
-                if ($e->errorInfo[1] == 1062) {
-                    $this->out(sprintf("|%5.5s |%-40.40s | %-40.40s |", 'EXIST', $unit->key, $unit->value));
-                } else {
-                    $this->out($e);
-                }
-            }
+        $data = [];
+        foreach ($settings as $set) {
+            $data[] = [
+                    'key' => $set,
+                    'value' => Configure::read($set),
+                ];
+        }
+
+        var_dump($data);
+
+        try {
+            $entities = $query->newEntities($data);
+            $query->saveMany($entities);
+        } catch (\Exception $e) {
+            throw new \Exception($e);
         }
 
         return null;

@@ -20,7 +20,7 @@ class CreateSettings extends AbstractMigration
         $table->addIndex([
             'key',
         ], [
-            'name' => 'BY_KEY',
+            'name' => 'UNIQUE_KEY',
             'unique' => true,
         ]);
         $table->addColumn('value', 'string', [

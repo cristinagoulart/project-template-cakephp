@@ -9,6 +9,10 @@ return [
             'Avatar' => [
                 'default' => '1',
                 'alias' => 'Avatar.defaultImage'
+            ],
+            'FileStorage' => [
+                'default' => '1',
+                'alias' => 'FileStorage.defaultImageSize'
             ]
         ]
 ];

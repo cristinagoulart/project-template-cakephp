@@ -1,5 +1,6 @@
 <?php
 use Cake\Core\Configure;
+use Cake\Core\Configure\Engine\PhpConfig;
 
 /**
  * Test runner bootstrap.
