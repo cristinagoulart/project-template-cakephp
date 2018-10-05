@@ -150,7 +150,7 @@ class LookupListener implements EventListenerInterface
      */
     private function isValidAssociation(Association $association)
     {
-        if ('manyToOne' !== $association->type()) {
+        if (Association::MANY_TO_ONE !== $association->type()) {
             return false;
         }
 
