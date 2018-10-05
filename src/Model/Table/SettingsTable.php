@@ -69,7 +69,6 @@ class SettingsTable extends Table
      *
      * @param array $settings Array with settings
      * @return array
-     * @throws \Exception
      */
     public function getAliasDiff($settings = [])
     {
@@ -77,9 +76,7 @@ class SettingsTable extends Table
         $alias = [];
         foreach ($settings as $field => $data) {
             // check is the alias exist in the Configure
-            if (null == Configure::read($data['alias'])) {
-                throw new \Exception($data['alias'] . " is not set in the settings.php");
-            }
+            Configure::readOrFail($data['alias']);
             $alias[] = $data['alias'];
         }
 
