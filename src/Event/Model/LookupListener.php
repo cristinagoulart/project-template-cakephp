@@ -107,8 +107,35 @@ class LookupListener implements EventListenerInterface
                 continue;
             }
 
-            $this->setRelatedByLookupField($association, $data);
+            // skip if foreign key is not set in the request data
+            if (empty($data[$association->getForeignKey()])) {
+                return;
+            }
+
+            // skip if foreign key is a valid ID
+            if ($this->isValidID($association, $data[$association->getForeignKey()])) {
+                return;
+            }
+
+            $this->getRelatedIdByLookupField($association, $data);
         }
+    }
+
+    /**
+     * Checks if foreign key value is a valid ID.
+     *
+     * @param \Cake\ORM\Association $association Table association
+     * @param mixed $value Foreign key value
+     * @return bool
+     */
+    private function isValidID(Association $association, $value)
+    {
+        $query = $association->getTarget()
+            ->find('all')
+            ->where([$association->primaryKey() => $value])
+            ->limit(1);
+
+        return ! $query->isEmpty();
     }
 
     /**
@@ -118,19 +145,10 @@ class LookupListener implements EventListenerInterface
      * @param \ArrayObject $data Request data
      * @return void
      */
-    private function setRelatedByLookupField(Association $association, ArrayObject $data)
+    private function getRelatedIdByLookupField(Association $association, ArrayObject $data)
     {
-        // skip if foreign key is not set in the request data
-        if (empty($data[$association->getForeignKey()])) {
-            return;
-        }
-
         $lookupFields = $this->getLookupFields($association->className());
         if (empty($lookupFields)) {
-            return;
-        }
-
-        if ($this->hasPrimaryKey($association, $data)) {
             return;
         }
 
@@ -172,22 +190,6 @@ class LookupListener implements EventListenerInterface
         $config = (new ModuleConfig(ConfigType::MODULE(), $moduleName))->parse();
 
         return $config->table->lookup_fields;
-    }
-
-    /**
-     * Checks if related record is found by primary key
-     *
-     * @param \Cake\ORM\Association $association Table association
-     * @param \ArrayObject $data Request data
-     * @return bool
-     */
-    private function hasPrimaryKey(Association $association, ArrayObject $data)
-    {
-        $query = $association->getTarget()->find('all')
-            ->where([$association->primaryKey() => $data[$association->getForeignKey()]])
-            ->limit(1);
-
-        return ! $query->isEmpty();
     }
 
     /**
