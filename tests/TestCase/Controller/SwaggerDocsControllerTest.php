@@ -11,6 +11,17 @@ class SwaggerDocsControllerTest extends IntegrationTestCase
 {
 
     /**
+     * Fixtures
+     *
+     * @var array
+     */
+    public $fixtures = [
+        'plugin.CakeDC/Users.users',
+        'plugin.CsvMigrations.dblists',
+        'plugin.CsvMigrations.dblist_items'
+    ];
+
+    /**
      * Test index method
      *
      * @return void
