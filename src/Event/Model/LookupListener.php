@@ -2,7 +2,6 @@
 namespace App\Event\Model;
 
 use ArrayObject;
-use Cake\Datasource\EntityInterface;
 use Cake\Datasource\QueryInterface;
 use Cake\Event\Event;
 use Cake\Event\EventListenerInterface;
@@ -25,7 +24,7 @@ class LookupListener implements EventListenerInterface
     {
         return [
             'Model.beforeFind' => 'beforeFind',
-            'Model.beforeSave' => 'beforeSave'
+            'Model.beforeMarshal' => 'beforeMarshal'
         ];
     }
 
@@ -93,17 +92,13 @@ class LookupListener implements EventListenerInterface
      * }
      *
      * @param \Cake\Event\Event $event Event object
-     * @param \Cake\Datasource\EntityInterface $entity Entity instance
+     * @param \ArrayObject $data Request data
      * @param \ArrayObject $options Query options
      * @return void
      */
-    public function beforeSave(Event $event, EntityInterface $entity, ArrayObject $options)
+    public function beforeMarshal(Event $event, ArrayObject $data, ArrayObject $options)
     {
-        if (! $options['_primary']) {
-            return;
-        }
-
-        if (! isset($options['lookup']) || ! $options['lookup']) {
+        if (! isset($options['lookup']) || ! (bool)$options['lookup']) {
             return;
         }
 
@@ -112,7 +107,7 @@ class LookupListener implements EventListenerInterface
                 continue;
             }
 
-            $this->setRelatedByLookupField($association, $entity);
+            $this->setRelatedByLookupField($association, $data);
         }
     }
 
@@ -120,13 +115,13 @@ class LookupListener implements EventListenerInterface
      * Sets related record value by lookup fields.
      *
      * @param \Cake\ORM\Association $association Table association
-     * @param \Cake\Datasource\EntityInterface $entity Entity instance
+     * @param \ArrayObject $data Request data
      * @return void
      */
-    private function setRelatedByLookupField(Association $association, EntityInterface $entity)
+    private function setRelatedByLookupField(Association $association, ArrayObject $data)
     {
-        // skip if foreign key is not set to the entity
-        if (! $entity->get($association->getForeignKey())) {
+        // skip if foreign key is not set in the request data
+        if (empty($data[$association->getForeignKey()])) {
             return;
         }
 
@@ -135,19 +130,16 @@ class LookupListener implements EventListenerInterface
             return;
         }
 
-        if ($this->hasPrimaryKey($association, $entity)) {
+        if ($this->hasPrimaryKey($association, $data)) {
             return;
         }
 
-        $relatedEntity = $this->getRelatedEntity($association, $entity, $lookupFields);
+        $relatedEntity = $this->getRelatedEntity($association, $data, $lookupFields);
         if (is_null($relatedEntity)) {
             return;
         }
 
-        $entity->set(
-            $association->getForeignKey(),
-            $relatedEntity->get($association->getPrimaryKey())
-        );
+        $data[$association->getForeignKey()] = $relatedEntity->get($association->getPrimaryKey());
     }
 
     /**
@@ -186,13 +178,13 @@ class LookupListener implements EventListenerInterface
      * Checks if related record is found by primary key
      *
      * @param \Cake\ORM\Association $association Table association
-     * @param \Cake\Datasource\EntityInterface $entity Entity instance
+     * @param \ArrayObject $data Request data
      * @return bool
      */
-    private function hasPrimaryKey(Association $association, EntityInterface $entity)
+    private function hasPrimaryKey(Association $association, ArrayObject $data)
     {
         $query = $association->getTarget()->find('all')
-            ->where([$association->primaryKey() => $entity->get($association->getForeignKey())])
+            ->where([$association->primaryKey() => $data[$association->getForeignKey()]])
             ->limit(1);
 
         return ! $query->isEmpty();
@@ -202,11 +194,11 @@ class LookupListener implements EventListenerInterface
      * Retrieves associated entity.
      *
      * @param \Cake\ORM\Association $association Table association
-     * @param \Cake\Datasource\EntityInterface $entity Entity instance
+     * @param \ArrayObject $data Request data
      * @param array $fields Lookup fields
      * @return \Cake\Datasource\EntityInterface|null
      */
-    private function getRelatedEntity(Association $association, EntityInterface $entity, array $fields)
+    private function getRelatedEntity(Association $association, ArrayObject $data, array $fields)
     {
         $query = $association->getTarget()
             ->find('all')
