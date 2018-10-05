@@ -70,9 +70,9 @@ class LookupListener implements EventListenerInterface
     }
 
     /**
-     * Checks Entity's association fields (foreign keys) values and query's the database to find
-     * the associated record. If the record is not found, it query's the database again to find it by its
-     * display field. If found it replaces the associated field's value with the records id.
+     * Checks request data association fields (foreign keys) values and query's the database to find
+     * the associated record. If the record is not found, it query's again to find the record by
+     * lookup fields. If found it replaces the associated field's value with the records id.
      *
      * This is useful for cases where the display field value is used on the associated field. For example
      * a new post is created and in the 'owner' field the username of the user is used instead of its uuid.
@@ -103,22 +103,57 @@ class LookupListener implements EventListenerInterface
         }
 
         foreach ($event->getSubject()->associations() as $association) {
-            if (! $this->isValidAssociation($association)) {
+            if (! $this->validate($association, $data)) {
                 continue;
-            }
-
-            // skip if foreign key is not set in the request data
-            if (empty($data[$association->getForeignKey()])) {
-                return;
-            }
-
-            // skip if foreign key is a valid ID
-            if ($this->isValidID($association, $data[$association->getForeignKey()])) {
-                return;
             }
 
             $this->getRelatedIdByLookupField($association, $data);
         }
+    }
+
+    /**
+     * Validate's if lookup logic can be applied using the specified association.
+     *
+     * @param \Cake\ORM\Association $association Table association
+     * @param \ArrayObject $data Request data
+     * @return bool
+     */
+    private function validate(Association $association, ArrayObject $data)
+    {
+        if (! $this->isValidAssociation($association)) {
+            return false;
+        }
+
+        // skip if foreign key is not set in the request data
+        if (empty($data[$association->getForeignKey()])) {
+            return false;
+        }
+
+        // skip if foreign key is a valid ID
+        if ($this->isValidID($association, $data[$association->getForeignKey()])) {
+            return false;
+        }
+
+        return true;
+    }
+
+    /**
+     * Validates if association can be used for lookup functionality.
+     *
+     * @param \Cake\ORM\Association $association Table association
+     * @return bool
+     */
+    private function isValidAssociation(Association $association)
+    {
+        if (Association::MANY_TO_ONE !== $association->type()) {
+            return false;
+        }
+
+        if (is_null($association->className())) {
+            return false;
+        }
+
+        return true;
     }
 
     /**
@@ -158,25 +193,6 @@ class LookupListener implements EventListenerInterface
         }
 
         $data[$association->getForeignKey()] = $relatedEntity->get($association->getPrimaryKey());
-    }
-
-    /**
-     * Validates if association can be used for lookup functionality.
-     *
-     * @param \Cake\ORM\Association $association Table association
-     * @return bool
-     */
-    private function isValidAssociation(Association $association)
-    {
-        if (Association::MANY_TO_ONE !== $association->type()) {
-            return false;
-        }
-
-        if (is_null($association->className())) {
-            return false;
-        }
-
-        return true;
     }
 
     /**
