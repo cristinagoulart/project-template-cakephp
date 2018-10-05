@@ -252,11 +252,11 @@ class Annotation
             return $this->content;
         }
 
-        $pattern = '/(^class\s)/im';
         $replacement = [$this->getInfo(), $this->getDefinition($this->getProperties()), $this->getPaths()];
         $replacement = implode("\n", $replacement) . "\n$1";
         $content = file_get_contents($this->path);
 
+        $pattern = '/(^class\s)/im';
         $content = preg_replace($pattern, $replacement, $content);
         $content = trim($content);
 
@@ -492,6 +492,7 @@ class Annotation
             case 'list':
             case 'sublist':
                 $options = $this->getList($conf['field']->getLimit());
+                $options = empty($options) ? [''] : $options;
                 $options = array_keys($options);
                 $result = [
                     'type' => 'string',
@@ -503,6 +504,7 @@ class Annotation
 
             case 'dblist':
                 $options = $this->getDatabaseList($conf['field']->getLimit());
+                $options = empty($options) ? [''] : $options;
                 $options = array_keys($options);
                 $result = [
                     'type' => 'string',
