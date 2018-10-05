@@ -252,11 +252,11 @@ class Annotation
             return $this->content;
         }
 
-        $pattern = '/(^class\s)/im';
         $replacement = [$this->getInfo(), $this->getDefinition($this->getProperties()), $this->getPaths()];
         $replacement = implode("\n", $replacement) . "\n$1";
         $content = file_get_contents($this->path);
 
+        $pattern = '/(^class\s)/im';
         $content = preg_replace($pattern, $replacement, $content);
         $content = trim($content);
 
@@ -491,18 +491,11 @@ class Annotation
 
             case 'list':
             case 'sublist':
-                $options = $this->getList($conf['field']->getLimit());
-                $options = array_keys($options);
-                $result = [
-                    'type' => 'string',
-                    'format' => 'list',
-                    'example' => $options[array_rand($options)],
-                    'enum' => $options
-                ];
-                break;
-
             case 'dblist':
-                $options = $this->getDatabaseList($conf['field']->getLimit());
+                $options = 'dblist' === $type ?
+                    $this->getDatabaseList($conf['field']->getLimit()) :
+                    $this->getList($conf['field']->getLimit());
+                $options = empty($options) ? [''] : $options;
                 $options = array_keys($options);
                 $result = [
                     'type' => 'string',
@@ -551,7 +544,7 @@ class Annotation
      */
     private function getList($listName)
     {
-        $provider = new ListSelectOptions(new ListConfig($listName));
+        $provider = new ListSelectOptions(new ListConfig($listName, $this->className));
         $options = $provider->provide($listName, ['flatten' => true, 'filter' => true]);
 
         return $options;
