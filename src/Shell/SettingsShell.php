@@ -56,8 +56,6 @@ class SettingsShell extends Shell
                 ];
         }
 
-        var_dump($data);
-
         try {
             $entities = $query->newEntities($data);
             $query->saveMany($entities);
