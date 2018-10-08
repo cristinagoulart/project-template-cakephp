@@ -47,7 +47,7 @@
     "require-dev": {
         "cakephp/bake": "~1.0",
         "cakephp/cakephp-codesniffer": "^3.0",
-        "phpunit/phpunit": "*",
+        "phpunit/phpunit": "^6.0",
         "psy/psysh": "@stable"
     },
     "suggest": {
