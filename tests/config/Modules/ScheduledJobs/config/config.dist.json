@@ -2,7 +2,7 @@
     "table": {
         "icon": "clock-o",
         "searchable": true,
-        "display_field": "id",
+        "display_field": "name",
         "lookup_fields": [],
         "typeahead_fields": [],
         "basic_search_fields": [],

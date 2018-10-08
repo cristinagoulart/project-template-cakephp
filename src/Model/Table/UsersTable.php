@@ -26,6 +26,8 @@ class UsersTable extends Table
     {
         parent::initialize($config);
 
+        $this->addBehavior('Qobo/Utils.Footprint');
+
         $this->setAssociations();
     }
 

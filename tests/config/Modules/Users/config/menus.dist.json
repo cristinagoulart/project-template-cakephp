@@ -11,7 +11,6 @@
                     "label": "Users",
                     "desc": "Manage system users",
                     "url": "/users/",
-                    "icon": "user",
                     "order": 10
                 }
             ]

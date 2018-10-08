@@ -50,6 +50,13 @@
                     "url": "/language-translations/languages",
                     "icon": "language",
                     "order": 55
+                },
+                {
+                    "label": "System Searches",
+                    "desc": "Manage system searches",
+                    "url": "/system/searches",
+                    "icon": "search",
+                    "order": 60
                 }
             ]
         },

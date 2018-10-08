@@ -1,0 +1,58 @@
+{
+    "id": {
+        "name": "id",
+        "type": "uuid",
+        "required": null,
+        "non-searchable": null,
+        "unique": null
+    },
+    "sheduled_job_id": {
+        "name": "scheduled_job_id",
+        "type": "related(ScheduledJobs)",
+        "required": null,
+        "non-searchable": null,
+        "unique": null
+    },
+    "context": {
+        "name": "context",
+        "type": "string",
+        "required": null,
+        "non-searchable": null,
+        "unique": null
+    },
+    "extra": {
+        "name": "extra",
+        "type": "text",
+        "required": null,
+        "non-searchable": null,
+        "unique": null
+    },
+    "status": {
+        "name": "status",
+        "type": "boolean",
+        "required": null,
+        "non-searchable": null,
+        "unique": null
+    },
+    "datetime": {
+        "name": "datetime",
+        "type": "datetime",
+        "required": null,
+        "non-searchable": null,
+        "unique": null
+    },
+    "created": {
+        "name": "created",
+        "type": "datetime",
+        "required": null,
+        "non-searchable": null,
+        "unique": null
+    },
+    "modified": {
+        "name": "modified",
+        "type": "datetime",
+        "required": null,
+        "non-searchable": null,
+        "unique": null
+    }
+}
