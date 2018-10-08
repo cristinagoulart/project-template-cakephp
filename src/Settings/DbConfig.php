@@ -5,7 +5,7 @@ use Cake\Core\Configure\ConfigEngineInterface;
 use Cake\ORM\TableRegistry;
 use Cake\Utility\Hash;
 
-class DBConfig implements ConfigEngineInterface
+class DbConfig implements ConfigEngineInterface
 {
     /**
      * @param string $key Table name with the settings
@@ -29,10 +29,10 @@ class DBConfig implements ConfigEngineInterface
     /**
      * @param string $key Table name
      * @param array $data Data to dump.
-     * @return bool Success
+     * @throws \Exception
      */
     public function dump($key, array $data)
     {
-        return false;
+        throw new Exception('Not implemented');
     }
 }

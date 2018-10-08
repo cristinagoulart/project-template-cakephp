@@ -39,7 +39,7 @@ if (!extension_loaded('intl')) {
 }
 
 use App\Feature\Factory as FeatureFactory;
-use App\Settings\DBConfig;
+use App\Settings\DbConfig;
 use Burzum\FileStorage\Storage\Listener\LocalListener;
 use CakephpWhoops\Error\WhoopsHandler;
 use Cake\Cache\Cache;
@@ -174,8 +174,8 @@ Email::config(Configure::read('Email'));
  * configuration.
  */
 try {
-    Configure::config('dbconfig', new DBConfig());
-    Configure::load('Settings1', 'dbconfig', true);
+    Configure::config('dbconfig', new DbConfig());
+    Configure::load('Settings', 'dbconfig', true);
 } catch (\Exception $e) {
     die($e->getMessage() . "\n");
 }
@@ -321,5 +321,3 @@ FeatureFactory::init();
  * Register custom database type(s)
  */
 Type::map('base64', 'App\Database\Type\EncodedFileType');
-
-debug(Configure::read());
