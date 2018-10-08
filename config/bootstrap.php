@@ -39,8 +39,8 @@ if (!extension_loaded('intl')) {
 }
 
 use App\Feature\Factory as FeatureFactory;
+use App\Settings\DBConfig;
 use Burzum\FileStorage\Storage\Listener\LocalListener;
-use CakephpWhoops\Error\WhoopsHandler;
 use Cake\Cache\Cache;
 use Cake\Console\ConsoleErrorHandler;
 use Cake\Core\App;
@@ -56,6 +56,7 @@ use Cake\Network\Request;
 use Cake\Routing\DispatcherFactory;
 use Cake\Utility\Inflector;
 use Cake\Utility\Security;
+use CakephpWhoops\Error\WhoopsHandler;
 
 /**
  * Read configuration file and inject configuration into various
@@ -68,7 +69,7 @@ use Cake\Utility\Security;
 try {
     Configure::config('default', new PhpConfig());
     Configure::load('app', 'default', false);
-    Configure::load('settings', 'default', false);
+    Configure::load('settings', 'default');
     Configure::load('avatar', 'default');
     Configure::load('cron', 'default');
     Configure::load('csv_migrations', 'default');
@@ -84,6 +85,8 @@ try {
 } catch (\Exception $e) {
     die($e->getMessage() . "\n");
 }
+
+
 
 // Load an environment local configuration file.
 // You can use a file like app_local.php to provide local overrides to your
@@ -166,6 +169,18 @@ Security::salt(Configure::consume('Security.salt'));
 // plugins.
 Email::configTransport(Configure::read('EmailTransport'));
 Email::config(Configure::read('Email'));
+
+/**
+ * After the connection manager is set up it's possible
+ * to load the dbconfig engine and merge it with the other
+ * configuration.
+ */
+try {
+    Configure::config('dbconfig', new DBConfig());
+    Configure::load('Settings1', 'dbconfig', true);
+} catch (\Exception $e) {
+    die($e->getMessage() . "\n");
+}
 
 /**
  * The default crypto extension in 3.0 is OpenSSL.
@@ -308,3 +323,5 @@ FeatureFactory::init();
  * Register custom database type(s)
  */
 Type::map('base64', 'App\Database\Type\EncodedFileType');
+
+debug(Configure::read());
