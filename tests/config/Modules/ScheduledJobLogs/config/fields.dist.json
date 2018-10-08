@@ -1,0 +1,8 @@
+{
+  "datetime": {
+    "renderAs": "datetime"
+  },
+  "created": {
+    "renderAs": "datetime"
+  }
+}

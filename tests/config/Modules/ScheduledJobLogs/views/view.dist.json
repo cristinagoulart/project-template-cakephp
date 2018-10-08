@@ -1,0 +1,18 @@
+{
+    "items": [
+        [
+            "Details",
+            "context",
+            "status"
+        ],
+        [
+            "Details",
+            "datetime",
+            "created"
+        ],
+        [
+            "Response",
+            "extra"
+        ]
+    ]
+}

@@ -13,5 +13,8 @@
     },
     "end_date": {
         "renderAs": "datetime"
+    },
+    "last_run_date": {
+        "renderAs": "datetime"
     }
 }

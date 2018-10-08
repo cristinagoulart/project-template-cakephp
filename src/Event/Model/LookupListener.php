@@ -2,7 +2,6 @@
 namespace App\Event\Model;
 
 use ArrayObject;
-use Cake\Datasource\EntityInterface;
 use Cake\Datasource\QueryInterface;
 use Cake\Event\Event;
 use Cake\Event\EventListenerInterface;
@@ -25,7 +24,7 @@ class LookupListener implements EventListenerInterface
     {
         return [
             'Model.beforeFind' => 'beforeFind',
-            'Model.beforeSave' => 'beforeSave'
+            'Model.beforeMarshal' => 'beforeMarshal'
         ];
     }
 
@@ -71,9 +70,9 @@ class LookupListener implements EventListenerInterface
     }
 
     /**
-     * Checks Entity's association fields (foreign keys) values and query's the database to find
-     * the associated record. If the record is not found, it query's the database again to find it by its
-     * display field. If found it replaces the associated field's value with the records id.
+     * Checks request data association fields (foreign keys) values and query's the database to find
+     * the associated record. If the record is not found, it query's again to find the record by
+     * lookup fields. If found it replaces the associated field's value with the records id.
      *
      * This is useful for cases where the display field value is used on the associated field. For example
      * a new post is created and in the 'owner' field the username of the user is used instead of its uuid.
@@ -93,61 +92,49 @@ class LookupListener implements EventListenerInterface
      * }
      *
      * @param \Cake\Event\Event $event Event object
-     * @param \Cake\Datasource\EntityInterface $entity Entity instance
+     * @param \ArrayObject $data Request data
      * @param \ArrayObject $options Query options
      * @return void
      */
-    public function beforeSave(Event $event, EntityInterface $entity, ArrayObject $options)
+    public function beforeMarshal(Event $event, ArrayObject $data, ArrayObject $options)
     {
-        if (! $options['_primary']) {
-            return;
-        }
-
-        if (! isset($options['lookup']) || ! $options['lookup']) {
+        if (! isset($options['lookup']) || ! (bool)$options['lookup']) {
             return;
         }
 
         foreach ($event->getSubject()->associations() as $association) {
-            if (! $this->isValidAssociation($association)) {
+            if (! $this->validate($association, $data)) {
                 continue;
             }
 
-            $this->setRelatedByLookupField($association, $entity);
+            $this->getRelatedIdByLookupField($association, $data);
         }
     }
 
     /**
-     * Sets related record value by lookup fields.
+     * Validate's if lookup logic can be applied using the specified association.
      *
      * @param \Cake\ORM\Association $association Table association
-     * @param \Cake\Datasource\EntityInterface $entity Entity instance
-     * @return void
+     * @param \ArrayObject $data Request data
+     * @return bool
      */
-    private function setRelatedByLookupField(Association $association, EntityInterface $entity)
+    private function validate(Association $association, ArrayObject $data)
     {
-        // skip if foreign key is not set to the entity
-        if (! $entity->get($association->getForeignKey())) {
-            return;
+        if (! $this->isValidAssociation($association)) {
+            return false;
         }
 
-        $lookupFields = $this->getLookupFields($association->className());
-        if (empty($lookupFields)) {
-            return;
+        // skip if foreign key is not set in the request data
+        if (empty($data[$association->getForeignKey()])) {
+            return false;
         }
 
-        if ($this->hasPrimaryKey($association, $entity)) {
-            return;
+        // skip if foreign key is a valid ID
+        if ($this->isValidID($association, $data[$association->getForeignKey()])) {
+            return false;
         }
 
-        $relatedEntity = $this->getRelatedEntity($association, $entity, $lookupFields);
-        if (is_null($relatedEntity)) {
-            return;
-        }
-
-        $entity->set(
-            $association->getForeignKey(),
-            $relatedEntity->get($association->getPrimaryKey())
-        );
+        return true;
     }
 
     /**
@@ -158,7 +145,7 @@ class LookupListener implements EventListenerInterface
      */
     private function isValidAssociation(Association $association)
     {
-        if ('manyToOne' !== $association->type()) {
+        if (Association::MANY_TO_ONE !== $association->type()) {
             return false;
         }
 
@@ -167,6 +154,45 @@ class LookupListener implements EventListenerInterface
         }
 
         return true;
+    }
+
+    /**
+     * Checks if foreign key value is a valid ID.
+     *
+     * @param \Cake\ORM\Association $association Table association
+     * @param mixed $value Foreign key value
+     * @return bool
+     */
+    private function isValidID(Association $association, $value)
+    {
+        $query = $association->getTarget()
+            ->find('all')
+            ->where([$association->primaryKey() => $value])
+            ->limit(1);
+
+        return ! $query->isEmpty();
+    }
+
+    /**
+     * Sets related record value by lookup fields.
+     *
+     * @param \Cake\ORM\Association $association Table association
+     * @param \ArrayObject $data Request data
+     * @return void
+     */
+    private function getRelatedIdByLookupField(Association $association, ArrayObject $data)
+    {
+        $lookupFields = $this->getLookupFields($association->className());
+        if (empty($lookupFields)) {
+            return;
+        }
+
+        $relatedEntity = $this->getRelatedEntity($association, $data, $lookupFields);
+        if (is_null($relatedEntity)) {
+            return;
+        }
+
+        $data[$association->getForeignKey()] = $relatedEntity->get($association->getPrimaryKey());
     }
 
     /**
@@ -183,30 +209,14 @@ class LookupListener implements EventListenerInterface
     }
 
     /**
-     * Checks if related record is found by primary key
-     *
-     * @param \Cake\ORM\Association $association Table association
-     * @param \Cake\Datasource\EntityInterface $entity Entity instance
-     * @return bool
-     */
-    private function hasPrimaryKey(Association $association, EntityInterface $entity)
-    {
-        $query = $association->getTarget()->find('all')
-            ->where([$association->primaryKey() => $entity->get($association->getForeignKey())])
-            ->limit(1);
-
-        return ! $query->isEmpty();
-    }
-
-    /**
      * Retrieves associated entity.
      *
      * @param \Cake\ORM\Association $association Table association
-     * @param \Cake\Datasource\EntityInterface $entity Entity instance
+     * @param \ArrayObject $data Request data
      * @param array $fields Lookup fields
      * @return \Cake\Datasource\EntityInterface|null
      */
-    private function getRelatedEntity(Association $association, EntityInterface $entity, array $fields)
+    private function getRelatedEntity(Association $association, ArrayObject $data, array $fields)
     {
         $query = $association->getTarget()
             ->find('all')
@@ -214,11 +224,7 @@ class LookupListener implements EventListenerInterface
             ->limit(1);
 
         foreach ($fields as $field) {
-            $query->orWhere([$field => $entity->get($association->getForeignKey())]);
-        }
-
-        if ($query->isEmpty()) {
-            return null;
+            $query->orWhere([$field => $data[$association->getForeignKey()]]);
         }
 
         return $query->first();
