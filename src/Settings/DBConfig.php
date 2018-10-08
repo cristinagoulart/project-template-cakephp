@@ -8,7 +8,7 @@ use Cake\Utility\Hash;
 class DBConfig implements ConfigEngineInterface
 {
     /**
-     * @param string $key is table name with the settings
+     * @param string $key Table name with the settings
      * @return array
      * @throws \Exception
      */
@@ -27,10 +27,12 @@ class DBConfig implements ConfigEngineInterface
     }
 
     /**
-     * Not implemented yet.
+     * @param string $key Table name
+     * @param array $data Data to dump.
+     * @return bool Success
      */
     public function dump($key, array $data)
     {
-        return;
+        return false;
     }
 }

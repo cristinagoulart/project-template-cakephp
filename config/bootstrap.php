@@ -41,6 +41,7 @@ if (!extension_loaded('intl')) {
 use App\Feature\Factory as FeatureFactory;
 use App\Settings\DBConfig;
 use Burzum\FileStorage\Storage\Listener\LocalListener;
+use CakephpWhoops\Error\WhoopsHandler;
 use Cake\Cache\Cache;
 use Cake\Console\ConsoleErrorHandler;
 use Cake\Core\App;
@@ -56,7 +57,6 @@ use Cake\Network\Request;
 use Cake\Routing\DispatcherFactory;
 use Cake\Utility\Inflector;
 use Cake\Utility\Security;
-use CakephpWhoops\Error\WhoopsHandler;
 
 /**
  * Read configuration file and inject configuration into various
@@ -85,8 +85,6 @@ try {
 } catch (\Exception $e) {
     die($e->getMessage() . "\n");
 }
-
-
 
 // Load an environment local configuration file.
 // You can use a file like app_local.php to provide local overrides to your
