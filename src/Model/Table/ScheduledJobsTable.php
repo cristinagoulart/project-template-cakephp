@@ -3,12 +3,10 @@ namespace App\Model\Table;
 
 use Cake\Datasource\EntityInterface;
 use Cake\Event\Event;
-use Cake\Event\EventManager;
 use Cake\Filesystem\Folder;
 use Cake\I18n\Time;
 use Cake\Log\Log;
 use Cake\Utility\Inflector;
-use CsvMigrations\Event\EventName;
 use DateTime;
 use RRule\RfcParser;
 use RRule\RRule;
