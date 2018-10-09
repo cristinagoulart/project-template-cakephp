@@ -1,7 +1,6 @@
 <?php
 namespace App\Avatar;
 
-use App\Avatar\AvatarInterface;
 use Cake\Core\Configure;
 
 abstract class AbstractAvatar implements AvatarInterface
