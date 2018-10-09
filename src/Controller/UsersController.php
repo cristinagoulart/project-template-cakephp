@@ -2,7 +2,6 @@
 namespace App\Controller;
 
 use App\Avatar\Service as AvatarService;
-use App\Controller\AppController;
 use CakeDC\Users\Controller\Traits\LoginTrait;
 use CakeDC\Users\Controller\Traits\ProfileTrait;
 use CakeDC\Users\Controller\Traits\RegisterTrait;

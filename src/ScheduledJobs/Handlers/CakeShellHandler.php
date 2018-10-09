@@ -1,7 +1,6 @@
 <?php
 namespace App\ScheduledJobs\Handlers;
 
-use App\ScheduledJobs\Handlers\AbstractHandler;
 use Cake\Core\App;
 use Cake\Core\Configure;
 use Cake\Core\Plugin;
