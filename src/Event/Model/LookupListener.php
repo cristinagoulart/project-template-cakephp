@@ -78,18 +78,18 @@ class LookupListener implements EventListenerInterface
      * a new post is created and in the 'owner' field the username of the user is used instead of its uuid.
      *
      * BEFORE:
-     * {
+     * [
      *    'title' => 'Lorem Ipsum',
      *    'content' => '.....',
      *    'owner' => 'admin',
-     * }
+     * ]
      *
      * AFTER:
-     * {
+     * [
      *    'title' => 'Lorem Ipsum',
      *    'content' => '.....',
      *    'owner' => '77dd9203-3f21-4571-8843-0264ae1cfa48',
-     * }
+     * ]
      *
      * @param \Cake\Event\Event $event Event object
      * @param \ArrayObject $data Request data
