@@ -54,6 +54,8 @@ class MagicDefaultValueListener implements EventListenerInterface
         }
 
         Log::warning(sprintf('Magic value method "%s()" not implemented', $magicValue));
+
+        return $result;
     }
 
     /**
