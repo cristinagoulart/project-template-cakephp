@@ -11,7 +11,7 @@ use CsvMigrations\FieldHandlers\FieldHandlerFactory;
  */
 
 $fhf = new FieldHandlerFactory($this);
-$data = Hash::expand(Configure::read('Settings'));
+$data = Configure::read('Settings');
 
 ?>
 <section class="content-header">
