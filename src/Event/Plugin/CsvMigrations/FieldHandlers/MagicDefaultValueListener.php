@@ -3,6 +3,7 @@ namespace App\Event\Plugin\CsvMigrations\FieldHandlers;
 
 use Cake\Event\Event;
 use Cake\Event\EventListenerInterface;
+use Cake\Log\Log;
 use Cake\Utility\Inflector;
 use CsvMigrations\Event\EventName;
 use CsvMigrations\FieldHandlers\FieldHandlerInterface;
@@ -48,10 +49,11 @@ class MagicDefaultValueListener implements EventListenerInterface
         $magicValue = Inflector::camelize($magicValue);
         $magicValue = 'get' . $magicValue . 'Value';
 
-        // TODO: Add some logging here for non-supported magic values
         if (method_exists($this, $magicValue) && is_callable([$this, $magicValue])) {
-            $result = $this->$magicValue($fieldHandler);
+            return $this->$magicValue($fieldHandler);
         }
+
+        Log::warning(sprintf('Magic value method "%s()" not implemented', $magicValue));
 
         return $result;
     }

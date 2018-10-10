@@ -1,8 +1,6 @@
 <?php
 namespace App\Feature;
 
-use App\Feature\Config;
-
 interface FeatureInterface
 {
     /**

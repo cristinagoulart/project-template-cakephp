@@ -10,7 +10,6 @@ use Cake\Event\EventListenerInterface;
 use Menu\Event\EventName as MenuEventName;
 use Menu\MenuBuilder\MenuFactory;
 use Menu\MenuBuilder\MenuInterface;
-use Menu\MenuBuilder\MenuItemFactory;
 use Qobo\Utils\ModuleConfig\ConfigType;
 use Qobo\Utils\ModuleConfig\ModuleConfig;
 use Qobo\Utils\Utility;

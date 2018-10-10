@@ -1,7 +1,6 @@
 <?php
 namespace App\Feature;
 
-use App\Feature\Config;
 use Cake\Core\Configure;
 use InvalidArgumentException;
 use RuntimeException;
