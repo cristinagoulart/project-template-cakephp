@@ -14,7 +14,6 @@
  */
 namespace App\Shell\Task;
 
-use App\Shell\Task\ListTask;
 use Cake\Console\Shell;
 
 /**

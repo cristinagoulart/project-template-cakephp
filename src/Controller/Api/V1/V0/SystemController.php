@@ -8,7 +8,7 @@ class SystemController extends AppController
     /**
      * Return dynamic info tabs
      *
-     * @return null|string response of HTML content
+     * @return void
      */
     public function info()
     {

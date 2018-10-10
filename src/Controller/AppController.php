@@ -14,7 +14,6 @@
  */
 namespace App\Controller;
 
-use App\Controller\ChangelogTrait;
 use App\Event\Plugin\Search\Model\SearchableFieldsListener;
 use App\Feature\Factory as FeatureFactory;
 use AuditStash\Meta\RequestMetadata;
