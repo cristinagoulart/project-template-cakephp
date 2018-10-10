@@ -90,6 +90,9 @@ $data = Hash::expand(Configure::read('Settings'));
 											];
 											$inputField = $fhf->renderInput($field, $field, $value, ['fieldDefinitions' => $definition]);
 											echo $inputField;
+											if(isset($fieldValue['help']) ){
+												echo '<span class="help-block">'. $fieldValue['help'] .'</span>';
+											}
 										}
 										echo '</div>';
 										echo '</div>';

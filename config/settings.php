@@ -4,7 +4,8 @@ return [
         'Settings' => [
             'First Tab.zero line.first Section.field_number_one' => [
                 'alias' => 'ScheduledLog.stats.age',
-                'type' => 'string'
+                'type' => 'string',
+                'help' => 'This is very helpful'
             ],
             'First Tab.first line.first Section.i_need_more_coffee' => [
                 'alias' => 'EmailTransport.default.port',
