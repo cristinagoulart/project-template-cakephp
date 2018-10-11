@@ -146,7 +146,7 @@ class ScheduledJobsTableTest extends TestCase
 
         $result = $this->ScheduledJobsTable->getRRule($entity);
 
-        if (is_null($expected)) {
+        if (empty($expected)) {
             $this->assertEquals($result, $expected);
         } else {
             $this->assertInstanceOf($expected, $result);
