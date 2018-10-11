@@ -48,7 +48,6 @@
         "cakephp/bake": "~1.0",
         "cakephp/cakephp-codesniffer": "^3.0",
         "phpstan/phpstan": "^0.10.3",
-        "phpstan/phpstan-phpunit": "^0.10.0",
         "phpunit/phpunit": "^6.0",
         "psy/psysh": "@stable",
         "thecodingmachine/phpstan-strict-rules": "^0.10.3"
