@@ -50,7 +50,8 @@
         "phpstan/phpstan": "^0.10.3",
         "phpunit/phpunit": "^6.0",
         "psy/psysh": "@stable",
-        "thecodingmachine/phpstan-strict-rules": "^0.10.3"
+        "thecodingmachine/phpstan-strict-rules": "^0.10.3",
+        "timeweb/phpstan-enum": "^2.0"
     },
     "suggest": {
         "ext-xdebug": "Allows code coverage reports and advanced debugging"

@@ -8,3 +8,4 @@ parameters:
         - tests/bootstrap.php
 includes:
     - vendor/thecodingmachine/phpstan-strict-rules/phpstan-strict-rules.neon
+    - vendor/timeweb/phpstan-enum/extension.neon
