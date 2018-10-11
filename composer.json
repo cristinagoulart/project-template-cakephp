@@ -47,8 +47,11 @@
     "require-dev": {
         "cakephp/bake": "~1.0",
         "cakephp/cakephp-codesniffer": "^3.0",
+        "phpstan/phpstan": "^0.10.3",
+        "phpstan/phpstan-phpunit": "^0.10.0",
         "phpunit/phpunit": "^6.0",
-        "psy/psysh": "@stable"
+        "psy/psysh": "@stable",
+        "thecodingmachine/phpstan-strict-rules": "^0.10.3"
     },
     "suggest": {
         "ext-xdebug": "Allows code coverage reports and advanced debugging"
@@ -94,7 +97,7 @@
     },
     "extra": {
         "hooks": {
-            "pre-commit": "./vendor/bin/phpcs $(git diff-index --name-only --cached --diff-filter=ACMR HEAD -- )"
+            "pre-commit": "PHPCS_FILES=$(git diff-index --name-only --cached --diff-filter=ACMR HEAD 'tests/**.php' 'src/**.php' 'webroot/**.php'); if [ \"$PHPCS_FILES\" ]; then ./vendor/bin/phpcs $PHPCS_FILES; fi"
         }
     },
     "prefer-stable": true
