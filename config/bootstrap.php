@@ -170,7 +170,7 @@ Security::salt(Configure::consume('Security.salt'));
 try {
     Configure::config('dbconfig', new DbConfig());
     Configure::load('Settings', 'dbconfig', true);
-} catch (\PDOException $e) {
+} catch (\Cake\Database\Exception $e) {
     // Do nothing
 } catch (\Exception $e) {
     die($e->getMessage() . "\n");
