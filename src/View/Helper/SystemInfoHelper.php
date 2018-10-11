@@ -14,7 +14,7 @@ class SystemInfoHelper extends Helper
      *
      * @return string project version
      */
-    public function getProjectVersion()
+    public function getProjectVersion(): string
     {
         return Project::getDisplayVersion();
     }
@@ -24,7 +24,7 @@ class SystemInfoHelper extends Helper
      *
      * @return string project's URL
      */
-    public function getProjectUrl()
+    public function getProjectUrl(): string
     {
         return Project::getUrl();
     }
@@ -34,7 +34,7 @@ class SystemInfoHelper extends Helper
      *
      * @return string project name
      */
-    public function getProjectName()
+    public function getProjectName(): string
     {
         return Project::getName();
     }
@@ -44,9 +44,9 @@ class SystemInfoHelper extends Helper
      *
      * @param int $progress value
      * @param int $total value
-     * @return int progress result
+     * @return string progress result
      */
-    public function getProgressValue($progress, $total)
+    public function getProgressValue(int $progress, int $total): string
     {
         $result = '0%';
 
@@ -65,7 +65,7 @@ class SystemInfoHelper extends Helper
      * @param string $logoSize of logo - mini or large
      * @return string HTML img tag with project logo
      */
-    public function getProjectLogo($logoSize = '')
+    public function getProjectLogo(string $logoSize = ''): string
     {
         return Project::getLogo($logoSize);
     }
@@ -75,7 +75,7 @@ class SystemInfoHelper extends Helper
      *
      * @return string copyright
      */
-    public function getCopyright()
+    public function getCopyright(): string
     {
         return Project::getCopyright();
     }
