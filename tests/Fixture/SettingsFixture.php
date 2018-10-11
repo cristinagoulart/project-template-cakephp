@@ -21,14 +21,9 @@ class SettingsFixture extends TestFixture
         $this->records = [
             [
                 'id' => 1,
-                'key' => 'ScheduledLog.stats.age',
-                'value' => 'Lorem ipsum dolor sit amet'
-            ],
-            [
-                'id' => 2,
-                'key' => 'Avatar.defaultImage',
-                'value' => 'Lorem ipsum dolor sit amet'
-            ],
+                'key' => 'FileStorage.defaultImageSize',
+                'value' => '5000'
+            ]
         ];
         parent::init();
     }
