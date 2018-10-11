@@ -12,8 +12,18 @@ use CsvMigrations\FieldHandlers\FieldHandlerFactory;
 
 $fhf = new FieldHandlerFactory($this);
 $data = Configure::read('Settings');
-
 ?>
+
+<?php $this->Html->scriptStart(array('block' => 'scriptBottom', 'inline' => false)); ?>
+
+$(document).ready(function(){
+	$('#settings-search').on('input',function(){
+		let search = $(this).val();
+	})
+});
+
+<?php $this->Html->scriptEnd(); ?>
+
 <section class="content-header">
 	<h1><?= __('Settings'); ?></h1>
 </section>
@@ -36,6 +46,13 @@ $data = Configure::read('Settings');
 						$first = false;
 					}
 					?>
+					<li>
+						<form class="navbar-form navbar-right" role="search">
+							<div class="form-group">
+								<input type="text" class="form-control" id="settings-search" placeholder="Search">
+							</div>
+						</form>
+					</li>
 				</ul>
 				<div class="tab-content">
 					<?php
