@@ -15,6 +15,11 @@ use Firebase\JWT\JWT;
  */
 class TranslationsControllerTest extends IntegrationTestCase
 {
+    /**
+     * @var object $Translations
+     */
+    private $Translations;
+
     public $fixtures = [
         'plugin.translations.languages',
         'plugin.translations.language_translations',

@@ -14,6 +14,11 @@ class ScheduledJobsControllerTest extends IntegrationTestCase
 {
 
     /**
+     * @var object
+     */
+    private $table;
+
+    /**
      * Fixtures
      *
      * @var array

@@ -21,6 +21,11 @@ use Firebase\JWT\JWT;
  */
 class UsersControllerTest extends IntegrationTestCase
 {
+    /**
+     * @var object $Users
+     */
+    private $Users;
+
     public $fixtures = [
         'plugin.CakeDC/Users.users',
     ];
@@ -56,7 +61,6 @@ class UsersControllerTest extends IntegrationTestCase
 
     public function tearDown()
     {
-        unset($this->token);
         unset($this->Users);
 
         parent::tearDown();
