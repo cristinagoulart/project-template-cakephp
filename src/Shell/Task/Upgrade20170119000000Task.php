@@ -3,6 +3,7 @@ namespace App\Shell\Task;
 
 use Cake\Console\ConsoleOptionParser;
 use Cake\Console\Shell;
+use RuntimeException;
 
 class Upgrade20170119000000Task extends Shell
 {
@@ -67,7 +68,7 @@ class Upgrade20170119000000Task extends Shell
     protected function validateSource($src)
     {
         if (!is_dir($src)) {
-            throw new \RuntimeException("Source path [$src] is not a directory");
+            throw new RuntimeException("Source path [$src] is not a directory");
         }
     }
 
@@ -96,7 +97,7 @@ class Upgrade20170119000000Task extends Shell
             }
             $result = mkdir($dir);
             if (!$result) {
-                throw new \RuntimeException("Failed to create [$dir]");
+                throw new RuntimeException("Failed to create [$dir]");
             }
         }
     }
@@ -115,7 +116,7 @@ class Upgrade20170119000000Task extends Shell
         }
         $result = rmdir($dst);
         if (!$result) {
-            throw new \RuntimeException("Failed to remove [$dst]");
+            throw new RuntimeException("Failed to remove [$dst]");
         }
     }
 
@@ -153,7 +154,7 @@ class Upgrade20170119000000Task extends Shell
             $dstFile = $dst . DIRECTORY_SEPARATOR . $file;
             $result = rename($srcFile, $dstFile);
             if (!$result) {
-                throw new \RuntimeException("Failed moving [$srcFile] to [$dstFile]");
+                throw new RuntimeException("Failed moving [$srcFile] to [$dstFile]");
             }
         }
     }
@@ -161,7 +162,7 @@ class Upgrade20170119000000Task extends Shell
     /**
      * Upgrade given path
      *
-     * @throws RuntimeException when failed to create destination folder
+     * @throws \RuntimeException when failed to create destination folder
      * @param string $src Path to folder to upgrade
      * @return void
      */
@@ -173,7 +174,7 @@ class Upgrade20170119000000Task extends Shell
         if (!file_exists($dst)) {
             $result = mkdir($dst);
             if (!$result) {
-                throw new \RuntimeException("Failed to create directory [$dst]");
+                throw new RuntimeException("Failed to create directory [$dst]");
             }
         }
 
