@@ -23,6 +23,6 @@ class ScheduledJobsFeatureTest extends TestCase
         $config = Configure::read('RolesCapabilities.accessCheck.skipControllers');
         $value = 'App\\Controller\\ScheduledJobsController';
 
-        $this->assertFalse(array_search($value, $config));
+        $this->assertFalse(in_array($value, $config));
     }
 }

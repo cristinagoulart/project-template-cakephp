@@ -28,6 +28,11 @@ class UsersShellTest extends TestCase
     private $Users;
 
     /**
+     * Instance of the Shell
+     */
+    private $Shell;
+
+    /**
      * Fixtures
      *
      * @var array
