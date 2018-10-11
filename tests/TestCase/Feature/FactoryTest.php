@@ -30,14 +30,6 @@ class FactoryTest extends TestCase
         $this->assertInstanceOf(BaseFeature::class, $feature);
     }
 
-    /**
-     * @expectedException \InvalidArgumentException
-     */
-    public function testGetExceptionNotString(): void
-    {
-        $result = Factory::get(true);
-    }
-
     public function testGetList(): void
     {
         $features = Factory::getList();
