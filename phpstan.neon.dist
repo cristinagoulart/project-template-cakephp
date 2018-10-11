@@ -4,5 +4,7 @@ parameters:
         - src
         - tests
         - webroot
+    autoload_files:
+        - tests/bootstrap.php
 includes:
     - vendor/thecodingmachine/phpstan-strict-rules/phpstan-strict-rules.neon
