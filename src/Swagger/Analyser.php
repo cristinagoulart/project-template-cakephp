@@ -46,7 +46,7 @@ class Analyser extends StaticAnalyser
      * @param string $module Module name
      * @return bool
      */
-    private static function allowsSwagger($module)
+    private static function allowsSwagger(string $module): bool
     {
         if (in_array($module, ['Users'])) {
             return true;
