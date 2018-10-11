@@ -15,12 +15,7 @@ class DbConfig implements ConfigEngineInterface
     public function read($key)
     {
         $query = TableRegistry::get($key);
-
-        try {
-            $data = $query->find('list', ['keyField' => 'key', 'valueField' => 'value'])->toArray();
-        } catch (\Exception $e) {
-            throw new \Exception(sprintf('Table "%s" did not return an array', $key));
-        }
+        $data = $query->find('list', ['keyField' => 'key', 'valueField' => 'value'])->toArray();
         $config = Hash::expand($data);
 
         return $config;
