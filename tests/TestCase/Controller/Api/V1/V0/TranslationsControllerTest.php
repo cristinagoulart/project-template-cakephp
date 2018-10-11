@@ -56,7 +56,7 @@ class TranslationsControllerTest extends IntegrationTestCase
         parent::tearDown();
     }
 
-    public function testIndex()
+    public function testIndex(): void
     {
         $this->get('/api/language-translations');
 
@@ -68,7 +68,7 @@ class TranslationsControllerTest extends IntegrationTestCase
         $this->assertEmpty($response->data);
     }
 
-    public function testIndexWithModelAndKey()
+    public function testIndexWithModelAndKey(): void
     {
         $this->get('/api/language-translations?object_model=Leads&object_foreign_key=00000000-0000-0000-0000-100000000001');
 
@@ -78,7 +78,7 @@ class TranslationsControllerTest extends IntegrationTestCase
         $this->assertEquals(3, count($response->data));
     }
 
-    public function testIndexWithField()
+    public function testIndexWithField(): void
     {
         $this->get('/api/language-translations?object_model=Leads&object_foreign_key=00000000-0000-0000-0000-100000000001&object_field=description');
 
@@ -88,7 +88,7 @@ class TranslationsControllerTest extends IntegrationTestCase
         $this->assertEquals(2, count($response->data));
     }
 
-    public function testIndexWithLanguage()
+    public function testIndexWithLanguage(): void
     {
         $this->get('/api/language-translations?object_model=Leads&object_foreign_key=00000000-0000-0000-0000-100000000001&language=ru');
 
@@ -98,7 +98,7 @@ class TranslationsControllerTest extends IntegrationTestCase
         $this->assertEquals(2, count($response->data));
     }
 
-    public function testIndexWithFieldAndLanguage()
+    public function testIndexWithFieldAndLanguage(): void
     {
         $this->get('/api/language-translations?object_model=Leads&object_foreign_key=00000000-0000-0000-0000-100000000001&object_field=code&language=ru');
 

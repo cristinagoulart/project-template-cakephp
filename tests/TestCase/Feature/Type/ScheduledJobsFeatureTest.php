@@ -7,7 +7,7 @@ use Cake\TestSuite\TestCase;
 
 class ScheduledJobsFeatureTest extends TestCase
 {
-    public function testIsActive()
+    public function testIsActive(): void
     {
         $config = Configure::read('Features.Module/ScheduledJobs');
         $feature = Factory::get('Module/ScheduledJobs');
@@ -15,7 +15,7 @@ class ScheduledJobsFeatureTest extends TestCase
         $this->assertEquals($config['active'], $feature->isActive());
     }
 
-    public function testEnable()
+    public function testEnable(): void
     {
         $feature = Factory::get('Module/ScheduledJobs');
         $feature->enable();

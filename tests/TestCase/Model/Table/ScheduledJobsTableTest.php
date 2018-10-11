@@ -56,7 +56,7 @@ class ScheduledJobsTableTest extends TestCase
      *
      * @return void
      */
-    public function testGetActiveJobs()
+    public function testGetActiveJobs(): void
     {
         $result = $this->ScheduledJobsTable->getActiveJobs();
 
@@ -64,7 +64,7 @@ class ScheduledJobsTableTest extends TestCase
         $this->assertInstanceOf('\Cake\ORM\ResultSet', $result);
     }
 
-    public function testGetJobs()
+    public function testGetJobs(): void
     {
         $result = $this->ScheduledJobsTable->getJobs(0);
         $this->assertEquals($result, []);
@@ -73,7 +73,7 @@ class ScheduledJobsTableTest extends TestCase
         $this->assertNotEmpty($result);
     }
 
-    public function testGetInstance()
+    public function testGetInstance(): void
     {
         $result = $this->ScheduledJobsTable->getInstance();
         $this->assertNull($result);
@@ -83,7 +83,7 @@ class ScheduledJobsTableTest extends TestCase
         $this->assertInstanceOf('\App\ScheduledJobs\Handlers\CakeShellHandler', $result);
     }
 
-    public function testGetList()
+    public function testGetList(): void
     {
         $result = $this->ScheduledJobsTable->getList();
 
@@ -94,14 +94,19 @@ class ScheduledJobsTableTest extends TestCase
     /**
      * @dataProvider providerTestIsValidFile
      */
-    public function testIsValidFile($file, $expected)
+    public function testIsValidFile(string $file, bool $expected): void
     {
         $result = $this->ScheduledJobsTable->isValidFile($file);
 
         $this->assertEquals($result, $expected);
     }
 
-    public function providerTestIsValidFile()
+    /**
+     * Provide files data set
+     *
+     * @return mixed[]
+     */
+    public function providerTestIsValidFile(): array
     {
         return [
             ['foobar.php', true],
@@ -109,7 +114,7 @@ class ScheduledJobsTableTest extends TestCase
         ];
     }
 
-    public function testTimeToInvoke()
+    public function testTimeToInvoke(): void
     {
         $time = new \Cake\I18n\Time('2018-01-18 09:00:00', 'UTC');
 
@@ -135,7 +140,7 @@ class ScheduledJobsTableTest extends TestCase
     /**
      * @dataProvider providerGetRRule
      */
-    public function testGetRRule($id, $expected)
+    public function testGetRRule(string $id, string $expected): void
     {
         $entity = $this->ScheduledJobsTable->get($id);
 
@@ -148,7 +153,12 @@ class ScheduledJobsTableTest extends TestCase
         }
     }
 
-    public function providerGetRRule()
+    /**
+     * Return RRule data sets
+     *
+     * @return mixed[]
+     */
+    public function providerGetRRule(): array
     {
         return [
             ['00000000-0000-0000-0000-000000000001', '\RRule\RRule'],

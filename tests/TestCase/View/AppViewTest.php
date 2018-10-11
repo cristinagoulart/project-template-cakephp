@@ -15,7 +15,7 @@ class AppViewTest extends TestCase
         $this->view = new AppView();
     }
 
-    public function testInitialize()
+    public function testInitialize(): void
     {
         $result = $this->view->helpers();
         $this->assertTrue(is_object($result), "List of helpers is not an object");

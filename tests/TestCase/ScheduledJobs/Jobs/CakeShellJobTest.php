@@ -7,7 +7,7 @@ use PHPUnit\Framework\TestCase;
 class CakeShellJobText extends TestCase
 {
 
-    public function testRun()
+    public function testRun(): void
     {
         $command = 'CakeShell::App:foobar';
 

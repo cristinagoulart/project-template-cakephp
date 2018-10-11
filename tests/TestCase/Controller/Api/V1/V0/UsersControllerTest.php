@@ -62,7 +62,7 @@ class UsersControllerTest extends IntegrationTestCase
         parent::tearDown();
     }
 
-    private function setHeaders()
+    private function setHeaders(): void
     {
         $this->configRequest([
             'headers' => [
@@ -72,7 +72,7 @@ class UsersControllerTest extends IntegrationTestCase
         ]);
     }
 
-    private function setAuthHeaders($id)
+    private function setAuthHeaders(string $id): void
     {
         $token = JWT::encode(
             ['sub' => $id, 'exp' => time() + 604800],
@@ -88,7 +88,7 @@ class UsersControllerTest extends IntegrationTestCase
         ]);
     }
 
-    public function testToken()
+    public function testToken(): void
     {
         $data = [
             'username' => 'user-6',
@@ -102,7 +102,7 @@ class UsersControllerTest extends IntegrationTestCase
         $this->assertContentType('application/json');
     }
 
-    public function testTokenWithNonActiveUser()
+    public function testTokenWithNonActiveUser(): void
     {
         $data = [
             'username' => 'user-1',
@@ -116,7 +116,7 @@ class UsersControllerTest extends IntegrationTestCase
         $this->assertContentType('application/json');
     }
 
-    public function testInitializeForbidden()
+    public function testInitializeForbidden(): void
     {
         // Valid data
         $data = [
@@ -133,7 +133,7 @@ class UsersControllerTest extends IntegrationTestCase
         $this->assertContentType('application/json');
     }
 
-    public function testTokenInvalid()
+    public function testTokenInvalid(): void
     {
         $this->post('/api/users/token.json', json_encode([]));
 
@@ -142,7 +142,7 @@ class UsersControllerTest extends IntegrationTestCase
         $this->assertContentType('application/json');
     }
 
-    public function testViewByLookupField()
+    public function testViewByLookupField(): void
     {
         $this->setAuthHeaders('00000000-0000-0000-0000-000000000002');
 
@@ -158,7 +158,7 @@ class UsersControllerTest extends IntegrationTestCase
         $this->assertEquals($email, $response->data->email);
     }
 
-    public function testEditByLookupField()
+    public function testEditByLookupField(): void
     {
         $this->setAuthHeaders('00000000-0000-0000-0000-000000000002');
 

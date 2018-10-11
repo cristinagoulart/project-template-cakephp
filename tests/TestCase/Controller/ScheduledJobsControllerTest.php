@@ -47,7 +47,7 @@ class ScheduledJobsControllerTest extends IntegrationTestCase
      *
      * @return void
      */
-    public function testAdd()
+    public function testAdd(): void
     {
         $feature = Factory::get('Module' . DS . 'ScheduledJobs');
 
@@ -79,7 +79,7 @@ class ScheduledJobsControllerTest extends IntegrationTestCase
         $this->assertEquals($this->table->getStartDate($data['start_date']), $entity->start_date);
     }
 
-    public function testEdit()
+    public function testEdit(): void
     {
         $feature = Factory::get('Module' . DS . 'ScheduledJobs');
 
