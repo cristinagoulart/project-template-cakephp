@@ -62,7 +62,7 @@ class AuditStashShell extends Shell
      * @param int $offset Pagination offset
      * @return \Cake\ORM\ResultSet
      */
-    private function fetchRecords($offset)
+    private function fetchRecords(int $offset)
     {
         return $this->table->find()
             ->select([$this->table->getPrimaryKey(), 'meta'])

@@ -82,11 +82,11 @@ class FakerShell extends Shell
      * set to zero then everything is extracted.
      *
      * @param string $selection User input
-     * @param array $options Provided options
+     * @param mixed[] $options Provided options
      * @param int $limit Limit number of extracted options
-     * @return array
+     * @return mixed[]
      */
-    protected function extractSelected($selection, array $options, $limit = 0)
+    protected function extractSelected(string $selection, array $options, int $limit = 0): array
     {
         $result = [];
         $limit = (int)$limit;
@@ -122,10 +122,10 @@ class FakerShell extends Shell
      * Method that interactively retrieves and returns
      * faker field formatters for the selected field(s).
      *
-     * @param array $fields Selected field(s)
-     * @return array
+     * @param mixed[] $fields Selected field(s)
+     * @return mixed[]
      */
-    protected function setFieldFormatter(array $fields)
+    protected function setFieldFormatter(array $fields): array
     {
         if (empty($fields)) {
             return $fields;
@@ -195,10 +195,10 @@ class FakerShell extends Shell
      * Append options to interactive message.
      *
      * @param string $message Interactive shell message
-     * @param array $options Options to append
+     * @param mixed[] $options Options to append
      * @return string
      */
-    protected function appendOptions($message, array $options)
+    protected function appendOptions(string $message, array $options): string
     {
         $result = $message;
         foreach ($options as $k => $v) {
@@ -211,9 +211,9 @@ class FakerShell extends Shell
     /**
      * Retrieves faker supported providers.
      *
-     * @return array
+     * @return mixed[]
      */
-    protected function getProviders()
+    protected function getProviders(): array
     {
         $generator = Factory::create();
 
@@ -236,10 +236,10 @@ class FakerShell extends Shell
      * formatter(s). Returns count of newly created records.
      *
      * @param \Cake\ORM\Table $table Table instance
-     * @param array $fields Selected field(s) and formatter(s)
+     * @param mixed[] $fields Selected field(s) and formatter(s)
      * @return int
      */
-    protected function generateFakeData(Table $table, array $fields)
+    protected function generateFakeData(Table $table, array $fields): int
     {
         $result = 0;
         $total = $this->param('number');

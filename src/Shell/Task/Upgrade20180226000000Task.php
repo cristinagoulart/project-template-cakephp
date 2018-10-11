@@ -73,7 +73,7 @@ class Upgrade20180226000000Task extends Shell
      * @param mixed $data Source file data
      * @return string
      */
-    private function toJSON($data)
+    private function toJSON($data): string
     {
         return json_encode($data, JSON_PRETTY_PRINT);
     }
@@ -84,7 +84,7 @@ class Upgrade20180226000000Task extends Shell
      * @param string $module Module name
      * @return void
      */
-    private function migrateModule($module)
+    private function migrateModule(string $module): void
     {
         $data = (new ModuleConfig(ConfigType::MODULE(), $module, null, ['cacheSkip' => true]))->parse();
 
@@ -110,7 +110,7 @@ class Upgrade20180226000000Task extends Shell
      * @param string $associated Associated module name
      * @return void
      */
-    private function migrate($module, $associated)
+    private function migrate(string $module, string $associated): void
     {
         $moduleName = $this->generateModuleName([$module, $associated]);
 
@@ -140,10 +140,10 @@ class Upgrade20180226000000Task extends Shell
     /**
      * Generates many-to-many module name based on associated modules.
      *
-     * @param array $modules Modules names
+     * @param string[] $modules Modules names
      * @return string
      */
-    private function generateModuleName(array $modules)
+    private function generateModuleName(array $modules): string
     {
         sort($modules);
 
@@ -156,7 +156,7 @@ class Upgrade20180226000000Task extends Shell
      * @param string $value Module name
      * @return bool
      */
-    private function moduleExists($value)
+    private function moduleExists(string $value): bool
     {
         return file_exists($this->path . DS . $value);
     }
@@ -167,7 +167,7 @@ class Upgrade20180226000000Task extends Shell
      * @param string $path Module config base path
      * @return bool
      */
-    private function createDirectories($path)
+    private function createDirectories(string $path): bool
     {
         $folder = new Folder();
 
@@ -192,7 +192,7 @@ class Upgrade20180226000000Task extends Shell
      * @param string $path Module config base path
      * @return bool
      */
-    private function createConfigJSON($path)
+    private function createConfigJSON(string $path): bool
     {
         $data = [
             'table' => ['type' => 'relation']
@@ -219,7 +219,7 @@ class Upgrade20180226000000Task extends Shell
      * @param string $associated Associated module name
      * @return bool
      */
-    private function createMigrationJSON($path, $module, $associated)
+    private function createMigrationJSON(string $path, string $module, string $associated): bool
     {
         $data = [
             'id' => [
@@ -278,7 +278,7 @@ class Upgrade20180226000000Task extends Shell
      * @param string $module Module name
      * @return string
      */
-    private function getColumnName($module)
+    private function getColumnName(string $module): string
     {
         return sprintf('%s_id', Inflector::singularize(Inflector::underscore($module)));
     }
@@ -290,7 +290,7 @@ class Upgrade20180226000000Task extends Shell
      * @param \stdClass $data Config data
      * @return bool
      */
-    private function removeManyToManyConfig($module, stdClass $data)
+    private function removeManyToManyConfig(string $module, stdClass $data): bool
     {
         unset($data->manyToMany);
 
