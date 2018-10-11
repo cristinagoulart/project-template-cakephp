@@ -23,7 +23,7 @@ class Database
      * @param bool $skipVersion Do not include the version
      * @return string
      */
-    public static function getDriver($skipVersion = false)
+    public static function getDriver(bool $skipVersion = false): string
     {
         $driver = ConnectionManager::get('default')->driver();
         // Find the class name of the driver without namespace
@@ -59,9 +59,9 @@ class Database
      * are returned.
      *
      * @param string $match String to match in the table names
-     * @return array
+     * @return string[]
      */
-    public static function getTables($match = '')
+    public static function getTables(string $match = ''): array
     {
         $tables = ConnectionManager::get('default')->schemaCollection()->listTables();
 
@@ -86,10 +86,10 @@ class Database
      * the count of all records, deleted records, etc.
      * for a given list of tables.
      *
-     * @param array $tables List of tables to get stats for
-     * @return array
+     * @param string[] $tables List of tables to get stats for
+     * @return mixed[]
      */
-    public static function getTablesStats(array $tables)
+    public static function getTablesStats(array $tables): array
     {
         // Initialize tables stats
         $allTables = [];
@@ -124,10 +124,10 @@ class Database
      * the count of all records, table size, etc.
      * for a given list of tables.
      *
-     * @param array $tables List of tables to get stats for
-     * @return array
+     * @param string[] $tables List of tables to get stats for
+     * @return mixed[]
      */
-    protected static function getMysqlTablesStats(array $tables)
+    protected static function getMysqlTablesStats(array $tables): array
     {
         $result = [];
         $sth = ConnectionManager::get('default')->execute("SHOW TABLE STATUS");
@@ -149,7 +149,7 @@ class Database
      * @param string $table Table to get the count from
      * @return int
      */
-    protected static function getTotalRecordsCount($table)
+    protected static function getTotalRecordsCount(string $table): int
     {
         $result = 0;
 
@@ -168,7 +168,7 @@ class Database
      * @param string $table Table to get the count from
      * @return int
      */
-    protected static function getTrashedRecordsCount($table)
+    protected static function getTrashedRecordsCount(string $table): int
     {
         $result = 0;
 
