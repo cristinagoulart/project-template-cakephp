@@ -39,6 +39,7 @@ if (!extension_loaded('intl')) {
 }
 
 use App\Feature\Factory as FeatureFactory;
+use App\Settings\DbConfig;
 use Burzum\FileStorage\Storage\Listener\LocalListener;
 use CakephpWhoops\Error\WhoopsHandler;
 use Cake\Cache\Cache;
@@ -68,7 +69,7 @@ use Cake\Utility\Security;
 try {
     Configure::config('default', new PhpConfig());
     Configure::load('app', 'default', false);
-    Configure::load('settings', 'default', false);
+    Configure::load('settings', 'default');
     Configure::load('avatar', 'default');
     Configure::load('cron', 'default');
     Configure::load('csv_migrations', 'default');
@@ -159,6 +160,20 @@ Cache::config(Configure::consume('Cache'));
 ConnectionManager::config(Configure::consume('Datasources'));
 Log::config(Configure::consume('Log'));
 Security::salt(Configure::consume('Security.salt'));
+
+/**
+ * After the connection manager is set up it's possible
+ * to load the dbconfig engine and merge it with the other
+ * configuration.
+ */
+try {
+    Configure::config('dbconfig', new DbConfig());
+    Configure::load('Settings', 'dbconfig', true);
+} catch (\Cake\Database\Exception $e) {
+    // Do nothing
+} catch (\Exception $e) {
+    die($e->getMessage() . "\n");
+}
 
 // Read, rather than consume, since we have some logic that
 // needs to know if email sending is enabled or not.
