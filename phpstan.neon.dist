@@ -1,0 +1,8 @@
+parameters:
+    level: 7
+    paths:
+        - src
+        - tests
+        - webroot
+includes:
+    - vendor/thecodingmachine/phpstan-strict-rules/phpstan-strict-rules.neon
