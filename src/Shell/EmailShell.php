@@ -23,7 +23,7 @@ class EmailShell extends Shell
      * @link http://book.cakephp.org/3.0/en/core-libraries/email.html#sending-emails-from-cli
      * @return string
      */
-    protected function _getDefaultDomain(): string
+    protected function getDefaultDomain(): string
     {
         $result = getenv('EMAIL_DOMAIN') ?: self::DEFAULT_DOMAIN;
 
@@ -44,7 +44,7 @@ class EmailShell extends Shell
             'required' => true,
         ]);
         $parser->addOption('domain', [
-            'help' => 'Domain to use for Message-Id (default: ' . $this->_getDefaultDomain() . ')',
+            'help' => 'Domain to use for Message-Id (default: ' . $this->getDefaultDomain() . ')',
         ]);
         $parser->addOption('subject', [
             'help' => 'Subject to use (default: ' . self::DEFAULT_SUBJECT . ')',
@@ -71,7 +71,7 @@ class EmailShell extends Shell
 
         // Get the settings
         $to = $this->args[0];
-        $domain = !empty($this->params['domain']) ? $this->params['domain'] : $this->_getDefaultDomain();
+        $domain = !empty($this->params['domain']) ? $this->params['domain'] : $this->getDefaultDomain();
         $subject = !empty($this->params['subject']) ? $this->params['subject'] : self::DEFAULT_SUBJECT;
         $message = !empty($this->params['message']) ? $this->params['message'] : self::DEFAULT_BODY;
 

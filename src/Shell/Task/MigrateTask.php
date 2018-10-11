@@ -40,7 +40,7 @@ class MigrateTask extends Shell
 
         $this->out('Migrating all loaded Plugins:');
         $this->hr();
-        $this->_migratePlugins($plugins);
+        $this->migratePlugins($plugins);
 
         return true;
     }
@@ -51,7 +51,7 @@ class MigrateTask extends Shell
      * @param  string[] $plugins loaded plugins
      * @return void
      */
-    protected function _migratePlugins(array $plugins): void
+    protected function migratePlugins(array $plugins): void
     {
         $dispatchCommand = 'migrations migrate';
 

@@ -52,22 +52,22 @@ class FakerShell extends Shell
         }
 
         $msg = 'Please select field(s) index number(s) you want to generate data for. Use comma to select multiple fields.';
-        $fields = $this->in($this->_appendOptions($msg, $columns));
+        $fields = $this->in($this->appendOptions($msg, $columns));
 
         if (empty($fields)) {
             $this->abort('Aborting, no columns selected.');
         }
 
-        $fields = $this->_extractSelected($fields, $columns);
+        $fields = $this->extractSelected($fields, $columns);
 
         if (empty($fields)) {
             $this->abort('Aborting, no columns selected.');
         }
 
-        $fields = $this->_setFieldFormatter($fields);
+        $fields = $this->setFieldFormatter($fields);
 
         $total = $this->param('number');
-        $count = $this->_generateFakeData($table, $fields);
+        $count = $this->generateFakeData($table, $fields);
         if ($count < $total) {
             $this->err('Only ' . $count . ' out of target ' . $total . ' fake records were created.');
         } else {
@@ -86,7 +86,7 @@ class FakerShell extends Shell
      * @param int $limit Limit number of extracted options
      * @return array
      */
-    protected function _extractSelected($selection, array $options, $limit = 0)
+    protected function extractSelected($selection, array $options, $limit = 0)
     {
         $result = [];
         $limit = (int)$limit;
@@ -125,13 +125,13 @@ class FakerShell extends Shell
      * @param array $fields Selected field(s)
      * @return array
      */
-    protected function _setFieldFormatter(array $fields)
+    protected function setFieldFormatter(array $fields)
     {
         if (empty($fields)) {
             return $fields;
         }
 
-        $providers = $this->_getProviders();
+        $providers = $this->getProviders();
 
         if (empty($providers)) {
             $this->abort('Aborting, no providers found.');
@@ -144,13 +144,13 @@ class FakerShell extends Shell
 
             $options = array_keys($providers);
             sort($options);
-            $provider = $this->in($this->_appendOptions('What category applies to:', $options));
+            $provider = $this->in($this->appendOptions('What category applies to:', $options));
 
             if (empty($provider)) {
                 $this->abort('Aborting, no category selected.');
             }
 
-            $provider = $this->_extractSelected($provider, $options, 1);
+            $provider = $this->extractSelected($provider, $options, 1);
 
             if (empty($provider)) {
                 $this->abort('Aborting, no category selected.');
@@ -171,13 +171,13 @@ class FakerShell extends Shell
 
             $options = array_keys($methods);
             sort($options);
-            $formatter = $this->in($this->_appendOptions('What type of field is:', $options));
+            $formatter = $this->in($this->appendOptions('What type of field is:', $options));
 
             if (empty($formatter)) {
                 $this->abort('Aborting, no field type selected.');
             }
 
-            $formatter = $this->_extractSelected($formatter, $options, 1);
+            $formatter = $this->extractSelected($formatter, $options, 1);
 
             if (empty($formatter)) {
                 $this->abort('Aborting, no field type selected.');
@@ -198,7 +198,7 @@ class FakerShell extends Shell
      * @param array $options Options to append
      * @return string
      */
-    protected function _appendOptions($message, array $options)
+    protected function appendOptions($message, array $options)
     {
         $result = $message;
         foreach ($options as $k => $v) {
@@ -213,7 +213,7 @@ class FakerShell extends Shell
      *
      * @return array
      */
-    protected function _getProviders()
+    protected function getProviders()
     {
         $generator = Factory::create();
 
@@ -239,7 +239,7 @@ class FakerShell extends Shell
      * @param array $fields Selected field(s) and formatter(s)
      * @return int
      */
-    protected function _generateFakeData(Table $table, array $fields)
+    protected function generateFakeData(Table $table, array $fields)
     {
         $result = 0;
         $total = $this->param('number');
