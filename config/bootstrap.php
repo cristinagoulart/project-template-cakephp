@@ -54,7 +54,6 @@ use Cake\Event\EventManager;
 use Cake\Log\Log;
 use Cake\Network\Email\Email;
 use Cake\Network\Request;
-use Cake\ORM\TableRegistry;
 use Cake\Routing\DispatcherFactory;
 use Cake\Utility\Inflector;
 use Cake\Utility\Security;
