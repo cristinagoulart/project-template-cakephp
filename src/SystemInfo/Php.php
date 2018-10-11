@@ -101,7 +101,7 @@ class Php
      * given configuration key from the
      * php.ini.
      *
-     * @param sting $configKey Configuration key to get the value for
+     * @param string $configKey Configuration key to get the value for
      * @return mixed
      */
     public static function getIniValue($configKey)
@@ -125,7 +125,7 @@ class Php
     /**
      * Get configuration setting for max_execution_time
      *
-     * @return numeric Maximum execution time in seconds
+     * @return int Maximum execution time in seconds
      */
     public static function getMaxExecutionTime()
     {
