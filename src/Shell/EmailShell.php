@@ -23,7 +23,7 @@ class EmailShell extends Shell
      * @link http://book.cakephp.org/3.0/en/core-libraries/email.html#sending-emails-from-cli
      * @return string
      */
-    protected function _getDefaultDomain()
+    protected function _getDefaultDomain(): string
     {
         $result = getenv('EMAIL_DOMAIN') ?: self::DEFAULT_DOMAIN;
 

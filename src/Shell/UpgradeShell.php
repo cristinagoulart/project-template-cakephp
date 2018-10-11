@@ -60,9 +60,9 @@ class UpgradeShell extends Shell
     /**
      * Fetches upgrade related tasks from src/Shell/Task directory
      *
-     * @return array
+     * @return string[]
      */
-    private function fetchTasks()
+    private function fetchTasks(): array
     {
         $dir = new Folder(__DIR__ . DS . 'Task');
 

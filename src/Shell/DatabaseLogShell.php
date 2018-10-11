@@ -59,7 +59,7 @@ class DatabaseLogShell extends BaseShell
                 //       If there is a reliable way to group by the first line
                 //       of the log message in database, then this can be easily
                 //       fixed.
-                $this->out(sprintf("%5s : %s\n", number_format($count), $message));
+                $this->out(sprintf("%5s : %s\n", $count, $message));
             }
             $this->hr();
         }
@@ -68,9 +68,9 @@ class DatabaseLogShell extends BaseShell
     /**
      * Get stats log configuration
      *
-     * @return array
+     * @return mixed[]
      */
-    protected function getStatsConfig()
+    protected function getStatsConfig(): array
     {
         $defaultConfig = [
             'period' => '-1 day',
@@ -89,9 +89,9 @@ class DatabaseLogShell extends BaseShell
     /**
      * Get the list of log levels
      *
-     * @return array
+     * @return string[]
      */
-    protected function getLogLevels()
+    protected function getLogLevels(): array
     {
         $result = [];
 
@@ -113,7 +113,7 @@ class DatabaseLogShell extends BaseShell
      * @param int $limit Records limit
      * @return \Cake\ORM\Query
      */
-    protected function getLogStats($logLevel, $since, $limit)
+    protected function getLogStats(string $logLevel, Time $since, int $limit): \Cake\ORM\Query
     {
         $query = $this->DatabaseLogs->find();
         $query = $query->select([
