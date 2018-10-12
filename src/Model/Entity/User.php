@@ -10,7 +10,7 @@ use Exception;
 class User extends BaseUser
 {
     /**
-     * @var $_virtual - make virtual fields visible to export to JSON or array
+     * @var string[] $_virtual virtual fields visible to export to JSON or array
      */
     protected $_virtual = ['name', 'image_src', 'is_admin'];
 
@@ -23,7 +23,7 @@ class User extends BaseUser
      *
      * @return string
      */
-    protected function _getName()
+    protected function _getName(): string
     {
         $result = trim($this->first_name . ' ' . $this->last_name);
         if (empty($result)) {
@@ -38,7 +38,7 @@ class User extends BaseUser
      *
      * @return string
      */
-    protected function _getImageSrc()
+    protected function _getImageSrc(): string
     {
         $type = Configure::read('Avatar.default');
         $options = (array)Configure::read('Avatar.options.' . $type);
@@ -63,7 +63,7 @@ class User extends BaseUser
      *
      * @return bool
      */
-    protected function _getIsAdmin()
+    protected function _getIsAdmin(): bool
     {
         if ($this->get('is_superuser')) {
             return true;

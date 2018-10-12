@@ -233,7 +233,7 @@ class Annotation
      * @param bool $withInfo Info annotation flag
      * @return void
      */
-    public function __construct($className, $path, $withInfo = false)
+    public function __construct(string $className, string $path, bool $withInfo = false)
     {
         $this->className = $className;
 
@@ -246,7 +246,7 @@ class Annotation
      *
      * @return string
      */
-    public function getContent()
+    public function getContent(): string
     {
         if ('' !== trim($this->content)) {
             return $this->content;
@@ -271,7 +271,7 @@ class Annotation
      * @param string $content The content
      * @return void
      */
-    public function setContent($content)
+    public function setContent(string $content): void
     {
         $this->content = $content;
     }
@@ -281,7 +281,7 @@ class Annotation
      *
      * @return string
      */
-    protected function getInfo()
+    protected function getInfo(): string
     {
         if (! $this->withInfo) {
             return '';
@@ -308,7 +308,7 @@ class Annotation
      *
      * @return string
      */
-    protected function getProperties()
+    protected function getProperties(): string
     {
         $columns = $this->getColumnsFromConfig();
         if (empty($columns)) {
@@ -335,9 +335,9 @@ class Annotation
     /**
      * Retrieve column definitions from module configuration.
      *
-     * @return array
+     * @return mixed[]
      */
-    private function getColumnsFromConfig()
+    private function getColumnsFromConfig(): array
     {
         $factory = new FieldHandlerFactory();
         $table = TableRegistry::getTableLocator()->get($this->className);
@@ -357,10 +357,12 @@ class Annotation
     /**
      * Retrieve column definitions from table schema.
      *
-     * @return array
+     * @return mixed[]
      */
-    private function getColumnsFromSchema()
+    private function getColumnsFromSchema(): array
     {
+        $result = [];
+
         $factory = new FieldHandlerFactory();
         $table = TableRegistry::getTableLocator()->get($this->className);
         $columns = array_diff($table->getSchema()->columns(), $table->newEntity()->hiddenProperties());
@@ -390,10 +392,10 @@ class Annotation
     /**
      * Returns property options as stirng.
      *
-     * @param array $conf Field conf
+     * @param mixed[] $conf Field conf
      * @return string
      */
-    protected function getPropertyOptionsAsString(array $conf)
+    protected function getPropertyOptionsAsString(array $conf): string
     {
         $result = [];
         foreach ($this->getPropertyOptions($conf) as $key => $value) {
@@ -423,10 +425,10 @@ class Annotation
     /**
      * Returns property options.
      *
-     * @param array $conf Field conf
-     * @return array
+     * @param mixed[] $conf Field conf
+     * @return mixed[]
      */
-    protected function getPropertyOptions(array $conf)
+    protected function getPropertyOptions(array $conf): array
     {
         $type = $conf['field']->getType();
         if (in_array($conf['field']->getType(), ['money', 'metric'])) {
@@ -540,9 +542,9 @@ class Annotation
      * File based list getter.
      *
      * @param string $listName List name
-     * @return array
+     * @return mixed[]
      */
-    private function getList($listName)
+    private function getList(string $listName): array
     {
         $provider = new ListSelectOptions(new ListConfig($listName, $this->className));
         $options = $provider->provide($listName, ['flatten' => true, 'filter' => true]);
@@ -554,9 +556,9 @@ class Annotation
      * Database list getter.
      *
      * @param string $listName List name
-     * @return array
+     * @return mixed[]
      */
-    private function getDatabaseList($listName)
+    private function getDatabaseList(string $listName): array
     {
         $result = TableRegistry::get('CsvMigrations.Dblists')
             ->find('options', ['name' => $listName]);
@@ -574,7 +576,7 @@ class Annotation
      * @param  string $properties Swagger properties annotations
      * @return string
      */
-    protected function getDefinition($properties)
+    protected function getDefinition(string $properties)
     {
         $result = null;
         $table = TableRegistry::getTableLocator()->get($this->className);
@@ -600,7 +602,7 @@ class Annotation
         $placeholders = [
             '{{definition}}' => Inflector::singularize($this->className),
             '{{required}}' => json_encode($required, JSON_FORCE_OBJECT),
-            '{{properties}}' => (string)$properties
+            '{{properties}}' => $properties
         ];
 
         $result = str_replace(
