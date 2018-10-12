@@ -3,18 +3,10 @@ use Cake\Core\Configure;
 use Cake\Utility\Hash;
 use CsvMigrations\FieldHandlers\FieldHandlerFactory;
 
-
-/**
- *	The structure is :
- *	tab.column.section.fieldname => value
- * 
- */
-
 $fhf = new FieldHandlerFactory($this);
 $data = Configure::read('Settings');
-?>
 
-<?php $this->Html->scriptStart(array('block' => 'scriptBottom', 'inline' => false)); ?>
+$this->Html->scriptStart(array('block' => 'scriptBottom', 'inline' => false)); ?>
 
 $(document).ready(function(){
 	$('#settings-search').on('input',function(){
@@ -23,7 +15,6 @@ $(document).ready(function(){
 });
 
 <?php $this->Html->scriptEnd(); ?>
-
 <section class="content-header">
 	<h1><?= __('Settings'); ?></h1>
 </section>
@@ -38,19 +29,23 @@ $(document).ready(function(){
 					foreach ($data as $tab => $columns) :
 						$id_tab = str_replace(' ','_',$tab);
 						echo $first ? '<li class="active">' : '<li>';
-						echo '<a href="#' . $id_tab . '" data-tab="' . $id_tab . '" data-toggle="tab" aria-expanded="true">';
-						echo $tab;
-						echo '</a>';
-						echo '</li>';
+						?>
+						<a href="#<?= $id_tab ?>" data-tab="<?= $id_tab ?>" data-toggle="tab" aria-expanded="true"><?= $tab ?></a></li>
+						<?php
 						$first = false;
 					endforeach;
 					?>
 					<li>
-						<form class="navbar-form navbar-right" role="search">
+						<form class="navbar-form" role="search">
 							<div class="form-group">
 								<input type="text" class="form-control" id="settings-search" placeholder="Search">
 							</div>
 						</form>
+					</li>
+					<li class="pull-right">
+						<div class="box-header">
+							<button class="btn btn-primary" type="submit">Submit</button>
+						</div>
 					</li>
 				</ul>
 				<div class="tab-content">
@@ -64,13 +59,13 @@ $(document).ready(function(){
 							<div class="col-md-3">
 								<ul class="nav nav-pills nav-stacked">
 									<?php
-									// $columns = array_keys($data[$tab]);
-
 									$first = true;
 									foreach ($columns as $column => $tab) {
 										$active = $first ? 'class="active"' : '';
 										$id_column = str_replace(' ','_',$column);
-										echo '<li '. $active .'><a href="#'. $id_column .'" data-toggle="tab">'. $column .'</a></li>';
+										?>
+											<li <?= $active ?>><a href="#<?= $id_column ?>" data-toggle="tab"><?= $column ?></a></li>
+										<?php
 										$first = false;
 									}
 									?>
@@ -80,44 +75,46 @@ $(document).ready(function(){
 								<?php
 								$first = true;
 								// Columns
-								foreach ($columns as $column => $sections) {
+								foreach ($columns as $column => $sections) :
 									$active = $first ? 'active' : '';
 									$id_column = str_replace(' ','_',$column);
-									echo '<div class="tab-pane '. $active .'" id="'. $id_column .'">';
+									?>
+										<div class="tab-pane <?= $active ?>" id="<?= $id_column ?>">
+									<?php
 									// Section
-									foreach ($sections as $section => $fields) {
+									foreach ($sections as $section => $fields) :
 										?>
-										<div class="box box-primary">
-										<div class="box-header">
-										<h3 class="box-title"><?= $section ?></h3>
-										</div>
-										<div class="box-body">
+											<div class="box box-primary">
+											<div class="box-header">
+											<h3 class="box-title"><?= $section ?></h3>
+											</div>
+											<div class="box-body">
 										<?php
 										// Fields
-										foreach ($fields as $field => $fieldValue) {
-											$alias = $fieldValue['alias'];
-											$type = $fieldValue['type'];
-											$value = Configure::read($alias);
+										foreach ($fields as $field => $fieldValue) :
+											$value = Configure::read($fieldValue['alias']);
 											$definition = [
 												'name' => $field,
-												'type' => $type,
+												'type' => $fieldValue['type'],
 												'required' => true,
 											];
-											$inputField = $fhf->renderInput($field, $field, $value, ['fieldDefinitions' => $definition]);
-											echo $inputField;
+											echo $fhf->renderInput($field, $field, $value, ['fieldDefinitions' => $definition]);
 											if(isset($fieldValue['help']) ){
-												echo '<span class="help-block">'. $fieldValue['help'] .'</span>';
+												?>
+													<span class="help-block"><?= $fieldValue['help'] ?></span>
+												<?php
 											}
-										}
-										
-										echo '</div>';
-										echo '</div>';
-									}
+										endforeach;
+										?>	
+										</div>
+										</div>
+									<?php
+									endforeach;
 									?>
 									</div>
 								<?php
 									$first = false;
-								}
+								endforeach;
 								?>
 							</div>
 						</div>
