@@ -32,7 +32,7 @@ class EncodedFileTypeTest extends TestCase
     /**
      * @expectedException \InvalidArgumentException
      */
-    public function testToDatabaseExceptionNotArray()
+    public function testToDatabaseExceptionNotArray(): void
     {
         $result = $this->type->toDatabase('not an array', $this->driver);
     }
@@ -40,7 +40,7 @@ class EncodedFileTypeTest extends TestCase
     /**
      * @expectedException \InvalidArgumentException
      */
-    public function testToDatabaseExceptionMissingType()
+    public function testToDatabaseExceptionMissingType(): void
     {
         $result = $this->type->toDatabase(['foo' => 'bar'], $this->driver);
     }
@@ -48,12 +48,12 @@ class EncodedFileTypeTest extends TestCase
     /**
      * @expectedException \InvalidArgumentException
      */
-    public function testToDatabaseExceptionMissingTmpName()
+    public function testToDatabaseExceptionMissingTmpName(): void
     {
         $result = $this->type->toDatabase(['type' => 'image/png'], $this->driver);
     }
 
-    public function testToDatabase()
+    public function testToDatabase(): void
     {
         $testFile = WWW_ROOT . DS . 'img' . DS . 'logo.png';
         $testValue = [
@@ -68,7 +68,7 @@ class EncodedFileTypeTest extends TestCase
         $this->assertEquals($expected, $result, "toDatabase() returned an invalid result");
     }
 
-    public function testToPHP()
+    public function testToPHP(): void
     {
         $this->assertEquals('foo', $this->type->toPHP('foo', $this->driver));
         $this->assertEquals('', $this->type->toPHP('', $this->driver));
@@ -80,12 +80,12 @@ class EncodedFileTypeTest extends TestCase
         fclose($fh);
     }
 
-    public function testToStatement()
+    public function testToStatement(): void
     {
         $this->assertEquals(PDO::PARAM_STR, $this->type->toStatement('foo', $this->driver));
     }
 
-    public function testMarshal()
+    public function testMarshal(): void
     {
         $this->assertEquals('foo', $this->type->marshal('foo', $this->driver));
     }

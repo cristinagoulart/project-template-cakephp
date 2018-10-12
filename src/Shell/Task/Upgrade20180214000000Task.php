@@ -74,7 +74,7 @@ class Upgrade20180214000000Task extends Shell
      * @param string $module Module name
      * @return void
      */
-    private function migrateToJSON($module)
+    private function migrateToJSON(string $module): void
     {
         // configuration list to iterate through and run the migrations from CSV/INI to JSON.
         $configList = [
@@ -106,7 +106,7 @@ class Upgrade20180214000000Task extends Shell
      * @param string $filename Optional filename
      * @return void
      */
-    private function singleFileMigration(ConfigType $type, $module, $filename = '')
+    private function singleFileMigration(ConfigType $type, string $module, string $filename = ''): void
     {
         if ($this->migrate($type, $this->getConfig($type, $module, $filename))) {
             $this->success(sprintf('Migrated %s for %s module', $filename ? $filename : $type, $module));
@@ -122,10 +122,10 @@ class Upgrade20180214000000Task extends Shell
      *
      * @param \Qobo\Utils\ModuleConfig\ConfigType $type ConfigType enum
      * @param string $module Module name
-     * @param array $config Multi files configuration
+     * @param mixed[] $config Multi files configuration
      * @return void
      */
-    private function multiFileMigration(ConfigType $type, $module, array $config)
+    private function multiFileMigration(ConfigType $type, string $module, array $config): void
     {
         $path = $this->path . DS . $module . DS . $config['dir'];
 
@@ -149,7 +149,7 @@ class Upgrade20180214000000Task extends Shell
      * @param \Qobo\Utils\ModuleConfig\ModuleConfig $config Module config instance
      * @return bool
      */
-    private function migrate(ConfigType $type, ModuleConfig $config)
+    private function migrate(ConfigType $type, ModuleConfig $config): bool
     {
         $source = $this->getFileByConfig($config);
 
@@ -185,7 +185,7 @@ class Upgrade20180214000000Task extends Shell
      * @param string $module Module name
      * @return void
      */
-    private function mergeWithFieldsJSON($module)
+    private function mergeWithFieldsJSON(string $module): void
     {
         $source = $this->getFileByConfig($this->getConfig(ConfigType::MIGRATION(), $module, 'migration.json'));
         if (is_null($source)) {
@@ -228,7 +228,7 @@ class Upgrade20180214000000Task extends Shell
      * @param string $configFile Optional config file name
      * @return \Qobo\Utils\ModuleConfig\ModuleConfig
      */
-    private function getConfig(ConfigType $type, $module, $configFile = '')
+    private function getConfig(ConfigType $type, string $module, string $configFile = '')
     {
         return new ModuleConfig($type, $module, $configFile, ['cacheSkip' => true]);
     }
@@ -239,7 +239,7 @@ class Upgrade20180214000000Task extends Shell
      * @param mixed $data Source file data
      * @return string
      */
-    private function toJSON($data)
+    private function toJSON($data): string
     {
         return json_encode($data, JSON_PRETTY_PRINT);
     }
@@ -266,9 +266,9 @@ class Upgrade20180214000000Task extends Shell
      *
      * @param string $path Target directory, for example: /var/www/html/my-project/config/Modules/Articles/lists/
      * @param string $type Target file type, for example: csv, ini, json
-     * @return array
+     * @return string[]
      */
-    private function getFilesByType($path, $type = 'csv')
+    private function getFilesByType(string $path, string $type = 'csv'): array
     {
         $dir = new Folder($path);
 

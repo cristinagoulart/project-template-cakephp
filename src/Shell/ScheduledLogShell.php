@@ -6,6 +6,7 @@ use Cake\Core\Configure;
 use Cake\I18n\Time;
 use Cake\Log\Log;
 use Cake\ORM\TableRegistry;
+use RuntimeException;
 
 /**
  * ScheduledLogShell shell command.
@@ -68,9 +69,9 @@ class ScheduledLogShell extends Shell
      * Get stats log configuration
      *
      * @return string
-     * @throws RuntimeException
+     * @throws \RuntimeException
      */
-    protected function getDaysConfig()
+    protected function getDaysConfig(): string
     {
         if (isset($this->params['age'])) {
             return $this->params['age'];

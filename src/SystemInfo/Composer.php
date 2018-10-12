@@ -13,9 +13,9 @@ class Composer
     /**
      * Get a list of installed composer packages
      *
-     * @return array
+     * @return mixed[]
      */
-    public static function getInstalledPackages()
+    public static function getInstalledPackages(): array
     {
         //
         // Installed composer libraries (from composer.lock file)
@@ -23,7 +23,9 @@ class Composer
         $composerLock = ROOT . DS . 'composer.lock';
         $composer = null;
         if (is_readable($composerLock)) {
-            $composer = json_decode(file_get_contents($composerLock), true);
+            $content = file_get_contents($composerLock);
+            $content = $content ?: '';
+            $composer = json_decode($content, true);
         }
         $result = !empty($composer['packages']) ? $composer['packages'] : [];
 
@@ -37,11 +39,11 @@ class Composer
      * packages for the list of provided match words, and
      * returns the list of counts for each match word.
      *
-     * @param array $packages Installed composer packages
-     * @param array $matchWords List of words to match
-     * @return array
+     * @param mixed[] $packages Installed composer packages
+     * @param string[] $matchWords List of words to match
+     * @return mixed[]
      */
-    public static function getMatchCounts(array $packages, array $matchWords)
+    public static function getMatchCounts(array $packages, array $matchWords): array
     {
         $result = [];
         foreach ($packages as $package) {
@@ -63,10 +65,10 @@ class Composer
     /**
      * Concatenate matching package fields into a single string
      *
-     * @param array $package Package data
+     * @param mixed[] $package Package data
      * @return string
      */
-    protected static function getMatchString(array $package)
+    protected static function getMatchString(array $package): string
     {
         $result = '';
 

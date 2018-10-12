@@ -6,28 +6,28 @@ use PHPUnit\Framework\TestCase;
 
 class ProjectTest extends TestCase
 {
-    public function testGetName()
+    public function testGetName(): void
     {
         $result = Project::getName();
         $this->assertTrue(is_string($result), "getName() returned a non-string result");
         $this->assertFalse(empty($result), "getName() returned an empty result");
     }
 
-    public function testGetUrl()
+    public function testGetUrl(): void
     {
         $result = Project::getUrl();
         $this->assertTrue(is_string($result), "getUrl() returned a non-string result");
         $this->assertFalse(empty($result), "getUrl() returned an empty result");
     }
 
-    public function testGetDisplayVersion()
+    public function testGetDisplayVersion(): void
     {
         $result = Project::getDisplayVersion();
         $this->assertTrue(is_string($result), "getDisplayVersion() returned a non-string result");
         $this->assertFalse(empty($result), "getDisplayVersion() returned an empty result");
     }
 
-    public function testGetBuildVersions()
+    public function testGetBuildVersions(): void
     {
         $result = Project::getBuildVersions();
         $this->assertTrue(is_array($result), "getBuildVersions() returned a non-array result");
@@ -41,14 +41,14 @@ class ProjectTest extends TestCase
         }
     }
 
-    public function testGetLogo()
+    public function testGetLogo(): void
     {
         $result = Project::getLogo();
         $this->assertTrue(is_string($result), "getLogo() returned a non-string result");
         $this->assertFalse(empty($result), "getLogo() returned an empty result");
     }
 
-    public function testCopyright()
+    public function testCopyright(): void
     {
         $result = Project::getCopyright();
         $this->assertTrue(is_string($result), "getCopyright() returned a non-string result");

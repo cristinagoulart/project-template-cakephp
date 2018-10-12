@@ -104,9 +104,10 @@ class AppController extends Controller
     /**
      * Enable API authorization checks.
      *
+     * @throws \Cake\Network\Exception\ForbiddenException when user has no access
      * @return void
      */
-    protected function enableAuthorization()
+    protected function enableAuthorization(): void
     {
         $hasAccess = $this->_checkAccess($this->request->params, $this->Auth->user());
 
@@ -447,7 +448,7 @@ class AppController extends Controller
      *
      * @return int Session lifetime in seconds
      */
-    protected function _getSessionTimeout()
+    protected function _getSessionTimeout(): int
     {
         // Read from Session.timeout configuration
         $result = Configure::read('Session.timeout');
@@ -479,7 +480,7 @@ class AppController extends Controller
      * @param bool $withInfo Info annotation flag
      * @return string
      */
-    public static function generateSwaggerAnnotations($className, $path, $withInfo)
+    public static function generateSwaggerAnnotations(string $className, string $path, bool $withInfo): string
     {
         $csvAnnotation = new Annotation($className, $path, $withInfo);
 

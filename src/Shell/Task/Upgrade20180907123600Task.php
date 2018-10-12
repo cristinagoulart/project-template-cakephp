@@ -56,10 +56,10 @@ class Upgrade20180907123600Task extends Shell
     /**
      * Retrieves database list names for specified modules.
      *
-     * @param array $modules Module names
-     * @return array
+     * @param string[] $modules Module names
+     * @return mixed[]
      */
-    protected function getDatabaseLists(array $modules)
+    protected function getDatabaseLists(array $modules): array
     {
         $result = [];
         foreach ($modules as $module) {
@@ -73,9 +73,9 @@ class Upgrade20180907123600Task extends Shell
      * Get an array of database lists from migrations config.
      *
      * @param string $module Module name
-     * @return array
+     * @return string[]
      */
-    protected function getDatabaseListsByModule($module)
+    protected function getDatabaseListsByModule(string $module): array
     {
         $config = (new ModuleConfig(ConfigType::MIGRATION(), $module))->parse();
         $config = json_decode(json_encode($config), true);
@@ -98,10 +98,10 @@ class Upgrade20180907123600Task extends Shell
     /**
      * Creates database lists records for all relevant fields found in the application.
      *
-     * @param array $lists Database lists from all modules
+     * @param string[] $lists Database lists from all modules
      * @return void
      */
-    protected function createDatabaseLists(array $lists)
+    protected function createDatabaseLists(array $lists): void
     {
         foreach ($lists as $moduleLists) {
             $this->createDatabaseListsByModule($moduleLists);
@@ -111,10 +111,10 @@ class Upgrade20180907123600Task extends Shell
     /**
      * Creates database lists for a specific module.
      *
-     * @param array $lists Module relevant database lists
+     * @param string[] $lists Module relevant database lists
      * @return void
      */
-    protected function createDatabaseListsByModule(array $lists)
+    protected function createDatabaseListsByModule(array $lists): void
     {
         $table = TableRegistry::get('CsvMigrations.Dblists');
 

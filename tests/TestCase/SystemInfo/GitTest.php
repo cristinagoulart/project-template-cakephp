@@ -9,12 +9,12 @@ class GitTest extends TestCase
     /**
      * @expectedException \RuntimeException
      */
-    public function testGetCommandException()
+    public function testGetCommandException(): void
     {
         $result = Git::getCommand('this command is not defined');
     }
 
-    public function testGetCommand()
+    public function testGetCommand(): void
     {
         $commands = [
             'localChanges',
@@ -28,13 +28,13 @@ class GitTest extends TestCase
         }
     }
 
-    public function testGetLocalChanges()
+    public function testGetLocalChanges(): void
     {
         $result = Git::getLocalChanges();
         $this->assertTrue(is_array($result), "getLocalChanges() returned a non-array result");
     }
 
-    public function testGetCurrentHash()
+    public function testGetCurrentHash(): void
     {
         $result = Git::getCurrentHash();
         $this->assertTrue(is_string($result), "getCurrentHash() returned a non-string result");

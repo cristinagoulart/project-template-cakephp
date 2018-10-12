@@ -50,7 +50,7 @@ class Upgrade20180718130200Task extends Shell
      *
      * @return bool
      */
-    private function needToRun()
+    private function needToRun(): bool
     {
         $connection = ConnectionManager::get($this->dbConnection);
         if (! $connection->getDriver() instanceof Mysql) {
@@ -73,9 +73,9 @@ class Upgrade20180718130200Task extends Shell
     /**
      * Retrieve table instances.
      *
-     * @return array
+     * @return mixed[]
      */
-    private function getTables()
+    private function getTables(): array
     {
         $result = $this->getTablesFromPath(APP . 'Model' . DS . 'Table' . DS);
 
@@ -101,9 +101,9 @@ class Upgrade20180718130200Task extends Shell
      *
      * @param string $path Directory path
      * @param string $plugin Plugin name
-     * @return array
+     * @return mixed[]
      */
-    private function getTablesFromPath($path, $plugin = '')
+    private function getTablesFromPath(string $path, string $plugin = ''): array
     {
         if (! file_exists($path)) {
             return [];
@@ -144,7 +144,7 @@ class Upgrade20180718130200Task extends Shell
     /**
      * Retrieve table class using path configuration.
      *
-     * @param array $config Path configuration
+     * @param mixed[] $config Path configuration
      * @return \Cake\Datasource\RepositoryInterface|null
      */
     private function getTableFromPath(array $config)
@@ -164,9 +164,9 @@ class Upgrade20180718130200Task extends Shell
      * Retrieve join tables.
      *
      * @param \Cake\Datasource\RepositoryInterface $table Table instance
-     * @return array
+     * @return mixed[]
      */
-    private function getJoinTables(RepositoryInterface $table)
+    private function getJoinTables(RepositoryInterface $table): array
     {
         $result = [];
         foreach ($table->associations() as $association) {
@@ -193,7 +193,7 @@ class Upgrade20180718130200Task extends Shell
                 continue;
             }
 
-            $config = $this->processAssociation($association, $table);
+            $config = $this->processAssociation($association);
 
             if ($this->foreignKeyExists($table, $config)) {
                 continue;
@@ -209,7 +209,7 @@ class Upgrade20180718130200Task extends Shell
      * @param \Cake\ORM\Association $association Association instance
      * @return bool
      */
-    private function isValidAssociation(Association $association)
+    private function isValidAssociation(Association $association): bool
     {
         return in_array($association->type(), ['manyToOne']);
     }
@@ -218,9 +218,9 @@ class Upgrade20180718130200Task extends Shell
      * Process association.
      *
      * @param \Cake\ORM\Association $association Association instance
-     * @return array
+     * @return mixed[]
      */
-    private function processAssociation(Association $association)
+    private function processAssociation(Association $association): array
     {
         return [
             'table' => $association->getTarget()->getTable(),
@@ -233,10 +233,10 @@ class Upgrade20180718130200Task extends Shell
      * Foreign key existance checker.
      *
      * @param \Cake\Datasource\RepositoryInterface $table Table instance
-     * @param array $config Foreign key config
+     * @param mixed[] $config Foreign key config
      * @return bool
      */
-    private function foreignKeyExists(RepositoryInterface $table, array $config)
+    private function foreignKeyExists(RepositoryInterface $table, array $config): bool
     {
         $foreignKeys = $this->getForeignKeysByTable($table);
         if (empty($foreignKeys)) {
@@ -256,9 +256,9 @@ class Upgrade20180718130200Task extends Shell
      * Table foreign keys getter.
      *
      * @param \Cake\Datasource\RepositoryInterface $table Table instance
-     * @return array
+     * @return mixed[]
      */
-    private function getForeignKeysByTable(RepositoryInterface $table)
+    private function getForeignKeysByTable(RepositoryInterface $table): array
     {
         $connection = ConnectionManager::get($this->dbConnection);
         $config = $connection->config();
@@ -279,10 +279,10 @@ class Upgrade20180718130200Task extends Shell
      * Foreign key creator.
      *
      * @param \Cake\Datasource\RepositoryInterface $table Table isntance
-     * @param array $config Foreign key config
+     * @param mixed[] $config Foreign key config
      * @return void
      */
-    private function addForeignKey(RepositoryInterface $table, array $config)
+    private function addForeignKey(RepositoryInterface $table, array $config): void
     {
         $connection = ConnectionManager::get($this->dbConnection);
         $command = sprintf(

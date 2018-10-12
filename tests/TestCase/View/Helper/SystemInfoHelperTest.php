@@ -16,28 +16,28 @@ class SystemInfoHelperTest extends TestCase
         $this->helper = new SystemInfoHelper($View);
     }
 
-    public function testGetProjectVersion()
+    public function testGetProjectVersion(): void
     {
         $result = $this->helper->getProjectVersion();
         $this->assertTrue(is_string($result), "Returned version is not a string");
         $this->assertFalse(empty($result), "Returned version is an empty string");
     }
 
-    public function testGetProjectUrl()
+    public function testGetProjectUrl(): void
     {
         $result = $this->helper->getProjectUrl();
         $this->assertTrue(is_string($result), "Returned URL is not a string");
         $this->assertFalse(empty($result), "Returned URL is an empty string");
     }
 
-    public function testGetProjectName()
+    public function testGetProjectName(): void
     {
         $result = $this->helper->getProjectName();
         $this->assertTrue(is_string($result), "Returned name is not a string");
         $this->assertFalse(empty($result), "Returned name is an empty string");
     }
 
-    public function testGetProgressValue()
+    public function testGetProgressValue(): void
     {
         $result = $this->helper->getProgressValue(0, 0);
         $this->assertEquals('0%', $result, "Incorrect progress for zero values");
@@ -49,14 +49,14 @@ class SystemInfoHelperTest extends TestCase
         $this->assertEquals('1%', $result, "Incorrect progress for float values");
     }
 
-    public function testGetProjectLogo()
+    public function testGetProjectLogo(): void
     {
         $result = $this->helper->getProjectLogo();
         $this->assertTrue(is_string($result), "Returned project logo is not a string");
         $this->assertFalse(empty($result), "Returned project logo is an empty string");
     }
 
-    public function testGetCopyright()
+    public function testGetCopyright(): void
     {
         $result = $this->helper->getCopyright();
         $this->assertTrue(is_string($result), "Returned project logo is not a string");

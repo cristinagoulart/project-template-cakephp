@@ -21,7 +21,7 @@ use Cake\View\View;
 class AppView extends View
 {
     /**
-     * @var array Holds all the views that are currently being rendered
+     * @var array $backtrace Holds all the views that are currently being rendered
      */
     private $backtrace = [];
 
@@ -66,9 +66,9 @@ class AppView extends View
     /**
      * Returns the backtrace for this view.
      *
-     * @return array The backtrace
+     * @return string[] The backtrace
      */
-    public function getBacktrace()
+    public function getBacktrace(): array
     {
         return $this->backtrace;
     }

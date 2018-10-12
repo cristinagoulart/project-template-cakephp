@@ -6,7 +6,7 @@ use Cake\TestSuite\TestCase;
 
 class BaseFeatureTest extends TestCase
 {
-    public function testIsActive()
+    public function testIsActive(): void
     {
         $feature = Factory::get('Base');
 
