@@ -89,7 +89,6 @@ class FakerShell extends Shell
     protected function extractSelected(string $selection, array $options, int $limit = 0): array
     {
         $result = [];
-        $limit = (int)$limit;
 
         $selection = trim($selection);
         $fields = explode(',', $selection);
