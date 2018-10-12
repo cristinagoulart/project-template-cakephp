@@ -498,12 +498,17 @@ class Annotation
                     $this->getDatabaseList($conf['field']->getLimit()) :
                     $this->getList($conf['field']->getLimit());
                 $options = empty($options) ? [''] : $options;
-                $options = array_keys($options);
+                $opts = array_keys($options);
+                $description = '';
+                foreach ($options as $k => $v) {
+                    $description .= sprintf("\n* '%s' : '%s'", $k, $v);
+                }
                 $result = [
                     'type' => 'string',
                     'format' => 'list',
-                    'example' => $options[array_rand($options)],
-                    'enum' => $options
+                    'example' => $opts[array_rand($opts)],
+                    'enum' => $opts,
+                    'description' => $description
                 ];
                 break;
 
