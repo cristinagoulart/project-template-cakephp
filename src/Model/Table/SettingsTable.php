@@ -59,7 +59,7 @@ class SettingsTable extends Table
             ->scalar('value')
             ->maxLength('value', 255)
             ->requirePresence('value', 'create')
-            ->notEmpty('value');
+            ->allowEmpty('value');
 
         return $validator;
     }

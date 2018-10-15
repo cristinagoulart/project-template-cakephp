@@ -1,6 +1,7 @@
 <?php
 use Cake\Core\Configure;
 use Cake\Utility\Hash;
+use Cake\Utility\Inflector;
 use CsvMigrations\FieldHandlers\FieldHandlerFactory;
 
 $fhf = new FieldHandlerFactory($this);
@@ -21,6 +22,7 @@ $(document).ready(function(){
 <section class="content">
 	<div class="row">
 		<div class="col-md-12">
+			<?= $this->Form->create($settings); ?>
 			<div class="nav-tabs-custom">
 				<ul class="nav nav-tabs">
 					<?php
@@ -35,23 +37,16 @@ $(document).ready(function(){
 						$first = false;
 					endforeach;
 					?>
-					<li>
-						<form class="navbar-form" role="search">
-							<div class="form-group">
-								<input type="text" class="form-control" id="settings-search" placeholder="Search">
-							</div>
-						</form>
-					</li>
 					<li class="pull-right">
-						<div class="box-header">
-							<button class="btn btn-primary" type="submit">Submit</button>
+						<div class="navbar-form" role="search">
+								<input type="text" class="form-control" id="settings-search" placeholder="Search">
 						</div>
 					</li>
 				</ul>
 				<div class="tab-content">
 					<?php
 					$first = true;
-					foreach ($data as $tab => $columns) {
+					foreach ($data as $tab => $columns) :
 						$id_tab = str_replace(' ','_',$tab);
 						echo $first ? '<div class="tab-pane active" id="' . $id_tab . '">' : '<div class="tab-pane" id="' . $id_tab . '">';
 						?>
@@ -60,14 +55,14 @@ $(document).ready(function(){
 								<ul class="nav nav-pills nav-stacked">
 									<?php
 									$first = true;
-									foreach ($columns as $column => $tab) {
+									foreach ($columns as $column => $tab) :
 										$active = $first ? 'class="active"' : '';
 										$id_column = str_replace(' ','_',$column);
 										?>
 											<li <?= $active ?>><a href="#<?= $id_column ?>" data-toggle="tab"><?= $column ?></a></li>
 										<?php
 										$first = false;
-									}
+									endforeach;
 									?>
 								</ul>
 							</div>
@@ -92,18 +87,20 @@ $(document).ready(function(){
 										<?php
 										// Fields
 										foreach ($fields as $field => $fieldValue) :
-											$value = Configure::read($fieldValue['alias']);
+											$alias = $fieldValue['alias'];
+											$value = Configure::read($alias);
 											$definition = [
-												'name' => $field,
-												'type' => $fieldValue['type'],
-												'required' => true,
+												'type'  => $fieldValue['type'],
+												'value' => $value,
+												'name'  => $alias,
 											];
-											echo $fhf->renderInput($field, $field, $value, ['fieldDefinitions' => $definition]);
-											if(isset($fieldValue['help']) ){
+											// echo $this->Form->input($alias,$definition);
+											echo $fhf->renderInput('settings', $alias, $value, ['fieldDefinitions' => $definition]);
+											if(isset($fieldValue['help']) ):
 												?>
 													<span class="help-block"><?= $fieldValue['help'] ?></span>
 												<?php
-											}
+											endif;
 										endforeach;
 										?>	
 										</div>
@@ -121,10 +118,14 @@ $(document).ready(function(){
 						</div>
 					<?php
 						$first = false;
-					}
+					endforeach;
 					?>
 				</div>
 			</div>
+			<?php 
+				echo $this->Form->button(__('Submit'), ['class' => 'btn btn-primary','value' => 'submit']);
+				echo$this->Form->end();
+			?>
 		</div>
 	</div>
 </section>
