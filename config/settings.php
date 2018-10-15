@@ -3,20 +3,36 @@
 return [
   'Settings' => [
     'First Tab' => [
-       'icon' => 'trash',
        'zero line' => [
-         'first Section' => [
+         'First Section' => [
            'field_number_one' => [
              'alias' => 'ScheduledLog.stats.age',
              'type' => 'string',
-             'help' => 'This is very helpful',
+             'help' => 'This is the help 1',
+           ],
+           'field_number_two' => [
+             'alias' => 'CsvMigrations.default_icon',
+             'type' => 'integer',
+             'help' => 'This is the help 2',
+           ],
+           'field_number_three' => [
+             'alias' => 'CsvMigrations.BootstrapFileInput.initialPreviewConfig.url',
+             'type' => 'text',
+             'help' => 'This is the help 3',
+           ],
+         ],
+         'Second Section' => [
+           'field_number_one' => [
+             'alias' => 'Menu.allControllers',
+             'type' => 'boolean',
+             'help' => 'This is even more helpful',
            ],
          ],
        ],
        'first line' => [
          'first Section' => [
            'i_need_more_coffee' => [
-             'alias' => 'EmailTransport.default.port',
+             'alias' => 'CsvMigrations.tableValidation',
              'type' => 'integer',
            ],
          ],
@@ -24,7 +40,7 @@ return [
        'second line' => [
          'secondsection' => [
            'my_birthday' => [
-             'alias' => 'App.fullBaseUrl',
+             'alias' => 'EmailTransport.default.host',
              'type' => 'string',
            ],
            'more_rock' => [
@@ -40,13 +56,13 @@ return [
              'type' => 'text',
            ],
            'the_answer_is_42' => [
-             'alias' => 'Menu.allControllers',
+             'alias' => 'Whoops.editor',
              'type' => 'boolean',
            ],
          ],
        ],
      ],
-     'Avatar' => [
+     'Second Tab' => [
        'Column 1' => [
          'This section 1' => [
            'name1' => [
@@ -68,7 +84,7 @@ return [
          ],
        ],
      ],
-     'FileStorage' => [
+     'N Tab' => [
        'Another Column' => [
          'This section 1' => [
            'name2' => [
