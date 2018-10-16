@@ -1,3 +1,4 @@
+.disabled a,
 a.disabled {
   pointer-events: none;
 }
@@ -55,6 +56,14 @@ legend {
 .index table {
   margin-top: 2rem;
   border: 0;
+  width: 100%;
+  table-layout: fixed;
+}
+
+.related table {
+  border: 0;
+  width: 100%;
+  table-layout: fixed;
 }
 
 .index table thead {
@@ -91,10 +100,13 @@ ul.pagination li a {
 }
 
 ul.pagination li.active a {
-  background: none repeat scroll 0% 0% #DCE47E;
+  background-color: #DCE47E;
   color: #FFF;
   font-weight: bold;
   cursor: default;
+}
+ul.pagination .disabled:hover a {
+  background: none;
 }
 
 .paginator {
@@ -109,6 +121,13 @@ ul.pagination li.active a {
 .paginator p {
   text-align: right;
   color: rgba(0, 0 ,0 , 0.54);
+}
+
+.asc:after {
+  content: " \2193";
+}
+.desc:after {
+  content: " \2191";
 }
 
 button {
@@ -165,48 +184,6 @@ input[type=radio] {
 .error label,
 .error label.error {
   color: #C3232D;
-}
-
-div.message {
-  border-style: solid;
-  border-width: 1px;
-  display: block;
-  font-weight: normal;
-  position: relative;
-  padding: 0.875rem 1.5rem 0.875rem 20%;
-  transition: opacity 300ms ease-out 0s;
-  background-color: #DCE47E;
-  border-color: #DCE47E;
-  color: #626262;
-}
-
-div.message.error {
-  background-color: #C3232D;
-  border-color: #C3232D;
-  color: #FFF;
-}
-
-div.message:before {
-  line-height: 0px;
-  font-size: 20px;
-  height: 12px;
-  width: 12px;
-  border-radius: 15px;
-  text-align: center;
-  vertical-align: middle;
-  display: inline-block;
-  position: relative;
-  left: -11px;
-  background-color: #FFF;
-  padding: 12px 14px 12px 10px;
-  content: "i";
-  color: #DCE47E;
-}
-
-div.message.error:before {
-  padding: 11px 16px 14px 7px;
-  color: #C3232D;
-  content: "x";
 }
 
 .view h2 {
@@ -386,4 +363,203 @@ pre {
   content: "✘";
   color: red;
   margin-right: 9px;
+}
+
+.top-bar.expanded .title-area {
+  background: #01545b;
+}
+
+.top-bar.expanded, .top-bar,.top-bar-section ul li,.top-bar-section li:not(.has-form) a:not(.button) {
+  background: #116d76;
+}
+
+.top-bar-section li:not(.has-form) a:not(.button):hover {
+  background-color: #308e97;
+  background: #308e97;
+}
+
+.side-nav li.heading {
+  color: #1798A5;
+  font-size: 0.875rem;
+  font-weight: bold;
+  text-transform: uppercase;
+  padding: 0.4375rem 0.875rem;
+}
+
+#actions-sidebar {
+  background: #fafafa;
+}
+
+.index table {
+  margin-top: 0rem;
+  border: 0;
+}
+
+table {
+  background: #fff;
+  margin-bottom: 1.25rem;
+  border: none;
+  table-layout: fixed;
+  width: 100%;
+}
+
+table thead {
+  background: none;
+}
+
+table tr {
+  border-bottom: 1px solid #ebebec;
+}
+
+table thead tr {
+  border-bottom: 1px solid #1798A5;
+}
+
+table tr th {
+  padding: 0.5625rem 0.625rem;
+  font-size: 0.875rem;
+  color: #1798A5;
+  text-align: left;
+  border-bottom: 2px solid #1798A5;
+}
+
+table tr:nth-of-type(even) {
+  background: none;
+}
+
+fieldset {
+  border: none;
+  padding: 1.25rem;
+  margin: 1.125rem 0;
+}
+
+fieldset legend {
+  border-bottom: 2px solid #1798A5;
+  width: 100%;
+  line-height: 2rem;
+}
+
+.form button[type="submit"] {
+  float: right;
+  text-transform: uppercase;
+  box-shadow: none;
+}
+
+.form button:hover, .form button:focus {
+  background: #BE840B;
+  box-shadow: none;
+}
+
+button {
+  background: #966600;
+}
+
+div.message {
+  cursor: pointer;
+  display: block;
+  font-weight: normal;
+  padding: 0 1.5rem 0 1.5rem;
+  transition: height 300ms ease-out 0s;
+  background-color: #a0d3e8;
+  color: #626262;
+  position: fixed;
+  top: 15px;
+  right: 15px;
+  z-index: 999;
+  overflow: hidden;
+  height: 50px;
+  line-height: 2.5em;
+}
+
+div.message:before {
+  line-height: 0px;
+  font-size: 20px;
+  height: 12px;
+  width: 12px;
+  border-radius: 15px;
+  text-align: center;
+  vertical-align: middle;
+  display: inline-block;
+  position: relative;
+  left: -11px;
+  background-color: #FFF;
+  padding: 12px 14px 12px 10px;
+  content: "i";
+  color: #a0d3e8;
+}
+
+div.message.error {
+  background-color: #C3232D;
+  color: #FFF;
+}
+
+div.message.error:before {
+  padding: 11px 16px 14px 7px;
+  color: #C3232D;
+  content: "x";
+}
+div.message.hidden {
+  height: 0;
+}
+
+
+.vertical-table th {
+  padding: 0.5625rem 0.625rem;
+  font-size: 0.875rem;
+  color: #1798A5;
+  border: none;
+  text-align: left;
+}
+
+.vertical-table {
+  vertical-align: middle;
+}
+
+.vertical-table td {
+  text-align: right;
+}
+
+
+.content {
+  padding: 2rem;
+}
+
+/* Use 'one true layout' methods to get equal height columns */
+.container {
+  overflow: hidden;
+  min-height: 92%; /* full height almost always */
+}
+
+/* Force equal height by overflowing */
+.content,
+#actions-sidebar {
+  margin-bottom: -99999px;
+  padding-bottom: 99999px;
+}
+@media(max-width: 640px) {
+    #actions-sidebar {
+        padding-bottom: 2rem;
+        margin-bottom: 0;
+    }
+}
+
+.content h3 {
+  color: #be140b;
+  padding-bottom: 0.5rem;
+  margin-bottom: 20px;
+}
+
+.content h4 {
+  color: #be140b;
+  padding-bottom: 0.5rem;
+  margin-bottom: 20px;
+  border-bottom: 2px solid #be140b;
+}
+
+.content .related h4 {
+  color: #ebaa20;
+  padding-bottom: 0.5rem;
+  margin-top: 20px;
+  margin-bottom: 10px;
+  border-bottom: 0px;
 }
