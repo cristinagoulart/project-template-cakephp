@@ -119,9 +119,9 @@ ini_set('intl.default_locale', 'en_US');
  */
 $isCli = php_sapi_name() === 'cli';
 if ($isCli) {
-    (new ConsoleErrorHandler(Configure::read('Error')))->register();
+    (new ConsoleErrorHandler(Configure::consume('Error')))->register();
 } else {
-    (new WhoopsHandler(Configure::read('Error')))->register();
+    (new WhoopsHandler(Configure::consume('Error')))->register();
 }
 
 // Include the CLI bootstrap overrides.
@@ -152,19 +152,16 @@ if (!Configure::read('App.fullBaseUrl')) {
 Log::drop('debug');
 Log::drop('error');
 
-// Configure::consume() reads and deletes the value.
-// This is useful for consistency and security reasons.
 Cache::config(Configure::consume('Cache'));
 ConnectionManager::config(Configure::consume('Datasources'));
-Log::config(Configure::consume('Log'));
-Security::salt(Configure::consume('Security.salt'));
-
 // Read, rather than consume, since we have some logic that
 // needs to know if email sending is enabled or not.
 // See `src/Shell/EmailShell.php` for example, but also in
 // plugins.
 Email::configTransport(Configure::read('EmailTransport'));
 Email::config(Configure::read('Email'));
+Log::config(Configure::consume('Log'));
+Security::salt(Configure::consume('Security.salt'));
 
 /**
  * The default crypto extension in 3.0 is OpenSSL.
