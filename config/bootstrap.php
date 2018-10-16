@@ -190,7 +190,7 @@ Request::addDetector('tablet', function ($request) {
  * inflection functions.
  *
  * Inflector::rules('plural', ['/^(inflect)or$/i' => '\1ables']);
- * Inflector::rules('irregular' => ['red' => 'redlings']);
+ * Inflector::rules('irregular', ['red' => 'redlings']);
  * Inflector::rules('uninflected', ['dontinflectme']);
  * Inflector::rules('transliteration', ['/å/' => 'aa']);
  */
@@ -304,3 +304,9 @@ FeatureFactory::init();
  * Register custom database type(s)
  */
 Type::map('base64', 'App\Database\Type\EncodedFileType');
+
+/**
+ * Enable default locale format parsing.
+ * This is needed for matching the auto-localized string output of Time() class when parsing dates.
+ */
+//Type::build('datetime')->useLocaleParser();
