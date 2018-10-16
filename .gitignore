@@ -1,23 +1,58 @@
+# Project specific files #
+##########################
 !build/
 build/*
 !build/Robo/
 !build/Utility/
 vendor/
-node_modules/
+tmp/
 .env
 etc/nginx.conf
 etc/ssl/*
 cghooks.lock
-/config/app.php
-tmp/
+
+config/app.php
+config/Migrations/schema-dump-default.lock
+config/Migrations/schema-dump-test.lock
+config/features_local.php
 logs/
+node_modules/
 !webroot/uploads/
 webroot/uploads/*
 !webroot/uploads/avatars/
 webroot/uploads/avatars/*
 !webroot/uploads/avatars/custom/
 webroot/uploads/avatars/custom/*
-config/Migrations/schema-dump-default.lock
-config/Migrations/schema-dump-test.lock
-config/features_local.php
+
+# OS generated files #
+######################
 .DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+Icon?
+ehthumbs.db
+Thumbs.db
+
+# Tool specific files #
+#######################
+# vim
+*~
+*.swp
+*.swo
+# sublime text & textmate
+*.sublime-*
+*.stTheme.cache
+*.tmlanguage.cache
+*.tmPreferences.cache
+# Eclipse
+.settings/*
+# JetBrains, aka PHPStorm, IntelliJ IDEA
+.idea/*
+# NetBeans
+nbproject/*
+# Visual Studio Code
+.vscode
+# Sass preprocessor
+.sass-cache/
