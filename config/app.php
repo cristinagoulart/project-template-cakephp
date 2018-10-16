@@ -145,6 +145,7 @@ return [
         /**
          * Configure the cache used for general framework caching.
          * Translation cache files are stored with this configuration.
+         * Duration will be set to '+1 year' in bootstrap.php when debug = false
          */
         '_cake_core_' => [
             'className' => 'File',
@@ -158,6 +159,7 @@ return [
          * Configure the cache for model and datasource caches. This cache
          * configuration is used to store schema descriptions, and table listings
          * in connections.
+         * Duration will be set to '+1 year' in bootstrap.php when debug = false
          */
         '_cake_model_' => [
             'className' => 'File',
@@ -202,6 +204,9 @@ return [
      *   extend one of the listed exceptions will also be skipped for logging.
      *   E.g.:
      *   `'skipLog' => ['Cake\Network\Exception\NotFoundException', 'Cake\Network\Exception\UnauthorizedException']`
+     * - `extraFatalErrorMemory` - int - The number of megabytes to increase
+     *   the memory limit by when a fatal error is encountered. This allows
+     *   breathing room to complete logging or error handling.
      */
     'Error' => [
         'errorLevel' => $errorLevel,
@@ -250,7 +255,7 @@ return [
      * Delivery profiles allow you to predefine various properties about email
      * messages from your application and give the settings a name. This saves
      * duplication across your application and makes maintenance and development
-     * easier. Each profile accepts a number of keys. See `Cake\Network\Email\Email`
+     * easier. Each profile accepts a number of keys. See `Cake\Mailer\Email`
      * for more information.
      */
     'Email' => [
@@ -327,12 +332,13 @@ return [
              * MySQL on MAMP uses port 8889, MAMP users will want to uncomment
              * the following line and set the port accordingly
              */
-            //'port' => 'nonstandard_port_number',
+            //'port' => 'non_standard_port_number',
             'username' => $dbUser,
             'password' => $dbPass,
             'database' => $dbName,
             'encoding' => 'utf8',
             'timezone' => 'UTC',
+            'flags' => [],
             'cacheMetadata' => true,
             'log' => false,
 
@@ -370,7 +376,7 @@ return [
             'driver' => 'Cake\Database\Driver\Mysql',
             'persistent' => false,
             'host' => $dbHost,
-            //'port' => 'nonstandard_port_number',
+            //'port' => 'non_standard_port_number',
             'username' => $dbUser,
             'password' => $dbPass,
             'database' => $dbTestName,

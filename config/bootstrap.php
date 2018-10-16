@@ -81,7 +81,7 @@ try {
     Configure::load('roles_capabilities', 'default');
     Configure::load('scheduled_log', 'default');
 } catch (\Exception $e) {
-    die($e->getMessage() . "\n");
+    exit($e->getMessage() . "\n");
 }
 
 // Load an environment local configuration file.
@@ -117,7 +117,7 @@ ini_set('intl.default_locale', 'en_US');
 /**
  * Register application error and exception handlers.
  */
-$isCli = php_sapi_name() === 'cli';
+$isCli = PHP_SAPI === 'cli';
 if ($isCli) {
     (new ConsoleErrorHandler(Configure::read('Error')))->register();
 } else {
@@ -308,6 +308,15 @@ Type::map('base64', 'App\Database\Type\EncodedFileType');
 /**
  * Enable default locale format parsing.
  * This is needed for matching the auto-localized string output of Time() class when parsing dates.
+ *
+ * Also enable immutable time objects in the ORM.
  */
-//Type::build('date')->useLocaleParser();
-//Type::build('datetime')->useLocaleParser();
+//Type::build('time')
+//    ->useImmutable()
+//    ->useLocaleParser();
+//Type::build('date')
+//    ->useImmutable()
+//    ->useLocaleParser();
+//Type::build('datetime')
+//    ->useImmutable()
+//    ->useLocaleParser();
