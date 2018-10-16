@@ -5,7 +5,10 @@ use Cake\Core\Configure;
 use Cake\ORM\Query;
 use Cake\ORM\RulesChecker;
 use Cake\ORM\Table;
+use Cake\Utility\Hash;
 use Cake\Validation\Validator;
+use CsvMigrations\FieldHandlers\Config\ConfigFactory;
+use CsvMigrations\FieldHandlers\CsvField;
 
 /**
  * Settings Model
@@ -61,7 +64,34 @@ class SettingsTable extends Table
             ->requirePresence('value', 'create')
             ->allowEmpty('value');
 
+        $validator->add('value', 'custom', [
+            'rule' => [$this, 'settingsValidator'],
+        ]);
+
         return $validator;
+    }
+
+    /**
+     * Validate the field from the type in settings.php
+     * @param value $value Value of the field
+     * @param entely $context The entity
+     * @return bool True if validate
+     */
+    public function settingsValidator($value, $context)
+    {
+        $type = $context['data']['type'];
+        $config = ConfigFactory::getByType($context['data']['type'], 'value');
+        $validationClass = $config->getProvider('validationRules');
+        $validationRules = new $validationClass($config);
+
+        $validator = $validationRules->provide(new Validator(), [
+            'fieldDefinitions' => new CsvField(['name' => 'value'])
+        ]);
+        if (empty($validator->errors(['value' => $value]))) {
+            return true;
+        }
+
+        return false;
     }
 
     /**

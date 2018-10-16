@@ -12,7 +12,7 @@ return [
            ],
            'field_number_two' => [
              'alias' => 'CsvMigrations.default_icon',
-             'type' => 'integer',
+             'type' => 'string',
              'help' => 'This is the help 2',
            ],
            'field_number_three' => [
@@ -66,8 +66,8 @@ return [
        'Column 1' => [
          'This section 1' => [
            'name1' => [
-             'alias' => 'debug',
-             'type' => 'string',
+             'alias' => 'API.auth',
+             'type' => 'boolean',
            ],
          ],
        ],

@@ -34,14 +34,17 @@ class SettingsController extends AppController
         if ($this->request->is('put')) {
             $data = Hash::flatten($this->request->data());
             $query = TableRegistry::get('Settings');
+            $type = Hash::combine(Configure::read('Settings'), '{s}.{s}.{s}.{s}.alias', '{s}.{s}.{s}.{s}.type');
 
             $set = [];
             foreach ($data as $key => $value) {
                 $entity = $query->findByKey($key)->first();
-                $newEntity = $this->Settings->patchEntity($entity, [
+                $params = [
                     'key' => $key,
                     'value' => $value,
-                ]);
+                    'type' => $type[$key] // dynamic field to pass type to the validator
+                ];
+                $newEntity = $this->Settings->patchEntity($entity, $params);
                 $set[] = $newEntity;
             }
 
