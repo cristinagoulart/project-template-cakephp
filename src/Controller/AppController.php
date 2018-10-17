@@ -56,6 +56,8 @@ class AppController extends Controller
      *
      * Use this method to add common initialization code like loading components.
      *
+     * e.g. `$this->loadComponent('Security');`
+     *
      * @return void
      */
     public function initialize()
@@ -84,13 +86,19 @@ class AppController extends Controller
     }
 
     /**
-     * beforeRender callback
+     * Before render callback.
      *
-     * @param \Cake\Event\Event $event Event
+     * @param \Cake\Event\Event $event The beforeRender event.
      * @return void
      */
     public function beforeRender(Event $event)
     {
+        if (!array_key_exists('_serialize', $this->viewVars) &&
+            in_array($this->response->type(), ['application/json', 'application/xml'])
+        ) {
+            $this->set('_serialize', true);
+        }
+
         $this->set('user', $this->Auth->user());
     }
 

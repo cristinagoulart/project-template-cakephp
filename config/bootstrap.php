@@ -51,7 +51,7 @@ use Cake\Database\Type;
 use Cake\Datasource\ConnectionManager;
 use Cake\Event\EventManager;
 use Cake\Log\Log;
-use Cake\Network\Email\Email;
+use Cake\Mailer\Email;
 use Cake\Network\Request;
 use Cake\Routing\DispatcherFactory;
 use Cake\Utility\Inflector;
@@ -81,7 +81,7 @@ try {
     Configure::load('roles_capabilities', 'default');
     Configure::load('scheduled_log', 'default');
 } catch (\Exception $e) {
-    die($e->getMessage() . "\n");
+    exit($e->getMessage() . "\n");
 }
 
 // Load an environment local configuration file.
@@ -117,7 +117,7 @@ ini_set('intl.default_locale', 'en_US');
 /**
  * Register application error and exception handlers.
  */
-$isCli = php_sapi_name() === 'cli';
+$isCli = PHP_SAPI === 'cli';
 if ($isCli) {
     (new ConsoleErrorHandler(Configure::read('Error')))->register();
 } else {
@@ -152,19 +152,16 @@ if (!Configure::read('App.fullBaseUrl')) {
 Log::drop('debug');
 Log::drop('error');
 
-// Configure::consume() reads and deletes the value.
-// This is useful for consistency and security reasons.
 Cache::config(Configure::consume('Cache'));
 ConnectionManager::config(Configure::consume('Datasources'));
-Log::config(Configure::consume('Log'));
-Security::salt(Configure::consume('Security.salt'));
-
 // Read, rather than consume, since we have some logic that
 // needs to know if email sending is enabled or not.
 // See `src/Shell/EmailShell.php` for example, but also in
 // plugins.
 Email::configTransport(Configure::read('EmailTransport'));
 Email::config(Configure::read('Email'));
+Log::config(Configure::consume('Log'));
+Security::salt(Configure::consume('Security.salt'));
 
 /**
  * The default crypto extension in 3.0 is OpenSSL.
@@ -193,7 +190,7 @@ Request::addDetector('tablet', function ($request) {
  * inflection functions.
  *
  * Inflector::rules('plural', ['/^(inflect)or$/i' => '\1ables']);
- * Inflector::rules('irregular' => ['red' => 'redlings']);
+ * Inflector::rules('irregular', ['red' => 'redlings']);
  * Inflector::rules('uninflected', ['dontinflectme']);
  * Inflector::rules('transliteration', ['/å/' => 'aa']);
  */
@@ -307,3 +304,19 @@ FeatureFactory::init();
  * Register custom database type(s)
  */
 Type::map('base64', 'App\Database\Type\EncodedFileType');
+
+/**
+ * Enable default locale format parsing.
+ * This is needed for matching the auto-localized string output of Time() class when parsing dates.
+ *
+ * Also enable immutable time objects in the ORM.
+ */
+//Type::build('time')
+//    ->useImmutable()
+//    ->useLocaleParser();
+//Type::build('date')
+//    ->useImmutable()
+//    ->useLocaleParser();
+//Type::build('datetime')
+//    ->useImmutable()
+//    ->useLocaleParser();
