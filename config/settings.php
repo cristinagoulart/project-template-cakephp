@@ -11,8 +11,8 @@ return [
              'help' => 'This is the help 1',
            ],
            'field_number_two' => [
-             'alias' => 'CsvMigrations.default_icon',
-             'type' => 'string',
+             'alias' => 'debug',
+             'type' => 'boolean',
              'help' => 'This is the help 2',
            ],
            'field_number_three' => [
@@ -33,7 +33,7 @@ return [
          'first Section' => [
            'i_need_more_coffee' => [
              'alias' => 'CsvMigrations.tableValidation',
-             'type' => 'integer',
+             'type' => 'boolean',
            ],
          ],
        ],
@@ -53,7 +53,7 @@ return [
          'secondsection' => [
            'i_want_to_write_more' => [
              'alias' => 'Icons.url',
-             'type' => 'text',
+             'type' => 'string',
            ],
            'the_answer_is_42' => [
              'alias' => 'Whoops.editor',

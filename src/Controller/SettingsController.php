@@ -32,7 +32,7 @@ class SettingsController extends AppController
         }
 
         if ($this->request->is('put')) {
-            $data = Hash::flatten($this->request->data());
+            $data = Hash::flatten($this->request->data('Settings'));
             $query = TableRegistry::get('Settings');
             $type = Hash::combine(Configure::read('Settings'), '{s}.{s}.{s}.{s}.alias', '{s}.{s}.{s}.{s}.type');
 

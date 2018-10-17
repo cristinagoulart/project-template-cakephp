@@ -87,14 +87,13 @@ $(document).ready(function(){
 										<?php
 										// Fields
 										foreach ($fields as $field => $fieldValue) :
-											$alias = $fieldValue['alias'];
-											$value = Configure::read($alias);
+											$value = Configure::read($fieldValue['alias']);
+											$alias = 'Settings.' . $fieldValue['alias'];
 											$definition = [
 												'type'  => $fieldValue['type'],
 												'value' => $value,
 												'name'  => $alias,
 											];
-											// echo $this->Form->input($alias,$definition);
 											echo $fhf->renderInput('settings', $alias, $value, ['fieldDefinitions' => $definition]);
 											if(isset($fieldValue['help']) ):
 												?>

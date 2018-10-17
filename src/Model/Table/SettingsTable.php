@@ -74,13 +74,13 @@ class SettingsTable extends Table
     /**
      * Validate the field from the type in settings.php
      * @param value $value Value of the field
-     * @param entely $context The entity
+     * @param entity $context The entity
      * @return bool True if validate
      */
     public function settingsValidator($value, $context)
     {
         $type = $context['data']['type'];
-        $config = ConfigFactory::getByType($context['data']['type'], 'value');
+        $config = ConfigFactory::getByType($type, 'value');
         $validationClass = $config->getProvider('validationRules');
         $validationRules = new $validationClass($config);
 

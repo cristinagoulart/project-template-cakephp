@@ -47,20 +47,25 @@ class SettingsShell extends Shell
     public function main()
     {
         $query = TableRegistry::get('Settings');
-        $alias = Hash::extract(Configure::read('Settings'), '{s}.{s}.{s}.{s}.alias');
-        $settings = $query->getAliasDiff($alias);
+        $alias = Hash::combine(Configure::read('Settings'), '{s}.{s}.{s}.{s}.alias', '{s}.{s}.{s}.{s}.type');
+        $settings = $query->getAliasDiff(array_keys($alias));
 
         $data = [];
         foreach ($settings as $set) {
             $data[] = [
                     'key' => $set,
                     'value' => Configure::read($set),
+                    'type' => $alias[$set] // dynamic field to pass `type` to the validator
                 ];
         }
 
         try {
             $entities = $query->newEntities($data);
-            $query->saveMany($entities);
+            if ($query->saveMany($entities)) {
+                $this->out('Settings successfully updated');
+            } else {
+                $this->out('Failed to update settings, please try again.');
+            }
         } catch (\Exception $e) {
             throw new \Exception($e);
         }
