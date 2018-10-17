@@ -51,11 +51,11 @@ class SettingsShell extends Shell
         $settings = $query->getAliasDiff(array_keys($alias));
 
         $data = [];
-        foreach ($settings as $set) {
+        foreach ($alias as $set => $type) {
             $data[] = [
                     'key' => $set,
                     'value' => Configure::read($set),
-                    'type' => $alias[$set] // dynamic field to pass `type` to the validator
+                    'type' => $type // dynamic field to pass `type` to the validator
                 ];
         }
 
