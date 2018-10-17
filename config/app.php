@@ -2,10 +2,7 @@
 use Qobo\Utils\Utility\Salt;
 
 try {
-    Dotenv::makeMutable();
-    Dotenv::load(dirname(__FILE__) . DIRECTORY_SEPARATOR . '..');
-    Dotenv::required(['DB_NAME']);
-    Dotenv::makeImmutable();
+    (new \josegonzalez\Dotenv\Loader(dirname(__DIR__) . DIRECTORY_SEPARATOR . '.env'))->parse()->expect('DB_NAME')->toEnv(true)->putenv(true);
 } catch (\Exception $e) {
     echo $e->getMessage();
     exit(1);
