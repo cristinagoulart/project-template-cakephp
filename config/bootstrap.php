@@ -161,20 +161,6 @@ ConnectionManager::config(Configure::consume('Datasources'));
 Log::config(Configure::consume('Log'));
 Security::salt(Configure::consume('Security.salt'));
 
-/**
- * After the connection manager is set up it's possible
- * to load the dbconfig engine and merge it with the other
- * configuration.
- */
-try {
-    Configure::config('dbconfig', new DbConfig());
-    Configure::load('Settings', 'dbconfig', true);
-} catch (\Cake\Database\Exception $e) {
-    // Do nothing
-} catch (\Exception $e) {
-    die($e->getMessage() . "\n");
-}
-
 // Read, rather than consume, since we have some logic that
 // needs to know if email sending is enabled or not.
 // See `src/Shell/EmailShell.php` for example, but also in
