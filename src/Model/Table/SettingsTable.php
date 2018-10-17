@@ -87,7 +87,7 @@ class SettingsTable extends Table
         $validator = $validationRules->provide(new Validator(), [
             'fieldDefinitions' => new CsvField(['name' => 'value'])
         ]);
-        
+
         return empty($validator->errors(['value' => $value]));
     }
 

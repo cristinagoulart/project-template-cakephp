@@ -2,66 +2,61 @@
 // DB settings
 return [
   'Settings' => [
-    'First Tab' => [
-       'zero line' => [
-         'First Section' => [
-           'field_number_one' => [
-             'alias' => 'ScheduledLog.stats.age',
-             'type' => 'string',
-             'help' => 'This is the help 1',
-           ],
-           'field_number_two' => [
-             'alias' => 'debug',
-             'type' => 'boolean',
-             'help' => 'This is the help 2',
-           ],
-           'field_number_three' => [
-             'alias' => 'CsvMigrations.BootstrapFileInput.initialPreviewConfig.url',
-             'type' => 'text',
-             'help' => 'This is the help 3',
-           ],
-         ],
-         'Second Section' => [
-           'field_number_one' => [
-             'alias' => 'Menu.allControllers',
-             'type' => 'boolean',
-             'help' => 'This is even more helpful',
-           ],
-         ],
-       ],
-       'first line' => [
-         'first Section' => [
-           'i_need_more_coffee' => [
-             'alias' => 'CsvMigrations.tableValidation',
-             'type' => 'boolean',
-           ],
-         ],
-       ],
-       'second line' => [
-         'secondsection' => [
-           'my_birthday' => [
-             'alias' => 'EmailTransport.default.host',
-             'type' => 'string',
-           ],
-           'more_rock' => [
-             'alias' => 'App.wwwRoot',
-             'type' => 'string',
-           ],
-         ],
-       ],
-       'third line' => [
-         'secondsection' => [
-           'i_want_to_write_more' => [
-             'alias' => 'Icons.url',
-             'type' => 'string',
-           ],
-           'the_answer_is_42' => [
-             'alias' => 'Whoops.editor',
-             'type' => 'boolean',
-           ],
-         ],
-       ],
-     ],
+    'Config' => [
+      'UI' => [
+        'Theme' => [
+          'Title' => [
+            'alias' => 'Theme.title',
+            'type' => 'string',
+            'help' => 'This is dynamic, should not be display',
+          ],
+          'Logo_(mini)' => [
+            'alias' => 'Theme.logo.mini',
+            'type' => 'string',
+          ],
+          'Logo_(large)' => [
+            'alias' => 'Theme.logo.large',
+            'type' => 'string',
+          ],
+        ],
+        'Other options' => [
+          'Skin' => [
+            'alias' => 'Theme.skin',
+            'type' => 'string',
+            'help' => 'Try red',
+          ],
+          'skin_url' => [
+            'alias' => 'Theme.skinUrl',
+            'type' => 'string',
+            'help' => 'This should be same of the previous one. try "AdminLTE.skins/skin-red.min"',
+          ],
+          'Show_remeber' => [
+            'alias' => 'Theme.login.show_remember',
+            'type' => 'boolean',
+          ],
+          'Show_register' => [
+            'alias' => 'Theme.login.show_register',
+            'type' => 'boolean',
+          ],
+          'show_social' => [
+            'alias' => 'Theme.login.show_social',
+            'type' => 'boolean',
+          ],
+          'Folder' => [
+            'alias' => 'Theme.folder',
+            'type' => 'string',
+          ],
+          'background_image' => [
+            'alias' => 'Theme.backgroundImages',
+            'type' => 'string',
+          ],
+          'Pretend_Avatars' => [
+            'alias' => 'Theme.prependAvatars',
+            'type' => 'boolean',
+          ]
+        ]
+      ]
+    ],
      'Second Tab' => [
        'Column 1' => [
          'This section 1' => [

@@ -323,3 +323,17 @@ FeatureFactory::init();
  * Register custom database type(s)
  */
 Type::map('base64', 'App\Database\Type\EncodedFileType');
+
+/**
+ * @todo  Must find the right position to load the settings.
+ * After that, all the Configure::read() will be ONLY
+ * from files and unable to modify from the UI of settings
+ */
+try {
+    Configure::config('dbconfig', new DbConfig());
+    Configure::load('Settings', 'dbconfig', true);
+} catch (\Cake\Database\Exception $e) {
+    // Do nothing
+} catch (\Exception $e) {
+    die($e->getMessage() . "\n");
+}

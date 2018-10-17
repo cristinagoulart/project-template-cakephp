@@ -38,7 +38,7 @@ class SettingsController extends AppController
 
             $set = [];
             foreach ($data as $key => $value) {
-                $entity = $query->findByKey($key)->first();
+                $entity = $query->findByKey($key)->firstOrFail();
                 $params = [
                     'key' => $key,
                     'value' => $value,
