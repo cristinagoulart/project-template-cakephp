@@ -24,25 +24,49 @@ class SettingsController extends AppController
      */
     public function index()
     {
+        // Get User Roles
+        $capabilities = TableRegistry::get('RolesCapabilities.Capabilities');
+        $userGroups = $capabilities->getUserGroups($this->Auth->user('id'));
+        $userRoles = $capabilities->getGroupsRoles($userGroups);
+
+        // Filter the Configure::read('Settings') with User Roles
+        $dataSettings = Configure::read('Settings');
+        $filter = array_filter(Hash::flatten($dataSettings), function ($value) use ($userRoles) {
+            return in_array($value, $userRoles);
+        });
+        $dataFlatten = [];
+        foreach ($filter as $key => $value) {
+            $p = explode('.', $key);
+            $p = $p[0] . '.' . $p[1] . '.' . $p[2] . '.' . $p[3];
+            $dataFlatten[$p] = Hash::extract($dataSettings, $p);
+        }
+        // $dataFiltered has now only fields belonging to the user roles
+        $dataFiltered = Hash::expand($dataFlatten);
+
         $settings = $this->paginate($this->Settings);
         $this->set(compact('settings'));
-
-        if (!$this->Auth->user('is_admin')) {
-            throw new UnauthorizedException('Admin restricted area');
-        }
+        $this->set('data', $dataFiltered);
 
         if ($this->request->is('put')) {
             $data = Hash::flatten($this->request->data('Settings'));
             $query = TableRegistry::get('Settings');
-            $type = Hash::combine(Configure::read('Settings'), '{s}.{s}.{s}.{s}.alias', '{s}.{s}.{s}.{s}.type');
+            $type = Hash::combine($dataFiltered, '{s}.{s}.{s}.{s}.alias', '{s}.{s}.{s}.{s}.type');
+            $roles = Hash::combine($dataFiltered, '{s}.{s}.{s}.{s}.alias', '{s}.{s}.{s}.{s}.roles');
 
             $set = [];
             foreach ($data as $key => $value) {
                 $entity = $query->findByKey($key)->firstOrFail();
+                // check the roles (never trust the user input)
+                $roles[$key] = [];
+                if (count(array_intersect($roles[$key], $userRoles)) === 0) {
+                    $this->Flash->error(__('Failed to update settings, please try again.'));
+                    throw new UnauthorizedException('Can not update');
+                }
                 $params = [
                     'key' => $key,
                     'value' => $value,
-                    'type' => $type[$key] // dynamic field to pass type to the validator
+                    // dynamic field to pass type to the validator
+                    'type' => $type[$key]
                 ];
                 $newEntity = $this->Settings->patchEntity($entity, $params);
                 $set[] = $newEntity;
