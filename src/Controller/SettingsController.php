@@ -48,13 +48,13 @@ class SettingsController extends AppController
         $this->set('data', $dataFiltered);
 
         if ($this->request->is('put')) {
-            $data = Hash::flatten($this->request->data('Settings'));
+            $dataPut = Hash::flatten($this->request->data('Settings'));
             $query = TableRegistry::get('Settings');
             $type = Hash::combine($dataFiltered, '{s}.{s}.{s}.{s}.alias', '{s}.{s}.{s}.{s}.type');
             $roles = Hash::combine($dataFiltered, '{s}.{s}.{s}.{s}.alias', '{s}.{s}.{s}.{s}.roles');
 
             $set = [];
-            foreach ($data as $key => $value) {
+            foreach ($dataPut as $key => $value) {
                 $entity = $query->findByKey($key)->firstOrFail();
                 // check the roles (never trust the user input)
                 if (count(array_intersect($roles[$key], $userRoles)) === 0) {
@@ -78,5 +78,14 @@ class SettingsController extends AppController
                 $this->Flash->error(__('Failed to update settings, please try again.'));
             }
         }
+    }
+
+    public function generator()
+    {
+        $dataSettings = Configure::read('Settings');
+        $this->set('data', $dataSettings);
+
+        $data = Hash::flatten(Configure::read());
+        $this->set('alldata', $data);
     }
 }
