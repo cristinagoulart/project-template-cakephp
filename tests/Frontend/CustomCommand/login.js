@@ -1,4 +1,4 @@
-exports.command = function(username, password, callback) {
+exports.command = function (username, password, callback) {
     var self = this;
     var url = self.launch_url + '/login';
 

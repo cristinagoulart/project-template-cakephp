@@ -9,7 +9,9 @@
     <description>PHP CodeSniffer Configuration</description>
 
     <!-- Coding standard to use -->
-    <rule ref="./vendor/cakephp/cakephp-codesniffer/CakePHP" />
+    <rule ref="./vendor/cakephp/cakephp-codesniffer/CakePHP">
+        <exclude name="Generic.Commenting.Todo" />
+    </rule>
 
     <!-- Do not fail on warnings -->
     <config name="ignore_warnings_on_exit" value="1" />
@@ -28,5 +30,6 @@
     <file>./tests/</file>
     <file>./webroot/</file>
 
-    <arg name="ignore" value="tests/Frontend/" />
+    <!-- Ignore minified files -->
+    <exclude-pattern>*\.min\.(css|js)</exclude-pattern>
 </ruleset>

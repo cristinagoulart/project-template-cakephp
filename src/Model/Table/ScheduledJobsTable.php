@@ -274,10 +274,14 @@ class ScheduledJobsTable extends AppTable
      */
     public function getStartDate($time)
     {
+        if (is_object($time)) {
+            return $time->second(0);
+        }
+
         if (is_string($time)) {
             return Time::parse($time)->second(0);
         }
 
-        return $time->second(0);
+        return $time;
     }
 }
