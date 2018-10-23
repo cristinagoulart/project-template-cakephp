@@ -54,6 +54,32 @@ class SettingsTableTest extends TestCase
         parent::tearDown();
     }
 
+    public function testUpdateValidationNoErrors()
+    {
+        $key = 'FileStorage.defaultImageSize';
+        $entity = TableRegistry::get('Settings')->findByKey($key)->first();
+        $params = [
+            'key' => $key,
+            'value' => '300',
+            'type' => 'integer' // dynamic field to pass type to the validator
+        ];
+        $newEntity = $this->Settings->patchEntity($entity, $params);
+        $this->assertEmpty($newEntity->getErrors());
+    }
+
+    public function testUpdateValidationWithErrors()
+    {
+        $key = 'FileStorage.defaultImageSize';
+        $entity = TableRegistry::get('Settings')->findByKey($key)->first();
+        $params = [
+            'key' => $key,
+            'value' => 'wrong value',
+            'type' => 'integer' // dynamic field to pass type to the validator
+        ];
+        $newEntity = $this->Settings->patchEntity($entity, $params);
+        $this->assertEquals('The provided value is invalid', $newEntity->getErrors()['value']['custom']);
+    }
+
     public function testGetAlias()
     {
         $configSettings = [
