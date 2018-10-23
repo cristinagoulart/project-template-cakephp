@@ -32,6 +32,4 @@
 
     <!-- Ignore minified files -->
     <exclude-pattern>*\.min\.(css|js)</exclude-pattern>
-
-    <arg name="ignore" value="tests/Frontend/" />
 </ruleset>
