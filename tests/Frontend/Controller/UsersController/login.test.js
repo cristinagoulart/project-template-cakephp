@@ -1,20 +1,20 @@
 describe('UsersController::login(): ', () => {
-    before(function(browser, done) {
+    before(function (browser, done) {
         done();
     });
 
-    after(function(browser, done) {
-      browser.end(function() {
+    after(function (browser, done) {
+        browser.end(function () {
+            done();
+        });
+    });
+
+    afterEach(function (browser, done) {
         done();
-      });
     });
 
-    afterEach(function(browser, done) {
-      done();
-    });
-
-    beforeEach(function(browser, done) {
-      done();
+    beforeEach(function (browser, done) {
+        done();
     });
 
     it('Admin login with correct credentials', (browser) => {
