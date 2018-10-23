@@ -80,6 +80,10 @@ class SettingsController extends AppController
         }
     }
 
+    /**
+     * Pass data to generator page
+     * @return null Nothing to return
+     */
     public function generator()
     {
         $dataSettings = Configure::read('Settings');
