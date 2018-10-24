@@ -399,6 +399,14 @@ return [
             'className' => 'LevelAwareDatabase',
             'levels' => $logLevels
         ],
+        // To enable this dedicated query log, you need set your datasource's log flag to true
+        'queries' => [
+            'className' => 'Cake\Log\Engine\FileLog',
+            'path' => LOGS,
+            'file' => 'queries',
+            'url' => env('LOG_QUERIES_URL', null),
+            'scopes' => ['queriesLog'],
+        ],
     ],
 
     'DatabaseLog' => [
@@ -414,7 +422,8 @@ return [
      *
      * ## Options
      *
-     * - `cookie` - The name of the cookie to use. Defaults to 'CAKEPHP'.
+     * - `cookie` - The name of the cookie to use. Defaults to 'CAKEPHP'. Avoid using `.` in cookie names,
+     *   as PHP will drop sessions from cookies with `.` in the name.
      * - `cookiePath` - The url path for which session cookie is set. Maps to the
      *   `session.cookie_path` php.ini config. Defaults to base path of app.
      * - `timeout` - The time in minutes the session should be valid for.
@@ -441,7 +450,7 @@ return [
      * Make sure the class implements PHP's `SessionHandlerInterface` and set
      * Session.handler to <name>
      *
-     * To use database sessions, load the SQL file located at config/Schema/sessions.sql
+     * To use database sessions, load the SQL file located at config/schema/sessions.sql
      */
     'Session' => [
         'defaults' => 'php',
