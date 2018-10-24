@@ -1,13 +1,6 @@
 <?php
 use Qobo\Utils\Utility\Salt;
 
-try {
-    (new \josegonzalez\Dotenv\Loader(dirname(__DIR__) . DIRECTORY_SEPARATOR . '.env'))->parse()->expect('DB_NAME')->toEnv(true)->putenv(true);
-} catch (\Exception $e) {
-    echo $e->getMessage();
-    exit(1);
-}
-
 $debug = (bool)env('DEBUG', false);
 // NOTE, there is special treatment of 'HTTPS' key in vendor/cakephp/cakephp/src/Core/funtions.php
 $https = (bool)env('HTTPS', false);
