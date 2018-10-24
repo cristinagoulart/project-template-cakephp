@@ -28,7 +28,11 @@
     <!-- Files and directories to check -->
     <file>./src/</file>
     <file>./tests/</file>
+    <file>./config/</file>
     <file>./webroot/</file>
+
+    <!-- Ignore files -->
+    <arg name="ignore" value="config/Migrations/" />
 
     <!-- Ignore minified files -->
     <exclude-pattern>*\.min\.(css|js)</exclude-pattern>

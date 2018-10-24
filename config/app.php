@@ -29,7 +29,7 @@ $useOnlyCookies = (bool)env('APP_SESSION_USE_ONLY_COOKIES', true);
 $sessionTimeout = (int)env('APP_SESSION_TIMEOUT', 43200);
 
 // Ignore deprecated errors when debug is disabled.
-$errorLevel = $debug ? E_ALL : E_ALL & ~E_DEPRECATED ;
+$errorLevel = $debug ? E_ALL : E_ALL & ~E_DEPRECATED;
 
 // If EMAIL_ENABLED is false, use Debug transport.  Otherwise, use
 // either the Smtp transport if enabled or fallback on Mail transport.

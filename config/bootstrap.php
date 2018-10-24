@@ -29,9 +29,6 @@ if (!extension_loaded('mbstring')) {
  */
 require __DIR__ . '/paths.php';
 
-// Use composer to load the autoloader.
-require ROOT . DS . 'vendor' . DS . 'autoload.php';
-
 /**
  * Bootstrap CakePHP.
  *
@@ -173,7 +170,7 @@ Security::salt(Configure::consume('Security.salt'));
  * If you are migrating from 2.x uncomment this code to
  * use a more compatible Mcrypt based implementation
  */
-// Security::engine(new \Cake\Utility\Crypto\Mcrypt());
+//Security::engine(new \Cake\Utility\Crypto\Mcrypt());
 
 /**
  * Setup detectors for mobile and tablet.
@@ -188,6 +185,21 @@ Request::addDetector('tablet', function ($request) {
 
     return $detector->isTablet();
 });
+
+/**
+ * Enable immutable time objects in the ORM.
+ *
+ * You can enable default locale format parsing by adding calls
+ * to `useLocaleParser()`. This enables the automatic conversion of
+ * locale specific date formats. For details see
+ * @link http://book.cakephp.org/3.0/en/core-libraries/internationalization-and-localization.html#parsing-localized-datetime-data
+ */
+//Type::build('time')
+//    ->useImmutable()
+//Type::build('date')
+//    ->useImmutable()
+//Type::build('datetime')
+//    ->useImmutable()
 
 /**
  * Custom Inflector rules, can be set to correctly pluralize or singularize
@@ -309,18 +321,3 @@ FeatureFactory::init();
  * Register custom database type(s)
  */
 Type::map('base64', 'App\Database\Type\EncodedFileType');
-
-/**
- * Enable immutable time objects in the ORM.
- *
- * You can enable default locale format parsing by adding calls
- * to `useLocaleParser()`. This enables the automatic conversion of
- * locale specific date formats. For details see
- * @link http://book.cakephp.org/3.0/en/core-libraries/internationalization-and-localization.html#parsing-localized-datetime-data
- */
-//Type::build('time')
-//    ->useImmutable()
-//Type::build('date')
-//    ->useImmutable()
-//Type::build('datetime')
-//    ->useImmutable()
