@@ -8,32 +8,33 @@ try {
     exit(1);
 }
 
-$https = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] != 'off') ? true : false;
-$debug = (bool)env('DEBUG');
+$debug = (bool)env('DEBUG', false);
+// NOTE, there is special treatment of 'HTTPS' key in vendor/cakephp/cakephp/src/Core/funtions.php
+$https = (bool)env('HTTPS', false);
 
 $logLevels = ['notice', 'info', 'warning', 'error', 'critical', 'alert', 'emergency'];
 if ($debug) {
     $logLevels[] = 'debug';
 }
 
-$dbHost = getenv('DB_HOST') ?: 'localhost';
-$dbName = getenv('DB_NAME');
-$dbUser = getenv('DB_USER') ?: 'root';
-$dbPass = getenv('DB_PASS') ?: '';
+$dbHost = env('DB_HOST', 'localhost');
+$dbName = env('DB_NAME');
+$dbUser = env('DB_USER', 'root');
+$dbPass = env('DB_PASS', '');
 $dbTestName = $dbName . '_test';
-$sessionCookieSecure = (bool)env('APP_SESSION_SECURE_COOKIE');
+$sessionCookieSecure = (bool)env('APP_SESSION_SECURE_COOKIE', false);
 $sessionCookieSecure = $https ?: $sessionCookieSecure;
-$cookieHttpOnly = (bool)env('APP_SESSION_COOKIE_HTTP_ONLY');
-$useOnlyCookies = (bool)env('APP_SESSION_USE_ONLY_COOKIES');
-$sessionTimeout = (int)env('APP_SESSION_TIMEOUT');
+$cookieHttpOnly = (bool)env('APP_SESSION_COOKIE_HTTP_ONLY', true);
+$useOnlyCookies = (bool)env('APP_SESSION_USE_ONLY_COOKIES', true);
+$sessionTimeout = (int)env('APP_SESSION_TIMEOUT', 43200);
 
 // Ignore deprecated errors when debug is disabled.
 $errorLevel = $debug ? E_ALL : E_ALL & ~E_DEPRECATED ;
 
 // If EMAIL_ENABLED is false, use Debug transport.  Otherwise, use
 // either the Smtp transport if enabled or fallback on Mail transport.
-$emailTransport = (bool)getenv('SMTP_ENABLED') ? 'Smtp' : 'Mail';
-$emailTransport = (bool)getenv('EMAIL_ENABLED') ? $emailTransport : 'Debug';
+$emailTransport = (bool)env('SMTP_ENABLED', true) ? 'Smtp' : 'Mail';
+$emailTransport = (bool)env('EMAIL_ENABLED', true) ? $emailTransport : 'Debug';
 
 // If the configuration is missing, fallback on
 // PHP configuration.  If that is missing too,
@@ -50,7 +51,7 @@ return [
      * API Authentication parameters
      */
     'API' => [
-        'auth' => (bool)getenv('API_AUTHENTICATION')
+        'auth' => (bool)env('API_AUTHENTICATION', true),
     ],
 
     /**
@@ -240,13 +241,13 @@ return [
         'default' => [
             'className' => $emailTransport,
             // The following keys are used in SMTP transports
-            'host' => getenv('SMTP_HOST') ?: 'localhost',
-            'port' => getenv('SMTP_PORT') ?: 25,
-            'timeout' => getenv('SMTP_TIMEOUT') ?: 30,
-            'username' => getenv('SMTP_USERNAME') ?: null,
-            'password' => getenv('SMTP_PASSWORD') ?: null,
+            'host' => env('SMTP_HOST', 'localhost'),
+            'port' => env('SMTP_PORT', 25),
+            'timeout' => env('SMTP_TIMEOUT', 30),
+            'username' => env('SMTP_USERNAME', null),
+            'password' => env('SMTP_PASSWORD', null),
             'client' => null,
-            'tls' => (bool)getenv('SMTP_TLS'),
+            'tls' => env('SMTP_TLS', false),
             'url' => env('EMAIL_TRANSPORT_DEFAULT_URL', null),
         ],
     ],
@@ -263,7 +264,7 @@ return [
     'Email' => [
         'default' => [
             'transport' => 'default',
-            'from' => [ getenv('EMAIL_FROM_ADDRESS') => getenv('EMAIL_FROM_NAME')],
+            'from' => [ env('EMAIL_FROM_ADDRESS') => env('EMAIL_FROM_NAME')],
             //'charset' => 'utf-8',
             //'headerCharset' => 'utf-8',
         ],
@@ -283,19 +284,19 @@ return [
      */
     'Ldap' => [
         'enabled' => (bool)getenv('LDAP_ENABLED'),
-        'username' => getenv('LDAP_USERNAME'),
-        'password' => getenv('LDAP_PASSWORD'),
-        'host' => getenv('LDAP_HOST'),
-        'port' => (int)getenv('LDAP_PORT') ?: 389,
-        'version' => (int)getenv('LDAP_VERSION') ?: 3,
-        'domain' => getenv('LDAP_DOMAIN'),
-        'baseDn' => getenv('LDAP_BASE_DN'),
-        'groupsFilter' => getenv('LDAP_GROUPS_FILTER'),
-        'groupsAttributes' => explode(',', getenv('LDAP_GROUPS_ATTRIBUTES')),
-        'filter' => getenv('LDAP_FILTER'),
+        'username' => env('LDAP_USERNAME'),
+        'password' => env('LDAP_PASSWORD'),
+        'host' => env('LDAP_HOST'),
+        'port' => env('LDAP_PORT', 389),
+        'version' => env('LDAP_VERSION', 3),
+        'domain' => env('LDAP_DOMAIN'),
+        'baseDn' => env('LDAP_BASE_DN'),
+        'groupsFilter' => env('LDAP_GROUPS_FILTER'),
+        'groupsAttributes' => explode(',', env('LDAP_GROUPS_ATTRIBUTES', '')),
+        'filter' => env('LDAP_FILTER'),
         'attributes' => function () {
             $result = [];
-            $attributes = getenv('LDAP_ATTRIBUTES');
+            $attributes = env('LDAP_ATTRIBUTES');
             if (empty($attributes)) {
                 return $result;
             }
@@ -460,7 +461,7 @@ return [
         'persister' => 'App\Persister\MysqlPersister'
     ],
     'Swagger' => [
-        'crawl' => (bool)getenv('SWAGGER_CRAWL')
+        'crawl' => env('SWAGGER_CRAWL', true)
     ],
     'Whoops' => [
         'editor' => true
