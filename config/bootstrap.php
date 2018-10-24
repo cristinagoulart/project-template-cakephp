@@ -233,7 +233,6 @@ Request::addDetector('tablet', function ($request) {
  *
  */
 Plugin::load('Qobo/Utils', ['bootstrap' => true]);
-Plugin::load('Migrations');
 Plugin::load('CsvMigrations', ['bootstrap' => true, 'routes' => true]);
 Plugin::load('Crud');
 Plugin::load('Groups', ['bootstrap' => true, 'routes' => true]);
