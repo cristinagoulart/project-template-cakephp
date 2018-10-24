@@ -89,6 +89,7 @@
             "App\\Console\\Installer::postInstall",
             "cghooks add"
         ],
+        "post-create-project-cmd": "App\\Console\\Installer::postInstall",
         "post-update-cmd": "cghooks update",
         "post-autoload-dump": "Cake\\Composer\\Installer\\PluginInstaller::postAutoloadDump"
     },
