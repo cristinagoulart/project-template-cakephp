@@ -18,7 +18,7 @@ class FakerShell extends Shell
     {
         $parser = parent::getOptionParser();
 
-        $parser->description('Generate fake data.');
+        $parser->setDescription('Generate fake data.');
         $parser->addArgument('model', [
             'help' => 'Model name to generate fake data for.',
             'required' => true

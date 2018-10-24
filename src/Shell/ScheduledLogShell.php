@@ -28,7 +28,7 @@ class ScheduledLogShell extends Shell
     {
         $parser = parent::getOptionParser();
 
-        $parser->description('Sheduled job logs.');
+        $parser->setDescription('Sheduled job logs.');
         $parser->addSubcommand('gc', [
             'help' => 'Clean scheduled jog logs',
             'parser' => [
