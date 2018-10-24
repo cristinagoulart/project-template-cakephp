@@ -41,7 +41,7 @@ class Upgrade20180226000000Task extends Shell
     public function getOptionParser()
     {
         $parser = parent::getOptionParser();
-        $parser->description(
+        $parser->setDescription(
             'Migration of many-to-many relations to standalone Modules and removal of "manyToMany" config section'
         );
 

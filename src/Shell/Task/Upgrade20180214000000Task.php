@@ -32,7 +32,7 @@ class Upgrade20180214000000Task extends Shell
     public function getOptionParser()
     {
         $parser = parent::getOptionParser();
-        $parser->description('Migration of INI/CSV configuration files to JSON');
+        $parser->setDescription('Migration of INI/CSV configuration files to JSON');
 
         return $parser;
     }

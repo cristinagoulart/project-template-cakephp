@@ -2,6 +2,7 @@
     "name": "qobo/project-template-cakephp",
     "description": "Template for new CakePHP projects",
     "keywords": ["cakephp", "project", "template", "setup", "rapid-development", "dry"],
+    "type": "project",
     "license": "MIT",
     "homepage": "https://www.qobo.biz",
     "authors": [
@@ -54,7 +55,9 @@
         "timeweb/phpstan-enum": "^2.0"
     },
     "suggest": {
-        "ext-xdebug": "Allows code coverage reports and advanced debugging"
+        "ext-xdebug": "Allows code coverage reports and advanced debugging",
+        "markstory/asset_compress": "An asset compression plugin which provides file concatenation and a flexible filter system for preprocessing and minification.",
+        "dereuromark/cakephp-ide-helper": "After baking your code, this keeps your annotations in sync with the code evolving from there on for maximum IDE and PHPStan compatibility."
     },
     "autoload": {
         "psr-4": {
@@ -88,6 +91,7 @@
             "App\\Console\\Installer::postInstall",
             "cghooks add"
         ],
+        "post-create-project-cmd": "App\\Console\\Installer::postInstall",
         "post-update-cmd": "cghooks update",
         "post-autoload-dump": "Cake\\Composer\\Installer\\PluginInstaller::postAutoloadDump"
     },

@@ -24,7 +24,7 @@ class Upgrade20180718130200Task extends Shell
     public function getOptionParser()
     {
         $parser = parent::getOptionParser();
-        $parser->description('Add foreign key constraints to all tables');
+        $parser->setDescription('Add foreign key constraints to all tables');
 
         return $parser;
     }

@@ -20,7 +20,9 @@
 
 use App\Routing\ApiRouter;
 use Cake\Core\Plugin;
+use Cake\Routing\RouteBuilder;
 use Cake\Routing\Router;
+use Cake\Routing\Route\DashedRoute;
 
 /**
  * The default class to use for all routes
@@ -40,7 +42,7 @@ use Cake\Routing\Router;
  * `:action` markers.
  *
  */
-Router::defaultRouteClass('DashedRoute');
+Router::defaultRouteClass(DashedRoute::class);
 
 /**
  * Add api route to handle our REST API functionality
@@ -48,7 +50,7 @@ Router::defaultRouteClass('DashedRoute');
 $apiRouter = new ApiRouter();
 $apiRouter->setRoutes();
 
-Router::scope('/', function ($routes) {
+Router::scope('/', function (RouteBuilder $routes) {
     /**
      * Here, we are connecting '/' (base path) to a controller called 'Pages',
      * its action called 'display', and we pass a param to select the view file
@@ -82,11 +84,11 @@ Router::scope('/', function ($routes) {
      * You can remove these routes once you've connected the
      * routes you want in your application.
      */
-    $routes->fallbacks('DashedRoute');
+    $routes->fallbacks(DashedRoute::class);
 });
 
 /**
- * Load all plugin routes.  See the Plugin documentation on
+ * Load all plugin routes. See the Plugin documentation on
  * how to customize the loading of plugin routes.
  */
 Plugin::routes();

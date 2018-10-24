@@ -9,12 +9,13 @@ return [
      * Development Mode:
      * true: Errors and warnings shown.
      */
-    'debug' => true,
+    'debug' => filter_var(env('DEBUG', true), FILTER_VALIDATE_BOOLEAN),
 
     /**
      * Configure basic information about the application.
      *
      * - namespace - The namespace to find app classes under.
+     * - defaultLocale - The default locale for translation, formatting currencies and numbers, date and time.
      * - encoding - The encoding used for HTML + database connections.
      * - base - The base directory the app resides in. If false this
      *   will be auto detected.
@@ -37,7 +38,8 @@ return [
      */
     'App' => [
         'namespace' => 'App',
-        'encoding' => 'UTF-8',
+        'encoding' => env('APP_ENCODING', 'UTF-8'),
+        'defaultLocale' => env('APP_DEFAULT_LOCALE', 'en_US'),
         'base' => false,
         'dir' => 'src',
         'webroot' => 'webroot',
@@ -62,7 +64,7 @@ return [
      *   You should treat it as extremely sensitive data.
      */
     'Security' => [
-        'salt' => '__SALT__',
+        'salt' => env('SECURITY_SALT', '__SALT__'),
     ],
 
     /**
@@ -84,33 +86,37 @@ return [
         'default' => [
             'className' => 'File',
             'path' => CACHE,
+            'url' => env('CACHE_DEFAULT_URL', null),
         ],
 
         /**
          * Configure the cache used for general framework caching.
          * Translation cache files are stored with this configuration.
-         * Duration will be set to '+1 year' in bootstrap.php when debug = false
+         * Duration will be set to '+2 minutes' in bootstrap.php when debug = true
+         * If you set 'className' => 'Null' core cache will be disabled.
          */
         '_cake_core_' => [
             'className' => 'File',
             'prefix' => 'myapp_cake_core_',
             'path' => CACHE . 'persistent/',
             'serialize' => true,
-            'duration' => '+2 minutes',
+            'duration' => '+1 years',
+            'url' => env('CACHE_CAKECORE_URL', null),
         ],
 
         /**
          * Configure the cache for model and datasource caches. This cache
          * configuration is used to store schema descriptions, and table listings
          * in connections.
-         * Duration will be set to '+1 year' in bootstrap.php when debug = false
+         * Duration will be set to '+2 minutes' in bootstrap.php when debug = true
          */
         '_cake_model_' => [
             'className' => 'File',
             'prefix' => 'myapp_cake_model_',
             'path' => CACHE . 'models/',
             'serialize' => true,
-            'duration' => '+2 minutes',
+            'duration' => '+1 years',
+            'url' => env('CACHE_CAKEMODEL_URL', null),
         ],
     ],
 
@@ -132,7 +138,7 @@ return [
      *   logged errors/exceptions.
      * - `log` - boolean - Whether or not you want exceptions logged.
      * - `exceptionRenderer` - string - The class responsible for rendering
-     *   uncaught exceptions.  If you choose a custom class you should place
+     *   uncaught exceptions. If you choose a custom class you should place
      *   the file for that class in src/Error. This class needs to implement a
      *   render method.
      * - `skipLog` - array - List of exceptions to skip for logging. Exceptions that
@@ -144,7 +150,7 @@ return [
      *   breathing room to complete logging or error handling.
      */
     'Error' => [
-        'errorLevel' => E_ALL & ~E_DEPRECATED,
+        'errorLevel' => E_ALL,
         'exceptionRenderer' => 'Cake\Error\ExceptionRenderer',
         'skipLog' => [],
         'log' => true,
@@ -167,7 +173,7 @@ return [
      *  Debug  - Do not send the email, just return the result
      *
      * You can add custom transports (or override existing transports) by adding the
-     * appropriate file to src/Mailer/Transport.  Transports should be named
+     * appropriate file to src/Mailer/Transport. Transports should be named
      * 'YourTransport.php', where 'Your' is the name of the transport.
      */
     'EmailTransport' => [
@@ -181,6 +187,7 @@ return [
             'password' => 'secret',
             'client' => null,
             'tls' => null,
+            'url' => env('EMAIL_TRANSPORT_DEFAULT_URL', null),
         ],
     ],
 
@@ -205,6 +212,8 @@ return [
     /**
      * Connection information used by the ORM to connect
      * to your application's datastores.
+     * Do not use periods in database name - it may lead to error.
+     * See https://github.com/cakephp/cakephp/issues/6471 for details.
      * Drivers include Mysql Postgres Sqlite Sqlserver
      * See vendor\cakephp\cakephp\src\Database\Driver for complete list
      */
@@ -247,6 +256,8 @@ return [
              * which is the recommended value in production environments
              */
             //'init' => ['SET GLOBAL innodb_stats_on_metadata = 0'],
+
+            'url' => env('DATABASE_URL', null),
         ],
 
         /**
@@ -267,6 +278,7 @@ return [
             'quoteIdentifiers' => false,
             'log' => false,
             //'init' => ['SET GLOBAL innodb_stats_on_metadata = 0'],
+            'url' => env('DATABASE_TEST_URL', null),
         ],
     ],
 
@@ -279,12 +291,14 @@ return [
             'path' => LOGS,
             'file' => 'debug',
             'levels' => ['notice', 'info', 'debug'],
+            'url' => env('LOG_DEBUG_URL', null),
         ],
         'error' => [
             'className' => 'Cake\Log\Engine\FileLog',
             'path' => LOGS,
             'file' => 'error',
             'levels' => ['warning', 'error', 'critical', 'alert', 'emergency'],
+            'url' => env('LOG_ERROR_URL', null),
         ],
     ],
 

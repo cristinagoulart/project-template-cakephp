@@ -22,7 +22,7 @@ class Upgrade20180907123600Task extends Shell
     public function getOptionParser()
     {
         $parser = parent::getOptionParser();
-        $parser->description('Create Database List records from CSV migrations');
+        $parser->setDescription('Create Database List records from CSV migrations');
 
         return $parser;
     }

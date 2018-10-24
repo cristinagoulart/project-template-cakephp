@@ -38,7 +38,7 @@ class EmailShell extends Shell
     public function getOptionParser()
     {
         $parser = parent::getOptionParser();
-        $parser->description('Send an email message');
+        $parser->setDescription('Send an email message');
         $parser->addArgument('to', [
             'help' => 'Destination email address (required)',
             'required' => true,

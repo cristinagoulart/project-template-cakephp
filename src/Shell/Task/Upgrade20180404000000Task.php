@@ -27,7 +27,7 @@ class Upgrade20180404000000Task extends Shell
     public function getOptionParser()
     {
         $parser = parent::getOptionParser();
-        $parser->description('Create system searches for all system Modules');
+        $parser->setDescription('Create system searches for all system Modules');
 
         return $parser;
     }

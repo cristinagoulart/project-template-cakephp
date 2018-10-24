@@ -21,7 +21,7 @@ class CleanModulesDataShell extends Shell
     public function getOptionParser()
     {
         $parser = new ConsoleOptionParser('console');
-        $parser->description('Clean All Records a Module has');
+        $parser->setDescription('Clean All Records a Module has');
 
         $parser->addOption('modules', [
             'short' => 'm',

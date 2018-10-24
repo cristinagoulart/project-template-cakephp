@@ -29,7 +29,7 @@ class Upgrade20170119000000Task extends Shell
     public function getOptionParser()
     {
         $parser = new ConsoleOptionParser('console');
-        $parser->description('Upgrade CsvMigrations to Modules');
+        $parser->setDescription('Upgrade CsvMigrations to Modules');
 
         return $parser;
     }
