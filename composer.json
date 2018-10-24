@@ -2,6 +2,7 @@
     "name": "qobo/project-template-cakephp",
     "description": "Template for new CakePHP projects",
     "keywords": ["cakephp", "project", "template", "setup", "rapid-development", "dry"],
+    "type": "project",
     "license": "MIT",
     "homepage": "https://www.qobo.biz",
     "authors": [
