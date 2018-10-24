@@ -69,8 +69,8 @@ return [
      * Configure basic information about the application.
      *
      * - namespace - The namespace to find app classes under.
-     * - encoding - The encoding used for HTML + database connections.
      * - defaultLocale - The default locale for translation, formatting currencies and numbers, date and time.
+     * - encoding - The encoding used for HTML + database connections.
      * - base - The base directory the app resides in. If false this
      *   will be auto detected.
      * - dir - Name of app directory.
@@ -147,6 +147,7 @@ return [
          * Configure the cache used for general framework caching.
          * Translation cache files are stored with this configuration.
          * Duration will be set to '+1 year' in bootstrap.php when debug = false
+         * If you set 'className' => 'Null' core cache will be disabled.
          */
         '_cake_core_' => [
             'className' => 'File',
@@ -322,6 +323,8 @@ return [
     /**
      * Connection information used by the ORM to connect
      * to your application's datastores.
+     * Do not use periods in database name - it may lead to error.
+     * See https://github.com/cakephp/cakephp/issues/6471 for details.
      * Drivers include Mysql Postgres Sqlite Sqlserver
      * See vendor\cakephp\cakephp\src\Database\Driver for complete list
      */
