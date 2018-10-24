@@ -206,11 +206,13 @@ Request::addDetector('tablet', function ($request) {
  * @link http://book.cakephp.org/3.0/en/core-libraries/internationalization-and-localization.html#parsing-localized-datetime-data
  */
 //Type::build('time')
-//    ->useImmutable()
+//    ->useImmutable();
 //Type::build('date')
-//    ->useImmutable()
+//    ->useImmutable();
 //Type::build('datetime')
-//    ->useImmutable()
+//    ->useImmutable();
+//Type::build('timestamp')
+//    ->useImmutable();
 
 /*
  * Custom Inflector rules, can be set to correctly pluralize or singularize
