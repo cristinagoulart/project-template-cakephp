@@ -14,22 +14,7 @@
  */
 
 /*
- *  You can remove this if you are confident you have intl installed.
- */
-if (!extension_loaded('intl')) {
-    trigger_error('You must enable the intl extension to use CakePHP.', E_USER_ERROR);
-}
-
-/*
- * You can remove this if you are confident you have mbstring installed.
- */
-if (!extension_loaded('mbstring')) {
-    trigger_error('You must enable the mbstring extension to use CakePHP.', E_USER_ERROR);
-}
-
-/*
- * Configure paths required to find CakePHP + general filepath
- * constants
+ * Configure paths required to find CakePHP + general filepath constants
  */
 require __DIR__ . '/paths.php';
 
@@ -190,7 +175,7 @@ ConnectionManager::setConfig(Configure::consume('Datasources'));
 Email::setConfigTransport(Configure::read('EmailTransport'));
 Email::setConfig(Configure::read('Email'));
 Log::setConfig(Configure::consume('Log'));
-Security::salt(Configure::consume('Security.salt'));
+Security::setSalt(Configure::consume('Security.salt'));
 
 /*
  * The default crypto extension in 3.0 is OpenSSL.
