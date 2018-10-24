@@ -90,7 +90,8 @@ return [
      */
     'App' => [
         'namespace' => 'App',
-        'encoding' => 'UTF-8',
+        'encoding' => env('APP_ENCODING', 'UTF-8'),
+        'defaultLocale' => env('APP_DEFAULT_LOCALE', 'en_US'),
         'base' => false,
         'dir' => 'src',
         'webroot' => 'webroot',
@@ -137,6 +138,7 @@ return [
         'default' => [
             'className' => 'File',
             'path' => CACHE,
+            'url' => env('CACHE_DEFAULT_URL', null),
         ],
 
         /**
@@ -150,6 +152,7 @@ return [
             'path' => CACHE . 'persistent/',
             'serialize' => true,
             'duration' => '+2 minutes',
+            'url' => env('CACHE_CAKECORE_URL', null),
         ],
 
         /**
@@ -164,6 +167,7 @@ return [
             'path' => CACHE . 'models/',
             'serialize' => true,
             'duration' => '+2 minutes',
+            'url' => env('CACHE_CAKEMODEL_URL', null),
         ],
 
         /**
@@ -243,6 +247,7 @@ return [
             'password' => getenv('SMTP_PASSWORD') ?: null,
             'client' => null,
             'tls' => (bool)getenv('SMTP_TLS'),
+            'url' => env('EMAIL_TRANSPORT_DEFAULT_URL', null),
         ],
     ],
 
@@ -358,6 +363,7 @@ return [
              */
             //'init' => ['SET GLOBAL innodb_stats_on_metadata = 0'],
 
+            'url' => env('DATABASE_URL', null),
             /*
              * Whether or not to automatically generate foreign key constraints
              * during the application upgrade.
@@ -383,6 +389,7 @@ return [
             'quoteIdentifiers' => true,
             'log' => false,
             //'init' => ['SET GLOBAL innodb_stats_on_metadata = 0'],
+            'url' => env('DATABASE_TEST_URL', null),
         ],
     ],
 
