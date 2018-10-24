@@ -163,17 +163,17 @@ if (!Configure::read('App.fullBaseUrl')) {
 Log::drop('debug');
 Log::drop('error');
 
-Cache::config(Configure::consume('Cache'));
-ConnectionManager::config(Configure::consume('Datasources'));
+Cache::setConfig(Configure::consume('Cache'));
+ConnectionManager::setConfig(Configure::consume('Datasources'));
 /*
  * Read, rather than consume, since we have some logic that
  * needs to know if email sending is enabled or not.
  * See `src/Shell/EmailShell.php` for example, but also in
  * plugins.
  */
-Email::configTransport(Configure::read('EmailTransport'));
-Email::config(Configure::read('Email'));
-Log::config(Configure::consume('Log'));
+Email::setConfigTransport(Configure::read('EmailTransport'));
+Email::setConfig(Configure::read('Email'));
+Log::setConfig(Configure::consume('Log'));
 Security::salt(Configure::consume('Security.salt'));
 
 /*
