@@ -70,6 +70,7 @@ return [
      *
      * - namespace - The namespace to find app classes under.
      * - encoding - The encoding used for HTML + database connections.
+     * - defaultLocale - The default locale for translation, formatting currencies and numbers, date and time.
      * - base - The base directory the app resides in. If false this
      *   will be auto detected.
      * - dir - Name of app directory.
