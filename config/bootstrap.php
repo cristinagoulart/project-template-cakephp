@@ -73,9 +73,9 @@ if (file_exists(ROOT . DS . '.env')) {
     $dotenv = new \josegonzalez\Dotenv\Loader([ROOT . DS . '.env']);
     $dotenv->parse()
         ->expect('DB_NAME')
-        ->putenv()
-        ->toEnv()
-        ->toServer();
+        ->putenv(true)
+        ->toEnv(true)
+        ->toServer(true);
 }
 
 /*
