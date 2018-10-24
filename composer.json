@@ -35,7 +35,7 @@
         "lasserafn/php-initial-avatar-generator": "^2.3",
         "mobiledetect/mobiledetectlib": "2.*",
         "pelago/emogrifier": "^1.2",
-        "pyrech/composer-changelogs": "~1.4",
+        "pyrech/composer-changelogs": "^1.4",
         "qobo/cakephp-csv-migrations": "^32.0",
         "qobo/cakephp-groups": "^10.0",
         "qobo/cakephp-menu": "^14.0",
@@ -46,7 +46,7 @@
         "qobo/qobo-robo-cakephp": "^2.0"
     },
     "require-dev": {
-        "cakephp/bake": "~1.0",
+        "cakephp/bake": "^1.1",
         "cakephp/cakephp-codesniffer": "^3.0",
         "phpstan/phpstan": "^0.10.3",
         "phpunit/phpunit": "^6.0",
@@ -61,21 +61,21 @@
     },
     "autoload": {
         "psr-4": {
-            "App\\": "src",
-            "Qobo\\Robo\\": "build/Robo"
+            "App\\": "src/",
+            "Qobo\\Robo\\": "build/Robo/"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "App\\Test\\": "tests",
-            "Cake\\Test\\": "./vendor/cakephp/cakephp/tests",
-            "CakeDC\\Users\\Test\\": "./vendor/cakedc/users/tests",
-            "CsvMigrations\\Test\\": "./vendor/qobo/cakephp-csv-migrations/tests",
-            "Groups\\Test\\": "./vendor/qobo/cakephp-groups/tests",
-            "Menu\\Test\\": "./vendor/qobo/cakephp-menu/tests",
-            "RolesCapabilities\\Test\\": "./vendor/qobo/cakephp-roles-capabilities/tests",
-            "Search\\Test\\": "./vendor/qobo/cakephp-search/tests",
-            "Translations\\Test\\": "./vendor/qobo/cakephp-translations/tests"
+            "App\\Test\\": "tests/",
+            "Cake\\Test\\": "./vendor/cakephp/cakephp/tests/",
+            "CakeDC\\Users\\Test\\": "./vendor/cakedc/users/tests/",
+            "CsvMigrations\\Test\\": "./vendor/qobo/cakephp-csv-migrations/tests/",
+            "Groups\\Test\\": "./vendor/qobo/cakephp-groups/tests/",
+            "Menu\\Test\\": "./vendor/qobo/cakephp-menu/tests/",
+            "RolesCapabilities\\Test\\": "./vendor/qobo/cakephp-roles-capabilities/tests/",
+            "Search\\Test\\": "./vendor/qobo/cakephp-search/tests/",
+            "Translations\\Test\\": "./vendor/qobo/cakephp-translations/tests/"
         }
     },
     "scripts": {

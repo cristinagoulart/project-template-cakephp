@@ -49,10 +49,9 @@ use Cake\Utility\Inflector;
 use Cake\Utility\Security;
 
 /**
- * Read .env file
- *
- * You can remove this block if you do not want to use environment
- * variables for configuration when deploying.
+ * Uncomment block of code below if you want to use `.env` file during development.
+ * You should copy `.env.example` to `.env` and set/modify the
+ * variables as required.
  */
 if (file_exists(ROOT . DS . '.env')) {
     $dotenv = new \josegonzalez\Dotenv\Loader([ROOT . DS . '.env']);
