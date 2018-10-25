@@ -22,7 +22,7 @@
 
     <!-- Add any additional test suites you want to run here -->
     <testsuites>
-        <testsuite name="App Test Suite">
+        <testsuite name="app">
             <directory>./tests/TestCase</directory>
         </testsuite>
         <testsuite name="example">
