@@ -86,13 +86,30 @@ class SettingsController extends AppController
      */
     public function generator()
     {
+        // For render the main structure
         $dataSettings = Configure::read('Settings');
         $this->set('data', $dataSettings);
 
+        // For seach the new fields to insert
         $data = Hash::flatten(Configure::read());
         $this->set('alldata', $data);
 
+        // list of roles
         $capabilities = TableRegistry::get('QoboRoles')->find('list', ['keyField' => 'name'])->toArray();
         $this->set('roles', array_keys($capabilities));
+    }
+
+    /**
+     * Return a php array for render in html
+     * @return null Nothing to return
+     */
+    public function returnArray()
+    {
+        $this->autoRender = false;
+        if ($this->request->is('post')) {
+            echo '<pre>';
+            var_export($this->request->data());
+            echo '</pre>';
+        }
     }
 }

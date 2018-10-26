@@ -121,7 +121,7 @@ $(document).ready(function(){
 			</div>
 			<?php 
 				echo $this->Form->button(__('Submit'), ['class' => 'btn btn-primary','value' => 'submit']);
-				echo$this->Form->end();
+				echo $this->Form->end();
 			?>
 		</div>
 	</div>

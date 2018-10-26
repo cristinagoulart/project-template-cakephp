@@ -1,9 +1,18 @@
 <?php
+/**
+ * The stucture of the HTML is the some of /settings, but rendered with jQuery.
+ * To review maybe in VUE.js
+ *
+ * to fix/add : 
+ * - if click on any input in the search table will enable/disable the selected one
+ * - in the sections are display name and alias just for debugging
+ * - button to delete fields
+ * - button to edit fields (maybe)
+ * 
+ */
 use Cake\Core\Configure;
-use CsvMigrations\FieldHandlers\FieldHandlerFactory;
 
 echo $this->Html->css('Qobo/Utils./plugins/datatables/css/dataTables.bootstrap.min', ['block' => 'css']);
-
 echo $this->Html->script(
     [
         'Qobo/Utils./plugins/datatables/datatables.min',
@@ -15,9 +24,8 @@ echo $this->Html->script(
 $this->Html->scriptStart(array('block' => 'scriptBottom', 'inline' => false)); ?>
 
 $(document).ready(function(){
-
+    // settings.php array in json
     let data = (<?= json_encode($data) ?>)
-    console.log(data)
 
     // Tabs
     $.each(data,function(tab, cols){
@@ -39,11 +47,12 @@ $(document).ready(function(){
         addColButtun(tab)
     })
 
-    //active the first tab and coloum
-    $('#list_tabs li:nth-child(3)').addClass('active');
-    $('.tab-pane:nth-child(2)').addClass('active');
+    // Active the first tab and coloum
+    $('#list_tabs li:nth-child(2)').addClass('active');
+    $('.tab-pane:nth-child(1)').addClass('active');
 
-
+    // Add a new Tab : it is composed by the link on the top, adn the panel in the bottom
+    // tab : new tab name
     function genTab(tab){
         let idTab = tab.replace(/ |_/g,"_")
         let new_tab = `<li><a href="#tab`+ idTab  +`" data-tab="`+ idTab  +`" data-toggle="tab" aria-expanded="true">`+ tab +`</a></li>`
@@ -62,6 +71,9 @@ $(document).ready(function(){
         $('#list_tabs_pane').append(new_tab_panel)
     }
 
+    // Add a new column in the select tab : it is composed by a link in the left and a panel in the right
+    // tab : select the tab where to add the new column
+    // col : name of the new column
     function genColumn(tab,col){
         let idCol = tab.replace(/ |_/g,"_") +"-"+ col.replace(/ |_/g,"_")
         let new_col_link = `<li><a href="#`+ idCol +`" data-toggle="tab">`+ col +`</a></li>`
@@ -71,6 +83,9 @@ $(document).ready(function(){
         $('#section_'+ tab.replace(/ |_/g,"_")).append(new_col_tab)
     }
 
+    // Add new section on selected tab -> column
+    // tab,col : select the tab and coloum where to add the section
+    // section : name of the new section
     function genSection(tab,col,section){
         let idSection = tab.replace(/ |_/g,"_") +"-"+ col.replace(/ |_/g,"_") +"-"+ section.replace(/ |_/g,"_")
         let new_section = `<div class="box box-primary" id="`+ idSection +`">
@@ -81,17 +96,25 @@ $(document).ready(function(){
         $('#'+ tab.replace(/ |_/g,"_") +"-"+ col.replace(/ |_/g,"_") ).append(new_section)
     }
 
-    function genField(tab,col,section,key,value){
+    // Add new field on selected tab -> column -> section
+    // tab,col,section : select the tab,coloum and section where to add the field
+    // field : name of the new field 
+    // value : array with the alias,type,roles,help
+    function genField(tab,col,section,name,value){
             let idField = tab.replace(/ |_/g,"_") +"-"+ col.replace(/ |_/g,"_") +"-"+ section.replace(/ |_/g,"_")
             let new_field = `<div class="box-body">
                                 <div class="form-group input text">
-                                    <label for="settings-theme-title">`+ key +`</label>
+                                    <label for="settings-theme-title">`+ name +`</label>
+                                    Alias : 
                                     <label for="settings-theme-title">`+ value.alias +`</label>
                                 </div>
                             </div>`
             $('#'+ idField ).append(new_field)
     }
 
+    // +++++++++++++++++++++++++++++++++++++++++++++++++++++
+    // Adding the input for new columns, sections and fields
+    // Input for the columns
     function addColButtun(tab){
         let addCol = `<li>
                         <form class="addCol">
@@ -104,6 +127,7 @@ $(document).ready(function(){
         $('#col_'+ tab.replace(/ |_/g,"_")).append(addCol)
     }
 
+    // Input for the section
     function addSectionButton(tab,col){
         let addSection = `<div class="box-body">
                             <form class="addSection">
@@ -116,16 +140,15 @@ $(document).ready(function(){
         $('#'+ tab.replace(/ |_/g,"_") +"-"+ col.replace(/ |_/g,"_")).append(addSection)
     }
 
+    // Input for the field
     function addFieldButton(tab,col,section){
         let addField = `<div class="box-body">
                             <form class="addField">
-                                <!-- <input type="text" placeholder="Add Fields"> -->
                                 <button type="submit" class="btn btn-primary">
                                     Add fields
                                 </button>
                             </form>
                           </div>`
-
         $('#'+ tab.replace(/ |_/g,"_") +"-"+ col.replace(/ |_/g,"_") +"-"+ section.replace(/ |_/g,"_")).append(addField)
     }
 
@@ -134,6 +157,13 @@ $(document).ready(function(){
         addSectionButton(tab,col)
     }
 
+    function genNewSection(tab,col,section){
+        genSection(tab,col,section)
+        addFieldButton(tab,col,section)
+    }
+    // +++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+    // Tab button submit
     $("#addTab").on('submit',function(event){
         event.preventDefault()
         genTab($("#addTab input:text").val())
@@ -141,6 +171,7 @@ $(document).ready(function(){
         $("#addTab input:text").val('')
     })
 
+    // Column button submit
     $(document).on('submit','.addCol',function(event){
         event.preventDefault()
         let tab = $(this).parents().parents().attr('id')
@@ -149,27 +180,32 @@ $(document).ready(function(){
         $(this).find("input:text").val('')
     })
 
+    // Section button submit
     $(document).on('submit','.addSection',function(event){
         event.preventDefault()
         let id = $(this).parents().parents().attr('id').split('-')
         let section = $(this).find("input:text").val()
-        genSection(id[0],id[1],section)
+        genNewSection(id[0],id[1],section)
         $(this).find("input:text").val('')
     })
 
+    // Field button submit
     $(document).on('submit','.addField',function(event){
-        $("#dataSettings").closest('.box-primary').remove()
-        $('.AddSelectedFields').removeClass('AddSelectedFields').addClass('addField')
-        $('.addField').find('button').text('Add fields')
         event.preventDefault()
+        // it closes all the other "search for the new field"
+        closeSearch()
+        // Change the name and the action of the some button
         $(this).find('button').text('Add the selected field')
+        $(this).removeClass('addField').addClass('AddSelectedFields')
         let id = $(this).parents().parents().attr('id')
+        // Add the "search for the new fields"
         let search = `<div class="box box-primary">
                           <div class="box-body">
                               <table id='dataSettings' class="table table-hover table-condensed table-vertical-align table-datatable">
                                   <thead>
                                   <tr>
                                       <th><?= __('alias') ?></th>
+                                      <th><?= __('name') ?></th>
                                       <th><?= __('type') ?></th>
                                       <th><?= __('help') ?></th>
                                       <th><?= __('roles') ?></th>
@@ -183,11 +219,12 @@ $(document).ready(function(){
                                   ?>
                                       <tr>
                                           <td class="alias"><?= $key ?></td>
+                                          <td class="name"><input type="text" placeholder="write the name" value="<?= $key ?>" required ></td>
                                           <td class="type"><?= gettype($value) ?></td>
                                           <td class="help"><input type="text" placeholder="write the help here"></td>
                                           <td class="roles">
                                              <?php 
-                                                // to improve ...
+                                                // to improve with a checkbox or other
                                                 $r = '';
                                                 foreach($roles as $key){
                                                     $r = $r . $key. ',';
@@ -212,42 +249,67 @@ $(document).ready(function(){
             })
     })
 
-    $(document).on('click','.AddSelectedFields',function(){
+    // Get all the selected fields and send them to the array(data)    
+    $(document).on('submit','.AddSelectedFields',function(event){
+            event.preventDefault()
             let data = $('#dataSettings .selected')
+            let path = $(this).parents().parents().attr('id').replace(/_/g," ").split("-")
             $.each(data,function(index,value){
                 value = $(value)[0]
-                let alias = $(value).find('.alias').text()
-                let type = $(value).find('.type').text()
-                let help = $(value).find('.help input').val()
-                let roles = $(value).find('.roles input').val()
                 
                 let mydata = {
-                    'alias' : alias,
-                    'type' : type,
-                    'help' : help,
-                    'roles' : roles,
+                    'alias' : $(value).find('.alias').text(),
+                    'type' :  $(value).find('.type').text(),
+                    'help' :  $(value).find('.help input').val(),
+                    'roles' : $(value).find('.roles input').val().split(","),
                 }
-                console.log(mydata)
-                // let mypath = 
+                let fieldName = $(value).find('.name input').val()
+                addToArray(path,mydata,fieldName)
+                genField(path[0],path[1],path[2],fieldName,mydata)
             })
-                console.log($(this).parents().parents().attr('id'))
+            closeSearch()
         })
 
-    function addToArray(path,data){
-
+    // Merge the new data with the main one
+    // path   : tab -> col -> section 
+    // field  : field name
+    // mydaya : object with alias, type, help, roles
+    function addToArray(path,mydata,field){
+        let newdata = JSON.parse('{"'+path[0]+'":{"'+path[1]+'":{"'+path[2]+'":{"'+field+'": ' + JSON.stringify(mydata) + ' }}}}')
+        data = $.extend(true,data,newdata)
     }
 
+    // find and remove any table for the "search for the new field"
+    function closeSearch(){
+        $("#dataSettings").closest('.box-primary').remove()
+        $('.AddSelectedFields').removeClass('AddSelectedFields').addClass('addField')
+        $('.addField').find('button').text('Add fields')
+    }
 
+    // return the php value for Setting[] in settings.php
+    $("#render").click(function(event){
+        event.preventDefault()
+        let token = JSON.parse('{ "_csrfToken" : "' + $('input[name="_csrfToken"]').attr('value') + '"}')
+        data = $.extend(true,data,token)
+        $.ajax({
+            url: "/settings/returnArray",
+            type : 'post',
+            contentType: 'application/json',
+            dataType : 'text',
+            data : JSON.stringify(data),
+            success: function(result){
+                $("#preArray").html(result);
+            }
+        });
+    });
 });
-
 
 <?php $this->Html->scriptEnd(); ?>
 <style type="text/css">
    table.dataTable tbody tr.selected {
-    color: blue;
-    background-color: #c0c0c0;
-}
-
+        color: blue;
+        background-color: #c0c0c0;
+    }
 </style>
 
 <section class="content">
@@ -266,6 +328,10 @@ $(document).ready(function(){
                 </ul>
                 <div id='list_tabs_pane' class="tab-content"></div>
             </div>
+            <?= $this->Form->create(); ?>
+            <?= $this->Form->button(__('Submit'), ['class' => 'btn btn-primary','value' => 'submit', 'id' => 'render']);?>
+            <?= $this->Form->end(); ?>
+            <div id='preArray'></div>
         </div>
     </div>
 </section>
