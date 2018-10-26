@@ -119,10 +119,9 @@ $(document).ready(function(){
     function addFieldButton(tab,col,section){
         let addField = `<div class="box-body">
                             <form class="addField">
-                                <!-- <input type="text" placeholder="Add Field"> -->
+                                <!-- <input type="text" placeholder="Add Fields"> -->
                                 <button type="submit" class="btn btn-primary">
-                                    Add field
-                                    <i class="menu-icon fa fa-plus-circle"></i>
+                                    Add fields
                                 </button>
                             </form>
                           </div>`
@@ -159,10 +158,11 @@ $(document).ready(function(){
     })
 
     $(document).on('submit','.addField',function(event){
-        console.log($("#dataSettings").closest('.box-primary').html())
+        $("#dataSettings").closest('.box-primary').remove()
+        $('.AddSelectedFields').removeClass('AddSelectedFields').addClass('addField')
+        $('.addField').find('button').text('Add fields')
         event.preventDefault()
         $(this).find('button').text('Add the selected field')
-        $(this).removeClass('addField').addClass('AddSelectedFields')
         let id = $(this).parents().parents().attr('id')
         let search = `<div class="box box-primary">
                           <div class="box-body">
