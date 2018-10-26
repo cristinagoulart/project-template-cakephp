@@ -17,9 +17,9 @@ class Server
      * human-friendly metrics and facts about
      * the server.
      *
-     * @return array
+     * @return mixed[]
      */
-    public static function getInfo()
+    public static function getInfo(): array
     {
         $result = [
             'Hostname' => gethostname(),
@@ -37,7 +37,7 @@ class Server
      *
      * @return string
      */
-    public static function getOperatingSystem()
+    public static function getOperatingSystem(): string
     {
         return php_uname('s') . ' ' . php_uname('r');
     }
@@ -47,7 +47,7 @@ class Server
      *
      * @return string
      */
-    public static function getMachineType()
+    public static function getMachineType(): string
     {
         return php_uname('m');
     }
@@ -57,7 +57,7 @@ class Server
      *
      * @return int
      */
-    public static function getNumberOfCpus()
+    public static function getNumberOfCpus(): int
     {
         $result = 0;
         $cpuInfoFile = '/proc/cpuinfo';
@@ -75,7 +75,7 @@ class Server
      *
      * @return string
      */
-    public static function getTotalRam()
+    public static function getTotalRam(): string
     {
         $result = 'N/A';
         $memoryInfoFile = '/proc/meminfo';

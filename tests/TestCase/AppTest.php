@@ -10,7 +10,7 @@ class AppTest extends TestCase
     /**
      * @dataProvider pluginProvider
      */
-    public function testLoadedPlugins($plugin, $config)
+    public function testLoadedPlugins(string $plugin, $config): void
     {
         if (empty($config)) {
             $this->assertTrue(Plugin::loaded($plugin), "Plugin $plugin is not loaded");
@@ -38,7 +38,10 @@ class AppTest extends TestCase
         }
     }
 
-    public function pluginProvider()
+    /**
+     * @return mixed[] Plugins and settings
+     */
+    public function pluginProvider(): array
     {
         return [
             ['ADmad/JwtAuth', 'API.auth'],

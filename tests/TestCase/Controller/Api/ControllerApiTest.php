@@ -26,7 +26,7 @@ class ControllerApiTest extends JsonIntegrationTestCase
         $this->setRequestHeaders([], '00000000-0000-0000-0000-000000000002');
     }
 
-    public function testApiFilesPlacedCorrectly()
+    public function testApiFilesPlacedCorrectly(): void
     {
         $path = App::path('Controller/Api')[0];
         $dir = new Folder($path);
@@ -43,7 +43,7 @@ class ControllerApiTest extends JsonIntegrationTestCase
     /**
      * @dataProvider modulesProvider
      */
-    public function testIndex($module)
+    public function testIndex(string $module): void
     {
         $this->get('/api/' . Inflector::dasherize($module));
         $this->assertJsonResponseOk();
@@ -52,7 +52,7 @@ class ControllerApiTest extends JsonIntegrationTestCase
     /**
      * @dataProvider modulesProvider
      */
-    public function testView($module)
+    public function testView(string $module): void
     {
         $table = TableRegistry::getTableLocator()->get($module);
         $entity = $table->newEntity();
@@ -68,7 +68,7 @@ class ControllerApiTest extends JsonIntegrationTestCase
     /**
      * @dataProvider modulesProvider
      */
-    public function testAdd($module)
+    public function testAdd(string $module): void
     {
         $table = TableRegistry::getTableLocator()->get($module);
 
@@ -85,7 +85,7 @@ class ControllerApiTest extends JsonIntegrationTestCase
     /**
      * @dataProvider modulesProvider
      */
-    public function testEdit($module)
+    public function testEdit(string $module): void
     {
         $table = TableRegistry::getTableLocator()->get($module);
         $entity = $table->newEntity();
@@ -102,7 +102,7 @@ class ControllerApiTest extends JsonIntegrationTestCase
     /**
      * @dataProvider modulesProvider
      */
-    public function testDelete($module)
+    public function testDelete(string $module): void
     {
         $table = TableRegistry::getTableLocator()->get($module);
         $entity = $table->newEntity();
@@ -121,9 +121,9 @@ class ControllerApiTest extends JsonIntegrationTestCase
     /**
      * Modules provider.
      *
-     * @return array
+     * @return mixed[]
      */
-    public function modulesProvider()
+    public function modulesProvider(): array
     {
         // store default path
         $defaultPath = Configure::read('CsvMigrations.modules.path');
@@ -146,7 +146,7 @@ class ControllerApiTest extends JsonIntegrationTestCase
         }, $modules);
     }
 
-    private function isModule($name)
+    private function isModule(string $name): bool
     {
         $config = (new ModuleConfig(ConfigType::MIGRATION(), $name, null, ['cacheSkip' => true]))->parse();
         $config = json_decode(json_encode($config), true);
@@ -154,7 +154,7 @@ class ControllerApiTest extends JsonIntegrationTestCase
         return ! empty($config);
     }
 
-    private function isActive($module)
+    private function isActive(string $module): bool
     {
         $feature = Factory::get('Module' . DS . $module);
 

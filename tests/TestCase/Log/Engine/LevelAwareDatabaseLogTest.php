@@ -7,7 +7,7 @@ use Cake\TestSuite\TestCase;
 
 class LevelAwareDatabaseLogTest extends TestCase
 {
-    public function testLog()
+    public function testLog(): void
     {
         $engine = new LevelAwareDatabaseLog();
 

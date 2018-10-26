@@ -15,12 +15,12 @@ class FactoryTest extends TestCase
     /**
      * For now we just make sure the Factory can be initialized, no assertions are made.
      */
-    public function testInit()
+    public function testInit(): void
     {
         Factory::init();
     }
 
-    public function testGet()
+    public function testGet(): void
     {
         $feature = Factory::get('Foobar');
         $this->assertInstanceOf(FeatureInterface::class, $feature);
@@ -30,15 +30,7 @@ class FactoryTest extends TestCase
         $this->assertInstanceOf(BaseFeature::class, $feature);
     }
 
-    /**
-     * @expectedException \InvalidArgumentException
-     */
-    public function testGetExceptionNotString()
-    {
-        $result = Factory::get(true);
-    }
-
-    public function testGetList()
+    public function testGetList(): void
     {
         $features = Factory::getList();
         $this->assertTrue(is_array($features));

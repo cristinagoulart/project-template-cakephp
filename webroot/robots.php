@@ -16,8 +16,8 @@
 require_once dirname(__DIR__) . DIRECTORY_SEPARATOR . 'vendor' . DIRECTORY_SEPARATOR . 'autoload.php';
 
 try {
-    Dotenv::load(dirname(__DIR__));
-} catch (\Exception $e) {
+    (new \josegonzalez\Dotenv\Loader(dirname(__DIR__) . DIRECTORY_SEPARATOR . '.env'))->parse()->toEnv()->putenv();
+} catch (\InvalidArgumentException $e) {
     // If there is no .env file, we are probably on
     // a local/dev/test install with the project that
     // is not properly deployed.  No need to allow

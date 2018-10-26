@@ -18,9 +18,11 @@ class Php
      * @param string $extension Optional extension, like 'curl'
      * @return string
      */
-    public static function getVersion($extension = null)
+    public static function getVersion(string $extension = null): string
     {
-        return $extension ? phpversion($extension) : phpversion();
+        $result = $extension ? phpversion($extension) : phpversion();
+
+        return (string)$result;
     }
 
     /**
@@ -28,7 +30,7 @@ class Php
      *
      * @return string
      */
-    public static function getSapi()
+    public static function getSapi(): string
     {
         return PHP_SAPI;
     }
@@ -36,9 +38,9 @@ class Php
     /**
      * Get a list of loaded PHP extensions
      *
-     * @return array
+     * @return string[]
      */
-    public static function getLoadedExtensions()
+    public static function getLoadedExtensions(): array
     {
         $result = [];
 
@@ -60,7 +62,7 @@ class Php
      *
      * @return string
      */
-    public static function getUser()
+    public static function getUser(): string
     {
         return get_current_user();
     }
@@ -75,7 +77,7 @@ class Php
      *
      * @return string
      */
-    public static function getBinary()
+    public static function getBinary(): string
     {
         return PHP_BINARY;
     }
@@ -89,7 +91,7 @@ class Php
      *
      * @return string
      */
-    public static function getIniPath()
+    public static function getIniPath(): string
     {
         return php_ini_loaded_file();
     }
@@ -101,12 +103,12 @@ class Php
      * given configuration key from the
      * php.ini.
      *
-     * @param sting $configKey Configuration key to get the value for
+     * @param string $configKey Configuration key to get the value for
      * @return mixed
      */
-    public static function getIniValue($configKey)
+    public static function getIniValue(string $configKey)
     {
-        return ini_get((string)$configKey);
+        return ini_get($configKey);
     }
 
     /**
@@ -114,7 +116,7 @@ class Php
      *
      * @return int Memory limit in bytes
      */
-    public static function getMemoryLimit()
+    public static function getMemoryLimit(): int
     {
         $result = static::getIniValue('memory_limit');
         $result = Utility::valueToBytes($result);
@@ -125,9 +127,9 @@ class Php
     /**
      * Get configuration setting for max_execution_time
      *
-     * @return numeric Maximum execution time in seconds
+     * @return int Maximum execution time in seconds
      */
-    public static function getMaxExecutionTime()
+    public static function getMaxExecutionTime(): int
     {
         return static::getIniValue('max_execution_time');
     }
@@ -137,7 +139,7 @@ class Php
      *
      * @return int Maximum upload file size in bytes
      */
-    public static function getUploadMaxFilesize()
+    public static function getUploadMaxFilesize(): int
     {
         $result = static::getIniValue('upload_max_filesize');
         $result = Utility::valueToBytes($result);
@@ -150,7 +152,7 @@ class Php
      *
      * @return int Max post size in bytes
      */
-    public static function getPostMaxSize()
+    public static function getPostMaxSize(): int
     {
         $result = static::getIniValue('post_max_size');
         $result = Utility::valueToBytes($result);

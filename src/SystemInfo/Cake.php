@@ -23,7 +23,7 @@ class Cake
      *
      * @return string
      */
-    public static function getVersion()
+    public static function getVersion(): string
     {
         return Configure::version();
     }
@@ -39,7 +39,7 @@ class Cake
      * @param string $version CakePHP version
      * @return string
      */
-    public static function getVersionUrl($version = null)
+    public static function getVersionUrl(string $version = null): string
     {
         if (empty($version)) {
             $version = static::getVersion();
@@ -51,10 +51,13 @@ class Cake
     /**
      * Get the list of loaded CakePHP plugins
      *
-     * @return array
+     * @return string[]
      */
-    public static function getLoadedPlugins()
+    public static function getLoadedPlugins(): array
     {
-        return Plugin::loaded();
+        $result = Plugin::loaded();
+        $result = is_array($result) ? $result : [];
+
+        return $result;
     }
 }

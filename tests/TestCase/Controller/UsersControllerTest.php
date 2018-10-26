@@ -9,6 +9,16 @@ use Cake\TestSuite\IntegrationTestCase;
 
 class UsersControllerTest extends IntegrationTestCase
 {
+    /**
+     * @var string User ID
+     */
+    private $userId;
+
+    /**
+     * @var \Cake\ORM\Table Table instance
+     */
+    private $table;
+
     public $fixtures = [
         'app.log_audit',
         'app.users',
@@ -34,7 +44,7 @@ class UsersControllerTest extends IntegrationTestCase
         parent::tearDown();
     }
 
-    private function withSession()
+    private function withSession(): void
     {
         $this->session([
             'Auth' => [
@@ -43,7 +53,7 @@ class UsersControllerTest extends IntegrationTestCase
         ]);
     }
 
-    public function testLogin()
+    public function testLogin(): void
     {
         $this->get('/users/login');
         $this->assertResponseOk();
@@ -52,7 +62,7 @@ class UsersControllerTest extends IntegrationTestCase
         $this->assertResponseOk();
     }
 
-    public function testRegister()
+    public function testRegister(): void
     {
         if (! Configure::read('Users.Registration.active')) {
             $this->markTestSkipped('User registration is inactive.');
@@ -62,13 +72,13 @@ class UsersControllerTest extends IntegrationTestCase
         $this->assertResponseOk();
     }
 
-    public function testRequestResetPassword()
+    public function testRequestResetPassword(): void
     {
         $this->get('/users/requestResetPassword');
         $this->assertResponseOk();
     }
 
-    public function testResetPassword()
+    public function testResetPassword(): void
     {
         $this->enableRetainFlashMessages();
 
@@ -77,7 +87,7 @@ class UsersControllerTest extends IntegrationTestCase
         $this->assertSession('Invalid token or user account already validated', 'Flash.flash.0.message');
     }
 
-    public function testIndex()
+    public function testIndex(): void
     {
         $this->withSession();
 
@@ -88,13 +98,13 @@ class UsersControllerTest extends IntegrationTestCase
         $this->assertResponseOk();
     }
 
-    public function testIndexWithoutSession()
+    public function testIndexWithoutSession(): void
     {
         $this->get('/users');
         $this->assertRedirect();
     }
 
-    public function testView()
+    public function testView(): void
     {
         $this->withSession();
 
@@ -102,13 +112,13 @@ class UsersControllerTest extends IntegrationTestCase
         $this->assertResponseOk();
     }
 
-    public function testViewWithoutSession()
+    public function testViewWithoutSession(): void
     {
         $this->get('/users/view/' . $this->userId);
         $this->assertRedirect();
     }
 
-    public function testProfile()
+    public function testProfile(): void
     {
         $this->withSession();
 
@@ -116,13 +126,13 @@ class UsersControllerTest extends IntegrationTestCase
         $this->assertResponseOk();
     }
 
-    public function testProfileWithoutSession()
+    public function testProfileWithoutSession(): void
     {
         $this->get('/users/profile/');
         $this->assertRedirect();
     }
 
-    public function testProfileEdit()
+    public function testProfileEdit(): void
     {
         $this->enableCsrfToken();
         $this->enableSecurityToken();
@@ -137,7 +147,7 @@ class UsersControllerTest extends IntegrationTestCase
         $this->assertEquals($data['username'], $entity->get('username'));
     }
 
-    public function testProfileEditWithoutSession()
+    public function testProfileEditWithoutSession(): void
     {
         $this->enableCsrfToken();
         $this->enableSecurityToken();
@@ -150,7 +160,7 @@ class UsersControllerTest extends IntegrationTestCase
         $this->assertNotEquals($data['username'], $entity->get('username'));
     }
 
-    public function testChangeUserPassword()
+    public function testChangeUserPassword(): void
     {
         $this->enableSecurityToken();
         $this->enableCsrfToken();
@@ -168,7 +178,7 @@ class UsersControllerTest extends IntegrationTestCase
         $this->assertRedirect();
     }
 
-    public function testChangeUserPasswordWithoutSession()
+    public function testChangeUserPasswordWithoutSession(): void
     {
         $this->enableSecurityToken();
         $this->enableCsrfToken();
@@ -184,7 +194,7 @@ class UsersControllerTest extends IntegrationTestCase
         $this->assertRedirect();
     }
 
-    public function testChangeUserPasswordWithInvalidData()
+    public function testChangeUserPasswordWithInvalidData(): void
     {
         $this->enableSecurityToken();
         $this->enableCsrfToken();
@@ -213,7 +223,7 @@ class UsersControllerTest extends IntegrationTestCase
         $this->assertSession('Password could not be changed', 'Flash.flash.0.message');
     }
 
-    public function testAdd()
+    public function testAdd(): void
     {
         $this->enableCsrfToken();
         $this->enableSecurityToken();
@@ -237,7 +247,7 @@ class UsersControllerTest extends IntegrationTestCase
         $this->assertEquals(1, $query->count());
     }
 
-    public function testAddWithInvalidData()
+    public function testAddWithInvalidData(): void
     {
         $this->enableCsrfToken();
         $this->enableSecurityToken();
@@ -253,7 +263,7 @@ class UsersControllerTest extends IntegrationTestCase
         $this->assertSession('The User could not be saved', 'Flash.flash.0.message');
     }
 
-    public function testAddWithoutSession()
+    public function testAddWithoutSession(): void
     {
         $this->enableCsrfToken();
         $this->enableSecurityToken();
@@ -271,7 +281,7 @@ class UsersControllerTest extends IntegrationTestCase
         $this->assertEquals($count, $this->table->find()->count());
     }
 
-    public function testEdit()
+    public function testEdit(): void
     {
         $this->enableCsrfToken();
         $this->enableSecurityToken();
@@ -289,7 +299,7 @@ class UsersControllerTest extends IntegrationTestCase
         $this->assertEquals($data['username'], $entity->get('username'));
     }
 
-    public function testEditWithInvalidData()
+    public function testEditWithInvalidData(): void
     {
         $this->enableCsrfToken();
         $this->enableSecurityToken();
@@ -307,7 +317,7 @@ class UsersControllerTest extends IntegrationTestCase
         $this->assertSession('The User could not be saved', 'Flash.flash.0.message');
     }
 
-    public function testEditWithoutSession()
+    public function testEditWithoutSession(): void
     {
         $this->enableCsrfToken();
         $this->enableSecurityToken();
@@ -321,7 +331,7 @@ class UsersControllerTest extends IntegrationTestCase
         $this->assertEquals($entity, $this->table->get($this->userId));
     }
 
-    public function testDeleteAnyUser()
+    public function testDeleteAnyUser(): void
     {
         $this->enableCsrfToken();
         $this->enableSecurityToken();
@@ -335,7 +345,7 @@ class UsersControllerTest extends IntegrationTestCase
         $this->assertTrue($query->isEmpty());
     }
 
-    public function testDeleteSameUser()
+    public function testDeleteSameUser(): void
     {
         $this->enableCsrfToken();
         $this->enableSecurityToken();
@@ -346,7 +356,7 @@ class UsersControllerTest extends IntegrationTestCase
         $this->delete('/users/delete/' . $this->userId);
     }
 
-    public function testDeleteWithoutSession()
+    public function testDeleteWithoutSession(): void
     {
         $this->enableCsrfToken();
         $this->enableSecurityToken();

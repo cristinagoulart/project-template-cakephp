@@ -22,7 +22,7 @@ class Config
     /**
      * Constructor method.
      *
-     * @param array $config Feature config
+     * @param mixed[] $config Feature config
      */
     public function __construct(array $config)
     {
@@ -55,7 +55,7 @@ class Config
      * @param string $field Property name
      * @return mixed
      */
-    public function get($field)
+    public function get(string $field)
     {
         $result = null;
         if (property_exists($this, $field)) {
