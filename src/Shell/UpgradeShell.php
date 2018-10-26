@@ -32,7 +32,7 @@ class UpgradeShell extends Shell
     public function getOptionParser()
     {
         $parser = new ConsoleOptionParser('console');
-        $parser->description('Upgrade Shell');
+        $parser->setDescription('Upgrade Shell');
 
         foreach ($this->tasks as $task) {
             $parser->addSubcommand(strtolower($task), [
@@ -60,9 +60,9 @@ class UpgradeShell extends Shell
     /**
      * Fetches upgrade related tasks from src/Shell/Task directory
      *
-     * @return array
+     * @return string[]
      */
-    private function fetchTasks()
+    private function fetchTasks(): array
     {
         $dir = new Folder(__DIR__ . DS . 'Task');
 

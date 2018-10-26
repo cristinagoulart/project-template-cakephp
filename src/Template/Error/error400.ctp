@@ -1,10 +1,11 @@
 <?php
 use Cake\Core\Configure;
+use Cake\Error\Debugger;
 use Cake\Routing\Router;
 
 $this->layout = 'error';
 
-if (Configure::read('debug')) {
+if (Configure::read('debug')) :
     $this->layout = 'dev_error';
 
     $this->assign('title', $message);
@@ -20,16 +21,17 @@ if (Configure::read('debug')) {
 <?php endif; ?>
 <?php if (!empty($error->params)) : ?>
         <strong>SQL Query Params: </strong>
-        <?= Debugger::dump($error->params) ?>
+        <?php Debugger::dump($error->params) ?>
 <?php endif; ?>
 <?= $this->element('auto_table_warning') ?>
 <?php
-    if (extension_loaded('xdebug')):
-        xdebug_print_function_stack();
-    endif;
+if (extension_loaded('xdebug')) :
+    xdebug_print_function_stack();
+endif;
 
-    $this->end();
-} ?>
+$this->end();
+endif;
+?>
 <div class="row">
     <div class="col-md-6 col-md-offset-3">
         <div class="box box-danger box-solid">

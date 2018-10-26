@@ -9,6 +9,10 @@ use Cake\ORM\TableRegistry;
  */
 class AvatarsSyncShell extends Shell
 {
+    /**
+     * @var object $Users
+     */
+    private $Users;
 
     /**
      * Manage the available sub-commands along with their arguments and help

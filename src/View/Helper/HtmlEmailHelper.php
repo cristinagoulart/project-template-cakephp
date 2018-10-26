@@ -15,22 +15,22 @@ use Pelago\Emogrifier;
 class HtmlEmailHelper extends Helper
 {
     /**
-     * @var $templateHeader
+     * @var string $templateHeader Header element
      */
     protected $templateHeader = null;
 
     /**
-     * @var $templateFooter
+     * @var string $templateFooter Footer element
      */
     protected $templateFooter = null;
 
     /**
-     * @var $templateCss
+     * @var string $templateCss CSS element
      */
     protected $templateCss = null;
 
     /**
-     * @var $helpers
+     * @var array $helpers Helpers to load
      */
     public $helpers = ['SystemInfo'];
 
@@ -51,10 +51,10 @@ class HtmlEmailHelper extends Helper
      *  buildHtmlEmailBody method
      *
      * @param string $elementName for email
-     * @param array $args optional params for element
+     * @param mixed[] $args optional params for element
      * @return string merged HTML and CSS
      */
-    public function buildHtmlEmailBody($elementName, $args = [])
+    public function buildHtmlEmailBody(string $elementName, array $args = []): string
     {
         if (!$this->_View->elementExists($elementName)) {
             throw new MissingElementException("Cannot find element [$elementName]");
@@ -82,7 +82,7 @@ class HtmlEmailHelper extends Helper
      *
      * @return string recepient name
      */
-    public function getRecepientName()
+    public function getRecepientName(): string
     {
         $name = $this->_View->get('first_name');
         if (empty($name)) {
@@ -97,7 +97,7 @@ class HtmlEmailHelper extends Helper
      *
      * @return string additional footer info
      */
-    public function getFooterInfo()
+    public function getFooterInfo(): string
     {
         return '';
     }

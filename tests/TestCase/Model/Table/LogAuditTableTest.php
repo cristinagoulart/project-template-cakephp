@@ -16,7 +16,7 @@ class LogAuditTableTest extends TestCase
     /**
      * Test subject
      *
-     * @var \App\Model\Table\LogAuditTable
+     * @var \Cake\ORM\Table
      */
     public $LogAudit;
 

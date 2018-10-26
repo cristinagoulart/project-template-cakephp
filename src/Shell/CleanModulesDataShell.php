@@ -21,7 +21,7 @@ class CleanModulesDataShell extends Shell
     public function getOptionParser()
     {
         $parser = new ConsoleOptionParser('console');
-        $parser->description('Clean All Records a Module has');
+        $parser->setDescription('Clean All Records a Module has');
 
         $parser->addOption('modules', [
             'short' => 'm',
@@ -97,7 +97,7 @@ class CleanModulesDataShell extends Shell
      * @param string $moduleName module name.
      * @return int
      */
-    protected function clearModuleData($moduleName)
+    protected function clearModuleData(string $moduleName): int
     {
         $rowCount = 0;
         if (empty($moduleName)) {
@@ -107,7 +107,8 @@ class CleanModulesDataShell extends Shell
         try {
             $table = TableRegistry::get($moduleName);
             $rowCount = $table->deleteAll([]);
-        } catch (Exception $ex) {
+        } catch (Exception $e) {
+            $this->warn('Failed to clean ' . $moduleName . ': ' . $e->getMessage());
         }
         $this->info($moduleName . ' Module Deleted Records: ' . $rowCount);
 

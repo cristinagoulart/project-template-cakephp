@@ -7,9 +7,12 @@ use PHPUnit\Framework\TestCase;
 class GravatarTest extends TestCase
 {
     /**
-     * @dataProvider testGetProvider
+     * @dataProvider getProvider
+     * @param mixed[] $data Uploaded file info
+     * @param mixed $expected Expected result
+     * @param string $msg Descriptive error message
      */
-    public function testGet($data, $expected, $msg)
+    public function testGet(array $data, $expected, string $msg): void
     {
         $object = new Gravatar($data);
 
@@ -17,7 +20,10 @@ class GravatarTest extends TestCase
         $this->assertEquals($result, $expected, $msg);
     }
 
-    public function testGetProvider()
+    /**
+     * @return mixed[]
+     */
+    public function getProvider(): array
     {
         return [
             [

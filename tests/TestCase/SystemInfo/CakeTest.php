@@ -7,14 +7,14 @@ use PHPUnit\Framework\TestCase;
 
 class CakeTest extends TestCase
 {
-    public function testGetVersion()
+    public function testGetVersion(): void
     {
         $result = Cake::getVersion();
         $expected = Configure::version();
         $this->assertEquals($expected, $result, "getVersion() returned wrong version");
     }
 
-    public function testGetVersionUrl()
+    public function testGetVersionUrl(): void
     {
         // When no version is specified, the URL should end with semantic version number
         $result = Cake::getVersionUrl();
@@ -25,7 +25,7 @@ class CakeTest extends TestCase
         $this->assertEquals('https://github.com/cakephp/cakephp/releases/tag/foobar', $result, "getVersionUrl() returned wrong URL for specific version");
     }
 
-    public function testGetLoadedPlugins()
+    public function testGetLoadedPlugins(): void
     {
         $result = Cake::getLoadedPlugins();
         $this->assertTrue(is_array($result), "getLoadedPlugins() returned a non-array result");

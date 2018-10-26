@@ -4,13 +4,18 @@ namespace App\Test\TestCase\Feature;
 use App\Feature\Config;
 use Cake\TestSuite\TestCase;
 use InvalidArgumentException;
-use StdClass;
+use stdClass;
 
 /**
  * App\Feature\Config Test Case
  */
 class ConfigTest extends TestCase
 {
+    /**
+     * @var \App\Feature\Config Config instance
+     */
+    private $config;
+
     public function setUp()
     {
         parent::setUp();
@@ -20,40 +25,40 @@ class ConfigTest extends TestCase
             'active' => false,
             'options' => [1, 'foo']
         ];
-        $this->Config = new Config($data);
+        $this->config = new Config($data);
     }
 
     public function tearDown()
     {
-        unset($this->Config);
+        unset($this->config);
 
         parent::tearDown();
     }
 
-    public function testGetName()
+    public function testGetName(): void
     {
-        $this->assertEquals('Foobar', $this->Config->get('name'));
+        $this->assertEquals('Foobar', $this->config->get('name'));
     }
 
-    public function testGetActive()
+    public function testGetActive(): void
     {
-        $this->assertFalse($this->Config->get('active'));
+        $this->assertFalse($this->config->get('active'));
     }
 
-    public function testGetAdditionalParameter()
+    public function testGetAdditionalParameter(): void
     {
-        $this->assertEquals([1, 'foo'], $this->Config->get('options'));
+        $this->assertEquals([1, 'foo'], $this->config->get('options'));
     }
 
-    public function testGetNonExistingParameter()
+    public function testGetNonExistingParameter(): void
     {
-        $this->assertNull($this->Config->get('Non Existing Parameter'));
+        $this->assertNull($this->config->get('Non Existing Parameter'));
     }
 
     /**
-     * @dataProvider RequiredParametersProvider
+     * @dataProvider requiredParametersProvider
      */
-    public function testMissingRequiredParameter($value)
+    public function testMissingRequiredParameter(string $value): void
     {
         $data = ['name' => 'Batch', 'active' => true];
         unset($data[$value]);
@@ -64,8 +69,9 @@ class ConfigTest extends TestCase
 
     /**
      * @dataProvider invalidNameProvider
+     * @param mixed $value Value of name
      */
-    public function testWrongParameterName($value)
+    public function testWrongParameterName($value): void
     {
         $this->expectException(InvalidArgumentException::class);
         new Config(['name' => $value, 'active' => true]);
@@ -73,14 +79,18 @@ class ConfigTest extends TestCase
 
     /**
      * @dataProvider invalidActiveProvider
+     * @param mixed $value Value of active
      */
-    public function testWrongParameterActive($value)
+    public function testWrongParameterActive($value): void
     {
         $this->expectException(InvalidArgumentException::class);
         new Config(['active' => $value, 'name' => 'Batch']);
     }
 
-    public function RequiredParametersProvider()
+    /**
+     * @return mixed[]
+     */
+    public function requiredParametersProvider(): array
     {
         return [
             ['name'],
@@ -88,10 +98,13 @@ class ConfigTest extends TestCase
         ];
     }
 
-    public function invalidNameProvider()
+    /**
+     * @return mixed[]
+     */
+    public function invalidNameProvider(): array
     {
         return [
-            [new StdClass()],
+            [new stdClass()],
             [['array']],
             [357],
             [true],
@@ -99,10 +112,13 @@ class ConfigTest extends TestCase
         ];
     }
 
-    public function invalidActiveProvider()
+    /**
+     * @return mixed[]
+     */
+    public function invalidActiveProvider(): array
     {
         return [
-            [new StdClass()],
+            [new stdClass()],
             [['array']],
             ['string'],
             [1],

@@ -176,7 +176,6 @@ class UsersController extends AppController
      *
      * @param string|null $id User id.
      * @return void
-     * @throws NotFoundException When record not found.
      */
     public function view($id = null)
     {
@@ -226,7 +225,7 @@ class UsersController extends AppController
      *
      * @return void
      */
-    protected function _setIframeRendering()
+    protected function _setIframeRendering(): void
     {
         if (empty($this->request->query['embed'])) {
             parent::_setIframeRendering();
@@ -236,9 +235,9 @@ class UsersController extends AppController
     /**
      * Returns an array including the usernames of the currently locked users.
      *
-     * @return array List of locked users
+     * @return string[] List of locked users
      */
-    private function getLockedUsers()
+    private function getLockedUsers(): array
     {
         return [
             $this->Auth->user('username'),

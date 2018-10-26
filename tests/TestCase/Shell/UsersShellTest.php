@@ -13,6 +13,26 @@ use Cake\TestSuite\TestCase;
 class UsersShellTest extends TestCase
 {
     /**
+     * @var \Cake\TestSuite\Stub\ConsoleOutput
+     */
+    private $out;
+
+    /**
+     * @var \Cake\Console\ConsoleIo
+     */
+    private $io;
+
+    /**
+     * @var \Cake\ORM\Table
+     */
+    private $Users;
+
+    /**
+     * Instance of the Shell
+     */
+    private $Shell;
+
+    /**
      * Fixtures
      *
      * @var array

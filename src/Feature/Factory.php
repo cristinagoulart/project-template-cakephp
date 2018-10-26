@@ -43,14 +43,10 @@ class Factory
      * @param string $name Feature name
      * @return \App\Feature\FeatureInterface
      */
-    public static function get($name)
+    public static function get(string $name)
     {
         if (!static::$initialized) {
             static::init();
-        }
-
-        if (!is_string($name)) {
-            throw new InvalidArgumentException('Feature name must be a string.');
         }
 
         $config = static::getConfig($name);
