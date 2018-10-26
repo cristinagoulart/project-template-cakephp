@@ -5,7 +5,10 @@ use Cake\Core\Configure;
 use Cake\ORM\Query;
 use Cake\ORM\RulesChecker;
 use Cake\ORM\Table;
+use Cake\Utility\Hash;
 use Cake\Validation\Validator;
+use CsvMigrations\FieldHandlers\Config\ConfigFactory;
+use CsvMigrations\FieldHandlers\CsvField;
 
 /**
  * Settings Model
@@ -59,9 +62,33 @@ class SettingsTable extends Table
             ->scalar('value')
             ->maxLength('value', 255)
             ->requirePresence('value', 'create')
-            ->notEmpty('value');
+            ->allowEmpty('value');
+
+        $validator->add('value', 'custom', [
+            'rule' => [$this, 'settingsValidator'],
+        ]);
 
         return $validator;
+    }
+
+    /**
+     * Validate the field from the type in settings.php
+     * @param value $value Value of the field
+     * @param entity $context The entity
+     * @return bool True if validate
+     */
+    public function settingsValidator($value, $context)
+    {
+        $type = $context['data']['type'];
+        $config = ConfigFactory::getByType($type, 'value');
+        $validationClass = $config->getProvider('validationRules');
+        $validationRules = new $validationClass($config);
+
+        $validator = $validationRules->provide(new Validator(), [
+            'fieldDefinitions' => new CsvField(['name' => 'value'])
+        ]);
+
+        return empty($validator->errors(['value' => $value]));
     }
 
     /**
@@ -74,10 +101,10 @@ class SettingsTable extends Table
     {
         // Array with all the alias from the config
         $alias = [];
-        foreach ($settings as $field => $data) {
+        foreach ($settings as $data) {
             // check is the alias exist in the Configure
-            Configure::readOrFail($data['alias']);
-            $alias[] = $data['alias'];
+            Configure::readOrFail($data);
+            $alias[] = $data;
         }
 
         // Array with all the alias from the db

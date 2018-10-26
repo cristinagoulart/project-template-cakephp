@@ -4,6 +4,7 @@ namespace App\Test\TestCase\Model\Table;
 use App\Model\Table\SettingsTable;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
+use Cake\Utility\Hash;
 
 /**
  * App\Model\Table\SettingsTable Test Case
@@ -53,56 +54,107 @@ class SettingsTableTest extends TestCase
         parent::tearDown();
     }
 
+    public function testUpdateValidationNoErrors()
+    {
+        $key = 'FileStorage.defaultImageSize';
+        $entity = TableRegistry::get('Settings')->findByKey($key)->first();
+        $params = [
+            'key' => $key,
+            'value' => '300',
+            'type' => 'integer' // dynamic field to pass type to the validator
+        ];
+        $newEntity = $this->Settings->patchEntity($entity, $params);
+        $this->assertEmpty($newEntity->getErrors());
+    }
+
+    public function testUpdateValidationWithErrors()
+    {
+        $key = 'FileStorage.defaultImageSize';
+        $entity = TableRegistry::get('Settings')->findByKey($key)->first();
+        $params = [
+            'key' => $key,
+            'value' => 'wrong value',
+            'type' => 'integer' // dynamic field to pass type to the validator
+        ];
+        $newEntity = $this->Settings->patchEntity($entity, $params);
+        $this->assertEquals('The provided value is invalid', $newEntity->getErrors()['value']['custom']);
+    }
+
     public function testGetAlias()
     {
         $configSettings = [
-            'SchedulerLogAge' => [
-                'default' => '1',
-                'alias' => 'ScheduledLog.stats.age'
-            ],
-            'Avatar' => [
-                'default' => '1',
-                'alias' => 'Avatar.defaultImage'
-            ]
+         'N Tab' => [
+           'Another Column' => [
+             'This section 1' => [
+               'name2' => [
+                 'alias' => 'FileStorage.defaultImageSize',
+                 'type' => 'string',
+               ],
+             ],
+           ],
+         ],
         ];
 
-        $this->assertEmpty($this->Settings->getAliasDiff($configSettings));
+        $alias = Hash::extract($configSettings, '{s}.{s}.{s}.{s}.alias');
+        $this->assertEmpty($this->Settings->getAliasDiff($alias));
     }
 
     public function testGetNewRecord()
     {
         $configSettings = [
-            'SchedulerLogAge' => [
-                'default' => '1',
-                'alias' => 'ScheduledLog.stats.age'
+         'N Tab' => [
+           'Another Column' => [
+             'This section 1' => [
+               'name2' => [
+                 'alias' => 'FileStorage.defaultImageSize',
+                 'type' => 'string',
+               ],
+             ],
             ],
-            'FileStorage' => [
-                'default' => '1',
-                'alias' => 'FileStorage.defaultImageSize'
-            ],
-            'Avatar' => [
-                'default' => '1',
-                'alias' => 'Avatar.defaultImage'
-            ]
+          ],
+          'N Tab1' => [
+           'Another Column' => [
+             'This section 1' => [
+               'name3' => [
+                 'alias' => 'Avatar.defaultImage',
+                 'type' => 'string',
+               ],
+             ],
+           ],
+          ]
         ];
 
-        $this->assertEquals(['FileStorage.defaultImageSize'], $this->Settings->getAliasDiff($configSettings));
+        $alias = Hash::extract($configSettings, '{s}.{s}.{s}.{s}.alias');
+        $this->assertEquals(['Avatar.defaultImage'], $this->Settings->getAliasDiff($alias));
     }
 
     public function testGetException()
     {
         $configSettings = [
-            'Pizza' => [
-                'default' => '1',
-                'alias' => 'Pizza.With.Pinapple'
-            ],
-            'Avatar' => [
-                'default' => '1',
-                'alias' => 'Avatar.defaultImage'
-            ]
+         'N Tab' => [
+           'Another Column' => [
+             'This section 1' => [
+               'name2' => [
+                 'alias' => 'FileStorage.defaultImageSize',
+                 'type' => 'string',
+               ],
+             ],
+           ],
+         ],
+          'N Tab' => [
+           'Another Column' => [
+             'This section 1' => [
+               'name3' => [
+                 'alias' => 'Pizza.with.pinapple',
+                 'type' => 'string',
+               ],
+             ],
+           ],
+          ],
         ];
 
+        $alias = Hash::extract($configSettings, '{s}.{s}.{s}.{s}.alias');
         $this->expectException('\Exception');
-        $this->Settings->getAliasDiff($configSettings);
+        $this->Settings->getAliasDiff($alias);
     }
 }

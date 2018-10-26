@@ -30,6 +30,7 @@ require __DIR__ . '/paths.php';
 require CORE_PATH . 'config' . DS . 'bootstrap.php';
 
 use App\Feature\Factory as FeatureFactory;
+use App\Settings\DbConfig;
 use Burzum\FileStorage\Storage\Listener\LocalListener;
 use CakephpWhoops\Error\WhoopsHandler;
 use Cake\Cache\Cache;
@@ -73,7 +74,7 @@ if (file_exists(ROOT . DS . '.env')) {
 try {
     Configure::config('default', new PhpConfig());
     Configure::load('app', 'default', false);
-    Configure::load('settings', 'default', false);
+    Configure::load('settings', 'default');
     Configure::load('avatar', 'default');
     Configure::load('cron', 'default');
     Configure::load('csv_migrations', 'default');
@@ -341,3 +342,17 @@ FeatureFactory::init();
  * Register custom database type(s)
  */
 Type::map('base64', 'App\Database\Type\EncodedFileType');
+
+/**
+ * @todo  Must find the right position to load the settings.
+ * After that, all the Configure::read() will be ONLY
+ * from files and unable to modify from the UI of settings
+ */
+try {
+    Configure::config('dbconfig', new DbConfig());
+    Configure::load('Settings', 'dbconfig', true);
+} catch (\Cake\Database\Exception $e) {
+    // Do nothing
+} catch (\Exception $e) {
+    die($e->getMessage() . "\n");
+}

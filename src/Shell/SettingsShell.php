@@ -4,6 +4,7 @@ namespace App\Shell;
 use Cake\Console\Shell;
 use Cake\Core\Configure;
 use Cake\ORM\TableRegistry;
+use Cake\Utility\Hash;
 
 /**
  * Settings shell command.
@@ -46,19 +47,24 @@ class SettingsShell extends Shell
     public function main()
     {
         $query = TableRegistry::get('Settings');
-        $settings = $query->getAliasDiff(Configure::read('Settings'));
+        $alias = Hash::combine(Configure::read('Settings'), '{s}.{s}.{s}.{s}.alias', '{s}.{s}.{s}.{s}.type');
 
         $data = [];
-        foreach ($settings as $set) {
+        foreach ($alias as $set => $type) {
             $data[] = [
                     'key' => $set,
                     'value' => Configure::read($set),
+                    'type' => $type // dynamic field to pass `type` to the validator
                 ];
         }
 
         try {
             $entities = $query->newEntities($data);
-            $query->saveMany($entities);
+            if ($query->saveMany($entities)) {
+                $this->out('Settings successfully updated');
+            } else {
+                $this->out('Failed to update settings, please try again.');
+            }
         } catch (\Exception $e) {
             throw new \Exception($e);
         }
