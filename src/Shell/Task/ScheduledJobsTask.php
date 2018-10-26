@@ -13,10 +13,10 @@ class ScheduledJobsTask extends Shell
      * Add scheduled job record.
      *
      * @param string $job Job name
-     * @param array $data Job data
+     * @param mixed[] $data Job data
      * @return bool
      */
-    public function add($job, array $data)
+    public function add(string $job, array $data): bool
     {
         if (! $this->isActive()) {
             return false;
@@ -57,7 +57,7 @@ class ScheduledJobsTask extends Shell
      *
      * @return bool
      */
-    private function isActive()
+    private function isActive(): bool
     {
         $feature = Factory::get('Module' . DS . 'ScheduledJobs');
 
@@ -76,14 +76,8 @@ class ScheduledJobsTask extends Shell
      * @param string $job Job name
      * @return bool
      */
-    private function isValid($job)
+    private function isValid(string $job): bool
     {
-        if (! is_string($job)) {
-            $this->out(sprintf('Invalid job provided: %s', json_encode($job)));
-
-            return false;
-        }
-
         if ('' === trim($job)) {
             $this->out('No job provided');
 
@@ -99,7 +93,7 @@ class ScheduledJobsTask extends Shell
      * @param string $job Job name
      * @return bool
      */
-    private function isSupported($job)
+    private function isSupported(string $job): bool
     {
         if (in_array($job, (new CakeShellHandler())->getList())) {
             return true;
@@ -116,7 +110,7 @@ class ScheduledJobsTask extends Shell
      * @param string $job Job name
      * @return bool
      */
-    private function exists($job)
+    private function exists(string $job): bool
     {
         $entity = TableRegistry::getTableLocator()->get('ScheduledJobs')
             ->find('all')

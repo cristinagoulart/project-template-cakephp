@@ -32,7 +32,7 @@ class Project
      *
      * @return string project name
      */
-    public static function getName()
+    public static function getName(): string
     {
         // Use PROJECT_NAME environment variable or project folder name
         $projectName = getenv('PROJECT_NAME') ?: basename(ROOT);
@@ -48,7 +48,7 @@ class Project
      *
      * @return string
      */
-    public static function getUrl()
+    public static function getUrl(): string
     {
         $result = static::$defaultUrl;
 
@@ -78,7 +78,7 @@ class Project
      *
      * @return string
      */
-    public static function getDisplayVersion()
+    public static function getDisplayVersion(): string
     {
         $result = static::$defaultVersion;
 
@@ -117,9 +117,9 @@ class Project
      * If any of the build versions is not known, the pre-defined
      * default is returned instead.
      *
-     * @return array
+     * @return mixed[]
      */
-    public static function getBuildVersions()
+    public static function getBuildVersions(): array
     {
         $result = [];
 
@@ -145,7 +145,7 @@ class Project
      * @param string $logoSize of logo - mini or large
      * @return string HTML img tag with project logo
      */
-    public static function getLogo($logoSize = '')
+    public static function getLogo(string $logoSize = ''): string
     {
         $logoSize = $logoSize ?: 'mini';
         $logo = Configure::read('Theme.logo.' . $logoSize);
@@ -158,7 +158,7 @@ class Project
      *
      * @return string
      */
-    public static function getCopyright()
+    public static function getCopyright(): string
     {
         $result = 'Copyright &copy; ' . date('Y') . ' ' . static::getName() . '. All rights reserved.';
 

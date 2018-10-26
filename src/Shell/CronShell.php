@@ -116,7 +116,7 @@ class CronShell extends Shell
      * @param string $class Name of the shell class which acquires lock
      * @return \Qobo\Utils\Utility\FileLock
      */
-    public function lock($file, $class)
+    public function lock(string $file, string $class)
     {
         $class = str_replace(':', '_', $class);
         $lockFile = $this->Lock->getLockFileName($file, $class);

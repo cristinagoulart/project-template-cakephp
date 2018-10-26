@@ -6,14 +6,14 @@ use PHPUnit\Framework\TestCase;
 
 class ComposerTest extends TestCase
 {
-    public function testGetInstalledPackages()
+    public function testGetInstalledPackages(): void
     {
         $result = Composer::getInstalledPackages();
         $this->assertTrue(is_array($result), "getInstalledPackages() returned a non-array result");
         $this->assertFalse(empty($result), "getInstalledPackages() returned an empty result");
     }
 
-    public function testGetMatchCounts()
+    public function testGetMatchCounts(): void
     {
         $packages = [
             ['name' => 'package1', 'description' => 'foo'],

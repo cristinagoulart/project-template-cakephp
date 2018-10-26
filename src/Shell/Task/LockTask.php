@@ -15,7 +15,7 @@ class LockTask extends Shell
      * @param string $class Name of the shell class which acquires lock
      * @return \Qobo\Utils\Utility\FileLock
      */
-    public function lock($file, $class)
+    public function lock(string $file, string $class)
     {
         $lockFile = $this->getLockFileName($file, $class);
 
@@ -39,7 +39,7 @@ class LockTask extends Shell
      * @param string $class Name of the shell class which acquires lock
      * @return string Unique lock file name
      */
-    public function getLockFileName($file, $class)
+    public function getLockFileName(string $file, string $class): string
     {
         $class = Inflector::underscore(preg_replace('/\\\/', '', $class));
         $lockFile = $class . '_' . md5($file) . '.lock';

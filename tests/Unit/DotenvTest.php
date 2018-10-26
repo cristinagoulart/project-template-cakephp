@@ -1,8 +1,8 @@
 <?php
-namespace Tests\Unit;
+namespace App\Test\Unit;
 
-use Dotenv;
-use Exception;
+use InvalidArgumentException;
+use josegonzalez\Dotenv\Loader;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -13,14 +13,16 @@ class DotenvTest extends TestCase
 
     /**
      * Provide .env file locations
+     *
+     * @return mixed[]
      */
-    public function dotEnvFilesProvider()
+    public function dotEnvFilesProvider(): array
     {
         $root = join(DIRECTORY_SEPARATOR, [__DIR__, '..', '..']) . DIRECTORY_SEPARATOR;
 
         return [
-         '.env.example' => [$root, '.env.example'],
-         '.env' => [$root, '.env'],
+            [$root . '.env.example'],
+            [$root . '.env'],
         ];
     }
 
@@ -29,9 +31,9 @@ class DotenvTest extends TestCase
      *
      * @dataProvider dotEnvFilesProvider
      */
-    public function testDotenvExampleFileExists($folder, $file)
+    public function testDotenvExampleFileExists(string $file): void
     {
-        $this->assertFileExists($folder . $file);
+        $this->assertFileExists($file);
     }
 
     /**
@@ -39,15 +41,16 @@ class DotenvTest extends TestCase
      *
      * @dataProvider dotEnvFilesProvider
      */
-    public function testDotenvExampleFileIsParseable($folder, $file)
+    public function testDotenvExampleFileIsParseable(string $file): void
     {
         try {
-            Dotenv::load($folder, $file);
-        } catch (Exception $e) {
-            $this->fail("Failed to parse file " . $file . " in " . $folder . " : " . $e->getMessage());
+            // NOTE: in order to avoid logic exceptions caused by multilpe files, we do overwrite
+            (new Loader($file))->parse()->toEnv(true)->putenv(true);
+        } catch (InvalidArgumentException $e) {
+            $this->fail("Failed to parse file [" . $file . "] : " . $e->getMessage());
         }
         // Check any variable just to make sure it is set correctly
         $result = getenv("DB_DUMP_PATH");
-        $this->assertEquals("etc/mysql.sql", $result, "Environment variables are not set correctly");
+        $this->assertEquals("etc/mysql.sql", $result, "Failed to load environment variables from file [$file]");
     }
 }

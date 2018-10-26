@@ -28,7 +28,7 @@ class Upgrade20170316000000Task extends Shell
     public function getOptionParser()
     {
         $parser = parent::getOptionParser();
-        $parser->description('Convert datetime fields, which accept null value, from 0000-00-00 00:00:00 to NULL');
+        $parser->setDescription('Convert datetime fields, which accept null value, from 0000-00-00 00:00:00 to NULL');
         $parser->addArgument('target_table', [
             'help' => 'Target table to fix datetime null value (optional)',
             'required' => false,

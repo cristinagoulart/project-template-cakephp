@@ -12,13 +12,6 @@
         <ini name="apc.enable_cli" value="1"/>
     </php>
 
-    <filter>
-        <whitelist>
-            <directory suffix=".php">./src/</directory>
-            <directory suffix=".php">./webroot/</directory>
-        </whitelist>
-    </filter>
-
     <logging>
         <log type="coverage-text" target="php://stdout" showUncoveredFiles="true"/>
         <log type="coverage-html" target="build/test-coverage"/>
@@ -29,7 +22,7 @@
 
     <!-- Add any additional test suites you want to run here -->
     <testsuites>
-        <testsuite name="App Test Suite">
+        <testsuite name="app">
             <directory>./tests/TestCase</directory>
         </testsuite>
         <testsuite name="example">
@@ -60,4 +53,11 @@
         </listener>
     </listeners>
 
+    <!-- Ignore vendor tests in code coverage reports -->
+    <filter>
+        <whitelist>
+            <directory suffix=".php">./src/</directory>
+            <directory suffix=".php">./webroot/</directory>
+        </whitelist>
+    </filter>
 </phpunit>

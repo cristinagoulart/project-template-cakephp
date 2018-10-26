@@ -27,7 +27,7 @@ class Git
      * @param string $command Git command to expand
      * @return string
      */
-    public static function getCommand($command)
+    public static function getCommand(string $command): string
     {
         if (empty(static::$commands[$command])) {
             throw new RuntimeException("Git command [$command] is not defined");
@@ -39,15 +39,16 @@ class Git
     /**
      * Get local changes
      *
-     * @return array
+     * @return string[]
      */
-    public static function getLocalChanges()
+    public static function getLocalChanges(): array
     {
         $result = [];
 
         $command = static::getCommand('localChanges');
 
-        $changes = trim(shell_exec($command));
+        $changes = shell_exec($command);
+        $changes = $changes ? trim($changes) : '';
         if (empty($changes)) {
             return $result;
         }
@@ -62,7 +63,7 @@ class Git
      *
      * @return string
      */
-    public static function getCurrentHash()
+    public static function getCurrentHash(): string
     {
         $command = static::getCommand('currentHash');
 

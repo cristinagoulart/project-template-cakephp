@@ -41,7 +41,7 @@ class UsersExternalApiTest extends IntegrationTestCase
         parent::tearDown();
     }
 
-    public function testExternalApiUsersCRUD()
+    public function testExternalApiUsersCRUD(): void
     {
         $response = $this->apiClient->post('/api/users/token.json', [
             'username' => getenv('DEV_USER'),
@@ -106,7 +106,12 @@ class UsersExternalApiTest extends IntegrationTestCase
         $this->assertFalse($response->isOk(), "Couldn't view user ID [{$userView['data']['id']}]");
     }
 
-    protected function sendAuthPost($url = '', $data = [], $headers = [])
+    /**
+     * @param string $url URL to send request to
+     * @param mixed[] $data Data to send
+     * @param mixed[] $headers Headers to set
+     */
+    protected function sendAuthPost(string $url = '', array $data = [], array $headers = [])
     {
         $options = [
             'headers' => [
@@ -120,7 +125,7 @@ class UsersExternalApiTest extends IntegrationTestCase
         return $response;
     }
 
-    protected function generateRandomString($length = 10)
+    protected function generateRandomString(int $length = 10): string
     {
         $characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
         $charactersLength = strlen($characters);

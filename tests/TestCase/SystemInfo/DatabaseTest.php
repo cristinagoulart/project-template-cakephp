@@ -6,7 +6,7 @@ use PHPUnit\Framework\TestCase;
 
 class DatabaseTest extends TestCase
 {
-    public function testGetDriver()
+    public function testGetDriver(): void
     {
         // With version
         $result = Database::getDriver();
@@ -19,7 +19,7 @@ class DatabaseTest extends TestCase
         $this->assertFalse(empty($result), "getDriver() returned an empty result");
     }
 
-    public function testGetTables()
+    public function testGetTables(): void
     {
         // All tables (no match)
         $result = Database::getTables();
@@ -32,7 +32,7 @@ class DatabaseTest extends TestCase
         $this->assertFalse(empty($result), "getTables() returned an empty result for matched tables");
     }
 
-    public function testGetTableStats()
+    public function testGetTableStats(): void
     {
         $tables = Database::getTables();
         $result = Database::getTablesStats($tables);

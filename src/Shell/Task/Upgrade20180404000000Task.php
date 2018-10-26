@@ -27,7 +27,7 @@ class Upgrade20180404000000Task extends Shell
     public function getOptionParser()
     {
         $parser = parent::getOptionParser();
-        $parser->description('Create system searches for all system Modules');
+        $parser->setDescription('Create system searches for all system Modules');
 
         return $parser;
     }
@@ -70,7 +70,7 @@ class Upgrade20180404000000Task extends Shell
      * @param string $module Module name
      * @return bool
      */
-    private function isSearchable($module)
+    private function isSearchable(string $module): bool
     {
         $config = (new ModuleConfig(ConfigType::MIGRATION(), $module, null, ['cacheSkip' => true]))->parse();
         $config = json_decode(json_encode($config), true);
@@ -94,7 +94,7 @@ class Upgrade20180404000000Task extends Shell
      * @param string $module Module name
      * @return bool
      */
-    private function hasSearch($module)
+    private function hasSearch(string $module): bool
     {
         $table = TableRegistry::getTableLocator()->get('Search.SavedSearches');
 
@@ -112,7 +112,7 @@ class Upgrade20180404000000Task extends Shell
      * @return \Search\Model\Entity\SavedSearch
      * @throws \RuntimeException when failed to create system search
      */
-    private function createSearch($module)
+    private function createSearch(string $module)
     {
         $table = TableRegistry::getTableLocator()->get('Search.SavedSearches');
 
@@ -135,9 +135,10 @@ class Upgrade20180404000000Task extends Shell
     /**
      * Get user to attach to system search.
      *
-     * @return \Cake\Datasource\EntityInterface
+     * @todo We might have multiple superusers, so it's better to get the .env DEV_USER
+     * @return mixed[]
      */
-    private function getUser()
+    private function getUser(): array
     {
         $table = TableRegistry::getTableLocator()->get('CakeDC/Users.Users');
         $query = $table->find()->where(['is_superuser' => true]);

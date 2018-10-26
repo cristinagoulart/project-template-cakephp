@@ -45,7 +45,7 @@ class UsersShell extends BaseShell
      *
      * @return string
      */
-    protected function getUsername()
+    protected function getUsername(): string
     {
         if (!empty($this->params['username'])) {
             return $this->params['username'];
@@ -63,7 +63,7 @@ class UsersShell extends BaseShell
      *
      * @return string
      */
-    protected function getPassword()
+    protected function getPassword(): string
     {
         if (!empty($this->params['password'])) {
             return $this->params['password'];
@@ -82,7 +82,7 @@ class UsersShell extends BaseShell
      * @param string $username Username
      * @return string
      */
-    protected function getEmail($username)
+    protected function getEmail(string $username): string
     {
         if (!empty($this->params['email'])) {
             return $this->params['email'];
@@ -98,7 +98,7 @@ class UsersShell extends BaseShell
      * @param string $password Plain text password
      * @return void
      */
-    protected function printUserInfo(Entity $user, $password)
+    protected function printUserInfo(Entity $user, string $password): void
     {
         $this->out('<success>' . __d('CakeDC/Users', 'Superuser added successfully.') . '</success>');
         $this->out('<info>' . __d('CakeDC/Users', 'User Id : {0}', $user->id) . '</info>');
@@ -113,7 +113,7 @@ class UsersShell extends BaseShell
      * @param \Cake\ORM\Entity $user User entity
      * @return void
      */
-    protected function printUserErrors(Entity $user)
+    protected function printUserErrors(Entity $user): void
     {
         $this->err(__d('CakeDC/Users', 'Errors while trying to add a superuser:'));
 

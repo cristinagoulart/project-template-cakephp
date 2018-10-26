@@ -75,7 +75,7 @@ class UsersTable extends Table
      *
      * @return bool $result whether the file exists or not
      */
-    public function isCustomAvatarExists(EntityInterface $entity)
+    public function isCustomAvatarExists(EntityInterface $entity): bool
     {
         $result = false;
 
@@ -98,7 +98,7 @@ class UsersTable extends Table
      *
      * @return bool $result whether the copy of the files was successful
      */
-    public function copyCustomAvatar(EntityInterface $entity)
+    public function copyCustomAvatar(EntityInterface $entity): bool
     {
         $result = false;
 
@@ -121,7 +121,7 @@ class UsersTable extends Table
      *
      * @return bool $result if file's saved.
      */
-    public function saveCustomAvatar(EntityInterface $entity, $resource)
+    public function saveCustomAvatar(EntityInterface $entity, $resource): bool
     {
         $result = false;
 

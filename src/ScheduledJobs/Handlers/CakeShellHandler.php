@@ -9,7 +9,7 @@ use Cake\Utility\Inflector;
 
 class CakeShellHandler extends AbstractHandler
 {
-    /** @var $prefix for differentiating jobs */
+    /** @var string $prefix for differentiating jobs */
     protected $prefix = 'CakeShell';
 
     /**
@@ -69,11 +69,11 @@ class CakeShellHandler extends AbstractHandler
      * Scan the provided paths for shells, and append them into $shellList
      *
      * @param string $type The type of object.
-     * @param array $shells The shell name.
-     * @param array $shellList List of shells.
-     * @return array The updated $shellList
+     * @param string[] $shells The shell name.
+     * @param mixed[] $shellList List of shells.
+     * @return mixed[] The updated $shellList
      */
-    protected function appendShells($type, $shells, $shellList)
+    protected function appendShells(string $type, array $shells, array $shellList): array
     {
         foreach ($shells as $shell) {
             $shellList[$type][] = Inflector::underscore(str_replace('Shell', '', $shell));
@@ -87,9 +87,9 @@ class CakeShellHandler extends AbstractHandler
      * should be within them.
      *
      * @param string $dir The directory to read.
-     * @return array The list of shell classnames based on conventions.
+     * @return string[] The list of shell classnames based on conventions.
      */
-    protected function scanDir($dir)
+    protected function scanDir(string $dir): array
     {
         $dir = new Folder($dir);
         $contents = $dir->read(true, true);

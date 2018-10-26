@@ -3,6 +3,8 @@ namespace App\Shell\Task;
 
 use Cake\Console\ConsoleOptionParser;
 use Cake\Console\Shell;
+use DirectoryIterator;
+use RuntimeException;
 
 class Upgrade20170119000000Task extends Shell
 {
@@ -27,7 +29,7 @@ class Upgrade20170119000000Task extends Shell
     public function getOptionParser()
     {
         $parser = new ConsoleOptionParser('console');
-        $parser->description('Upgrade CsvMigrations to Modules');
+        $parser->setDescription('Upgrade CsvMigrations to Modules');
 
         return $parser;
     }
@@ -59,15 +61,14 @@ class Upgrade20170119000000Task extends Shell
     /**
      * Validate source folder
      *
-     * @throws \InvalidArgumentException when $src is empty
      * @throws \RuntimeException when $src does not exist or is not a directory
      * @param string $src Path to source folder
      * @return void
      */
-    protected function validateSource($src)
+    protected function validateSource(string $src)
     {
         if (!is_dir($src)) {
-            throw new \RuntimeException("Source path [$src] is not a directory");
+            throw new RuntimeException("Source path [$src] is not a directory");
         }
     }
 
@@ -79,7 +80,7 @@ class Upgrade20170119000000Task extends Shell
      * @param string $module Module name
      * @return void
      */
-    protected function createModuleFolders($dst, $module)
+    protected function createModuleFolders(string $dst, string $module): void
     {
         // Prepend destination and module to module directories
         $dirs = array_map(function ($a) use ($dst, $module) {
@@ -96,7 +97,7 @@ class Upgrade20170119000000Task extends Shell
             }
             $result = mkdir($dir);
             if (!$result) {
-                throw new \RuntimeException("Failed to create [$dir]");
+                throw new RuntimeException("Failed to create [$dir]");
             }
         }
     }
@@ -108,14 +109,14 @@ class Upgrade20170119000000Task extends Shell
      * @param string $dst Path to folder to remove
      * @return void
      */
-    protected function removeFolder($dst)
+    protected function removeFolder(string $dst): void
     {
         if (!file_exists($dst)) {
             return;
         }
         $result = rmdir($dst);
         if (!$result) {
-            throw new \RuntimeException("Failed to remove [$dst]");
+            throw new RuntimeException("Failed to remove [$dst]");
         }
     }
 
@@ -125,17 +126,17 @@ class Upgrade20170119000000Task extends Shell
      * @throws \RuntimeException when failed to move file
      * @param string $src Path to source folder
      * @param string $dst Path to destination folder
-     * @param array $files Optional list of files to move (all, if empty)
+     * @param mixed[] $files Optional list of files to move (all, if empty)
      * @return void
      */
-    protected function moveFiles($src, $dst, array $files = [])
+    protected function moveFiles(string $src, string $dst, array $files = []): void
     {
         if (!file_exists($src)) {
             return;
         }
 
         if (empty($files)) {
-            $files = new \DirectoryIterator($src);
+            $files = new DirectoryIterator($src);
         }
         foreach ($files as $file) {
             // Convert SplFileInfo objects to file names
@@ -153,7 +154,7 @@ class Upgrade20170119000000Task extends Shell
             $dstFile = $dst . DIRECTORY_SEPARATOR . $file;
             $result = rename($srcFile, $dstFile);
             if (!$result) {
-                throw new \RuntimeException("Failed moving [$srcFile] to [$dstFile]");
+                throw new RuntimeException("Failed moving [$srcFile] to [$dstFile]");
             }
         }
     }
@@ -161,11 +162,11 @@ class Upgrade20170119000000Task extends Shell
     /**
      * Upgrade given path
      *
-     * @throws RuntimeException when failed to create destination folder
+     * @throws \RuntimeException when failed to create destination folder
      * @param string $src Path to folder to upgrade
      * @return void
      */
-    protected function upgrade($src)
+    protected function upgrade(string $src): void
     {
         $this->validateSource($src);
 
@@ -173,7 +174,7 @@ class Upgrade20170119000000Task extends Shell
         if (!file_exists($dst)) {
             $result = mkdir($dst);
             if (!$result) {
-                throw new \RuntimeException("Failed to create directory [$dst]");
+                throw new RuntimeException("Failed to create directory [$dst]");
             }
         }
 
@@ -190,7 +191,7 @@ class Upgrade20170119000000Task extends Shell
         $this->out("Moving all views files");
         $viewsDir = $src . 'views';
         if (file_exists($viewsDir)) {
-            $dir = new \DirectoryIterator($viewsDir);
+            $dir = new DirectoryIterator($viewsDir);
             foreach ($dir as $moduleDir) {
                 if ($moduleDir->isDot()) {
                     continue;
@@ -210,7 +211,7 @@ class Upgrade20170119000000Task extends Shell
         $this->out("Moving all migration files");
         $migrationsDir = $src . DIRECTORY_SEPARATOR . 'migrations';
         if (file_exists($migrationsDir)) {
-            $dir = new \DirectoryIterator($migrationsDir);
+            $dir = new DirectoryIterator($migrationsDir);
             foreach ($dir as $moduleDir) {
                 if ($moduleDir->isDot()) {
                     continue;
