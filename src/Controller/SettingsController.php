@@ -91,5 +91,8 @@ class SettingsController extends AppController
 
         $data = Hash::flatten(Configure::read());
         $this->set('alldata', $data);
+
+        $capabilities = TableRegistry::get('QoboRoles')->find('list', ['keyField' => 'name'])->toArray();
+        $this->set('roles', array_keys($capabilities));
     }
 }
