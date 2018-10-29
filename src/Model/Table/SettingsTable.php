@@ -100,7 +100,7 @@ class SettingsTable extends Table
      * @return array Settings onw by the user
      * @throws \RuntimeException when settings.php structure is broke
      */
-    public function filterData($dataSettings, $userRoles)
+    public function filterSettings($dataSettings, $userRoles)
     {
         $filter = array_filter(Hash::flatten($dataSettings), function ($value) use ($userRoles) {
             return in_array($value, $userRoles);

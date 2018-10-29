@@ -55,7 +55,7 @@ class SettingsTableTest extends TestCase
         parent::tearDown();
     }
 
-    public function testFilterData()
+    public function testFilterSettings()
     {
         $userRoles = ['settings'];
 
@@ -92,8 +92,7 @@ class SettingsTableTest extends TestCase
          ],
         ];
 
-        $originalData = Configure::read('Settings');
-        $filterData = $this->Settings->filterData($configSettings, $userRoles);
+        $filterData = $this->Settings->filterSettings($configSettings, $userRoles);
         $this->assertEquals($configSettingsFilter, $filterData);
     }
 
@@ -114,8 +113,7 @@ class SettingsTableTest extends TestCase
         ];
 
         $this->expectException('\RuntimeException');
-        $originalData = Configure::read('Settings');
-        $filterData = $this->Settings->filterData($configSettings, $userRoles);
+        $filterData = $this->Settings->filterSettings($configSettings, $userRoles);
     }
 
     public function testUpdateValidationNoErrors()
