@@ -32,7 +32,7 @@ class SettingsController extends AppController
         // Filter the Configure::read('Settings') with User Roles
         $dataSettings = Configure::read('Settings');
         $dataFiltered = TableRegistry::get('Settings')->filterSettings($dataSettings, $userRoles);
-        
+
         $settings = $this->paginate($this->Settings);
         $this->set(compact('settings'));
         $this->set('data', $dataFiltered);
