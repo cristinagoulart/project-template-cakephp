@@ -9,6 +9,7 @@ return [
             'alias' => 'Theme.title',
             'type' => 'string',
             'help' => 'This is dynamic, should not be display',
+            'roles' => ['Everyone', 'settings', 'anotherRole'],
           ],
           'Logo_(mini)' => [
             'alias' => 'Theme.logo.mini',
@@ -24,11 +25,13 @@ return [
             'alias' => 'Theme.skin',
             'type' => 'string',
             'help' => 'Try red',
+            'roles' => ['Everyone', 'settings'],
           ],
           'skin_url' => [
             'alias' => 'Theme.skinUrl',
             'type' => 'string',
             'help' => 'This should be same of the previous one. try "AdminLTE.skins/skin-red.min"',
+            'roles' => ['Everyone', 'settings'],
           ],
           'Show_remeber' => [
             'alias' => 'Theme.login.show_remember',

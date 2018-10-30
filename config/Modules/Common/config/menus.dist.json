@@ -57,6 +57,13 @@
                     "url": "/system/searches",
                     "icon": "search",
                     "order": 60
+                },
+                {
+                    "label": "System Settings",
+                    "desc": "Manage system settings",
+                    "url": "/settings",
+                    "icon": "wrench",
+                    "order": 100
                 }
             ]
         },
