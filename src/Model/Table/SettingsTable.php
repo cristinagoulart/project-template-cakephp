@@ -106,7 +106,7 @@ class SettingsTable extends Table
             return in_array($value, $userRoles);
         });
         $dataFlatten = [];
-        
+
         foreach ($filter as $key => $value) {
             $p = explode('.', $key);
             // ex: 'Config.UI.Theme.Title.roles.0'
@@ -119,7 +119,7 @@ class SettingsTable extends Table
         }
         // $dataFiltered has now only fields belonging to the user roles
         $dataFiltered = Hash::expand($dataFlatten);
-        
+
         return $dataFiltered;
     }
 
