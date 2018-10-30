@@ -92,6 +92,36 @@ class SettingsTable extends Table
     }
 
     /**
+     * Get all the Setting configuration and filter it base on the user
+     * roles describe in settings.php
+     *
+     * @param array $dataSettings Data to filter
+     * @param array $userRoles list of roles of the user
+     * @return array Settings onw by the user
+     * @throws \RuntimeException when settings.php structure is broke
+     */
+    public function filterSettings($dataSettings, $userRoles)
+    {
+        $filter = array_filter(Hash::flatten($dataSettings), function ($value) use ($userRoles) {
+            return in_array($value, $userRoles);
+        });
+        $dataFlatten = [];
+         foreach ($filter as $key => $value) {
+            $p = explode('.', $key);
+            // ex: 'Config.UI.Theme.Title.roles.0'
+            // the stucture must be 4 defalut layer plus two
+            if (count($p) < 6) {
+                throw new \RuntimeException("broken configuration in Settings");
+            }
+            $p = $p[0] . '.' . $p[1] . '.' . $p[2] . '.' . $p[3];
+            $dataFlatten[$p] = Hash::extract($dataSettings, $p);
+        }
+        // $dataFiltered has now only fields belonging to the user roles
+        $dataFiltered = Hash::expand($dataFlatten);
+         return $dataFiltered;
+    }
+
+    /**
      * getAliasDiff() return the missing alias in the DB
      *
      * @param array $settings Array with settings
