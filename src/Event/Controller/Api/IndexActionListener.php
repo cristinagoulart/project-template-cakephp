@@ -9,9 +9,11 @@ use Cake\Event\Event;
 class IndexActionListener extends BaseActionListener
 {
     /**
-     * {@inheritDoc}
+     * Returns a list of all events that the API Index endpoint will listen to.
+     *
+     * @return array
      */
-    public function implementedEvents()
+    public function implementedEvents() : array
     {
         return [
             (string)EventName::API_INDEX_BEFORE_PAGINATE() => 'beforePaginate',
@@ -23,15 +25,9 @@ class IndexActionListener extends BaseActionListener
     /**
      * {@inheritDoc}
      */
-    public function beforePaginate(Event $event, QueryInterface $query)
+    public function beforePaginate(Event $event, QueryInterface $query) : void
     {
         $request = $event->subject()->request;
-
-        if (static::FORMAT_PRETTY !== $event->subject()->request->getQuery('format')) {
-            $query->contain(
-                $this->_getFileAssociations($event->subject()->{$event->subject()->name})
-            );
-        }
 
         $this->filterByConditions($query, $event);
 
@@ -44,7 +40,7 @@ class IndexActionListener extends BaseActionListener
     /**
      * {@inheritDoc}
      */
-    public function afterPaginate(Event $event, ResultSetInterface $resultSet)
+    public function afterPaginate(Event $event, ResultSetInterface $resultSet) : void
     {
         //
     }
@@ -52,32 +48,31 @@ class IndexActionListener extends BaseActionListener
     /**
      * {@inheritDoc}
      */
-    public function beforeRender(Event $event, ResultSetInterface $resultSet)
+    public function beforeRender(Event $event, ResultSetInterface $resultSet) : void
     {
         if ($resultSet->isEmpty()) {
             return;
         }
 
+        /**
+         * @var \Psr\Http\Message\ServerRequestInterface
+         */
+        $request = $event->getSubject()->request;
+
+        /**
+         * @var \Cake\Datasource\RepositoryInterface
+         */
         $table = $event->getSubject()->{$event->getSubject()->name};
 
         foreach ($resultSet as $entity) {
-            $this->_resourceToString($entity);
+            $this->resourceToString($entity);
+
+            static::FORMAT_PRETTY === $request->getQuery('format') ?
+                $this->prettify($entity, $table) :
+                $this->attachFiles($entity, $table);
         }
 
-        if (static::FORMAT_PRETTY === $event->getSubject()->request->getQuery('format')) {
-            foreach ($resultSet as $entity) {
-                $this->_prettify($entity, $table);
-            }
-        }
-
-        // @todo temporary functionality, please see _includeFiles() method documentation.
-        if (static::FORMAT_PRETTY !== $event->getSubject()->request->getQuery('format')) {
-            foreach ($resultSet as $entity) {
-                $this->_restructureFiles($entity, $table);
-            }
-        }
-
-        if ((bool)$event->getSubject()->request->getQuery(static::FLAG_INCLUDE_MENUS)) {
+        if ((bool)$request->getQuery(static::FLAG_INCLUDE_MENUS)) {
             $this->attachMenu($resultSet, $table, $event->getSubject()->Auth->user());
         }
     }
@@ -89,20 +84,25 @@ class IndexActionListener extends BaseActionListener
      * @param \Cake\Event\Event $event The event
      * @return void
      */
-    private function filterByConditions(QueryInterface $query, Event $event)
+    private function filterByConditions(QueryInterface $query, Event $event) : void
     {
-        if (empty($event->subject()->request->query('conditions'))) {
+        /**
+         * @var \Psr\Http\Message\ServerRequestInterface
+         */
+        $request = $event->getSubject()->request;
+
+        /**
+         * @var \Cake\Datasource\RepositoryInterface
+         */
+        $table = $event->getSubject()->{$event->getSubject()->name};
+
+        if (empty($request->query('conditions'))) {
             return;
         }
 
         $conditions = [];
-        $tableName = $event->subject()->name;
-        foreach ($event->subject()->request->query('conditions') as $k => $v) {
-            if (false === strpos($k, '.')) {
-                $k = $tableName . '.' . $k;
-            }
-
-            $conditions[$k] = $v;
+        foreach ($request->query('conditions') as $field => $value) {
+            $conditions[$table->aliasField($field)] = $value;
         };
 
         $query->applyOptions(['conditions' => $conditions]);

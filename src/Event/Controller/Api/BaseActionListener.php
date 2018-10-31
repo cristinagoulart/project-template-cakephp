@@ -2,14 +2,10 @@
 namespace App\Event\Controller\Api;
 
 use Cake\Core\App;
-use Cake\Core\Configure;
 use Cake\Datasource\EntityInterface;
 use Cake\Datasource\RepositoryInterface;
-use Cake\Datasource\ResultSetInterface;
 use Cake\Event\EventListenerInterface;
-use Cake\ORM\Entity;
 use Cake\ORM\Table;
-use Cake\Utility\Inflector;
 use Cake\View\View;
 use CsvMigrations\FieldHandlers\FieldHandlerFactory;
 use CsvMigrations\Utility\FileUpload;
@@ -33,195 +29,118 @@ abstract class BaseActionListener implements EventListenerInterface
     const MENU_PROPERTY_NAME = '_Menus';
 
     /**
-     * File association class name
-     */
-    const FILE_CLASS_NAME = 'Burzum/FileStorage.FileStorage';
-
-    /**
-     * Current module fields list which are associated with files
-     *
-     * @var array
-     */
-    protected $_fileAssociationFields = [];
-
-    /**
-     * An instance of Field Handler Factory
+     * FieldHandlerFactory instance.
      *
      * @var \CsvMigrations\FieldHandlers\FieldHandlerFactory
      */
-    private $factory;
+    private $factory = null;
 
     /**
-     * Move associated files under the corresponding entity property
-     * and unset association property.
+     * View instance.
      *
-     * Entity argument:
+     * @var \Cake\View\View
+     */
+    private $view = null;
+
+    /**
+     * FileUpload instance.
      *
-     * ```
-     * \Cake\ORM\Entity $object {
-     *     'file' => null,
-     *     'file_file_storage_file_storage' => [
-     *         0 => \Burzum\FileStorage\Model\Entity\FileStorage $object,
-     *         1 => \Burzum\FileStorage\Model\Entity\FileStorage $object
-     *     ]
-     * }
-     * ```
+     * @var \CsvMigrations\Utility\FileUpload
+     */
+    private $fileUpload = null;
+
+    /**
+     * Current controller name.
      *
-     * Becomes:
-     *
-     * ```
-     * \Cake\ORM\Entity $object {
-     *     'file' => [
-     *         0 => \Burzum\FileStorage\Model\Entity\FileStorage $object,
-     *         1 => \Burzum\FileStorage\Model\Entity\FileStorage $object
-     *     ]
-     * }
-     * ```
+     * @var string
+     */
+    private $controllerName = '';
+
+    /**
+     * Fetch and attach associated files to provided entity.
      *
      * @param \Cake\Datasource\EntityInterface $entity Entity
      * @param \Cake\Datasource\RepositoryInterface $table Table instance
      * @return void
      */
-    protected function _restructureFiles(EntityInterface $entity, RepositoryInterface $table)
+    protected function attachFiles(EntityInterface $entity, RepositoryInterface $table) : void
     {
-        foreach ($this->_getFileAssociationFields($table) as $association => $target) {
-            $source = Inflector::underscore($association);
+        $fileUpload = $this->getFileUpload($table);
 
-            $entity->set($target, $entity->get($source));
-            $entity->unsetProperty($source);
-            $this->_attachThumbnails($entity->get($target), $table);
-        }
-    }
-
-    /**
-     * Attach image file thumbnails into the entity.
-     *
-     * @param array $images Entity images
-     * @param \Cake\ORM\Table $table Table instance
-     * @return void
-     */
-    protected function _attachThumbnails(array $images, Table $table)
-    {
-        if (empty($images)) {
-            return;
-        }
-
-        $hashes = Configure::read('FileStorage.imageHashes.file_storage');
-        $fileUpload = new FileUpload($table);
-        $extensions = $fileUpload->getImgExtensions();
-
-        // append thumbnails
-        foreach ($images as &$image) {
-            // skip  non-image files
-            if (!in_array($image->extension, $extensions)) {
+        foreach ($this->getFileAssociations($table) as $association) {
+            $conditions = $association->getConditions();
+            if (! array_key_exists('model_field', $conditions)) {
                 continue;
             }
 
-            $image->set('thumbnails', []);
-            $path = dirname($image->path) . '/' . basename($image->path, $image->extension);
-            foreach ($hashes as $name => $hash) {
-                $thumbnailPath = $path . $hash . '.' . $image->extension;
-                // if thumbnail does not exist, provide the path to the original image
-                $thumbnailPath = !file_exists(WWW_ROOT . $thumbnailPath) ? $image->path : $thumbnailPath;
-                $image->thumbnails[$name] = $thumbnailPath;
-            }
+            $entity->set(
+                $conditions['model_field'],
+                $fileUpload->getFiles($table, $conditions['model_field'], $entity->get($table->getPrimaryKey()))
+            );
         }
     }
 
     /**
-     * Method that generates property name for belongsTo and HasOne associations.
+     * Method responsible for retrieving current table's file associations.
      *
-     * @param  string $name Association name
-     * @return string
+     * @param  \Cake\Datasource\RepositoryInterface $table Table instance
+     * @return \Cake\ORM\Association[]
      */
-    protected function _associationPropertyName($name)
-    {
-        list(, $name) = pluginSplit($name);
-
-        return Inflector::underscore(Inflector::singularize($name));
-    }
-
-    /**
-     * Method responsible for retrieving current Table's file associations
-     *
-     * @param  \Cake\ORM\Table $table Table instance
-     * @return array
-     */
-    protected function _getFileAssociations(Table $table)
+    protected function getFileAssociations(RepositoryInterface $table) : array
     {
         $result = [];
-
         foreach ($table->associations() as $association) {
-            if (static::FILE_CLASS_NAME !== $association->className()) {
+            if (FileUpload::FILES_STORAGE_NAME !== $association->className()) {
                 continue;
             }
 
-            $result[] = $association->name();
+            $result[] = $association;
         }
 
         return $result;
     }
 
     /**
-     * Method responsible for retrieving file associations field names
-     *
-     * @param  \Cake\ORM\Table $table Table instance
-     * @return array
-     */
-    protected function _getFileAssociationFields(Table $table)
-    {
-        $result = [];
-
-        if (!empty($this->_fileAssociationFields)) {
-            return $this->_fileAssociationFields;
-        }
-
-        foreach ($table->associations() as $association) {
-            if (static::FILE_CLASS_NAME !== $association->className()) {
-                continue;
-            }
-            $result[$association->name()] = $association->conditions()['model_field'];
-        }
-
-        $this->_fileAssociationFields = $result;
-
-        return $this->_fileAssociationFields;
-    }
-
-    /**
      * Convert Entity resource values to strings.
      * Temporary fix for bug with resources and json_encode() (see link).
      *
-     * @param  \Cake\ORM\Entity $entity Entity
+     * @param  \Cake\Datasource\EntityInterface $entity Entity
      * @return void
-     * @link   https://github.com/cakephp/cakephp/issues/9658
+     * @link https://github.com/cakephp/cakephp/issues/9658
      */
-    protected function _resourceToString(Entity $entity)
+    protected function resourceToString(EntityInterface $entity) : void
     {
-        $fields = array_keys($entity->toArray());
-        foreach ($fields as $field) {
-            // handle belongsTo associated data
-            if ($entity->{$field} instanceof Entity) {
-                $this->_resourceToString($entity->{$field});
+        foreach (array_keys($entity->toArray()) as $field) {
+            /**
+             * handle belongsTo associated data
+             *
+             * @deprecated since qobo/cakephp-csv-migrations v12.1.0 - We currently do not support inclusion of
+             * associated data on API responses. The only exception being associated files, but this is handled
+             * within the field-handler factory call below.
+             */
+            if ($entity->get($field) instanceof EntityInterface) {
+                trigger_error(sprintf('Associated data in API responses are not supported.'), E_USER_DEPRECATED);
+                $this->resourceToString($entity->{$field});
             }
 
-            // handle hasMany associated data
-            if (is_array($entity->{$field})) {
-                if (empty($entity->{$field})) {
-                    continue;
-                }
-
-                foreach ($entity->{$field} as $associatedEntity) {
-                    if (!$associatedEntity instanceof Entity) {
-                        continue;
+            /**
+             * handle hasMany associated data
+             *
+             * @deprecated since qobo/cakephp-csv-migrations v12.1.0 - We currently do not support inclusion of
+             * associated data on API responses. The only exception being associated files, but this is handled
+             * within the field-handler factory call below.
+             */
+            if (is_array($entity->get($field)) && ! empty($entity->get($field))) {
+                trigger_error(sprintf('Associated data in API responses are not supported.'), E_USER_DEPRECATED);
+                foreach ($entity->get($field) as $associatedEntity) {
+                    if ($associatedEntity instanceof EntityInterface) {
+                        $this->resourceToString($associatedEntity);
                     }
-
-                    $this->_resourceToString($associatedEntity);
                 }
             }
 
-            if (is_resource($entity->{$field})) {
-                $entity->{$field} = stream_get_contents($entity->{$field});
+            if (is_resource($entity->get($field))) {
+                $entity->set($field, stream_get_contents($entity->get($field)));
             }
         }
     }
@@ -229,44 +148,57 @@ abstract class BaseActionListener implements EventListenerInterface
     /**
      * Method that renders Entity values through Field Handler Factory.
      *
-     * @param  \Cake\ORM\Entity       $entity    Entity instance
-     * @param  \Cake\ORM\Table|string $table     Table instance
-     * @param  array                 $fields    Fields to prettify
+     * @param \Cake\Datasource\EntityInterface $entity Entity instance
+     * @param \Cake\Datasource\RepositoryInterface $table Table instance
+     * @param array $fields Fields to prettify
      * @return void
      */
-    protected function _prettify(Entity $entity, $table, array $fields = [])
+    protected function prettify(EntityInterface $entity, RepositoryInterface $table, array $fields = []) : void
     {
-        if (!$this->factory instanceof FieldHandlerFactory) {
-            $this->factory = new FieldHandlerFactory();
-        }
-        if (empty($fields)) {
-            $fields = array_keys($entity->toArray());
-        }
+        $fields = empty($fields) ? array_keys($entity->toArray()): $fields;
+
+        /**
+         * @var \CsvMigrations\FieldHandlers\FieldHandlerFactory
+         */
+        $factory = $this->getFieldHandlerFactory();
 
         foreach ($fields as $field) {
-            // handle belongsTo associated data
-            if ($entity->{$field} instanceof Entity) {
-                $tableName = $table->association($entity->{$field}->source())->className();
-                $this->_prettify($entity->{$field}, $tableName);
+            /**
+             * handle belongsTo associated data
+             *
+             * @deprecated since qobo/cakephp-csv-migrations v12.1.0 - We currently do not support inclusion of
+             * associated data on API responses. The only exception being associated files, but this is handled
+             * within the field-handler factory call below.
+             */
+            if ($entity->get($field) instanceof EntityInterface) {
+                trigger_error(sprintf('Associated data in API responses are not supported.'), E_USER_DEPRECATED);
+
+                $tableName = $table->association($entity->get($field)->getSource())->className();
+                $this->prettify($entity->{$field}, $tableName);
             }
 
-            // handle hasMany associated data
-            if (is_array($entity->{$field})) {
-                if (empty($entity->{$field})) {
-                    continue;
-                }
-                foreach ($entity->{$field} as $associatedEntity) {
-                    if (!$associatedEntity instanceof Entity) {
+            /**
+             * handle hasMany associated data
+             *
+             * @deprecated since qobo/cakephp-csv-migrations v12.1.0 - We currently do not support inclusion of
+             * associated data on API responses. The only exception being associated files, but this is handled
+             * within the field-handler factory call below.
+             */
+            if (is_array($entity->get($field)) && ! empty($entity->get($field))) {
+                trigger_error(sprintf('Associated data in API responses are not supported.'), E_USER_DEPRECATED);
+
+                foreach ($entity->get($field) as $associatedEntity) {
+                    if (! $associatedEntity instanceof EntityInterface) {
                         continue;
                     }
 
-                    list(, $associationName) = pluginSplit($associatedEntity->source());
+                    list(, $associationName) = pluginSplit($associatedEntity->getSource());
                     $tableName = $table->association($associationName)->className();
-                    $this->_prettify($associatedEntity, $tableName);
+                    $this->prettify($associatedEntity, $tableName);
                 }
             }
 
-            $entity->{$field} = $this->factory->renderValue($table, $field, $entity->{$field}, ['entity' => $entity]);
+            $entity->set($field, $factory->renderValue($table, $field, $entity->get($field), ['entity' => $entity]));
         }
     }
 
@@ -282,7 +214,7 @@ abstract class BaseActionListener implements EventListenerInterface
      * @param \Cake\Datasource\RepositoryInterface $table Table instance
      * @return array
      */
-    protected function getOrderClause(ServerRequestInterface $request, RepositoryInterface $table = null)
+    protected function getOrderClause(ServerRequestInterface $request, RepositoryInterface $table = null) : array
     {
         if (! $request->getQuery('sort')) {
             return [];
@@ -304,52 +236,101 @@ abstract class BaseActionListener implements EventListenerInterface
     /**
      * Method that retrieves and attaches menu elements to API response.
      *
-     * @param \Cake\Datasource\ResultSetInterface $resultSet ResultSet object
+     * @param \Cake\Datasource\EntityInterface $entity Entity instance
      * @param \Cake\Datasource\RepositoryInterface $table Table instance
      * @param array $user User info
      * @return void
      */
-    protected function attachMenu(ResultSetInterface $resultSet, RepositoryInterface $table, array $user)
+    protected function attachMenu(EntityInterface $entity, RepositoryInterface $table, array $user) : void
     {
-        $view = new View();
-        $controllerName = App::shortName(get_class($table), 'Model/Table', 'Table');
+        $data = [
+            'plugin' => false,
+            'controller' => $this->getControllerName($table),
+            'displayField' => $table->getDisplayField(),
+            'entity' => $entity,
+            'user' => $user
+        ];
 
-        foreach ($resultSet as $entity) {
-            $entity->set(static::MENU_PROPERTY_NAME, $view->element('Module/Menu/index_actions', [
-                'plugin' => false,
-                'controller' => $controllerName,
-                'displayField' => $table->getDisplayField(),
-                'entity' => $entity,
-                'user' => $user
-            ]));
-        }
+        $entity->set(static::MENU_PROPERTY_NAME, $this->getView()->element('Module/Menu/index_actions', $data));
     }
 
     /**
      * Method that retrieves and attaches menu elements to API response.
      *
-     * @param \Cake\Datasource\ResultSetInterface $resultSet ResultSet object
+     * @param \Cake\Datasource\EntityInterface $entity Entity instance
      * @param \Cake\Datasource\RepositoryInterface $table Table instance
      * @param array $user User info
      * @param array $data for extra fields like origin Id
      * @return void
      */
-    protected function attachRelatedMenu(ResultSetInterface $resultSet, RepositoryInterface $table, array $user, array $data)
+    protected function attachRelatedMenu(EntityInterface $entity, RepositoryInterface $table, array $user, array $data) : void
     {
-        $view = new View();
-        $controllerName = App::shortName(get_class($table), 'Model/Table', 'Table');
+        $data += [
+            'plugin' => false,
+            'controller' => $this->getControllerName($table),
+            'displayField' => $table->getDisplayField(),
+            'entity' => $entity,
+            'user' => $user
+        ];
 
-        foreach ($resultSet as $entity) {
-            $entity->set(static::MENU_PROPERTY_NAME, $view->element('Module/Menu/related_actions', [
-                'plugin' => false,
-                'controller' => $controllerName,
-                'displayField' => $table->getDisplayField(),
-                'entity' => $entity,
-                'user' => $user,
-                'associationController' => $data['associationController'],
-                'associationName' => $data['associationName'],
-                'associationId' => $data['associationId'],
-            ]));
+        $entity->set(static::MENU_PROPERTY_NAME, $this->getView()->element('Module/Menu/related_actions', $data));
+    }
+
+    /**
+     * FieldHandlerFactory instance getter.
+     *
+     * @return \CsvMigrations\FieldHandlers\FieldHandlerFactory
+     */
+    private function getFieldHandlerFactory() : FieldHandlerFactory
+    {
+        if (null === $this->factory) {
+            $this->factory = new FieldHandlerFactory();
         }
+
+        return $this->factory;
+    }
+
+    /**
+     * View instance getter.
+     *
+     * @return \Cake\View\View
+     */
+    private function getView() : View
+    {
+        if (null === $this->view) {
+            $this->view = new View();
+        }
+
+        return $this->view;
+    }
+
+    /**
+     * FileUpload instance getter.
+     *
+     * @param \Cake\Datasource\RepositoryInterface $table Table instance
+     * @return \CsvMigrations\Utility\FileUpload
+     */
+    private function getFileUpload(RepositoryInterface $table) : FileUpload
+    {
+        if (null === $this->fileUpload) {
+            $this->fileUpload = new FileUpload($table);
+        }
+
+        return $this->fileUpload;
+    }
+
+    /**
+     * Current controller name getter.
+     *
+     * @param \Cake\Datasource\RepositoryInterface $table Table instance
+     * @return string
+     */
+    private function getControllerName(RepositoryInterface $table) : string
+    {
+        if ('' === $this->controllerName) {
+            $this->controllerName = App::shortName(get_class($table), 'Model/Table', 'Table');
+        }
+
+        return $this->controllerName;
     }
 }
