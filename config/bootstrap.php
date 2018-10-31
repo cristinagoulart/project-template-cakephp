@@ -87,16 +87,35 @@ try {
     Configure::load('menu', 'default');
     Configure::load('roles_capabilities', 'default');
     Configure::load('scheduled_log', 'default');
+    Configure::load('system_info', 'default');
 } catch (\Exception $e) {
     exit($e->getMessage() . "\n");
 }
-
 /*
  * Load an environment local configuration file.
  * You can use a file like app_local.php to provide local overrides to your
  * shared configuration.
  */
 //Configure::load('app_local', 'default');
+
+Cache::setConfig(Configure::consume('Cache'));
+ConnectionManager::setConfig(Configure::consume('Datasources'));
+
+/**
+ * Load custom settings from the DB
+ */
+try {
+    Configure::config('dbconfig', new DbConfig());
+    Configure::load('Settings', 'dbconfig', true);
+} catch (\Cake\Database\Exception $e) {
+    // Do nothing
+} catch (\Exception $e) {
+    die($e->getMessage() . "\n");
+}
+/**
+ *  After this point, all the Configure::load() will overwrite
+ *  those from the DB, if exist.
+ */
 
 /*
  * When debug = true the metadata cache should only last
@@ -165,8 +184,6 @@ if (!Configure::read('App.fullBaseUrl')) {
 Log::drop('debug');
 Log::drop('error');
 
-Cache::setConfig(Configure::consume('Cache'));
-ConnectionManager::setConfig(Configure::consume('Datasources'));
 /*
  * Read, rather than consume, since we have some logic that
  * needs to know if email sending is enabled or not.
@@ -250,7 +267,7 @@ if (Configure::read('Swagger.crawl') && Configure::read('API.auth')) {
     Plugin::load('Alt3/Swagger', ['bootstrap' => true, 'routes' => true]);
 }
 Plugin::load('AdminLTE', ['bootstrap' => true, 'routes' => true]);
-
+Configure::load('admin_lte', 'default');
 /*
  * Only load JwtAuth plugin if API authentication is enabled
  */
@@ -323,16 +340,6 @@ call_user_func(function () {
 });
 
 /*
- * Load AdminLTE theme settings
- */
-Configure::load('admin_lte', 'default');
-
-/*
- * Load system information settings
- */
-Configure::load('system_info', 'default');
-
-/*
  * Feature Factory initialization
  * IMPORTANT: this line should be placed at the end of the bootstrap file.
  */
@@ -342,17 +349,3 @@ FeatureFactory::init();
  * Register custom database type(s)
  */
 Type::map('base64', 'App\Database\Type\EncodedFileType');
-
-/**
- * @todo  Must find the right position to load the settings.
- * After that, all the Configure::read() will be ONLY
- * from files and unable to modify from the UI of settings
- */
-try {
-    Configure::config('dbconfig', new DbConfig());
-    Configure::load('Settings', 'dbconfig', true);
-} catch (\Cake\Database\Exception $e) {
-    // Do nothing
-} catch (\Exception $e) {
-    die($e->getMessage() . "\n");
-}
