@@ -5,7 +5,6 @@ use Cake\Utility\Inflector;
 use CsvMigrations\FieldHandlers\FieldHandlerFactory;
 
 $fhf = new FieldHandlerFactory($this);
-
 $this->Html->scriptStart(array('block' => 'scriptBottom', 'inline' => false)); ?>
 
 $(document).ready(function(){
