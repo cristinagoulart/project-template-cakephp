@@ -233,7 +233,8 @@ class App extends AbstractCommand
             'role import',
             'capability assign',
             'menu import',
-            'validate' // run after dblists are populated
+            'validate', // run after dblists are populated
+            'settings'
         ];
 
         foreach ($shellScripts as $script) {
