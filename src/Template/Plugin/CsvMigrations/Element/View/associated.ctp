@@ -1,4 +1,5 @@
 <?php
+use Cake\ORM\Association;
 use Qobo\Utils\ModuleConfig\ConfigType;
 use Qobo\Utils\ModuleConfig\ModuleConfig;
 use RolesCapabilities\Access\AccessFactory;
@@ -29,7 +30,7 @@ foreach ($table->associations() as $association) {
         continue;
     }
 
-    if (!in_array($association->type(), ['manyToMany', 'oneToMany'])) {
+    if (!in_array($association->type(), [Association::MANY_TO_MANY, Association::ONE_TO_MANY])) {
         continue;
     }
 
