@@ -48,7 +48,6 @@ class SettingsShell extends Shell
     {
         $query = TableRegistry::get('Settings');
         $alias = Hash::combine(Configure::read('Settings'), '{s}.{s}.{s}.{s}.alias', '{s}.{s}.{s}.{s}.type');
-        $settings = $query->getAliasDiff(array_keys($alias));
 
         $data = [];
         foreach ($settings as $set) {

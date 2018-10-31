@@ -2,6 +2,7 @@
 namespace App\Test\TestCase\Model\Table;
 
 use App\Model\Table\SettingsTable;
+use Cake\Core\Configure;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
 use Cake\Utility\Hash;
@@ -52,6 +53,67 @@ class SettingsTableTest extends TestCase
         unset($this->Settings);
 
         parent::tearDown();
+    }
+
+    public function testFilterSettings()
+    {
+        $userRoles = ['settings'];
+
+        $configSettings = [
+         'N Tab' => [
+           'Another Column' => [
+             'This section 1' => [
+               'name1' => [
+                 'alias' => 'FileStorage.defaultImageSize',
+                 'type' => 'string',
+                 'roles' => ['Everyone', 'settings', 'anotherRole'],
+               ],
+               'name2' => [
+                 'alias' => 'Avatar.defaultImage',
+                 'type' => 'string',
+                 'roles' => ['Everyone', 'anotherRole'],
+               ],
+             ],
+           ],
+         ],
+        ];
+
+        $configSettingsFilter = [
+         'N Tab' => [
+           'Another Column' => [
+             'This section 1' => [
+               'name1' => [
+                 'alias' => 'FileStorage.defaultImageSize',
+                 'type' => 'string',
+                 'roles' => ['Everyone', 'settings', 'anotherRole'],
+               ],
+             ],
+           ],
+         ],
+        ];
+
+        $filterData = $this->Settings->filterSettings($configSettings, $userRoles);
+        $this->assertEquals($configSettingsFilter, $filterData);
+    }
+
+    public function testFilterDataException()
+    {
+        $userRoles = ['settings'];
+        // Wrong configuration
+        $configSettings = [
+         'N Tab' => [
+           'This section 1' => [
+             'name1' => [
+               'alias' => 'FileStorage.defaultImageSize',
+               'type' => 'string',
+               'roles' => ['Everyone', 'settings', 'anotherRole'],
+             ],
+           ],
+         ],
+        ];
+
+        $this->expectException('\RuntimeException');
+        $filterData = $this->Settings->filterSettings($configSettings, $userRoles);
     }
 
     public function testUpdateValidationNoErrors()

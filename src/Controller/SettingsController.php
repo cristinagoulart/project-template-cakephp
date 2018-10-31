@@ -31,17 +31,7 @@ class SettingsController extends AppController
 
         // Filter the Configure::read('Settings') with User Roles
         $dataSettings = Configure::read('Settings');
-        $filter = array_filter(Hash::flatten($dataSettings), function ($value) use ($userRoles) {
-            return in_array($value, $userRoles);
-        });
-        $dataFlatten = [];
-        foreach ($filter as $key => $value) {
-            $p = explode('.', $key);
-            $p = $p[0] . '.' . $p[1] . '.' . $p[2] . '.' . $p[3];
-            $dataFlatten[$p] = Hash::extract($dataSettings, $p);
-        }
-        // $dataFiltered has now only fields belonging to the user roles
-        $dataFiltered = Hash::expand($dataFlatten);
+        $dataFiltered = TableRegistry::get('Settings')->filterSettings($dataSettings, $userRoles);
 
         $settings = $this->paginate($this->Settings);
         $this->set(compact('settings'));
@@ -61,6 +51,7 @@ class SettingsController extends AppController
                     $this->Flash->error(__('Failed to update settings, please try again.'));
                     throw new UnauthorizedException('Can not update');
                 }
+                $entity = $query->findByKey($key)->firstOrFail();
                 $params = [
                     'key' => $key,
                     'value' => $value,
