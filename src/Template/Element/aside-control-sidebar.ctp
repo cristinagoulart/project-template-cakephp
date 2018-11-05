@@ -1,4 +1,5 @@
 <?php
+use App\Menu\MenuName;
 use Cake\Cache\Cache;
 use Cake\Core\Configure;
 use Cake\ORM\TableRegistry;
@@ -85,7 +86,7 @@ $hasActivity = false;
         <div class="tab-pane control-sidebar-settings-tab" id="control-sidebar-settings-tab">
             <section class="sidebar">
                 <?= $this->element('Menu.menu', [
-                    'name' => MENU_ADMIN,
+                    'name' => MenuName::ADMIN,
                     'user' => $user,
                     'renderer' => 'Menu\\MenuBuilder\\MainMenuRenderAdminLte'
                 ]) ?>
