@@ -97,9 +97,7 @@ class SettingsController extends AppController
     {
         $this->autoRender = false;
         if ($this->request->is('post')) {
-            echo '<pre>';
             var_export($this->request->data());
-            echo '</pre>';
         }
     }
 }
