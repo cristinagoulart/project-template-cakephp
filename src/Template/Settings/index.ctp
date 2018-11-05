@@ -5,7 +5,6 @@ use Cake\Utility\Inflector;
 use CsvMigrations\FieldHandlers\FieldHandlerFactory;
 
 $fhf = new FieldHandlerFactory($this);
-
 $this->Html->scriptStart(array('block' => 'scriptBottom', 'inline' => false)); ?>
 
 $(document).ready(function(){
@@ -122,7 +121,7 @@ $(document).ready(function(){
 			</div>
 			<?php 
 				echo $this->Form->button(__('Submit'), ['class' => 'btn btn-primary','value' => 'submit']);
-				echo$this->Form->end();
+				echo $this->Form->end();
 			?>
 		</div>
 	</div>

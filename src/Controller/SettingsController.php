@@ -38,13 +38,13 @@ class SettingsController extends AppController
         $this->set('data', $dataFiltered);
 
         if ($this->request->is('put')) {
-            $data = Hash::flatten($this->request->data('Settings'));
+            $dataPut = Hash::flatten($this->request->data('Settings'));
             $query = TableRegistry::get('Settings');
             $type = Hash::combine($dataFiltered, '{s}.{s}.{s}.{s}.alias', '{s}.{s}.{s}.{s}.type');
             $roles = Hash::combine($dataFiltered, '{s}.{s}.{s}.{s}.alias', '{s}.{s}.{s}.{s}.roles');
 
             $set = [];
-            foreach ($data as $key => $value) {
+            foreach ($dataPut as $key => $value) {
                 // check the roles (never trust the user input)
                 if (count(array_intersect($roles[$key], $userRoles)) === 0) {
                     $this->Flash->error(__('Failed to update settings, please try again.'));
@@ -67,6 +67,37 @@ class SettingsController extends AppController
             } else {
                 $this->Flash->error(__('Failed to update settings, please try again.'));
             }
+        }
+    }
+
+    /**
+     * Pass data to generator page
+     * @return null Nothing to return
+     */
+    public function generator()
+    {
+        // For render the main structure
+        $dataSettings = Configure::read('Settings');
+        $this->set('data', $dataSettings);
+
+        // For seach the new fields to insert
+        $data = Hash::flatten(Configure::read());
+        $this->set('alldata', $data);
+
+        // list of roles
+        $capabilities = TableRegistry::get('QoboRoles')->find('list', ['keyField' => 'name'])->toArray();
+        $this->set('roles', array_keys($capabilities));
+    }
+
+    /**
+     * Return a php array for render in html
+     * @return null Nothing to return
+     */
+    public function returnArray()
+    {
+        $this->autoRender = false;
+        if ($this->request->is('post')) {
+            var_export($this->request->data());
         }
     }
 }
