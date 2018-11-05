@@ -213,9 +213,9 @@ $(document).ready(function(){
                                   </thead>
                                   <tbody>
                                   <?php foreach ($alldata as $key => $value) : 
-                                      if( is_array($value) || is_object($value)){
+                                      if( is_array($value) || is_object($value)):
                                           continue;
-                                      }
+                                      endif;
                                   ?>
                                       <tr>
                                           <td class="alias"><?= $key ?></td>

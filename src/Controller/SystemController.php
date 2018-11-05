@@ -2,6 +2,7 @@
 namespace App\Controller;
 
 use App\Feature\Factory;
+use App\Menu\MenuName;
 use Cake\Core\Configure;
 use Cake\Event\Event;
 use Cake\ORM\TableRegistry;
@@ -76,7 +77,7 @@ class SystemController extends AppController
     {
         // Raise event for main menu
         $event = new Event((string)EventName::GET_MENU_ITEMS(), $this, [
-            'name' => MENU_MAIN,
+            'name' => MenuName::MAIN,
             'user' => $this->Auth->user(),
         ]);
         $this->getEventManager()->dispatch($event);

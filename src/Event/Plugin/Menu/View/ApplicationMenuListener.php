@@ -3,6 +3,7 @@
 namespace App\Event\Plugin\Menu\View;
 
 use App\Access\CapabilityTrait;
+use App\Menu\MenuName;
 use Cake\Event\Event;
 use Cake\Event\EventListenerInterface;
 use Menu\Event\EventName as MenuEventName;
@@ -47,7 +48,7 @@ class ApplicationMenuListener implements EventListenerInterface
         }
 
         // Only administrators can access the admin menu
-        if ($name === MENU_ADMIN && !$user['is_admin']) {
+        if ($name === MenuName::ADMIN && !$user['is_admin']) {
             $event->stopPropagation();
 
             return;
