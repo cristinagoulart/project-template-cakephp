@@ -9,6 +9,8 @@ use Cake\ORM\Entity;
  * @property int $id
  * @property string $key
  * @property string $value
+ * @property string $context
+ * @property string $scope
  */
 class Setting extends Entity
 {
@@ -23,7 +25,7 @@ class Setting extends Entity
      * @var array
      */
     protected $_accessible = [
-        'key' => true,
-        'value' => true
+        '*' => true,
+        'id' => false
     ];
 }

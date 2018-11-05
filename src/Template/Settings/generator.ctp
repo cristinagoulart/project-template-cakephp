@@ -99,7 +99,7 @@ $(document).ready(function(){
     // Add new field on selected tab -> column -> section
     // tab,col,section : select the tab,coloum and section where to add the field
     // field : name of the new field 
-    // value : array with the alias,type,roles,help
+    // value : array with the alias,type,scope,help
     function genField(tab,col,section,name,value){
             let idField = tab.replace(/ |_/g,"_") +"-"+ col.replace(/ |_/g,"_") +"-"+ section.replace(/ |_/g,"_")
             let new_field = `<div class="box-body">
@@ -208,7 +208,7 @@ $(document).ready(function(){
                                       <th><?= __('name') ?></th>
                                       <th><?= __('type') ?></th>
                                       <th><?= __('help') ?></th>
-                                      <th><?= __('roles') ?></th>
+                                      <th><?= __('scope') ?></th>
                                   </tr>
                                   </thead>
                                   <tbody>
@@ -222,15 +222,14 @@ $(document).ready(function(){
                                           <td class="name"><input type="text" placeholder="write the name" value="<?= $key ?>" required ></td>
                                           <td class="type"><?= gettype($value) ?></td>
                                           <td class="help"><input type="text" placeholder="write the help here"></td>
-                                          <td class="roles">
+                                          <td class="scope">
                                              <?php 
-                                                // to improve with a checkbox or other
-                                                $r = '';
-                                                foreach($roles as $key){
-                                                    $r = $r . $key. ',';
+                                                $s = '';
+                                                foreach($scope as $key){
+                                                    $s = $s . $key. ',';
                                                 }
                                              ?>
-                                           <input type="text" value="<?= substr($r, 0, -1) ?>">                                   
+                                           <input type="text" value="<?= substr($s, 0, -1) ?>">                                   
                                           </td>
                                       </tr>
                                   <?php endforeach; ?>
@@ -261,7 +260,7 @@ $(document).ready(function(){
                     'alias' : $(value).find('.alias').text(),
                     'type' :  $(value).find('.type').text(),
                     'help' :  $(value).find('.help input').val(),
-                    'roles' : $(value).find('.roles input').val().split(","),
+                    'scope' : $(value).find('.scope input').val().split(","),
                 }
                 let fieldName = $(value).find('.name input').val()
                 addToArray(path,mydata,fieldName)
@@ -273,7 +272,7 @@ $(document).ready(function(){
     // Merge the new data with the main one
     // path   : tab -> col -> section 
     // field  : field name
-    // mydaya : object with alias, type, help, roles
+    // mydaya : object with alias, type, help, scope
     function addToArray(path,mydata,field){
         let newdata = JSON.parse('{"'+path[0]+'":{"'+path[1]+'":{"'+path[2]+'":{"'+field+'": ' + JSON.stringify(mydata) + ' }}}}')
         data = $.extend(true,data,newdata)
@@ -292,13 +291,13 @@ $(document).ready(function(){
         let token = JSON.parse('{ "_csrfToken" : "' + $('input[name="_csrfToken"]').attr('value') + '"}')
         data = $.extend(true,data,token)
         $.ajax({
-            url: "/settings/returnArray",
+            url: "/settings/generator",
             type : 'post',
             contentType: 'application/json',
             dataType : 'text',
             data : JSON.stringify(data),
             success: function(result){
-                $("#preArray").html(result);
+                $("#preArray").html('<pre>'+ result +'<pre>');
             }
         });
     });

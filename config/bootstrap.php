@@ -105,7 +105,7 @@ ConnectionManager::setConfig(Configure::consume('Datasources'));
  * Load custom settings from the DB
  */
 try {
-    Configure::config('dbconfig', new DbConfig());
+    Configure::config('dbconfig', new DbConfig('app', 'app'));
     Configure::load('Settings', 'dbconfig', true);
 } catch (\Cake\Database\Exception $e) {
     // Do nothing
@@ -252,6 +252,10 @@ ServerRequest::addDetector('tablet', function ($request) {
  * Plugin::load('Migrations'); //Loads a single plugin named Migrations
  *
  */
+
+Configure::write('Users.config', ['users']);
+Plugin::load('CakeDC/Users', ['routes' => true, 'bootstrap' => true]);
+
 Plugin::load('Qobo/Utils', ['bootstrap' => true]);
 Plugin::load('CsvMigrations', ['bootstrap' => true, 'routes' => true]);
 Plugin::load('Crud');
@@ -280,8 +284,6 @@ if (Configure::read('API.auth')) {
  * before any of our plugins that use routes, it breaks
  * them, needs to be investigated further.
  */
-Configure::write('Users.config', ['users']);
-Plugin::load('CakeDC/Users', ['routes' => true, 'bootstrap' => true]);
 
 /**
  * Connect middleware/dispatcher filters.

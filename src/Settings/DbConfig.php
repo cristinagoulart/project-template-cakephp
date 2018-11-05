@@ -7,6 +7,21 @@ use Cake\Utility\Hash;
 
 class DbConfig implements ConfigEngineInterface
 {
+
+    private $scope;
+    private $context;
+
+    /**
+     * Set DbConfig to return user settings as default
+     * @param string $scope   User, App, (Os, Env ...)
+     * @param string $context depent on the scope, the context can be uuid, string, integer, etc.
+     */
+    public function __construct($scope = 'user', $context = '')
+    {
+        $this->scope = $scope;
+        $this->context = $context;
+    }
+
     /**
      * @param string $key Table name with the settings
      * @return array
@@ -15,7 +30,11 @@ class DbConfig implements ConfigEngineInterface
     public function read($key)
     {
         $query = TableRegistry::get($key);
-        $data = $query->find('list', ['keyField' => 'key', 'valueField' => 'value'])->toArray();
+        // App level costum settings
+        $data = $query->find('list', ['keyField' => 'key', 'valueField' => 'value'])
+                      ->where(['scope' => $this->scope, 'context' => $this->context])
+                      ->toArray();
+
         $config = Hash::expand($data);
 
         return $config;

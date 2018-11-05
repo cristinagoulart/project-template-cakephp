@@ -28,6 +28,16 @@ class CreateSettings extends AbstractMigration
             'limit' => 255,
             'null' => false,
         ]);
+        $table->addColumn('scope', 'string', [
+            'default' => null,
+            'limit' => 255,
+            'null' => false,
+        ]);
+        $table->addColumn('context', 'string', [
+            'default' => null,
+            'limit' => 255,
+            'null' => false,
+        ]);
         $table->addPrimaryKey([
             'id',
         ]);
