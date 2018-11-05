@@ -15,7 +15,7 @@ $(document).ready(function(){
 
 <?php $this->Html->scriptEnd(); ?>
 <section class="content-header">
-	<h1><?= __('Settings'); ?></h1><a href="/settings/generator"><b>settings.php builder</b> (only for developers)</a>
+	<h1><?= __('Settings'); ?></h1>
 </section>
 <section class="content">
 	<div class="row">
