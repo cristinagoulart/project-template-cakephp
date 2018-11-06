@@ -19,6 +19,29 @@ class SettingsController extends AppController
 
     private $scope = 'user';
     private $context = '';
+    private $dataSettings;
+
+    // Data from the DB with scope 'app'
+    private $dataApp;
+
+    // TableRegistry::get('Settings');
+    private $query;
+
+    // instead Configure::read(), it will load form the DB the settings of each scope/contex
+    private $configureValue;
+
+    /**
+     * @return void
+     */
+    public function initialize()
+    {
+        parent::initialize();
+        $this->dataSettings = Configure::read('Settings');
+        $this->query = TableRegistry::get('Settings');
+        $this->dataApp = $this->query->find('list', ['keyField' => 'key', 'valueField' => 'value'])
+              ->where(['scope' => 'app', 'context' => 'app'])
+              ->toArray();
+    }
 
     /**
      * Give access to edit any user settings.
@@ -29,6 +52,11 @@ class SettingsController extends AppController
     {
         $this->scope = 'user';
         $this->context = $context;
+        $dataUser = $this->query->find('list', ['keyField' => 'key', 'valueField' => 'value'])
+              ->where(['scope' => 'user', 'context' => $this->context])
+              ->toArray();
+        $this->configureValue = Hash::merge($this->dataApp, $dataUser);
+        $this->dataSettings = Hash::merge($this->dataSettings, Hash::expand($this->dataApp), Hash::expand($dataUser));
         $this->viewBuilder()->template('index');
 
         return $this->settings();
@@ -42,6 +70,7 @@ class SettingsController extends AppController
     {
         $this->scope = 'app';
         $this->context = 'app';
+        $this->configureValue = $this->dataApp;
         $this->viewBuilder()->template('index');
 
         return $this->settings();
@@ -55,6 +84,10 @@ class SettingsController extends AppController
     {
         $this->scope = 'user';
         $this->context = $this->Auth->user('id');
+        $dataUser = $this->query->find('list', ['keyField' => 'key', 'valueField' => 'value'])
+              ->where(['scope' => 'user', 'context' => $this->context])
+              ->toArray();
+        $this->configureValue = Hash::merge($this->dataApp, $dataUser);
         $this->viewBuilder()->template('index');
 
         return $this->settings();
@@ -67,23 +100,34 @@ class SettingsController extends AppController
      */
     private function settings()
     {
-        // Filter the Configure::read('Settings') with User Roles
-        $dataSettings = Configure::read('Settings');
-        $dataFiltered = TableRegistry::get('Settings')->filterSettings($dataSettings, [$this->scope]);
-
+        $dataFiltered = $this->query->filterSettings($this->dataSettings, [$this->scope]);
         $settings = $this->paginate($this->Settings);
         $this->set(compact('settings'));
         $this->set('data', $dataFiltered);
+        $this->set('configure', $this->configureValue);
 
         if ($this->request->is('put')) {
             $dataPut = Hash::flatten($this->request->data('Settings'));
-            $query = TableRegistry::get('Settings');
+            $this->query = TableRegistry::get('Settings');
             $type = Hash::combine($dataFiltered, '{s}.{s}.{s}.{s}.alias', '{s}.{s}.{s}.{s}.type');
             $scope = Hash::combine($dataFiltered, '{s}.{s}.{s}.{s}.alias', '{s}.{s}.{s}.{s}.scope');
 
             $set = [];
             foreach ($dataPut as $key => $value) {
-                $entity = $query->findByKey($key)->firstOrFail();
+                // if the key doesn't exist it fails.
+                $entity = $this->query->findByKey($key)->firstOrFail();
+                // select based on key, scope, conext
+                $entity = $this->query->find('all')->where(['key' => $key, 'scope' => $this->scope, 'context' => $this->context])->first();
+
+                // will storage only the modified settings
+                if (!is_null($entity) && $entity->value === $value) {
+                    // if the user setting match the app setting, the entity will be deleted
+                    if ($this->scope === 'user' && $value === $this->dataApp[$key]) {
+                        $this->query->delete($entity);
+                    }
+                    continue;
+                }
+
                 $params = [
                     'key' => $key,
                     'value' => $value,
@@ -92,13 +136,16 @@ class SettingsController extends AppController
                     // dynamic field to pass type to the validator
                     'type' => $type[$key]
                 ];
-                $newEntity = $this->Settings->patchEntity($entity, $params);
+
+                // if (entity not exist) : new ? patch
+                $newEntity = is_null($entity) ? $this->Settings->newEntity($params) : $this->Settings->patchEntity($entity, $params);
                 $set[] = $newEntity;
             }
 
-            if ($query->saveMany($set)) {
-                Configure::load('Settings', 'dbconfig', true);
+            if ($this->query->saveMany($set)) {
                 $this->Flash->success(__('Settings successfully updated'));
+
+                return $this->redirect($this->here);
             } else {
                 $this->Flash->error(__('Failed to update settings, please try again.'));
             }

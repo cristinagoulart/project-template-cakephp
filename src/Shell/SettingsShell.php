@@ -56,6 +56,7 @@ class SettingsShell extends Shell
                     'key' => $set,
                     'value' => Configure::read($set),
                     'scope' => 'app',
+                    'context' => 'app',
                     'type' => $alias[$set] // dynamic field to pass `type` to the validator
                 ];
         }

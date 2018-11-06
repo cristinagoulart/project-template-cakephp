@@ -6,7 +6,7 @@ return [
       'UI' => [
         'Theme' => [
           'Title' => [
-            'alias' => 'Theme.title',
+            'alias' => 'ScheduledLog.stats.age',
             'type' => 'string',
             'help' => 'This is dynamic, should not be display',
             'scope' => ['user', 'app'],

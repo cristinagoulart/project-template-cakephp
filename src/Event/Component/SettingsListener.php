@@ -15,7 +15,7 @@ class SettingsListener implements EventListenerInterface
     public function implementedEvents()
     {
         return [
-             'Controller.startup' => [ 'callable' => 'loadUserSettings', 'priority' => 1]
+             'Controller.startup' => [ 'callable' => 'loadUserSettings', 'priority' => 100]
         ];
     }
 
@@ -27,7 +27,11 @@ class SettingsListener implements EventListenerInterface
      */
     public function loadUserSettings(Event $event)
     {
-        $userId = $event->getSubject()->Auth->user('id');
+        try {
+            $userId = $event->getSubject()->Auth->user('id');
+        } catch (\Error $e) {
+            return;
+        }
 
         if (empty($userId)) {
             return;

@@ -17,12 +17,6 @@ class CreateSettings extends AbstractMigration
             'default' => null,
             'null' => false,
         ]);
-        $table->addIndex([
-            'key',
-        ], [
-            'name' => 'UNIQUE_KEY',
-            'unique' => true,
-        ]);
         $table->addColumn('value', 'string', [
             'default' => null,
             'limit' => 255,
