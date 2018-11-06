@@ -66,6 +66,8 @@ class SearchableFieldsListener implements EventListenerInterface
     {
         if ($table instanceof UsersTable) {
             $fields = ['first_name', 'last_name', 'username', 'email', 'created', 'modified'];
+        } elseif ($table instanceof \DatabaseLog\Model\Table\DatabaseLogsTable) {
+            $fields = ['hostname', 'ip', 'uri', 'message', 'type', 'created'];
         } else {
             $method = 'getFieldsDefinitions';
             // skip if method cannot be called
