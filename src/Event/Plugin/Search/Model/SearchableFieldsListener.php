@@ -9,6 +9,7 @@ use Cake\Event\EventListenerInterface;
 use Cake\Log\Log;
 use Cake\ORM\TableRegistry;
 use CsvMigrations\FieldHandlers\FieldHandlerFactory;
+use DatabaseLog\Model\Table\DatabaseLogsTable;
 use InvalidArgumentException;
 use Qobo\Utils\ModuleConfig\ConfigType;
 use Qobo\Utils\ModuleConfig\ModuleConfig;
@@ -66,7 +67,7 @@ class SearchableFieldsListener implements EventListenerInterface
     {
         if ($table instanceof UsersTable) {
             $fields = ['first_name', 'last_name', 'username', 'email', 'created', 'modified'];
-        } elseif ($table instanceof \DatabaseLog\Model\Table\DatabaseLogsTable) {
+        } elseif ($table instanceof DatabaseLogsTable) {
             $fields = ['hostname', 'ip', 'uri', 'message', 'type', 'created'];
         } else {
             $method = 'getFieldsDefinitions';
