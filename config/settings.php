@@ -12,7 +12,7 @@ return [
             'roles' => ['Everyone', 'settings', 'anotherRole'],
           ],
           'Logo_(mini)' => [
-            'alias' => 'Theme.logo.mini',
+            'alias' => 'App.jsBaseUrl',
             'type' => 'string',
           ],
           'Logo_(large)' => [

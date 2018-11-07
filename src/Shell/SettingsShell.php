@@ -48,13 +48,14 @@ class SettingsShell extends Shell
     {
         $query = TableRegistry::get('Settings');
         $alias = Hash::combine(Configure::read('Settings'), '{s}.{s}.{s}.{s}.alias', '{s}.{s}.{s}.{s}.type');
+        $settings = $query->getAliasDiff(array_keys($alias));
 
         $data = [];
-        foreach ($alias as $set => $type) {
+        foreach ($settings as $set) {
             $data[] = [
                     'key' => $set,
                     'value' => Configure::read($set),
-                    'type' => $type // dynamic field to pass `type` to the validator
+                    'type' => $alias[$set] // dynamic field to pass `type` to the validator
                 ];
         }
 
