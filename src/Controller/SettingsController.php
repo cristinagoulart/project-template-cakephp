@@ -111,36 +111,24 @@ class SettingsController extends AppController
             $this->query = TableRegistry::get('Settings');
             $type = Hash::combine($dataFiltered, '{s}.{s}.{s}.{s}.alias', '{s}.{s}.{s}.{s}.type');
             $scope = Hash::combine($dataFiltered, '{s}.{s}.{s}.{s}.alias', '{s}.{s}.{s}.{s}.scope');
+            $links = Hash::filter(Hash::combine($dataFiltered, '{s}.{s}.{s}.{s}.alias', '{s}.{s}.{s}.{s}.links'));
 
             $set = [];
             foreach ($dataPut as $key => $value) {
-                // if the key doesn't exist it fails.
-                $entity = $this->query->findByKey($key)->firstOrFail();
-                // select based on key, scope, conext
-                $entity = $this->query->find('all')->where(['key' => $key, 'scope' => $this->scope, 'context' => $this->context])->first();
+                $entity = $this->createEntity($key, $value, $type[$key]);
+                !empty($entity) ? ($set[] = $entity) : '';
 
-                // will storage only the modified settings
-                if (!is_null($entity) && $entity->value === $value) {
-                    // if the user setting match the app setting, the entity will be deleted
-                    if ($this->scope === 'user' && $value === $this->dataApp[$key]) {
-                        $this->query->delete($entity);
-                    }
+                if (empty($links[$key])) {
                     continue;
                 }
 
-                $params = [
-                    'key' => $key,
-                    'value' => $value,
-                    'scope' => $this->scope,
-                    'context' => $this->context,
-                    // dynamic field to pass type to the validator
-                    'type' => $type[$key]
-                ];
-
-                // if (entity not exist) : new ? patch
-                $newEntity = is_null($entity) ? $this->Settings->newEntity($params) : $this->Settings->patchEntity($entity, $params);
-                $set[] = $newEntity;
+                foreach ($links[$key] as $link => $keyLink) {
+                    $entity = $this->createEntity($keyLink, $value, $type[$key]);
+                    !empty($entity) ? ($set[] = $entity) : '';
+                }
             }
+
+            // dd($set);
 
             if ($this->query->saveMany($set)) {
                 $this->Flash->success(__('Settings successfully updated'));
@@ -153,9 +141,48 @@ class SettingsController extends AppController
     }
 
     /**
+     * if the key exist in the DB, will create and validate an entity.
+     * @param  string $key   key
+     * @param  string $value value
+     * @param  string $type  type
+     * @return \App\Model\Entity\Setting|void
+     */
+    private function createEntity($key, $value, $type)
+    {
+        // if the key doesn't exist it fails.
+        $entity = $this->query->findByKey($key)->firstOrFail();
+        // select based on key, scope, conext
+        $entity = $this->query->find('all')->where(['key' => $key, 'scope' => $this->scope, 'context' => $this->context])->first();
+
+        // will storage only the modified settings
+        if (!is_null($entity) && $entity->value === $value) {
+            // if the user setting match the app setting, the entity will be deleted
+            if ($this->scope === 'user' && $value === $this->dataApp[$key]) {
+                $this->query->delete($entity);
+            }
+
+            return;
+        }
+
+        $params = [
+            'key' => $key,
+            'value' => $value,
+            'scope' => $this->scope,
+            'context' => $this->context,
+            // dynamic field to pass type to the validator
+            'type' => $type
+        ];
+
+        // if (entity not exist) : new ? patch
+        $newEntity = is_null($entity) ? $this->Settings->newEntity($params) : $this->Settings->patchEntity($entity, $params);
+
+        return $newEntity;
+    }
+
+    /**
      * Pass data to generator page
      * Avaiable only for developers in localhost
-     * @return \Cake\Http\Response|void|array
+     * @return \Cake\Http\Response|void|arra
      */
     public function generator()
     {
@@ -180,8 +207,10 @@ class SettingsController extends AppController
 
         if ($this->request->is('post')) {
             $this->autoRender = false;
+            // debug format much better that var_export
+            debug($this->request->data());
 
-            return var_export($this->request->data());
+            return;
         }
     }
 }

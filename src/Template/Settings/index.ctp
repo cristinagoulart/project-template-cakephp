@@ -93,7 +93,7 @@ $(document).ready(function(){
 												'value' => $value,
 												'name'  => $alias,
 											];
-											echo $fhf->renderInput('settings', $alias, $value, ['fieldDefinitions' => $definition]);
+											echo $fhf->renderInput('settings', $alias, $value, ['fieldDefinitions' => $definition , 'label' => $field]);
 											if(isset($fieldValue['help']) ):
 												?>
 													<span class="help-block"><?= $fieldValue['help'] ?></span>

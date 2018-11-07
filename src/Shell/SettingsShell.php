@@ -48,17 +48,22 @@ class SettingsShell extends Shell
     {
         $query = TableRegistry::get('Settings');
         $alias = Hash::combine(Configure::read('Settings'), '{s}.{s}.{s}.{s}.alias', '{s}.{s}.{s}.{s}.type');
+        $links = Hash::filter(Hash::combine(Configure::read('Settings'), '{s}.{s}.{s}.{s}.alias', '{s}.{s}.{s}.{s}.links'));
+
         $settings = $query->getAliasDiff(array_keys($alias));
 
         $data = [];
         foreach ($settings as $set) {
-            $data[] = [
-                    'key' => $set,
-                    'value' => Configure::read($set),
-                    'scope' => 'app',
-                    'context' => 'app',
-                    'type' => $alias[$set] // dynamic field to pass `type` to the validator
-                ];
+            $data[] = $this->setData($alias, $set, $set);
+            if (empty($links[$set])) {
+                continue;
+            }
+            foreach ($links[$set] as $aliases => $value) {
+                if (in_array($value, $settings)) {
+                    throw new \Exception('Duble alias found');
+                }
+                $data[] = $this->setData($alias, $set, $value);
+            }
         }
 
         try {
@@ -76,14 +81,40 @@ class SettingsShell extends Shell
     }
 
     /**
+     * Prepare array for new entity
+     * @param string $alias alias
+     * @param string $index index
+     * @param string $value value
+     * @return array
+     */
+    private function setData($alias, $index, $value)
+    {
+        return [
+            'key' => $value,
+            'value' => Configure::read($index),
+            'scope' => 'app',
+            'context' => 'app',
+            'type' => $alias[$index] // dynamic field to pass `type` to the validator
+        ];
+    }
+
+    /**
      * reset() method. Truncate table Settings
      *
+     * @param string $key key of DB to delete
      * @return void
      */
-    public function reset()
+    public function reset($key = '')
     {
-        $this->out('Truncate table Settings');
         $query = TableRegistry::get('Settings');
-        $query->deleteAll([]);
+
+        if (empty($key)) {
+            $this->out('Truncate table Settings');
+            $query->deleteAll([]);
+
+            return;
+        }
+
+        $query->deleteAll(['key' => $key]);
     }
 }
