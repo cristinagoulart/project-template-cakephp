@@ -37,7 +37,8 @@ class LogsController extends BaseController
         $this->paginate['limit'] = 10;
         $this->paginate['fields'] = null;
 
-        $this->Logs = TableRegistry::getTableLocator()->get('DatabaseLog.DatabaseLogs');
+        $this->Logs = TableRegistry::getTableLocator()->get('Logs');
+        $this->modelClass = 'Logs';
     }
 
     /**
