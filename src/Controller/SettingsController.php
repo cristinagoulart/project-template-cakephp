@@ -154,10 +154,20 @@ class SettingsController extends AppController
 
     /**
      * Pass data to generator page
-     * @return \Cake\Http\Response|array
+     * Avaiable only for developers in localhost
+     * @return \Cake\Http\Response|void|array
      */
     public function generator()
     {
+        $localhost = [
+            '127.0.0.1',
+            '::1'
+        ];
+
+        if (!in_array($_SERVER['REMOTE_ADDR'], $localhost)) {
+            return;
+        }
+
         // For render the main structure
         $dataSettings = Configure::read('Settings');
         $this->set('data', $dataSettings);
