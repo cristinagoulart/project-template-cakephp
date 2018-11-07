@@ -118,7 +118,7 @@ class CronShell extends Shell
      */
     public function lock(string $file, string $class)
     {
-        $class = str_replace([':', '/'], ['_', '_'], $class);
+        $class = preg_replace('/[^\da-z]/i', '_', $class);
         $lockFile = $this->Lock->getLockFileName($file, $class);
 
         try {
