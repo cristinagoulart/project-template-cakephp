@@ -8,7 +8,7 @@ return [
         'Title' => [
           'alias' => 'ScheduledLog.stats.age',
           'links' => [
-            (int)0 => 'Ldap.host'
+            (int)0 => ''
           ],
           'type' => 'string',
           'help' => 'This is dynamic, should not be display',
