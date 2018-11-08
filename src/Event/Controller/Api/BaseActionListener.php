@@ -75,7 +75,7 @@ abstract class BaseActionListener implements EventListenerInterface
 
             $entity->set(
                 $conditions['model_field'],
-                $fileUpload->getFiles($table, $conditions['model_field'], $entity->get($table->getPrimaryKey()))
+                $fileUpload->getFiles($conditions['model_field'], $entity->get($table->getPrimaryKey()))
             );
         }
     }
