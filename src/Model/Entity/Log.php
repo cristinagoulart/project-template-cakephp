@@ -31,15 +31,6 @@ class Log extends DatabaseLog
      * @var array
      */
     protected $_accessible = [
-        'type' => true,
-        'message' => true,
-        'context' => true,
-        'created' => true,
-        'ip' => true,
-        'hostname' => true,
-        'uri' => true,
-        'refer' => true,
-        'user_agent' => true,
-        'count' => true
+        '*' => true
     ];
 }
