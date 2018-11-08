@@ -45,9 +45,9 @@ class DbConfigTest extends TestCase
         $this->assertInternalType('array', $array);
     }
 
-    public function testGetException()
+    public function testGetEmptyArray()
     {
-        $this->expectException('\Exception');
-        $array = $this->configure->read('NotSettingsTable');
+        $array = $this->configure->read('SettingsWrong');
+        $this->assertEquals([], $array);
     }
 }
