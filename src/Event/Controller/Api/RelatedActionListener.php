@@ -28,10 +28,17 @@ class RelatedActionListener extends BaseActionListener
      */
     public function beforePaginate(Event $event, QueryInterface $query) : void
     {
-        $query->order($this->getOrderClause(
-            $event->getSubject()->request,
-            $event->getSubject()->{$event->getSubject()->name}
-        ));
+        /**
+         * @var \Psr\Http\Message\ServerRequestInterface
+         */
+        $request = $event->getSubject()->request;
+
+        /**
+         * @var \Cake\Datasource\RepositoryInterface
+         */
+        $table = $event->getSubject()->{$event->getSubject()->name};
+
+        $query->order($this->getOrderClause($request, $table));
     }
 
     /**
