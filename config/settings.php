@@ -35,6 +35,7 @@ return [
         ],
         'Ldap baseDn' => [
           'alias' => 'Ldap.baseDn',
+          'links' => '',
           'type' => 'string',
           'help' => '',
           'scope' => [
@@ -44,6 +45,7 @@ return [
         ],
         'Ldap domain' => [
           'alias' => 'Ldap.domain',
+          'links' => '',
           'type' => 'string',
           'help' => '',
           'scope' => [
@@ -53,6 +55,7 @@ return [
         ],
         'Ldap enabled' => [
           'alias' => 'Ldap.enabled',
+          'links' => '',
           'type' => 'boolean',
           'help' => '',
           'scope' => [
@@ -62,6 +65,7 @@ return [
         ],
         'Ldap filter' => [
           'alias' => 'Ldap.filter',
+          'links' => '',
           'type' => 'string',
           'help' => '',
           'scope' => [
@@ -71,6 +75,7 @@ return [
         ],
         'Ldap groupsFilter' => [
           'alias' => 'Ldap.groupsFilter',
+          'links' => '',
           'type' => 'string',
           'help' => '',
           'scope' => [
@@ -80,6 +85,7 @@ return [
         ],
         'Ldap host' => [
           'alias' => 'Ldap.host',
+          'links' => '',
           'type' => 'string',
           'help' => '',
           'scope' => [
@@ -89,6 +95,7 @@ return [
         ],
         'Ldap password' => [
           'alias' => 'Ldap.password',
+          'links' => '',
           'type' => 'string',
           'help' => '',
           'scope' => [
@@ -98,6 +105,7 @@ return [
         ],
         'Ldap port' => [
           'alias' => 'Ldap.port',
+          'links' => '',
           'type' => 'integer',
           'help' => '',
           'scope' => [

@@ -59,6 +59,9 @@ class SettingsController extends AppController
         $this->dataSettings = Hash::merge($this->dataSettings, Hash::expand($this->dataApp), Hash::expand($dataUser));
         $this->viewBuilder()->template('index');
 
+        $userName = TableRegistry::get('Users')->find('list')->where(['id' => $context])->toArray();
+        $this->set('afterTitle', ' » ' . $userName[$context]);
+
         return $this->settings();
     }
 
@@ -72,6 +75,10 @@ class SettingsController extends AppController
         $this->context = 'app';
         $this->configureValue = $this->dataApp;
         $this->viewBuilder()->template('index');
+
+        if ($this->isLocalhost()) {
+            $this->set('afterTitle', ' » System <h4><a href=/settings/generator/>settings.php file builder utility</a></h4>');
+        }
 
         return $this->settings();
     }
@@ -89,6 +96,8 @@ class SettingsController extends AppController
               ->toArray();
         $this->configureValue = Hash::merge($this->dataApp, $dataUser);
         $this->viewBuilder()->template('index');
+
+        $this->set('afterTitle', ' » ' . $this->Auth->user('username'));
 
         return $this->settings();
     }
@@ -180,19 +189,16 @@ class SettingsController extends AppController
     }
 
     /**
+     * ONLY for developers
      * Pass data to generator page
      * Avaiable only for developers in localhost
      * @return \Cake\Http\Response|void|arra
+     * @throws UnauthorizedException check if is localhost
      */
     public function generator()
     {
-        $localhost = [
-            '127.0.0.1',
-            '::1'
-        ];
-
-        if (!in_array($_SERVER['REMOTE_ADDR'], $localhost)) {
-            return;
+        if (!$this->isLocalhost()) {
+            throw new UnauthorizedException('Run in localhost to access');
         }
 
         // For render the main structure
@@ -212,5 +218,23 @@ class SettingsController extends AppController
 
             return;
         }
+    }
+
+    /**
+     * Check if the webserver is on localhost
+     * @return bool true if is localhost
+     */
+    private function isLocalhost()
+    {
+        $localhost = [
+            '127.0.0.1',
+            '::1'
+        ];
+
+        if (!in_array($_SERVER['REMOTE_ADDR'], $localhost)) {
+            return false;
+        }
+
+        return true;
     }
 }
