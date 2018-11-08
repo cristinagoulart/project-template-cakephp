@@ -31,10 +31,6 @@ class LogsTable extends DatabaseLogsTable
         parent::initialize($config);
 
         $this->setTable('database_logs');
-        $this->setDisplayField('id');
-        $this->setPrimaryKey('id');
-
-        $this->addBehavior('Timestamp');
     }
 
     /**
