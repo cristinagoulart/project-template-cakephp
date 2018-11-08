@@ -77,8 +77,6 @@ class AppController extends Controller
         'checkAuthIn' => 'Controller.initialize'
     ];
 
-    protected $fileUpload;
-
     /**
      * {@inheritDoc}
      */
@@ -97,8 +95,6 @@ class AppController extends Controller
         if (Configure::read('API.auth')) {
             $this->enableAuthorization();
         }
-
-        $this->fileUpload = new FileUpload($this->{$this->name});
     }
 
     /**
@@ -255,7 +251,8 @@ class AppController extends Controller
 
         $this->Crud->on('afterSave', function (Event $event) {
             // handle file uploads if found in the request data
-            $linked = $this->fileUpload->linkFilesToEntity($event->subject()->entity, $this->{$this->name}, $this->request->data);
+            $fileUpload = new FileUpload($this->{$this->name});
+            $linked = $fileUpload->linkFilesToEntity($event->subject()->entity, $this->request->data);
 
             $ev = new Event((string)EventName::API_ADD_AFTER_SAVE(), $this, [
                 'entity' => $event->subject()->entity
@@ -303,7 +300,8 @@ class AppController extends Controller
 
         $this->Crud->on('afterSave', function (Event $event) {
             // handle file uploads if found in the request data
-            $linked = $this->fileUpload->linkFilesToEntity($event->subject()->entity, $this->{$this->name}, $this->request->data);
+            $fileUpload = new FileUpload($this->{$this->name});
+            $linked = $fileUpload->linkFilesToEntity($event->subject()->entity, $this->request->data);
         });
 
         return $this->Crud->execute();
