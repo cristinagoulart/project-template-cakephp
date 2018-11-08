@@ -326,34 +326,22 @@ class AppController extends Controller
     {
         $this->request->allowMethod(['post']);
 
-        $this->autoRender = false;
+        $fileUpload = new FileUpload($this->{$this->name});
 
-        $saved = null;
-        $response = [];
-
-        foreach ($this->request->data() as $model => $files) {
-            if (!is_array($files)) {
+        $result = [
+            'success' => true,
+            'data' => []
+        ];
+        foreach ($this->request->getData($this->name) as $field => $files) {
+            if (! is_array($files)) {
                 continue;
             }
 
-            foreach ($files as $modelField => $fileInfo) {
-                $saved = $this->fileUpload->ajaxSave(
-                    $this->{$this->name},
-                    $modelField,
-                    $fileInfo,
-                    ['ajax' => true]
-                );
-            }
+            $result['data'] = $fileUpload->saveAll($field, $files);
         }
 
-        if ($saved) {
-            $response = $saved;
-        } else {
-            $this->response->statusCode(400);
-            $response['errors'] = "Couldn't save the File";
-        }
-
-        echo json_encode($response);
+        $this->set('result', $result);
+        $this->set('_serialize', 'result');
     }
 
     /**
