@@ -252,7 +252,10 @@ class AppController extends Controller
         $this->Crud->on('afterSave', function (Event $event) {
             // handle file uploads if found in the request data
             $fileUpload = new FileUpload($this->{$this->name});
-            $linked = $fileUpload->linkFilesToEntity($event->subject()->entity, $this->request->data);
+            $fileUpload->link(
+                $event->getSubject()->entity->get($this->{$this->name}->getPrimaryKey()),
+                $this->request->getData()
+            );
 
             $ev = new Event((string)EventName::API_ADD_AFTER_SAVE(), $this, [
                 'entity' => $event->subject()->entity
@@ -301,7 +304,10 @@ class AppController extends Controller
         $this->Crud->on('afterSave', function (Event $event) {
             // handle file uploads if found in the request data
             $fileUpload = new FileUpload($this->{$this->name});
-            $linked = $fileUpload->linkFilesToEntity($event->subject()->entity, $this->request->data);
+            $fileUpload->link(
+                $event->getSubject()->entity->get($this->{$this->name}->getPrimaryKey()),
+                $this->request->getData()
+            );
         });
 
         return $this->Crud->execute();
