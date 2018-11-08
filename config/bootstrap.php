@@ -104,14 +104,8 @@ ConnectionManager::setConfig(Configure::consume('Datasources'));
 /**
  * Load custom settings from the DB
  */
-try {
-    Configure::config('dbconfig', new DbConfig());
-    Configure::load('Settings', 'dbconfig', true);
-} catch (\Cake\Database\Exception $e) {
-    // Do nothing
-} catch (\Exception $e) {
-    die($e->getMessage() . "\n");
-}
+Configure::config('dbconfig', new DbConfig());
+Configure::load('Settings', 'dbconfig');
 /**
  *  After this point, all the Configure::load() will overwrite
  *  those from the DB, if exist.

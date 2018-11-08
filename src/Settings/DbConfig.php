@@ -10,12 +10,18 @@ class DbConfig implements ConfigEngineInterface
     /**
      * @param string $key Table name with the settings
      * @return array
-     * @throws \Exception
+     * @throws Exception
      */
     public function read($key)
     {
         $query = TableRegistry::get($key);
-        $data = $query->find('list', ['keyField' => 'key', 'valueField' => 'value'])->toArray();
+
+        // if the table $key doesn't exist will merge an empty array
+        try {
+            $data = $query->find('list', ['keyField' => 'key', 'valueField' => 'value'])->toArray();
+        } catch (\Exception $e) {
+            return [];
+        }
         $config = Hash::expand($data);
 
         return $config;
