@@ -4,7 +4,7 @@ if ($field['plugin']) {
     $tableName = $field['plugin'] . '.' . $tableName;
 }
 
-$renderOptions = ['entity' => $options['entity'], 'imageSize' => 'small'];
+$renderOptions = ['entity' => $options['entity']];
 
 $label = $factory->renderName($tableName, $field['name'], $renderOptions);
 $value = $factory->renderValue($tableName, $field['name'], $options['entity'], $renderOptions);
