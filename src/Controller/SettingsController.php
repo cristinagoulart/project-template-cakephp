@@ -124,7 +124,7 @@ class SettingsController extends AppController
 
             $set = [];
             foreach ($dataPut as $key => $value) {
-                $entity = $this->createEntity($key, $value, $type[$key]);
+                $entity = $this->query->createEntity($key, $value, $type[$key], $this->scope, $this->context);
                 !empty($entity) ? ($set[] = $entity) : '';
 
                 if (empty($links[$key])) {
@@ -132,12 +132,10 @@ class SettingsController extends AppController
                 }
 
                 foreach ($links[$key] as $link => $keyLink) {
-                    $entity = $this->createEntity($keyLink, $value, $type[$key]);
+                    $entity = $this->query->createEntity($keyLink, $value, $type[$key], $this->scope, $this->context);
                     !empty($entity) ? ($set[] = $entity) : '';
                 }
             }
-
-            // dd($set);
 
             if ($this->query->saveMany($set)) {
                 $this->Flash->success(__('Settings successfully updated'));
@@ -147,45 +145,6 @@ class SettingsController extends AppController
                 $this->Flash->error(__('Failed to update settings, please try again.'));
             }
         }
-    }
-
-    /**
-     * if the key exist in the DB, will create and validate an entity.
-     * @param  string $key   key
-     * @param  string $value value
-     * @param  string $type  type
-     * @return \App\Model\Entity\Setting|void
-     */
-    private function createEntity($key, $value, $type)
-    {
-        // if the key doesn't exist it fails.
-        $entity = $this->query->findByKey($key)->firstOrFail();
-        // select based on key, scope, conext
-        $entity = $this->query->find('all')->where(['key' => $key, 'scope' => $this->scope, 'context' => $this->context])->first();
-
-        // will storage only the modified settings
-        if (!is_null($entity) && $entity->value === $value) {
-            // if the user setting match the app setting, the entity will be deleted
-            if ($this->scope === 'user' && $value === $this->dataApp[$key]) {
-                $this->query->delete($entity);
-            }
-
-            return;
-        }
-
-        $params = [
-            'key' => $key,
-            'value' => $value,
-            'scope' => $this->scope,
-            'context' => $this->context,
-            // dynamic field to pass type to the validator
-            'type' => $type
-        ];
-
-        // if (entity not exist) : new ? patch
-        $newEntity = is_null($entity) ? $this->Settings->newEntity($params) : $this->Settings->patchEntity($entity, $params);
-
-        return $newEntity;
     }
 
     /**
