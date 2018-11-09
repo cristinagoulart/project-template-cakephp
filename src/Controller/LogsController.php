@@ -14,12 +14,12 @@ class LogsController extends BaseController
      * @var array
      */
     public $paginate = [
-        'order' => ['Logs.id' => 'DESC'],
+        'order' => ['DatabaseLogs.id' => 'DESC'],
         'fields' => [
-            'Logs.created',
-            'Logs.type',
-            'Logs.message',
-            'Logs.id'
+            'DatabaseLogs.created',
+            'DatabaseLogs.type',
+            'DatabaseLogs.message',
+            'DatabaseLogs.id'
         ]
     ];
 
@@ -36,8 +36,7 @@ class LogsController extends BaseController
         parent::initialize();
         $this->paginate['limit'] = 10;
         $this->paginate['fields'] = null;
-        $this->DatabaseLogs = TableRegistry::getTableLocator()->get('Logs');
-        $this->modelClass = 'Logs';
+        $this->modelClass = 'DatabaseLog.DatabaseLogs';
     }
 
     /**
