@@ -4,16 +4,21 @@ namespace App\Settings;
 use Cake\Core\Configure\ConfigEngineInterface;
 use Cake\ORM\TableRegistry;
 use Cake\Utility\Hash;
+use Exception;
 
 class DbConfig implements ConfigEngineInterface
 {
     /**
      * @param string $key Table name with the settings
      * @return array
-     * @throws \Exception
      */
     public function read($key)
     {
+        // if the table $key doesn't exist will merge an empty array
+        if (!TableRegistry::exists($key)) {
+            return [];
+        }
+
         $query = TableRegistry::get($key);
         $data = $query->find('list', ['keyField' => 'key', 'valueField' => 'value'])->toArray();
         $config = Hash::expand($data);
