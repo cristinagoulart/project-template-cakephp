@@ -75,10 +75,10 @@ class IndexActionListener extends BaseActionListener
             static::FORMAT_PRETTY === $request->getQuery('format') ?
                 $this->prettify($entity, $table) :
                 $this->attachFiles($entity, $table);
-        }
 
-        if ((bool)$request->getQuery(static::FLAG_INCLUDE_MENUS)) {
-            $this->attachMenu($resultSet, $table, $event->getSubject()->Auth->user());
+            if ((bool)$request->getQuery(static::FLAG_INCLUDE_MENUS)) {
+                $this->attachMenu($entity, $table, $event->getSubject()->Auth->user());
+            }
         }
     }
 
