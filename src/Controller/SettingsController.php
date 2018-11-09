@@ -162,7 +162,7 @@ class SettingsController extends AppController
 
         // For render the main structure
         $dataSettings = Configure::read('Settings');
-        $this->set('data', $dataSettings);
+        $this->set('data', empty($dataSettings) ? null : $dataSettings);
         // For seach the new fields to insert
         $data = Hash::flatten(Configure::read());
         $this->set('alldata', $data);

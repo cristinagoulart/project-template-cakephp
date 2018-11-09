@@ -26,7 +26,7 @@ $this->Html->scriptStart(array('block' => 'scriptBottom', 'inline' => false)); ?
 $(document).ready(function(){
     // settings.php array in json
     let data = (<?= json_encode($data) ?>)
-
+    console.log(data)
     // Tabs
     $.each(data,function(tab, cols){
         genTab(tab)
@@ -290,6 +290,7 @@ $(document).ready(function(){
         event.preventDefault()
         let token = JSON.parse('{ "_csrfToken" : "' + $('input[name="_csrfToken"]').attr('value') + '"}')
         data = $.extend(true,data,token)
+        console.log(data)
         $.ajax({
             url: "/settings/generator",
             type : 'post',
