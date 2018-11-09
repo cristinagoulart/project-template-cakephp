@@ -251,9 +251,9 @@ class AppController extends Controller
 
         $this->Crud->on('afterSave', function (Event $event) {
             // handle file uploads if found in the request data
-            $fileUpload = new FileUpload($this->{$this->name});
+            $fileUpload = new FileUpload($this->loadModel());
             $fileUpload->link(
-                $event->getSubject()->entity->get($this->{$this->name}->getPrimaryKey()),
+                $event->getSubject()->entity->get($this->loadModel()->getPrimaryKey()),
                 $this->request->getData()
             );
 
@@ -303,9 +303,9 @@ class AppController extends Controller
 
         $this->Crud->on('afterSave', function (Event $event) {
             // handle file uploads if found in the request data
-            $fileUpload = new FileUpload($this->{$this->name});
+            $fileUpload = new FileUpload($this->loadModel());
             $fileUpload->link(
-                $event->getSubject()->entity->get($this->{$this->name}->getPrimaryKey()),
+                $event->getSubject()->entity->get($this->loadModel()->getPrimaryKey()),
                 $this->request->getData()
             );
         });
@@ -332,7 +332,7 @@ class AppController extends Controller
     {
         $this->request->allowMethod(['post']);
 
-        $fileUpload = new FileUpload($this->{$this->name});
+        $fileUpload = new FileUpload($this->loadModel());
 
         $result = [
             'success' => true,

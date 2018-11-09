@@ -42,17 +42,17 @@ trait ChangelogTrait
             ->order(['timestamp' => 'DESC'])
             ->group('timestamp');
 
-        $modelAlias = $this->{$this->name}->alias();
+        $modelAlias = $this->loadModel()->alias();
         $methodName = 'moduleAlias';
-        if (method_exists($this->{$this->name}, $methodName) && is_callable([$this->{$this->name}, $methodName])) {
-            $modelAlias = $this->{$this->name}->{$methodName}();
+        if (method_exists($this->loadModel(), $methodName) && is_callable([$this->loadModel(), $methodName])) {
+            $modelAlias = $this->loadModel()->{$methodName}();
         }
 
-        $entity = $this->{$this->name}->findById($id)->firstOrFail();
+        $entity = $this->loadModel()->findById($id)->firstOrFail();
 
         $this->set('changelog', $this->paginate($query));
         $this->set('modelAlias', $modelAlias);
-        $this->set('displayField', $this->{$this->name}->displayField());
+        $this->set('displayField', $this->loadModel()->displayField());
         $this->set('usersTable', TableRegistry::get(Configure::read('Users.table')));
         $this->set('entity', $entity);
 

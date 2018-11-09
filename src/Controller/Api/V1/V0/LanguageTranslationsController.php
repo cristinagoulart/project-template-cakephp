@@ -16,7 +16,7 @@ class LanguageTranslationsController extends AppController
             $params = $this->request->query;
 
             if ($this->request->query('object_model') && $this->request->query('object_foreign_key')) {
-                $table = $this->{$this->name};
+                $table = $this->loadModel();
                 $conditions = [
                     'object_model' => $this->request->query('object_model'),
                     'object_foreign_key' => $this->request->query('object_foreign_key'),

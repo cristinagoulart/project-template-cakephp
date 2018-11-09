@@ -175,8 +175,8 @@ class AppController extends Controller
             $this->viewBuilder()->className('Json');
             $response = $this->getAjaxViewVars(
                 $searchData['latest'],
-                $this->{$this->name},
-                new Search($this->{$this->name}, $this->Auth->user())
+                $this->loadModel(),
+                new Search($this->loadModel(), $this->Auth->user())
             );
             $this->set($response);
 
@@ -186,12 +186,12 @@ class AppController extends Controller
         $this->set([
             'entity' => $entity,
             'searchData' => $searchData['latest'],
-            'preSaveId' => (new Search($this->{$this->name}, $this->Auth->user()))->create($searchData['latest']),
+            'preSaveId' => (new Search($this->loadModel(), $this->Auth->user()))->create($searchData['latest']),
             'searchableFields' => SearchableFieldsListener::getSearchableFieldsByTable(
-                $this->{$this->name},
+                $this->loadModel(),
                 $this->Auth->user()
             ),
-            'associationLabels' => SearchUtility::instance()->getAssociationLabels($this->{$this->name})
+            'associationLabels' => SearchUtility::instance()->getAssociationLabels($this->loadModel())
         ]);
 
         $this->render('/Module/index');
@@ -232,7 +232,7 @@ class AppController extends Controller
             ->firstOrFail()
             ->toArray();
 
-        $id = (new Search($this->{$this->name}, $user))->create(['system' => true]);
+        $id = (new Search($this->loadModel(), $user))->create(['system' => true]);
 
         $entity = $table->get($id);
         $entity = $table->patchEntity($entity, [
