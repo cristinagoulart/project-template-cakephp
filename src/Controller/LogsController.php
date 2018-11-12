@@ -3,7 +3,6 @@ namespace App\Controller;
 
 use Cake\Core\Configure;
 use Cake\I18n\Time;
-use Cake\ORM\TableRegistry;
 use DatabaseLog\Controller\Admin\LogsController as BaseController;
 
 class LogsController extends BaseController
@@ -36,7 +35,6 @@ class LogsController extends BaseController
         parent::initialize();
         $this->paginate['limit'] = 10;
         $this->paginate['fields'] = null;
-        $this->modelClass = 'DatabaseLog.DatabaseLogs';
     }
 
     /**
