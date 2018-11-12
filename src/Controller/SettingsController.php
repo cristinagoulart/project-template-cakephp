@@ -2,6 +2,7 @@
 namespace App\Controller;
 
 use App\Controller\AppController;
+use App\Model\Table\SettingsTable;
 use Cake\Core\Configure;
 use Cake\Network\Exception\UnauthorizedException;
 use Cake\ORM\TableRegistry;
@@ -66,7 +67,7 @@ class SettingsController extends AppController
         $this->dataSettings = Configure::read('Settings');
         $this->query = TableRegistry::get('Settings');
         $this->dataApp = $this->query->find('list', ['keyField' => 'key', 'valueField' => 'value'])
-              ->where(['scope' => $this->query::SCOPE_APP, 'context' => $this->query::CONTEXT_APP])
+              ->where(['scope' => SettingsTable::SCOPE_APP, 'context' => SettingsTable::CONTEXT_APP])
               ->toArray();
     }
 
@@ -77,10 +78,10 @@ class SettingsController extends AppController
      */
     public function user($context)
     {
-        $this->scope = $this->query::SCOPE_USER;
+        $this->scope = SettingsTable::SCOPE_USER;
         $this->context = $context;
         $dataUser = $this->query->find('list', ['keyField' => 'key', 'valueField' => 'value'])
-              ->where(['scope' => $this->query::SCOPE_USER, 'context' => $this->context])
+              ->where(['scope' => SettingsTable::SCOPE_USER, 'context' => $this->context])
               ->toArray();
         $this->configureValue = Hash::merge($this->dataApp, $dataUser);
         $this->dataSettings = Hash::merge($this->dataSettings, Hash::expand($this->dataApp), Hash::expand($dataUser));
@@ -95,8 +96,8 @@ class SettingsController extends AppController
      */
     public function app()
     {
-        $this->scope = $this->query::SCOPE_APP;
-        $this->context = $this->query::CONTEXT_APP;
+        $this->scope = SettingsTable::SCOPE_APP;
+        $this->context = SettingsTable::CONTEXT_APP;
         $this->configureValue = $this->dataApp;
         $this->viewBuilder()->template('index');
 
@@ -109,10 +110,10 @@ class SettingsController extends AppController
      */
     public function my()
     {
-        $this->scope = $this->query::SCOPE_USER;
+        $this->scope = SettingsTable::SCOPE_USER;
         $this->context = $this->Auth->user('id');
         $dataUser = $this->query->find('list', ['keyField' => 'key', 'valueField' => 'value'])
-              ->where(['scope' => $this->query::SCOPE_USER, 'context' => $this->context])
+              ->where(['scope' => SettingsTable::SCOPE_USER, 'context' => $this->context])
               ->toArray();
         $this->configureValue = Hash::merge($this->dataApp, $dataUser);
         $this->viewBuilder()->template('index');
@@ -149,7 +150,7 @@ class SettingsController extends AppController
                 // will storage only the modified settings
                 if (!is_null($entity) && $entity->value === $value) {
                     // if the user setting match the app setting, the entity will be deleted
-                    if ($this->scope === $this->query::SCOPE_USER && $value === $this->dataApp[$key]) {
+                    if ($this->scope === SettingsTable::SCOPE_USER && $value === $this->dataApp[$key]) {
                         $this->query->delete($entity);
                     }
                     continue;
@@ -209,7 +210,7 @@ class SettingsController extends AppController
         $this->set('alldata', $data);
 
         // list of scope
-        $this->set('scope', [$this->query::SCOPE_USER, $this->query::SCOPE_APP]);
+        $this->set('scope', [SettingsTable::SCOPE_USER, SettingsTable::SCOPE_APP]);
 
         if ($this->request->is('post')) {
             $this->autoRender = false;

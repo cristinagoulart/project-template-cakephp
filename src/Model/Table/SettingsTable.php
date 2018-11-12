@@ -102,10 +102,10 @@ class SettingsTable extends Table
         $scope = $context['data']['scope'];
 
         switch ($scope) {
-            case $this::SCOPE_APP:
-                return $value === $this::CONTEXT_APP ? true : false;
+            case self::SCOPE_APP:
+                return $value === self::CONTEXT_APP ? true : false;
 
-            case $this::SCOPE_USER:
+            case self::SCOPE_USER:
                 return Validation::uuid($value);
 
             default:
