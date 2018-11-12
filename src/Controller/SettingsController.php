@@ -17,17 +17,44 @@ use Cake\Utility\Hash;
 class SettingsController extends AppController
 {
 
-    private $scope = 'user';
+    /**
+     * Implemented scope are : user, app
+     * @var string
+     */
+    private $scope;
+
+    /**
+     * Value of the scope. In case of :
+     * user => uuid
+     * app  => SettingsTable::SCOPE_APP
+     * @var string
+     */
     private $context = '';
+
+    /**
+     * It will read the current user setting from Configure::read()
+     * or load from the settings table, in case of SettingsTable::SCOPE_APP or other user settings
+     * @var array
+     */
     private $dataSettings;
 
-    // Data from the DB with scope 'app'
+    /**
+     * Data from the DB with scope SettingsTable::SCOPE_APP
+     * @var array
+     */
     private $dataApp;
 
-    // TableRegistry::get('Settings');
+    /**
+     * TableRegistry::get('Settings');
+     * @var App\Model\Table\SettingsTable
+     */
     private $query;
 
-    // instead Configure::read(), it will load form the DB the settings of each scope/contex
+    /**
+     * Instead Configure::read(), it will load form the DB the settings of each scope/contex
+     * if the user doesn't have a record for a particular key, it will use the app value.
+     * @var array
+     */
     private $configureValue;
 
     /**
@@ -39,21 +66,21 @@ class SettingsController extends AppController
         $this->dataSettings = Configure::read('Settings');
         $this->query = TableRegistry::get('Settings');
         $this->dataApp = $this->query->find('list', ['keyField' => 'key', 'valueField' => 'value'])
-              ->where(['scope' => 'app', 'context' => 'app'])
+              ->where(['scope' => $this->query::SCOPE_APP, 'context' => $this->query::CONTEXT_APP])
               ->toArray();
     }
 
     /**
      * Give access to edit any user settings.
      * @param string $context uuid of user
-     * @return null
+     * @return \Cake\Http\Response|void|null
      */
     public function user($context)
     {
-        $this->scope = 'user';
+        $this->scope = $this->query::SCOPE_USER;
         $this->context = $context;
         $dataUser = $this->query->find('list', ['keyField' => 'key', 'valueField' => 'value'])
-              ->where(['scope' => 'user', 'context' => $this->context])
+              ->where(['scope' => $this->query::SCOPE_USER, 'context' => $this->context])
               ->toArray();
         $this->configureValue = Hash::merge($this->dataApp, $dataUser);
         $this->dataSettings = Hash::merge($this->dataSettings, Hash::expand($this->dataApp), Hash::expand($dataUser));
@@ -67,12 +94,12 @@ class SettingsController extends AppController
 
     /**
      * Give access to edit app settings
-     * @return null
+     * @return \Cake\Http\Response|void|null
      */
     public function app()
     {
-        $this->scope = 'app';
-        $this->context = 'app';
+        $this->scope = $this->query::SCOPE_APP;
+        $this->context = $this->query::CONTEXT_APP;
         $this->configureValue = $this->dataApp;
         $this->viewBuilder()->template('index');
 
@@ -85,14 +112,14 @@ class SettingsController extends AppController
 
     /**
      * Give access to edit personal settings
-     * @return null
+     * @return \Cake\Http\Response|void|null
      */
     public function my()
     {
-        $this->scope = 'user';
+        $this->scope = $this->query::SCOPE_USER;
         $this->context = $this->Auth->user('id');
         $dataUser = $this->query->find('list', ['keyField' => 'key', 'valueField' => 'value'])
-              ->where(['scope' => 'user', 'context' => $this->context])
+              ->where(['scope' => $this->query::SCOPE_USER, 'context' => $this->context])
               ->toArray();
         $this->configureValue = Hash::merge($this->dataApp, $dataUser);
         $this->viewBuilder()->template('index');
@@ -137,6 +164,12 @@ class SettingsController extends AppController
                 }
             }
 
+            if (empty($set)) {
+                $this->Flash->success(__('Nothing to update'));
+
+                return $this->redirect($this->here);
+            }
+
             if ($this->query->saveMany($set)) {
                 $this->Flash->success(__('Settings successfully updated'));
 
@@ -168,14 +201,11 @@ class SettingsController extends AppController
         $this->set('alldata', $data);
 
         // list of scope
-        $this->set('scope', ['app', 'user']);
+        $this->set('scope', [$this->query::SCOPE_USER, $this->query::SCOPE_APP]);
 
         if ($this->request->is('post')) {
             $this->autoRender = false;
-            // debug format much better that var_export
-            debug($this->request->data());
-
-            return;
+            var_export($this->request->data());
         }
     }
 

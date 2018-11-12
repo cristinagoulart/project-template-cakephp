@@ -6,6 +6,7 @@ use Cake\ORM\Query;
 use Cake\ORM\RulesChecker;
 use Cake\ORM\Table;
 use Cake\Utility\Hash;
+use Cake\Validation\Validation;
 use Cake\Validation\Validator;
 use CsvMigrations\FieldHandlers\Config\ConfigFactory;
 use CsvMigrations\FieldHandlers\CsvField;
@@ -23,6 +24,10 @@ use CsvMigrations\FieldHandlers\CsvField;
  */
 class SettingsTable extends Table
 {
+
+    const SCOPE_APP = 'app';
+    const CONTEXT_APP = 'app';
+    const SCOPE_USER = 'user';
 
     /**
      * Initialize method
@@ -70,20 +75,51 @@ class SettingsTable extends Table
             ->requirePresence('scope', 'create')
             ->notEmpty('scope');
 
+        $validator
+            ->maxLength('context', 255)
+            ->requirePresence('context', 'create')
+            ->notEmpty('scope');
+
         $validator->add('value', 'custom', [
-            'rule' => [$this, 'settingsValidator'],
+            'rule' => [$this, 'valueValidator'],
+        ]);
+
+        $validator->add('context', 'custom', [
+            'rule' => [$this, 'contextValidator'],
         ]);
 
         return $validator;
     }
 
     /**
-     * Validate the field from the type in settings.php
-     * @param value $value Value of the field
-     * @param entity $context The entity
+     * Validate the context according the scope value
+     * @param string $value Value of the $context
+     * @param array $context The entity
      * @return bool True if validate
      */
-    public function settingsValidator($value, $context)
+    public function contextValidator($value, $context)
+    {
+        $scope = $context['data']['scope'];
+
+        switch ($scope) {
+            case $this::SCOPE_APP:
+                return $value === $this::CONTEXT_APP ? true : false;
+
+            case $this::SCOPE_USER:
+                return Validation::uuid($value);
+
+            default:
+                return false;
+        }
+    }
+
+    /**
+     * Validate the field from the type in settings.php
+     * @param string $value Value of the field
+     * @param array $context The entity
+     * @return bool True if validate
+     */
+    public function valueValidator($value, $context)
     {
         $type = $context['data']['type'];
         $config = ConfigFactory::getByType($type, 'value');

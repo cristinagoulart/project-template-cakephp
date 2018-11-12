@@ -264,4 +264,68 @@ class SettingsTableTest extends TestCase
         $this->expectException('\Exception');
         $this->Settings->getAliasDiff($alias);
     }
+
+    public function testContextValidationValidUser()
+    {
+        $key = 'FileStorage.defaultImageSize';
+        $entity = TableRegistry::get('Settings')->findByKey($key)->first();
+        $params = [
+            'key' => 'FileStorage.defaultImageSize',
+            'value' => '1234',
+            'scope' => 'user',
+            'context' => 'bb697cd7-c869-491d-8696-805b1af8c08f',
+            'type' => 'integer'
+        ];
+
+        $newEntity = $this->Settings->patchEntity($entity, $params);
+        $this->assertEquals([], $newEntity->getErrors());
+    }
+
+    public function testContextValidationErrorUser()
+    {
+        $key = 'FileStorage.defaultImageSize';
+        $entity = TableRegistry::get('Settings')->findByKey($key)->first();
+        $params = [
+            'key' => 'FileStorage.defaultImageSize',
+            'value' => '1234',
+            'scope' => 'user',
+            'context' => 'not a UUID !',
+            'type' => 'integer'
+        ];
+
+        $newEntity = $this->Settings->patchEntity($entity, $params);
+        $this->assertEquals('The provided value is invalid', $newEntity->getErrors()['context']['custom']);
+    }
+
+    public function testContextValidationValidApp()
+    {
+        $key = 'FileStorage.defaultImageSize';
+        $entity = TableRegistry::get('Settings')->findByKey($key)->first();
+        $params = [
+            'key' => 'FileStorage.defaultImageSize',
+            'value' => '1234',
+            'scope' => 'app',
+            'context' => 'app',
+            'type' => 'integer'
+        ];
+
+        $newEntity = $this->Settings->patchEntity($entity, $params);
+        $this->assertEquals([], $newEntity->getErrors());
+    }
+
+    public function testContextValidationErrorApp()
+    {
+        $key = 'FileStorage.defaultImageSize';
+        $entity = TableRegistry::get('Settings')->findByKey($key)->first();
+        $params = [
+            'key' => 'FileStorage.defaultImageSize',
+            'value' => '1234',
+            'scope' => 'app',
+            'context' => 'not app string',
+            'type' => 'integer'
+        ];
+
+        $newEntity = $this->Settings->patchEntity($entity, $params);
+        $this->assertEquals('The provided value is invalid', $newEntity->getErrors()['context']['custom']);
+    }
 }
