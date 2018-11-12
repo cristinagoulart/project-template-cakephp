@@ -198,7 +198,10 @@ class SettingsController extends AppController
         $dataSettings = Configure::read('Settings');
         $this->set('data', empty($dataSettings) ? null : $dataSettings);
         // For seach the new fields to insert
-        $data = Hash::flatten(Configure::read());
+        $data = Configure::read();
+        // Remove settings.php
+        unset($data['Settings']);
+        $data = Hash::flatten($data);
         $this->set('alldata', $data);
 
         // list of scope

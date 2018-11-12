@@ -26,7 +26,6 @@ $this->Html->scriptStart(array('block' => 'scriptBottom', 'inline' => false)); ?
 $(document).ready(function(){
     // settings.php array in json
     let data = (<?= json_encode($data) ?>)
-    console.log(data)
     // Tabs
     $.each(data,function(tab, cols){
         genTab(tab)
@@ -106,7 +105,7 @@ $(document).ready(function(){
                                 <div class="form-group input text">
                                     <label for="settings-theme-title">`+ name +`</label>
                                     Alias : 
-                                    <label for="settings-theme-title">`+ value.alias +`</label>
+                                    <label for="settings-theme-title" alias='`+ value.alias +`'>`+ value.alias +`</label>
                                 </div>
                             </div>`
             $('#'+ idField ).append(new_field)
@@ -246,7 +245,15 @@ $(document).ready(function(){
                         style: 'multi',
                     }
             })
+        $.each($('.tab-content').find("[alias]"),function(index,value){
+            removeTdData($(value).text())
+        })
     })
+    
+    // Remove from dataSettings table, the already choosen records
+    function removeTdData(alias){
+         $("#dataSettings").DataTable().columns('alias').search(alias).row().remove().draw();
+    }    
 
     // Get all the selected fields and send them to the array(data)    
     $(document).on('submit','.AddSelectedFields',function(event){
@@ -290,7 +297,6 @@ $(document).ready(function(){
         event.preventDefault()
         let token = JSON.parse('{ "_csrfToken" : "' + $('input[name="_csrfToken"]').attr('value') + '"}')
         data = $.extend(true,data,token)
-        console.log(data)
         $.ajax({
             url: "/settings/generator",
             type : 'post',
