@@ -37,11 +37,7 @@ class SettingsListener implements EventListenerInterface
             return;
         }
 
-        try {
-            Configure::config('dbconfig', new DbConfig('user', $userId));
-            Configure::load('Settings', 'dbconfig', true);
-        } catch (\Exception $e) {
-            die($e->getMessage() . "\n");
-        }
+        Configure::config('dbconfig', new DbConfig('user', $userId));
+        Configure::load('Settings', 'dbconfig', true);
     }
 }

@@ -108,13 +108,9 @@ class SettingsTable extends Table
      */
     public function filterSettings($dataSettings, $userScope)
     {
-        // debug(Hash::flatten($dataSettings));
         $filter = array_filter(Hash::flatten($dataSettings), function ($value) use ($userScope) {
-            // foreach ($value as $key ) {
                 return in_array($value, $userScope);
-            // }
         });
-        // dd($filter);
         $dataFlatten = [];
 
         foreach ($filter as $key => $value) {

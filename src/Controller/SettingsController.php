@@ -17,8 +17,16 @@ use Cake\Utility\Hash;
 class SettingsController extends AppController
 {
 
+    // Implemented scope are : user, app
     private $scope = 'user';
+
+    // Value of the scope. In case of
+    // user : uuid
+    // app  : 'app'
     private $context = '';
+
+    // It will read the current user setting from Configure::read()
+    // or load from the settings table, in case of 'app' or other user settings
     private $dataSettings;
 
     // Data from the DB with scope 'app'
@@ -27,7 +35,8 @@ class SettingsController extends AppController
     // TableRegistry::get('Settings');
     private $query;
 
-    // instead Configure::read(), it will load form the DB the settings of each scope/contex
+    // Instead Configure::read(), it will load form the DB the settings of each scope/contex
+    // if the user doesn't have a record for a particular key, it will use the app value.
     private $configureValue;
 
     /**
@@ -46,7 +55,7 @@ class SettingsController extends AppController
     /**
      * Give access to edit any user settings.
      * @param string $context uuid of user
-     * @return null
+     * @return \Cake\Http\Response|void|null
      */
     public function user($context)
     {
@@ -64,7 +73,7 @@ class SettingsController extends AppController
 
     /**
      * Give access to edit app settings
-     * @return null
+     * @return \Cake\Http\Response|void|null
      */
     public function app()
     {
@@ -78,7 +87,7 @@ class SettingsController extends AppController
 
     /**
      * Give access to edit personal settings
-     * @return null
+     * @return \Cake\Http\Response|void|null
      */
     public function my()
     {
@@ -181,7 +190,7 @@ class SettingsController extends AppController
         if ($this->request->is('post')) {
             $this->autoRender = false;
 
-            return var_export($this->request->data());
+            var_export($this->request->data());
         }
     }
 }
