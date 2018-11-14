@@ -61,7 +61,7 @@
                 {
                     "label": "System Settings",
                     "desc": "Manage system settings",
-                    "url": "/settings",
+                    "url": "/settings/app",
                     "icon": "wrench",
                     "order": 100
                 }

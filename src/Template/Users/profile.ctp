@@ -1,5 +1,6 @@
 <?php
 use CsvMigrations\FieldHandlers\FieldHandlerFactory;
+use RolesCapabilities\Access\AccessFactory;
 
 $fhf = new FieldHandlerFactory($this);
 
@@ -82,6 +83,16 @@ echo $this->Html->script('AdminLTE./plugins/datepicker/bootstrap-datepicker', ['
                             ['controller' => 'Users', 'action' => 'changePassword'],
                             ['escape' => false, 'class' => 'btn btn-default btn-sm']
                         ); ?>
+                        <?php
+                            $factory = new AccessFactory();
+                            if($factory->hasAccess(['controller' => 'settings', 'action' => 'my'], h($user['id']))): 
+                        ?>
+                            <?= $this->Html->link(
+                                '<i class="fa fa-gears"></i>' . __d('Users', 'User Settings'),
+                                ['controller' => 'settings', 'action' => 'my'],
+                                ['class' => 'btn btn-default btn-sm', 'escape' => false]
+                            ) ?>
+                        <?php endif; ?>
                     </div>
                     <!-- /.tab-pane -->
 

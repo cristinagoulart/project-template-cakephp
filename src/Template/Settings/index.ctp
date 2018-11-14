@@ -85,7 +85,7 @@ $(document).ready(function(){
 										<?php
 										// Fields
 										foreach ($fields as $field => $fieldValue) :
-											$value = Configure::read($fieldValue['alias']);
+											$value = $configure[$fieldValue['alias']];
 											$alias = 'Settings.' . $fieldValue['alias'];
 											$definition = [
 												'type'  => $fieldValue['type'],

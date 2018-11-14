@@ -6,6 +6,7 @@ use Cake\ORM\Query;
 use Cake\ORM\RulesChecker;
 use Cake\ORM\Table;
 use Cake\Utility\Hash;
+use Cake\Validation\Validation;
 use Cake\Validation\Validator;
 use CsvMigrations\FieldHandlers\Config\ConfigFactory;
 use CsvMigrations\FieldHandlers\CsvField;
@@ -23,6 +24,10 @@ use CsvMigrations\FieldHandlers\CsvField;
  */
 class SettingsTable extends Table
 {
+
+    const SCOPE_APP = 'app';
+    const CONTEXT_APP = 'app';
+    const SCOPE_USER = 'user';
 
     /**
      * Initialize method
@@ -64,20 +69,57 @@ class SettingsTable extends Table
             ->requirePresence('value', 'create')
             ->allowEmpty('value');
 
+        $validator
+            ->scalar('scope')
+            ->maxLength('scope', 10)
+            ->requirePresence('scope', 'create')
+            ->notEmpty('scope');
+
+        $validator
+            ->maxLength('context', 255)
+            ->requirePresence('context', 'create')
+            ->notEmpty('scope');
+
         $validator->add('value', 'custom', [
-            'rule' => [$this, 'settingsValidator'],
+            'rule' => [$this, 'valueValidator'],
+        ]);
+
+        $validator->add('context', 'custom', [
+            'rule' => [$this, 'contextValidator'],
         ]);
 
         return $validator;
     }
 
     /**
-     * Validate the field from the type in settings.php
-     * @param value $value Value of the field
-     * @param entity $context The entity
+     * Validate the context according the scope value
+     * @param string $value Value of the $context
+     * @param array $context The entity
      * @return bool True if validate
      */
-    public function settingsValidator($value, $context)
+    public function contextValidator($value, $context)
+    {
+        $scope = $context['data']['scope'];
+
+        switch ($scope) {
+            case self::SCOPE_APP:
+                return $value === self::CONTEXT_APP ? true : false;
+
+            case self::SCOPE_USER:
+                return Validation::uuid($value);
+
+            default:
+                return false;
+        }
+    }
+
+    /**
+     * Validate the field from the type in settings.php
+     * @param string $value Value of the field
+     * @param array $context The entity
+     * @return bool True if validate
+     */
+    public function valueValidator($value, $context)
     {
         $type = $context['data']['type'];
         $config = ConfigFactory::getByType($type, 'value');
@@ -93,23 +135,23 @@ class SettingsTable extends Table
 
     /**
      * Get all the Setting configuration and filter it base on the user
-     * roles describe in settings.php
+     * scope describe in settings.php
      *
      * @param array $dataSettings Data to filter
-     * @param array $userRoles list of roles of the user
+     * @param array $userScope list of scope of the user
      * @return array Settings onw by the user
      * @throws \RuntimeException when settings.php structure is broke
      */
-    public function filterSettings($dataSettings, $userRoles)
+    public function filterSettings($dataSettings, $userScope)
     {
-        $filter = array_filter(Hash::flatten($dataSettings), function ($value) use ($userRoles) {
-            return in_array($value, $userRoles);
+        $filter = array_filter(Hash::flatten($dataSettings), function ($value) use ($userScope) {
+                return in_array($value, $userScope);
         });
         $dataFlatten = [];
 
         foreach ($filter as $key => $value) {
             $p = explode('.', $key);
-            // ex: 'Config.UI.Theme.Title.roles.0'
+            // ex: 'Config.UI.Theme.Title.scope.0'
             // the stucture must be 4 defalut layer plus two
             if (count($p) < 6) {
                 throw new \RuntimeException("broken configuration in Settings");
@@ -117,7 +159,7 @@ class SettingsTable extends Table
             $p = $p[0] . '.' . $p[1] . '.' . $p[2] . '.' . $p[3];
             $dataFlatten[$p] = Hash::extract($dataSettings, $p);
         }
-        // $dataFiltered has now only fields belonging to the user roles
+        // $dataFiltered has now only fields belonging to the user scope
         $dataFiltered = Hash::expand($dataFlatten);
 
         return $dataFiltered;
