@@ -273,12 +273,6 @@ if (Configure::read('API.auth')) {
     Plugin::load('ADmad/JwtAuth');
 }
 
-/*
- * @todo seems like if CakeDC/Users plugin is loaded
- * before any of our plugins that use routes, it breaks
- * them, needs to be investigated further.
- */
-
 /**
  * Connect middleware/dispatcher filters.
  */

@@ -102,10 +102,10 @@ class SettingsTable extends Table
         $scope = $context['data']['scope'];
 
         switch ($scope) {
-            case $this::SCOPE_APP:
-                return $value === $this::CONTEXT_APP ? true : false;
+            case self::SCOPE_APP:
+                return $value === self::CONTEXT_APP ? true : false;
 
-            case $this::SCOPE_USER:
+            case self::SCOPE_USER:
                 return Validation::uuid($value);
 
             default:
@@ -144,8 +144,6 @@ class SettingsTable extends Table
      */
     public function createEntity($key, $value, $type, $scope, $context)
     {
-        // if the key doesn't exist it fails.
-        $entity = $this->findByKey($key)->firstOrFail();
         // select based on key, scope, conext
         $entity = $this->find('all')->where(['key' => $key, 'scope' => $scope, 'context' => $context])->first();
 
