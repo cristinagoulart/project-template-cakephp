@@ -142,8 +142,6 @@ class SettingsController extends AppController
 
             $set = [];
             foreach ($dataPut as $key => $value) {
-                // if the key doesn't exist it fails.
-                $entity = $this->query->findByKey($key)->firstOrFail();
                 // select based on key, scope, conext
                 $entity = $this->query->find('all')->where(['key' => $key, 'scope' => $this->scope, 'context' => $this->context])->first();
 
