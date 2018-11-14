@@ -144,6 +144,8 @@ class SettingsTable extends Table
      */
     public function createEntity($key, $value, $type, $scope, $context)
     {
+        // if the key doesn't exist it fails.
+        $entity = $this->findByKey($key)->firstOrFail();
         // select based on key, scope, conext
         $entity = $this->find('all')->where(['key' => $key, 'scope' => $scope, 'context' => $context])->first();
 

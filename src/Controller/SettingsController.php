@@ -103,9 +103,10 @@ class SettingsController extends AppController
         $this->context = SettingsTable::CONTEXT_APP;
         $this->configureValue = $this->dataApp;
         $this->viewBuilder()->template('index');
+        $this->set('afterTitle', ' » App');
 
         if ($this->isLocalhost()) {
-            $this->set('afterTitle', ' » System <h4><a href=/settings/generator/>settings.php file builder utility</a></h4>');
+            $this->set('linkToGenerator', true);
         }
 
         return $this->settings();
