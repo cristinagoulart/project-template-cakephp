@@ -134,7 +134,5 @@ class SettingsShell extends Shell
         $query = TableRegistry::get('Settings');
         $this->out('Truncate table Settings');
         $query->deleteAll([]);
-
-        return;
     }
 }
