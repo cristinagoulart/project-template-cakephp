@@ -70,7 +70,7 @@ class SettingsShell extends Shell
             }
             foreach ($links[$set] as $aliases => $value) {
                 if (in_array($value, $settings)) {
-                    throw new \Exception('Duble alias found');
+                    throw new \Exception('Double alias found');
                 }
                 $data[] = $this->setData($alias, $set, $value);
             }

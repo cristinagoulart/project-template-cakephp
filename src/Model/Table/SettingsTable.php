@@ -153,7 +153,7 @@ class SettingsTable extends Table
         // will storage only the modified settings
         if (!is_null($entity) && $entity->value === $value) {
             // if the user setting match the app setting, the entity will be deleted
-            if ($scope === 'user' && $value === $this->dataApp[$key]) {
+            if ($scope === self::SCOPE_USER && $value === $this->dataApp[$key]) {
                 $this->delete($entity);
             }
 
