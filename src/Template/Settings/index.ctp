@@ -16,7 +16,7 @@ $(document).ready(function(){
 <?php $this->Html->scriptEnd(); ?>
 <section class="content-header">
 	<h1><?= __('Settings'); ?>
-		<?= isset($afterTitle) ? $afterTitle : '' ?>
+		<?= isset($afterTitle) ? ' » '. $afterTitle : '' ?>
 		<?= isset($linkToGenerator) ? '<h4><a href=/settings/generator/>settings.php file builder utility</a></h4>' : '' ?>		
 	</h1>
 </section>

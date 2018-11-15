@@ -24,11 +24,21 @@ class SettingsShell extends Shell
     {
         $parser = parent::getOptionParser();
         $parser->addSubcommand('reset', [
-                'help' => 'Reset configuartion',
+                'help' => 'Delete one key from the database',
                 'parser' => [
                     'options' => [
                         'reset' => [
-                            'help' => __('Truncate table Settings'),
+                            'help' => __('Insert key'),
+                            'required' => true,
+                        ]
+                    ]
+                ],
+            ]);
+        $parser->addSubcommand('resetAll', [
+               'help' => 'Drop table Settings',
+                'parser' => [
+                    'options' => [
+                        'reset' => [
                             'required' => false,
                         ]
                     ]
@@ -99,22 +109,32 @@ class SettingsShell extends Shell
     }
 
     /**
-     * reset() method. Truncate table Settings
-     *
+     * reset() method. Truncate key in table Settings
      * @param string $key key of DB to delete
      * @return void
      */
     public function reset($key = '')
     {
         $query = TableRegistry::get('Settings');
-
         if (empty($key)) {
-            $this->out('Truncate table Settings');
-            $query->deleteAll([]);
+            $this->out('Insert key to delete');
 
             return;
         }
 
         $query->deleteAll(['key' => $key]);
+    }
+
+    /**
+     * resetAll() method. Truncate all table Settings
+     * @return void
+     */
+    public function resetAll()
+    {
+        $query = TableRegistry::get('Settings');
+        $this->out('Truncate table Settings');
+        $query->deleteAll([]);
+
+        return;
     }
 }
