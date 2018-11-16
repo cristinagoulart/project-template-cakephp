@@ -131,7 +131,16 @@ class SettingsController extends AppController
     }
 
     /**
-     * Index method
+     * redirect to my() by default
+     * @return \Cake\Http\Response|void|null
+     */
+    public function index()
+    {
+        $this->redirect(['action' => 'my']);
+    }
+
+    /**
+     * Main method
      *
      * @return \Cake\Http\Response|void
      */
