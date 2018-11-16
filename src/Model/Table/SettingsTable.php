@@ -144,15 +144,16 @@ class SettingsTable extends Table
      */
     public function createEntity($key, $value, $type, $scope, $context)
     {
-        // if the key doesn't exist it fails.
-        $entity = $this->findByKey($key)->firstOrFail();
+        // It will check if there is any record with a key = $key.
+        // if doesn't, it means that Settings table is not updated with settings.php.
+        $this->findByKey($key)->firstOrFail();
         // select based on key, scope, conext
         $entity = $this->find('all')->where(['key' => $key, 'scope' => $scope, 'context' => $context])->first();
 
         // will storage only the modified settings
         if (!is_null($entity) && $entity->value === $value) {
             // if the user setting match the app setting, the entity will be deleted
-            if ($scope === 'user' && $value === $this->dataApp[$key]) {
+            if ($scope === self::SCOPE_USER && $value === $this->dataApp[$key]) {
                 $this->delete($entity);
             }
 
@@ -168,7 +169,7 @@ class SettingsTable extends Table
             'type' => $type
         ];
 
-        // if (entity not exist) : new ? patch
+        // Check if the user has already a record with the key. if true will update instead of create a new one
         $newEntity = is_null($entity) ? $this->newEntity($params) : $this->patchEntity($entity, $params);
 
         return $newEntity;

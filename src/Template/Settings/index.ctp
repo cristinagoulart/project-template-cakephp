@@ -43,7 +43,10 @@ $(document).ready(function(){
 
 <?php $this->Html->scriptEnd(); ?>
 <section class="content-header">
-	<h1><?= __('Settings'); ?><?= isset($afterTitle) ? $afterTitle : '' ?></h1>
+	<h1><?= __('Settings'); ?>
+		<?= isset($afterTitle) ? ' » '. $afterTitle : '' ?>
+		<?= isset($linkToGenerator) ? '<h4><a href=/settings/generator/>settings.php file builder utility</a></h4>' : '' ?>		
+	</h1>
 </section>
 <section class="content">
 	<div class="row">
@@ -113,7 +116,6 @@ $(document).ready(function(){
 										<?php
 										// Fields
 										foreach ($fields as $field => $fieldValue) :
-											// $value = Configure::read($fieldValue['alias']);
 											$value = $configure[$fieldValue['alias']];
 											$alias = 'Settings.' . $fieldValue['alias'];
 											$definition = [

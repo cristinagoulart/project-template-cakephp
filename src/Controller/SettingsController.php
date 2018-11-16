@@ -88,7 +88,7 @@ class SettingsController extends AppController
         $this->viewBuilder()->template('index');
 
         $userName = TableRegistry::get('Users')->find('list')->where(['id' => $context])->toArray();
-        $this->set('afterTitle', ' » ' . $userName[$context]);
+        $this->set('afterTitle', $userName[$context]);
 
         return $this->settings();
     }
@@ -103,9 +103,10 @@ class SettingsController extends AppController
         $this->context = SettingsTable::CONTEXT_APP;
         $this->configureValue = $this->dataApp;
         $this->viewBuilder()->template('index');
+        $this->set('afterTitle', 'App');
 
         if ($this->isLocalhost()) {
-            $this->set('afterTitle', ' » System <h4><a href=/settings/generator/>settings.php file builder utility</a></h4>');
+            $this->set('linkToGenerator', true);
         }
 
         return $this->settings();
@@ -125,13 +126,13 @@ class SettingsController extends AppController
         $this->configureValue = Hash::merge($this->dataApp, $dataUser);
         $this->viewBuilder()->template('index');
 
-        $this->set('afterTitle', ' » ' . $this->Auth->user('username'));
+        $this->set('afterTitle', $this->Auth->user('username'));
 
         return $this->settings();
     }
 
     /**
-     * redirect to my() by default
+     * Redirect to my()
      * @return \Cake\Http\Response|void|null
      */
     public function index()
@@ -140,7 +141,7 @@ class SettingsController extends AppController
     }
 
     /**
-     * Main method
+     * Index method
      *
      * @return \Cake\Http\Response|void
      */
@@ -162,7 +163,9 @@ class SettingsController extends AppController
             $set = [];
             foreach ($dataPut as $key => $value) {
                 $entity = $this->query->createEntity($key, $value, $type[$key], $this->scope, $this->context);
-                !empty($entity) ? ($set[] = $entity) : '';
+                if (!empty($entity)) {
+                    $set[] = $entity;
+                }
 
                 if (empty($links[$key])) {
                     continue;
@@ -170,7 +173,9 @@ class SettingsController extends AppController
 
                 foreach ($links[$key] as $link => $keyLink) {
                     $entity = $this->query->createEntity($keyLink, $value, $type[$key], $this->scope, $this->context);
-                    !empty($entity) ? ($set[] = $entity) : '';
+                    if (!empty($entity)) {
+                        $set[] = $entity;
+                    }
                 }
             }
 

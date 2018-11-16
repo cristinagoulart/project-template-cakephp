@@ -27,9 +27,7 @@ class SettingsListener implements EventListenerInterface
      */
     public function loadUserSettings(Event $event)
     {
-        try {
-            $userId = $event->getSubject()->Auth->user('id');
-        } catch (\Error $e) {
+        if (! $event->getSubject()->components()->has('Auth')) {
             return;
         }
 
