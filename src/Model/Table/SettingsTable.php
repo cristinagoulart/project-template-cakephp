@@ -134,6 +134,48 @@ class SettingsTable extends Table
     }
 
     /**
+     * if the key exist in the DB, will create and validate an entity.
+     * @param  string $key   key (alias) of the DB
+     * @param  string $value value
+     * @param  string $type  type
+     * @param  string $scope app, user, os?, env?
+     * @param  string $context uuid, value
+     * @return \App\Model\Entity\Setting|void
+     */
+    public function createEntity($key, $value, $type, $scope, $context)
+    {
+        // It will check if there is any record with a key = $key.
+        // if doesn't, it means that Settings table is not updated with settings.php.
+        $this->findByKey($key)->firstOrFail();
+        // select based on key, scope, conext
+        $entity = $this->find('all')->where(['key' => $key, 'scope' => $scope, 'context' => $context])->first();
+
+        // will storage only the modified settings
+        if (!is_null($entity) && $entity->value === $value) {
+            // if the user setting match the app setting, the entity will be deleted
+            if ($scope === self::SCOPE_USER && $value === $this->dataApp[$key]) {
+                $this->delete($entity);
+            }
+
+            return;
+        }
+
+        $params = [
+            'key' => $key,
+            'value' => $value,
+            'scope' => $scope,
+            'context' => $context,
+            // dynamic field to pass type to the validator
+            'type' => $type
+        ];
+
+        // Check if the user has already a record with the key. if true will update instead of create a new one
+        $newEntity = is_null($entity) ? $this->newEntity($params) : $this->patchEntity($entity, $params);
+
+        return $newEntity;
+    }
+
+    /**
      * Get all the Setting configuration and filter it base on the user
      * scope describe in settings.php
      *

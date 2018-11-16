@@ -55,6 +55,51 @@ class SettingsTableTest extends TestCase
         parent::tearDown();
     }
 
+    public function testCreateEntityNoKey()
+    {
+        $this->expectException('Cake\Datasource\Exception\RecordNotFoundException');
+        $en = $this->Settings->createEntity('invalid.key', '1234', 'integer', 'app', 'app');
+    }
+
+    public function testCreateEntityExistRecord()
+    {
+        $existEntity = $this->Settings->createEntity('FileStorage.defaultImageSize', '1234', 'integer', 'app', 'app');
+        $this->assertEquals(false, $existEntity->isNew());
+    }
+
+    public function testCreateEntityNew()
+    {
+        $params = [
+            'key' => 'FileStorage.defaultImageSize',
+            'value' => '1234',
+            'scope' => 'user',
+            'context' => 'bb697cd7-c869-491d-8696-805b1af8c08f',
+            'type' => 'integer'
+        ];
+
+        $entity = $this->Settings->newEntity($params);
+        $myEntity = $this->Settings->createEntity('FileStorage.defaultImageSize', '1234', 'integer', 'user', 'bb697cd7-c869-491d-8696-805b1af8c08f');
+
+        $this->assertEquals($entity, $myEntity);
+    }
+
+    public function testCreateEntityPatch()
+    {
+        $params = [
+            'key' => 'ScheduledLog.stats.age',
+            'value' => 'my NEW value',
+            'scope' => 'user',
+            'context' => 'bb697cd7-c869-491d-8696-805b1af8c08f',
+            'type' => 'integer'
+        ];
+
+        $oldEntity = $this->Settings->find('all')->where(['key' => 'ScheduledLog.stats.age'])->first();
+        $patchEntity = $this->Settings->patchEntity($oldEntity, $params);
+        $myEntity = $this->Settings->createEntity('ScheduledLog.stats.age', 'my NEW value', 'integer', 'user', 'bb697cd7-c869-491d-8696-805b1af8c08f');
+
+        $this->assertEquals($patchEntity, $myEntity);
+    }
+
     public function testFilterSettings()
     {
         $userRoles = ['settings'];
@@ -66,12 +111,12 @@ class SettingsTableTest extends TestCase
                'name1' => [
                  'alias' => 'FileStorage.defaultImageSize',
                  'type' => 'string',
-                 'roles' => ['Everyone', 'settings', 'anotherRole'],
+                 'scope' => ['Everyone', 'settings', 'anotherRole'],
                ],
                'name2' => [
                  'alias' => 'Avatar.defaultImage',
                  'type' => 'string',
-                 'roles' => ['Everyone', 'anotherRole'],
+                 'scope' => ['Everyone', 'anotherRole'],
                ],
              ],
            ],
@@ -85,7 +130,7 @@ class SettingsTableTest extends TestCase
                'name1' => [
                  'alias' => 'FileStorage.defaultImageSize',
                  'type' => 'string',
-                 'roles' => ['Everyone', 'settings', 'anotherRole'],
+                 'scope' => ['Everyone', 'settings', 'anotherRole'],
                ],
              ],
            ],
@@ -106,7 +151,7 @@ class SettingsTableTest extends TestCase
              'name1' => [
                'alias' => 'FileStorage.defaultImageSize',
                'type' => 'string',
-               'roles' => ['Everyone', 'settings', 'anotherRole'],
+               'scope' => ['Everyone', 'settings', 'anotherRole'],
              ],
            ],
          ],

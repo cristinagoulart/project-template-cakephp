@@ -15,7 +15,10 @@ $(document).ready(function(){
 
 <?php $this->Html->scriptEnd(); ?>
 <section class="content-header">
-	<h1><?= __('Settings'); ?></h1>
+	<h1><?= __('Settings'); ?>
+		<?= isset($afterTitle) ? ' » '. $afterTitle : '' ?>
+		<?= isset($linkToGenerator) ? '<h4><a href=/settings/generator/>settings.php file builder utility</a></h4>' : '' ?>		
+	</h1>
 </section>
 <section class="content">
 	<div class="row">
@@ -92,7 +95,7 @@ $(document).ready(function(){
 												'value' => $value,
 												'name'  => $alias,
 											];
-											echo $fhf->renderInput('settings', $alias, $value, ['fieldDefinitions' => $definition]);
+											echo $fhf->renderInput('settings', $alias, $value, ['fieldDefinitions' => $definition , 'label' => $field]);
 											if(isset($fieldValue['help']) ):
 												?>
 													<span class="help-block"><?= $fieldValue['help'] ?></span>

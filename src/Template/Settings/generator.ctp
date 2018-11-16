@@ -219,7 +219,7 @@ $(document).ready(function(){
                                   ?>
                                       <tr>
                                           <td class="alias"><?= $key ?></td>
-                                          <td class="name"><input type="text" placeholder="write the name" value="<?= $key ?>" required ></td>
+                                          <td class="name"><input type="text" placeholder="write the name" value="<?= str_replace('.',' ',$key) ?>" required ></td>
                                           <td class="type"><?= gettype($value) ?></td>
                                           <td class="help"><input type="text" placeholder="write the help here"></td>
                                           <td class="scope">

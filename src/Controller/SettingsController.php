@@ -87,6 +87,9 @@ class SettingsController extends AppController
         $this->dataSettings = Hash::merge($this->dataSettings, Hash::expand($this->dataApp), Hash::expand($dataUser));
         $this->viewBuilder()->template('index');
 
+        $userName = TableRegistry::get('Users')->find('list')->where(['id' => $context])->toArray();
+        $this->set('afterTitle', $userName[$context]);
+
         return $this->settings();
     }
 
@@ -100,6 +103,11 @@ class SettingsController extends AppController
         $this->context = SettingsTable::CONTEXT_APP;
         $this->configureValue = $this->dataApp;
         $this->viewBuilder()->template('index');
+        $this->set('afterTitle', 'App');
+
+        if ($this->isLocalhost()) {
+            $this->set('linkToGenerator', true);
+        }
 
         return $this->settings();
     }
@@ -118,7 +126,18 @@ class SettingsController extends AppController
         $this->configureValue = Hash::merge($this->dataApp, $dataUser);
         $this->viewBuilder()->template('index');
 
+        $this->set('afterTitle', $this->Auth->user('username'));
+
         return $this->settings();
+    }
+
+    /**
+     * Redirect to my()
+     * @return \Cake\Http\Response|void|null
+     */
+    public function index()
+    {
+        return $this->redirect(['action' => 'my']);
     }
 
     /**
@@ -139,33 +158,25 @@ class SettingsController extends AppController
             $this->query = TableRegistry::get('Settings');
             $type = Hash::combine($dataFiltered, '{s}.{s}.{s}.{s}.alias', '{s}.{s}.{s}.{s}.type');
             $scope = Hash::combine($dataFiltered, '{s}.{s}.{s}.{s}.alias', '{s}.{s}.{s}.{s}.scope');
+            $links = Hash::filter(Hash::combine($dataFiltered, '{s}.{s}.{s}.{s}.alias', '{s}.{s}.{s}.{s}.links'));
 
             $set = [];
             foreach ($dataPut as $key => $value) {
-                // select based on key, scope, conext
-                $entity = $this->query->find('all')->where(['key' => $key, 'scope' => $this->scope, 'context' => $this->context])->first();
+                $entity = $this->query->createEntity($key, $value, $type[$key], $this->scope, $this->context);
+                if (!empty($entity)) {
+                    $set[] = $entity;
+                }
 
-                // will storage only the modified settings
-                if (!is_null($entity) && $entity->value === $value) {
-                    // if the user setting match the app setting, the entity will be deleted
-                    if ($this->scope === SettingsTable::SCOPE_USER && $value === $this->dataApp[$key]) {
-                        $this->query->delete($entity);
-                    }
+                if (empty($links[$key])) {
                     continue;
                 }
 
-                $params = [
-                    'key' => $key,
-                    'value' => $value,
-                    'scope' => $this->scope,
-                    'context' => $this->context,
-                    // dynamic field to pass type to the validator
-                    'type' => $type[$key]
-                ];
-
-                // if (entity not exist) : new ? patch
-                $newEntity = is_null($entity) ? $this->Settings->newEntity($params) : $this->Settings->patchEntity($entity, $params);
-                $set[] = $newEntity;
+                foreach ($links[$key] as $link => $keyLink) {
+                    $entity = $this->query->createEntity($keyLink, $value, $type[$key], $this->scope, $this->context);
+                    if (!empty($entity)) {
+                        $set[] = $entity;
+                    }
+                }
             }
 
             if (empty($set)) {
@@ -185,19 +196,16 @@ class SettingsController extends AppController
     }
 
     /**
+     * ONLY for developers
      * Pass data to generator page
      * Avaiable only for developers in localhost
-     * @return \Cake\Http\Response|void|array
+     * @return \Cake\Http\Response|void|arra
+     * @throws UnauthorizedException check if is localhost
      */
     public function generator()
     {
-        $localhost = [
-            '127.0.0.1',
-            '::1'
-        ];
-
-        if (!in_array($_SERVER['REMOTE_ADDR'], $localhost)) {
-            return;
+        if (!$this->isLocalhost()) {
+            throw new UnauthorizedException('Run in localhost to access');
         }
 
         // For render the main structure
@@ -212,8 +220,25 @@ class SettingsController extends AppController
 
         if ($this->request->is('post')) {
             $this->autoRender = false;
-
             var_export($this->request->data());
         }
+    }
+
+    /**
+     * Check if the webserver is on localhost
+     * @return bool true if is localhost
+     */
+    private function isLocalhost()
+    {
+        $localhost = [
+            '127.0.0.1',
+            '::1'
+        ];
+
+        if (!in_array($_SERVER['REMOTE_ADDR'], $localhost)) {
+            return false;
+        }
+
+        return true;
     }
 }

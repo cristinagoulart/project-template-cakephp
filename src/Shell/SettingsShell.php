@@ -24,11 +24,21 @@ class SettingsShell extends Shell
     {
         $parser = parent::getOptionParser();
         $parser->addSubcommand('reset', [
-                'help' => 'Reset configuartion',
+                'help' => 'Delete one key from the database',
                 'parser' => [
                     'options' => [
                         'reset' => [
-                            'help' => __('Truncate table Settings'),
+                            'help' => __('Insert key'),
+                            'required' => true,
+                        ]
+                    ]
+                ],
+            ]);
+        $parser->addSubcommand('resetAll', [
+               'help' => 'Drop table Settings',
+                'parser' => [
+                    'options' => [
+                        'reset' => [
                             'required' => false,
                         ]
                     ]
@@ -48,17 +58,22 @@ class SettingsShell extends Shell
     {
         $query = TableRegistry::get('Settings');
         $alias = Hash::combine(Configure::read('Settings'), '{s}.{s}.{s}.{s}.alias', '{s}.{s}.{s}.{s}.type');
+        $links = Hash::filter(Hash::combine(Configure::read('Settings'), '{s}.{s}.{s}.{s}.alias', '{s}.{s}.{s}.{s}.links'));
+
         $settings = $query->getAliasDiff(array_keys($alias));
 
         $data = [];
         foreach ($settings as $set) {
-            $data[] = [
-                    'key' => $set,
-                    'value' => Configure::read($set),
-                    'scope' => 'app',
-                    'context' => 'app',
-                    'type' => $alias[$set] // dynamic field to pass `type` to the validator
-                ];
+            $data[] = $this->setData($alias, $set, $set);
+            if (empty($links[$set])) {
+                continue;
+            }
+            foreach ($links[$set] as $aliases => $value) {
+                if (in_array($value, $settings)) {
+                    throw new \Exception('Double alias found');
+                }
+                $data[] = $this->setData($alias, $set, $value);
+            }
         }
 
         try {
@@ -76,14 +91,48 @@ class SettingsShell extends Shell
     }
 
     /**
-     * reset() method. Truncate table Settings
-     *
+     * Prepare array for new entity
+     * @param string $alias alias
+     * @param string $index index
+     * @param string $value value
+     * @return array
+     */
+    private function setData($alias, $index, $value)
+    {
+        return [
+            'key' => $value,
+            'value' => Configure::read($index),
+            'scope' => 'app',
+            'context' => 'app',
+            'type' => $alias[$index] // dynamic field to pass `type` to the validator
+        ];
+    }
+
+    /**
+     * reset() method. Truncate key in table Settings
+     * @param string $key key of DB to delete
      * @return void
      */
-    public function reset()
+    public function reset($key = '')
     {
-        $this->out('Truncate table Settings');
         $query = TableRegistry::get('Settings');
+        if (empty($key)) {
+            $this->out('Insert key to delete');
+
+            return;
+        }
+
+        $query->deleteAll(['key' => $key]);
+    }
+
+    /**
+     * resetAll() method. Truncate all table Settings
+     * @return void
+     */
+    public function resetAll()
+    {
+        $query = TableRegistry::get('Settings');
+        $this->out('Truncate table Settings');
         $query->deleteAll([]);
     }
 }
