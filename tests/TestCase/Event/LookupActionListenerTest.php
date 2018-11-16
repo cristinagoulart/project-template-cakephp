@@ -25,10 +25,14 @@ class LookupActionListenerTest extends TestCase
     {
         parent::setUp();
 
-        $this->Users = TableRegistry::get('Users');
+        /**
+         * @var \App\Model\Table\UsersTable $table
+         */
+        $table = TableRegistry::get('Users');
+        $this->Users = $table;
     }
 
-    public function testBeforeLookupEmptyQuery()
+    public function testBeforeLookupEmptyQuery(): void
     {
         $query = $this->Users->find('all');
         $controller = new Controller($this->getRequest(), null, 'Users');
@@ -42,7 +46,7 @@ class LookupActionListenerTest extends TestCase
         $this->assertEquals(10, $query->count());
     }
 
-    public function testBeforeLookupWithQuery()
+    public function testBeforeLookupWithQuery(): void
     {
         $query = $this->Users->find('all');
         $controller = new Controller($this->getRequest(['query' => 'user-1']), null, 'Users');
@@ -56,7 +60,10 @@ class LookupActionListenerTest extends TestCase
         $this->assertEquals(1, $query->count());
     }
 
-    private function getRequest($query = [])
+    /**
+     * @param mixed[] $query Query
+     */
+    private function getRequest(array $query = []): \Cake\Http\ServerRequest
     {
         return new ServerRequest([
             'params' => [

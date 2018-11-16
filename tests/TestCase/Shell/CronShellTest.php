@@ -60,7 +60,7 @@ class CronShellTest extends ConsoleIntegrationTestCase
      *
      * @return void
      */
-    public function testMain()
+    public function testMain(): void
     {
         $this->exec('cron');
         $this->assertExitCode(Shell::CODE_SUCCESS);
@@ -68,9 +68,12 @@ class CronShellTest extends ConsoleIntegrationTestCase
 
     /**
      * @dataProvider fileAndClassNamesProvider
+     * @param string $file File
+     * @param mixed $class Class
+     * @param string $normalized Expected result
      * @return void
      */
-    public function testLock($file, $class, $normalized) : void
+    public function testLock(string $file, $class, string $normalized) : void
     {
         $this->exec(sprintf('cron lock %s %s', $file, $class));
 
@@ -78,6 +81,9 @@ class CronShellTest extends ConsoleIntegrationTestCase
         $this->assertTrue(file_exists($expected));
     }
 
+    /**
+     * @return mixed[]
+     */
     public function fileAndClassNamesProvider() : array
     {
         return [
