@@ -40,7 +40,7 @@ class ApiRouter
      *
      * @return void
      */
-    public function setRoutes()
+    public function setRoutes(): void
     {
         $versions = $this->_versions;
         $default = 'api/v1/v0';
