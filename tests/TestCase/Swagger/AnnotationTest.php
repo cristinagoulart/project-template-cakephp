@@ -9,6 +9,11 @@ use ReflectionClass;
 
 class AnnotationTest extends TestCase
 {
+    public $fixtures = [
+        'plugin.CsvMigrations.dblists',
+        'plugin.CsvMigrations.dblist_items'
+    ];
+
     /**
      * @dataProvider propertyOptions
      */
@@ -16,7 +21,7 @@ class AnnotationTest extends TestCase
     {
         $field = new CsvField(['name' => 'fieldName', 'type' => $fieldType, 'limit' => 'listName']);
         $result = $this->invokeMethod(
-            new Annotation(__CLASS__, __FILE__),
+            new Annotation('Common', ''),
             'getPropertyOptions',
             [['field' => $field]]
         );
@@ -36,6 +41,9 @@ class AnnotationTest extends TestCase
             ['boolean', 'boolean', 'boolean'],
             ['datetime', 'string', 'date-time'],
             ['datetime', 'string', 'date-time'],
+            ['list(countries)', 'string', 'list'],
+            ['sublist(countries)', 'string', 'list'],
+            ['dblist(companies)', 'string', 'list'],
             ['date', 'string', 'date'],
             ['time', 'string', 'time'],
             ['decimal', 'number', 'float'],
