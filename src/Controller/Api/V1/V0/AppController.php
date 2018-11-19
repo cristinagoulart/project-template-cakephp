@@ -17,6 +17,10 @@ use Qobo\Utils\ModuleConfig\ModuleConfig;
 use Qobo\Utils\Utility\User;
 use RolesCapabilities\CapabilityTrait;
 
+/**
+ * @property \Cake\Http\ServerRequest $request
+ * @property \Crud\Controller\Component\CrudComponent $Crud
+ */
 class AppController extends Controller
 {
     use CapabilityTrait;
@@ -122,7 +126,7 @@ class AppController extends Controller
      * @link http://www.bravo-kernel.com/2015/04/how-to-add-jwt-authentication-to-a-cakephp-3-rest-api/
      * @return void
      */
-    protected function _authentication()
+    protected function _authentication(): void
     {
         $this->loadComponent('Auth', $this->authConfig);
 
@@ -147,7 +151,7 @@ class AppController extends Controller
     /**
      * View CRUD action events handling logic.
      *
-     * @return \Cake\Network\Response
+     * @return \Cake\Http\Response|void|null
      */
     public function view()
     {
@@ -178,9 +182,9 @@ class AppController extends Controller
      *
      * @param string $id Record id
      * @param string $associationName Association name
-     * @return \Cake\Network\Response
+     * @return \Cake\Http\Response|void|null
      */
-    public function related($id, $associationName)
+    public function related(string $id, string $associationName)
     {
         $this->Crud->on('beforePaginate', function (Event $event) {
             $ev = new Event((string)EventName::API_RELATED_BEFORE_PAGINATE(), $this, [
@@ -209,7 +213,7 @@ class AppController extends Controller
     /**
      * Index CRUD action events handling logic.
      *
-     * @return \Cake\Network\Response
+     * @return \Cake\Http\Response|void|null
      */
     public function index()
     {
@@ -240,7 +244,7 @@ class AppController extends Controller
     /**
      * Add CRUD action events handling logic.
      *
-     * @return \Cake\Network\Response
+     * @return \Cake\Http\Response|void|null
      */
     public function add()
     {
@@ -269,7 +273,7 @@ class AppController extends Controller
     /**
      * Edit CRUD action events handling logic.
      *
-     * @return \Cake\Network\Response
+     * @return \Cake\Http\Response|void|null
      */
     public function edit()
     {
@@ -312,7 +316,7 @@ class AppController extends Controller
     /**
      * Delete CRUD action events handling logic.
      *
-     * @return \Cake\Network\Response
+     * @return \Cake\Http\Response|void|null
      */
     public function delete()
     {
@@ -324,7 +328,7 @@ class AppController extends Controller
      *
      * @return void
      */
-    public function upload()
+    public function upload(): void
     {
         $this->request->allowMethod(['post']);
 
@@ -361,7 +365,7 @@ class AppController extends Controller
     /**
      * Lookup CRUD action events handling logic.
      *
-     * @return \Cake\Network\Response
+     * @return \Cake\Http\Response|void|null
      */
     public function lookup()
     {
@@ -395,7 +399,7 @@ class AppController extends Controller
             'success' => false,
             'data' => [],
         ];
-        $data = $this->request->data;
+        $data = $this->request->getData();
         if (empty($data) || ! is_array($data)) {
             return $result;
         }
@@ -407,7 +411,7 @@ class AppController extends Controller
         }
 
         $panels = $this->getPanels(
-            json_decode(json_encode((new ModuleConfig(ConfigType::MODULE(), $this->name))->parse()), true),
+            (new ModuleConfig(ConfigType::MODULE(), $this->name))->parseToArray(),
             $data
         );
         if (! empty($panels)) {

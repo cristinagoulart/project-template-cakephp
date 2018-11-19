@@ -50,9 +50,9 @@ class RelatedAction extends BaseAction
      *
      * @param string $id Record id
      * @param string $associationName Association name
-     * @return void
+     * @return \Cake\Http\Response|void|null
      */
-    protected function _handle($id, $associationName)
+    protected function _handle(string $id, string $associationName)
     {
         $subject = $this->_subject([
             'success' => true,
@@ -74,7 +74,7 @@ class RelatedAction extends BaseAction
      * @return \Cake\Datasource\QueryInterface|null
      * @throws \InvalidArgumentException When reversed many-to-many association is not found
      */
-    private function getQuery($id, $associationName)
+    private function getQuery(string $id, string $associationName): ?\Cake\Datasource\QueryInterface
     {
         $association = $this->getAssociation($associationName);
 
@@ -104,7 +104,7 @@ class RelatedAction extends BaseAction
      *
      * @return \Cake\ORM\Association|null $result object
      */
-    private function getAssociation($associationName)
+    private function getAssociation(string $associationName): ?\Cake\ORM\Association
     {
         foreach ($this->_table()->associations() as $association) {
             if ($association->name() !== $associationName) {
@@ -125,7 +125,7 @@ class RelatedAction extends BaseAction
      * @return \Cake\Datasource\QueryInterface|null
      * @throws \InvalidArgumentException When reversed many-to-many association is not found
      */
-    private function manyToManyQuery(Association $association, $id)
+    private function manyToManyQuery(Association $association, strign $id): ?\Cake\Datasource\QueryInterface
     {
         $table = TableRegistry::get(Inflector::camelize($association->table()));
 
@@ -156,7 +156,7 @@ class RelatedAction extends BaseAction
      *
      * @return \Cake\Datasource\QueryInterface|null
      */
-    private function oneToManyQuery(Association $association, $id)
+    private function oneToManyQuery(Association $association, string $id): ?\Cake\Datasource\QueryInterface
     {
         // pagination hack to modify alias
         $association->setTarget($association->getTarget())->setAlias($this->_controller()->name);
@@ -176,7 +176,7 @@ class RelatedAction extends BaseAction
      * @param \Cake\Datasource\RepositoryInterface $table Association's table
      * @return \Cake\ORM\Association|null
      */
-    private function getManyToManyAssociation(RepositoryInterface $table)
+    private function getManyToManyAssociation(RepositoryInterface $table): ?\Cake\ORM\Association
     {
         foreach ($table->associations() as $association) {
             if (Association::MANY_TO_MANY !== $association->type()) {

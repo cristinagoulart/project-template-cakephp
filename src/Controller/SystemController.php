@@ -97,7 +97,7 @@ class SystemController extends AppController
      * @param \Menu\MenuBuilder\MenuItemContainerInterface $container Menu container to be iterated
      * @return \Menu\MenuBuilder\MenuItemInterface|null
      */
-    public function getFirstMenuItem(MenuItemContainerInterface $container)
+    public function getFirstMenuItem(MenuItemContainerInterface $container): ?\Menu\MenuBuilder\MenuItemInterface
     {
         foreach ($container->getMenuItems() as $menuItem) {
             if (!$menuItem->isEnabled()) {

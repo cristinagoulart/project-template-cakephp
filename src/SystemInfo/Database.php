@@ -25,7 +25,11 @@ class Database
      */
     public static function getDriver(bool $skipVersion = false): string
     {
-        $driver = ConnectionManager::get('default')->driver();
+        /**
+         * @var \Cake\Database\Connection $connection
+         */
+        $connection = ConnectionManager::get('default');
+        $driver = $connection->getDriver();
         // Find the class name of the driver without namespace
         $driver = new ReflectionClass($driver);
         $driver = $driver->getShortName();

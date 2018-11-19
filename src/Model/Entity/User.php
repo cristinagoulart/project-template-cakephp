@@ -7,6 +7,12 @@ use Cake\Core\Configure;
 use Cake\ORM\TableRegistry;
 use Exception;
 
+/**
+ * @property string $id
+ * @property string $first_name
+ * @property string $last_name
+ * @property string $username
+ */
 class User extends BaseUser
 {
     /**
@@ -70,7 +76,7 @@ class User extends BaseUser
         }
 
         try {
-            /** @var CapabilitiesTable $capabilities */
+            /** @var \RolesCapabilities\Model\Table\CapabilitiesTable $capabilities */
             $capabilities = TableRegistry::get('RolesCapabilities.Capabilities');
             $userGroups = $capabilities->getUserGroups($this->get('id'));
             $userRoles = $capabilities->getGroupsRoles($userGroups);

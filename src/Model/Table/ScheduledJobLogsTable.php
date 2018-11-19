@@ -95,7 +95,7 @@ class ScheduledJobLogsTable extends Table
      * Log Scheduled Job script
      *
      * @param \Cake\Datasource\EntityInterface $entity of the scheduled job
-     * @param array $state of the script response
+     * @param mixed[] $state of the script response
      * @param \Cake\I18n\Time $stamp of currently executed cron iteration
      *
      * @return mixed $result containing bool or inserted Id

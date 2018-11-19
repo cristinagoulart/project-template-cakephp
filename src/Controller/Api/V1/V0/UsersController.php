@@ -52,7 +52,7 @@ class UsersController extends AppController
             parent::initialize();
         } catch (ForbiddenException $e) {
             if ('token' !== $this->request->action) {
-                throw new ForbiddenException($e->getMessage());
+                throw new ForbiddenException($e->getMessage(), null, $e);
             }
         }
 
@@ -66,7 +66,7 @@ class UsersController extends AppController
      *
      * @throws \Cake\Network\Exception\UnauthorizedException
      * @link   http://www.bravo-kernel.com/2015/04/how-to-add-jwt-authentication-to-a-cakephp-3-rest-api/
-     * @return void
+     * @return \Cake\Http\Response|void|null
      */
     public function token()
     {

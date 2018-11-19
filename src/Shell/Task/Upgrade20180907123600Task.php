@@ -77,8 +77,7 @@ class Upgrade20180907123600Task extends Shell
      */
     protected function getDatabaseListsByModule(string $module): array
     {
-        $config = (new ModuleConfig(ConfigType::MIGRATION(), $module))->parse();
-        $config = json_decode(json_encode($config), true);
+        $config = (new ModuleConfig(ConfigType::MIGRATION(), $module))->parseToArray();
 
         if (empty($config)) {
             return [];

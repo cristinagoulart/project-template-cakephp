@@ -9,6 +9,8 @@ class AppTest extends TestCase
 {
     /**
      * @dataProvider pluginProvider
+     * @param string $plugin Plugin name
+     * @param mixed $config Optional configuration
      */
     public function testLoadedPlugins(string $plugin, $config): void
     {

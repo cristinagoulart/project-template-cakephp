@@ -52,6 +52,9 @@ class Upgrade20180718130200Task extends Shell
      */
     private function needToRun(): bool
     {
+        /**
+         * @var \Cake\Database\Connection $connection
+         */
         $connection = ConnectionManager::get($this->dbConnection);
         if (! $connection->getDriver() instanceof Mysql) {
             $this->warn('Skipping, not a MySQL database');
