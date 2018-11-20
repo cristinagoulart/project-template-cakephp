@@ -1,7 +1,7 @@
 <?php
 namespace App\SystemInfo;
 
-use Qobo\Utils\Utility;
+use Qobo\Utils\Utility\Convert;
 
 /**
  * Php class
@@ -119,7 +119,7 @@ class Php
     public static function getMemoryLimit(): int
     {
         $result = static::getIniValue('memory_limit');
-        $result = Utility::valueToBytes($result);
+        $result = Convert::valueToBytes($result);
 
         return $result;
     }
@@ -142,7 +142,7 @@ class Php
     public static function getUploadMaxFilesize(): int
     {
         $result = static::getIniValue('upload_max_filesize');
-        $result = Utility::valueToBytes($result);
+        $result = Convert::valueToBytes($result);
 
         return $result;
     }
@@ -155,7 +155,7 @@ class Php
     public static function getPostMaxSize(): int
     {
         $result = static::getIniValue('post_max_size');
-        $result = Utility::valueToBytes($result);
+        $result = Convert::valueToBytes($result);
 
         return $result;
     }
