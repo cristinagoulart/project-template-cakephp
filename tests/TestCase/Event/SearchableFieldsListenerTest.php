@@ -40,13 +40,26 @@ class SearchableFieldsListenerTest extends TestCase
         $this->Users = TableRegistry::get('Users');
     }
 
-    public function testGetSearchableFieldsForModule()
+    public function testGetSearchableFields()
     {
         $searchableFields = SearchableFieldsListener::getSearchableFieldsByTable(
             $this->Things,
-            $this->Users->find('all')->firstOrFail()->toArray()
+            $this->Users->find('all')->firstOrFail()->toArray(),
+            false
         );
         $this->assertCount(1, $searchableFields);
         $this->assertEquals('string', $searchableFields['Things.searchable']['type']);
+    }
+
+    public function testGetSearchableFieldsWithAssociations()
+    {
+        $searchableFields = SearchableFieldsListener::getSearchableFieldsByTable(
+            $this->Things,
+            $this->Users->find('all')->firstOrFail()->toArray(),
+            true
+        );
+        $this->assertCount(7, $searchableFields);
+        $this->assertEquals('string', $searchableFields['Things.searchable']['type']);
+        $this->assertEquals('string', $searchableFields['Users.email']['type']);
     }
 }
