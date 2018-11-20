@@ -68,7 +68,7 @@ class SoftDeleteShell extends Shell
             try {
                 $trashEntities = TableRegistry::get($module)->find('onlyTrashed');
             } catch (\BadMethodCallException $e) {
-                $this->out("$module has not trash entities");
+                // The module has not trash entities
                 continue;
             }
 
