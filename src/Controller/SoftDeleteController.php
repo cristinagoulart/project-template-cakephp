@@ -2,105 +2,89 @@
 namespace App\Controller;
 
 use App\Controller\AppController;
+use Cake\ORM\TableRegistry;
 
 /**
  * SoftDelete Controller
- *
- *
- * @method \App\Model\Entity\SoftDelete[]|\Cake\Datasource\ResultSetInterface paginate($object = null, array $settings = [])
  */
 class SoftDeleteController extends AppController
 {
-
     /**
-     * Index method
+     * Restore record
      *
-     * @return \Cake\Http\Response|void
-     */
-    public function index()
-    {
-        $softDelete = $this->paginate($this->SoftDelete);
-
-        $this->set(compact('softDelete'));
-    }
-
-    /**
-     * View method
-     *
-     * @param string|null $id Soft Delete id.
-     * @return \Cake\Http\Response|void
-     * @throws \Cake\Datasource\Exception\RecordNotFoundException When record not found.
-     */
-    public function view($id = null)
-    {
-        $softDelete = $this->SoftDelete->get($id, [
-            'contain' => []
-        ]);
-
-        $this->set('softDelete', $softDelete);
-    }
-
-    /**
-     * Add method
-     *
-     * @return \Cake\Http\Response|null Redirects on successful add, renders view otherwise.
-     */
-    public function add()
-    {
-        $softDelete = $this->SoftDelete->newEntity();
-        if ($this->request->is('post')) {
-            $softDelete = $this->SoftDelete->patchEntity($softDelete, $this->request->getData());
-            if ($this->SoftDelete->save($softDelete)) {
-                $this->Flash->success(__('The soft delete has been saved.'));
-
-                return $this->redirect(['action' => 'index']);
-            }
-            $this->Flash->error(__('The soft delete could not be saved. Please, try again.'));
-        }
-        $this->set(compact('softDelete'));
-    }
-
-    /**
-     * Edit method
-     *
-     * @param string|null $id Soft Delete id.
-     * @return \Cake\Http\Response|null Redirects on successful edit, renders view otherwise.
+     * @param string $table table to search the id
+     * @param uuid $id id to delete
+     * @return bool Redirects to index.
      * @throws \Cake\Network\Exception\NotFoundException When record not found.
      */
-    public function edit($id = null)
+    public function restore()
     {
-        $softDelete = $this->SoftDelete->get($id, [
-            'contain' => []
-        ]);
-        if ($this->request->is(['patch', 'post', 'put'])) {
-            $softDelete = $this->SoftDelete->patchEntity($softDelete, $this->request->getData());
-            if ($this->SoftDelete->save($softDelete)) {
-                $this->Flash->success(__('The soft delete has been saved.'));
+        $this->request->allowMethod(['post']);
+        $this->autoRender = false;
 
-                return $this->redirect(['action' => 'index']);
-            }
-            $this->Flash->error(__('The soft delete could not be saved. Please, try again.'));
+        $id = $this->request->data('id');
+        $table = $this->request->data('table');
+
+        $toRestore = $this->checkData($table, $id);
+        $restore = TableRegistry::get($table)->restoreTrash($toRestore);
+
+        if ($restore) {
+            $this->Flash->success(__('The record is restored'));
+
+            return true;
         }
-        $this->set(compact('softDelete'));
+        $this->Flash->error(__('Can not restore the record. Please, try again.'));
+
+        return false;
     }
 
     /**
-     * Delete method
+     * Delete permanently method
      *
-     * @param string|null $id Soft Delete id.
-     * @return \Cake\Http\Response|null Redirects to index.
+     * @param string $table table to search the id
+     * @param uuid $id id to delete
+     * @return bool Redirects to index.
      * @throws \Cake\Datasource\Exception\RecordNotFoundException When record not found.
      */
-    public function delete($id = null)
+    public function delete()
     {
-        $this->request->allowMethod(['post', 'delete']);
-        $softDelete = $this->SoftDelete->get($id);
-        if ($this->SoftDelete->delete($softDelete)) {
-            $this->Flash->success(__('The soft delete has been deleted.'));
-        } else {
-            $this->Flash->error(__('The soft delete could not be deleted. Please, try again.'));
-        }
+        
+        $this->request->allowMethod(['post']);
+        $this->autoRender = false;
 
-        return $this->redirect(['action' => 'index']);
+        $id = $this->request->data('id');
+        $table = $this->request->data('table');
+
+        $toDel = $this->checkData($table, $id);
+        $delete = TableRegistry::get($table)->removeBehavior('Trash')->delete($toDel);
+        
+        if ($delete) {
+            $this->Flash->success(__('The record is permanently delete'));
+
+            return true;
+        }
+        $this->Flash->error(__('Can not delete the record. Please, try again.'));
+
+        return false;
+    }
+
+    /**
+     * Check data
+     * @param string $table table to search the id
+     * @param uuid $id id to delete
+     * @return \Cake\Datasource\EntityInterface|bool
+     * @throws \Exception
+     */
+    private function checkData($table, $id)
+    {
+        if (!TableRegistry::exists($table)) {
+            throw new \Exception('Table $table not found');
+        }
+        if (!TableRegistry::get($table)->behaviors()->has('Trash')) {
+            throw new \Exception('The table $table has no trashed fields');
+        }
+        $entity = TableRegistry::get($table)->find('onlyTrashed')->where(['id' => $id])->firstOrFail();
+
+        return $entity;
     }
 }
