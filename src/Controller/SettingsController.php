@@ -137,7 +137,7 @@ class SettingsController extends AppController
      */
     public function index()
     {
-        return $this->redirect(['action' => 'my']);
+        $this->redirect(['action' => 'my']);
     }
 
     /**
@@ -210,9 +210,12 @@ class SettingsController extends AppController
 
         // For render the main structure
         $dataSettings = Configure::read('Settings');
-        $this->set('data', $dataSettings);
+        $this->set('data', empty($dataSettings) ? null : $dataSettings);
         // For seach the new fields to insert
-        $data = Hash::flatten(Configure::read());
+        $data = Configure::read();
+        // Remove settings.php
+        unset($data['Settings']);
+        $data = Hash::flatten($data);
         $this->set('alldata', $data);
 
         // list of scope
