@@ -50,7 +50,7 @@ class SearchableFieldsListenerTest extends TestCase
         $this->ScheduledJobs = TableRegistry::get('ScheduledJobs');
     }
 
-    public function testGetSearchableFields()
+    public function testGetSearchableFields(): void
     {
         $searchableFields = SearchableFieldsListener::getSearchableFieldsByTable(
             $this->Things,
@@ -61,7 +61,7 @@ class SearchableFieldsListenerTest extends TestCase
         $this->assertEquals('string', $searchableFields['Things.searchable']['type']);
     }
 
-    public function testGetSearchableFieldsWithAssociations()
+    public function testGetSearchableFieldsWithAssociations(): void
     {
         $searchableFields = SearchableFieldsListener::getSearchableFieldsByTable(
             $this->Things,
@@ -73,7 +73,7 @@ class SearchableFieldsListenerTest extends TestCase
         $this->assertEquals('string', $searchableFields['Users.email']['type']);
     }
 
-    public function testGetBasicSearchFieldsFromView()
+    public function testGetBasicSearchFieldsFromView(): void
     {
         $event = new Event(
             (string)EventName::MODEL_SEARCH_BASIC_SEARCH_FIELDS()

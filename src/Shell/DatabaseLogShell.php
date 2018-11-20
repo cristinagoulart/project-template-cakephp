@@ -12,7 +12,7 @@ class DatabaseLogShell extends BaseShell
      *
      * @return void
      */
-    public function gc()
+    public function gc(): void
     {
         $age = Configure::read('DatabaseLog.maxLength');
         if (!$age) {
@@ -33,7 +33,7 @@ class DatabaseLogShell extends BaseShell
      *
      * @return void
      */
-    public function stats()
+    public function stats(): void
     {
         $logLevels = $this->getLogLevels();
         $statsConfig = $this->getStatsConfig();

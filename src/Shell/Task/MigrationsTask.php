@@ -36,7 +36,7 @@ class MigrationsTask extends Shell
      * Method that loads plugins migrate task
      * @return void
      */
-    public function migrate()
+    public function migrate(): void
     {
         $this->Migrate->main();
     }

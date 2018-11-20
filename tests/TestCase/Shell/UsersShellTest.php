@@ -78,7 +78,7 @@ class UsersShellTest extends TestCase
      *
      * @return void
      */
-    public function testAddSuperuser()
+    public function testAddSuperuser(): void
     {
         $data = [
             'username' => 'foo',

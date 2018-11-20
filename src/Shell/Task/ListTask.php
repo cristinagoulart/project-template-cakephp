@@ -46,10 +46,13 @@ class ListTask extends Shell
 
     /**
      * Method that retrieves and returns an array with all loaded plugins.
-     * @return array
+     * @return mixed[]
      */
-    public function loadedPlugins()
+    public function loadedPlugins(): array
     {
+        /**
+         * @var array $result
+         */
         $result = Plugin::loaded();
 
         return $result;
