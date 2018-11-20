@@ -25,11 +25,11 @@ class IndexActionListener extends BaseActionListener
      */
     public function beforePaginate(Event $event, QueryInterface $query)
     {
-        $request = $event->subject()->request;
+        $request = $event->getSubject()->request;
 
-        if (static::FORMAT_PRETTY !== $event->subject()->request->getQuery('format')) {
+        if (static::FORMAT_PRETTY !== $event->getSubject()->request->getQuery('format')) {
             $query->contain(
-                $this->_getFileAssociations($event->subject()->{$event->subject()->name})
+                $this->_getFileAssociations($event->getSubject()->{$event->getSubject()->getName()})
             );
         }
 
@@ -37,7 +37,7 @@ class IndexActionListener extends BaseActionListener
 
         $query->order($this->getOrderClause(
             $event->getSubject()->request,
-            $event->getSubject()->{$event->getSubject()->name}
+            $event->getSubject()->{$event->getSubject()->getName()}
         ));
     }
 
@@ -58,7 +58,7 @@ class IndexActionListener extends BaseActionListener
             return;
         }
 
-        $table = $event->getSubject()->{$event->getSubject()->name};
+        $table = $event->getSubject()->{$event->getSubject()->getName()};
 
         foreach ($resultSet as $entity) {
             $this->_resourceToString($entity);
@@ -91,13 +91,13 @@ class IndexActionListener extends BaseActionListener
      */
     private function filterByConditions(QueryInterface $query, Event $event)
     {
-        if (empty($event->subject()->request->query('conditions'))) {
+        if (empty($event->getSubject()->request->query('conditions'))) {
             return;
         }
 
         $conditions = [];
-        $tableName = $event->subject()->name;
-        foreach ($event->subject()->request->query('conditions') as $k => $v) {
+        $tableName = $event->getSubject()->getName();
+        foreach ($event->getSubject()->request->query('conditions') as $k => $v) {
             if (false === strpos($k, '.')) {
                 $k = $tableName . '.' . $k;
             }

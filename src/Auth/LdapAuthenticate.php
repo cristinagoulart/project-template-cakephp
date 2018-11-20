@@ -4,10 +4,10 @@ namespace App\Auth;
 use Cake\Auth\BaseAuthenticate;
 use Cake\Controller\ComponentRegistry;
 use Cake\Core\Configure;
+use Cake\Http\Response;
+use Cake\Http\ServerRequest;
 use Cake\Log\LogTrait;
 use Cake\Network\Exception\InternalErrorException;
-use Cake\Network\Request;
-use Cake\Network\Response;
 use Cake\ORM\TableRegistry;
 use Cake\Utility\Hash;
 use Psr\Log\LogLevel;
@@ -122,7 +122,7 @@ class LdapAuthenticate extends BaseAuthenticate
      * Save LDAP user to the Database.
      *
      * @param  array $data LDAP user info.
-     * @param \Cake\Network\Request $request Request object.
+     * @param \Cake\Http\ServerRequest $request Request object.
      * @return array|bool User info or false if failed.
      */
     protected function _saveUser(array $data, Request $request)

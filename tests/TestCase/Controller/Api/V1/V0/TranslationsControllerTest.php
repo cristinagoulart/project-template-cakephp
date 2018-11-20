@@ -32,13 +32,13 @@ class TranslationsControllerTest extends IntegrationTestCase
 
         $token = JWT::encode(
             ['sub' => '00000000-0000-0000-0000-000000000002', 'exp' => time() + 604800],
-            Security::salt()
+            Security::getSalt()
         );
 
         $this->Translations = TableRegistry::get('Translations.Translations');
 
         // enable event tracking
-        $this->Translations->eventManager()->setEventList(new EventList());
+        $this->Translations->getEventManager()->setEventList(new EventList());
 
         $this->configRequest([
             'headers' => [

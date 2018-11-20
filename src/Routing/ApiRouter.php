@@ -51,7 +51,7 @@ class ApiRouter
             // as `api/controller.json` calls.
             Router::prefix('api', function ($routes) use ($default) {
 
-                $routes->extensions(['json']);
+                $routes->setExtensions(['json']);
                 $routes->connect('/:controller', ['prefix' => $default], ['routeClass' => DashedRoute::class]);
                 $routes->connect('/:controller/:action/*', ['prefix' => $default], ['routeClass' => DashedRoute::class]);
                 $routes->fallbacks(DashedRoute::class);
@@ -59,7 +59,7 @@ class ApiRouter
 
             foreach ($versions as $version) {
                 Router::prefix($version['prefix'], ['path' => $version['path']], function ($routes) {
-                    $routes->extensions(['json']);
+                    $routes->setExtensions(['json']);
                     $routes->fallbacks(DashedRoute::class);
                 });
             }

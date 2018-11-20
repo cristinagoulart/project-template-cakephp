@@ -8,8 +8,8 @@ use CakeDC\Users\Controller\Traits\RegisterTrait;
 use CakeDC\Users\Controller\Traits\SimpleCrudTrait;
 use CakeDC\Users\Exception\UserNotFoundException;
 use CakeDC\Users\Exception\WrongPasswordException;
-use Cake\Network\Exception\ForbiddenException;
-use Cake\Network\Exception\UnauthorizedException;
+use Cake\Http\Exception\ForbiddenException;
+use Cake\Http\Exception\UnauthorizedException;
 use Cake\ORM\TableRegistry;
 use Cake\Validation\Validator;
 use Exception;
@@ -33,7 +33,7 @@ class UsersController extends AppController
      * change user passwords by the superusers
      *
      * @param mixed $id user id
-     * @return \Cake\Network\Response|null Redirects on successful edit, renders view otherwise.
+     * @return \Cake\Http\Response|void|null Redirects on successful edit, renders view otherwise.
      */
     public function changeUserPassword($id)
     {
@@ -46,7 +46,7 @@ class UsersController extends AppController
                 $validator = $this->getUsersTable()->validationPasswordConfirm(new Validator());
                 $user = $this->getUsersTable()->patchEntity($user, $this->request->data(), ['validate' => $validator]);
 
-                if ($user->errors()) {
+                if ($user->getErrors()) {
                     $this->Flash->error(__d('CakeDC/Users', 'Password could not be changed'));
                 } else {
                     $user = $this->getUsersTable()->changePassword($user);
@@ -76,7 +76,7 @@ class UsersController extends AppController
      * Converts and stores user image in base64 scheme.
      *
      * @param string $id User id
-     * @return \Cake\Network\Response
+     * @return \Cake\Http\Response|void|null
      */
     public function uploadImage($id)
     {
@@ -124,9 +124,9 @@ class UsersController extends AppController
      * separate user record update by admin and editing profile
      * by logged in user
      *
-     * @return \Cake\Network\Response
+     * @return \Cake\Http\Response|void|null
      * @throws \CakeDC\Users\Exception\UserNotFoundException When user not found.
-     * @throws \Cake\Network\Exception\UnauthorizedException When user is not authorized.
+     * @throws \Cake\Http\Exception\UnauthorizedException When user is not authorized.
      */
     public function editProfile()
     {
@@ -163,7 +163,7 @@ class UsersController extends AppController
     public function index()
     {
         $table = $this->loadModel();
-        $tableAlias = $table->alias();
+        $tableAlias = $table->getAlias();
         $users = $table->find()->all();
         $this->set($tableAlias, $users);
         $this->set('lockedUsers', $this->getLockedUsers());
@@ -180,7 +180,7 @@ class UsersController extends AppController
     public function view($id = null)
     {
         $table = $this->loadModel();
-        $tableAlias = $table->alias();
+        $tableAlias = $table->getAlias();
         $entity = $table->get($id, [
             'contain' => []
         ]);
@@ -202,8 +202,8 @@ class UsersController extends AppController
      * Delete method
      *
      * @param string|null $id User id.
-     * @return void
-     * @throws \Cake\Network\Exception\ForbiddenException When user is locked.
+     * @return \Cake\Http\Response|void|null
+     * @throws \Cake\Http\Exception\ForbiddenException When user is locked.
      */
     public function delete($id = null)
     {

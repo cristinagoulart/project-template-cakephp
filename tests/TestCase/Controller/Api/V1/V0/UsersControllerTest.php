@@ -10,7 +10,6 @@ use Cake\Datasource\ConnectionManager;
 use Cake\Event\EventList;
 use Cake\Event\EventManager;
 use Cake\Http\Client;
-use Cake\Network\Exception\UnauthorizedException;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\IntegrationTestCase;
 use Cake\Utility\Security;
@@ -80,7 +79,7 @@ class UsersControllerTest extends IntegrationTestCase
     {
         $token = JWT::encode(
             ['sub' => $id, 'exp' => time() + 604800],
-            Security::salt()
+            Security::getSalt()
         );
 
         $this->configRequest([

@@ -59,15 +59,15 @@ echo $this->Html->scriptBlock(
                 <div class="box-body">
                     <div class="row">
                         <div class="col-xs-12 col-md-6">
-                            <?= $this->Form->input('username'); ?>
+                            <?= $this->Form->control('username'); ?>
                         </div>
                         <div class="col-xs-12 col-md-6">
-                            <?= $this->Form->input('password'); ?>
+                            <?= $this->Form->control('password'); ?>
                         </div>
                     </div>
                     <div class="row">
                         <div class="col-xs-12 col-md-6">
-                            <?= $this->Form->input('active', [
+                            <?= $this->Form->control('active', [
                                 'type' => 'checkbox',
                                 'class' => 'square',
                                 'label' => false,
@@ -87,10 +87,10 @@ echo $this->Html->scriptBlock(
                 <div class="box-body">
                     <div class="row">
                         <div class="col-xs-12 col-md-6">
-                            <?= $this->Form->input('first_name'); ?>
+                            <?= $this->Form->control('first_name'); ?>
                         </div>
                         <div class="col-xs-12 col-md-6">
-                            <?= $this->Form->input('last_name'); ?>
+                            <?= $this->Form->control('last_name'); ?>
                         </div>
                     </div>
                     <div class="row">
@@ -106,7 +106,7 @@ echo $this->Html->scriptBlock(
                             ?>
                         </div>
                         <div class="col-xs-12 col-md-6">
-                            <?= $this->Form->input('initials'); ?>
+                            <?= $this->Form->control('initials'); ?>
                         </div>
                     </div>
                     <div class="row">
@@ -125,7 +125,7 @@ echo $this->Html->scriptBlock(
                             </div>
                         </div>
                         <div class="col-xs-12 col-md-6">
-                            <?= $this->Form->input('birthdate', [
+                            <?= $this->Form->control('birthdate', [
                                 'type' => 'text',
                                 'label' => 'Birthdate',
                                 'data-provide' => 'datepicker',
@@ -152,26 +152,26 @@ echo $this->Html->scriptBlock(
                 <div class="box-body">
                     <div class="row">
                         <div class="col-xs-12 col-md-6">
-                            <?= $this->Form->input('email'); ?>
+                            <?= $this->Form->control('email'); ?>
                         </div>
                         <div class="col-xs-12 col-md-6">
-                            <?= $this->Form->input('phone_office'); ?>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-xs-12 col-md-6">
-                            <?= $this->Form->input('phone_home'); ?>
-                        </div>
-                        <div class="col-xs-12 col-md-6">
-                            <?= $this->Form->input('phone_mobile'); ?>
+                            <?= $this->Form->control('phone_office'); ?>
                         </div>
                     </div>
                     <div class="row">
                         <div class="col-xs-12 col-md-6">
-                            <?= $this->Form->input('phone_extension'); ?>
+                            <?= $this->Form->control('phone_home'); ?>
                         </div>
                         <div class="col-xs-12 col-md-6">
-                            <?= $this->Form->input('fax'); ?>
+                            <?= $this->Form->control('phone_mobile'); ?>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-xs-12 col-md-6">
+                            <?= $this->Form->control('phone_extension'); ?>
+                        </div>
+                        <div class="col-xs-12 col-md-6">
+                            <?= $this->Form->control('fax'); ?>
                         </div>
                     </div>
                 </div>
@@ -183,18 +183,18 @@ echo $this->Html->scriptBlock(
                 <div class="box-body">
                     <div class="row">
                         <div class="col-xs-12 col-md-6">
-                            <?= $this->Form->input('company'); ?>
+                            <?= $this->Form->control('company'); ?>
                         </div>
                         <div class="col-xs-12 col-md-6">
-                            <?= $this->Form->input('department'); ?>
+                            <?= $this->Form->control('department'); ?>
                         </div>
                     </div>
                     <div class="row">
                         <div class="col-xs-12 col-md-6">
-                            <?= $this->Form->input('team'); ?>
+                            <?= $this->Form->control('team'); ?>
                         </div>
                         <div class="col-xs-12 col-md-6">
-                            <?= $this->Form->input('position'); ?>
+                            <?= $this->Form->control('position'); ?>
                         </div>
                     </div>
                     <div class="row">
@@ -208,7 +208,7 @@ echo $this->Html->scriptBlock(
                             ]); ?>
                         </div>
                         <div class="col-xs-12 col-md-6">
-                            <?= $this->Form->input('is_supervisor', [
+                            <?= $this->Form->control('is_supervisor', [
                                 'type' => 'checkbox',
                                 'class' => 'square',
                                 'label' => false,

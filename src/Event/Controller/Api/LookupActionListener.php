@@ -39,8 +39,8 @@ class LookupActionListener extends BaseActionListener
      */
     public function beforeLookup(Event $event, QueryInterface $query)
     {
-        $request = $event->subject()->request;
-        $table = $event->subject()->{$event->subject()->name};
+        $request = $event->getSubject()->request;
+        $table = $event->getSubject()->{$event->getSubject()->getName()};
 
         $this->_alterQuery($table, $query, $request);
     }
@@ -89,7 +89,7 @@ class LookupActionListener extends BaseActionListener
                 // always type-cast fields to string for LIKE clause to work.
                 // otherwise for cases where type is integer LIKE value '%123%' will be converted to '0'
                 $typeMap = array_combine($fields, array_pad([], count($fields), 'string'));
-                $query->typeMap($typeMap);
+                $query->setTypeMap($typeMap);
                 $query->orWhere([$field . ' LIKE' => '%' . $value . '%']);
             }
         }
@@ -165,7 +165,7 @@ class LookupActionListener extends BaseActionListener
             return;
         }
 
-        $table = $event->subject()->{$event->subject()->name};
+        $table = $event->getSubject()->{$event->getSubject()->getName()};
 
         // Properly populate display values for the found entries.
         // This will recurse into related modules and get display
@@ -281,7 +281,7 @@ class LookupActionListener extends BaseActionListener
         $targetTable = $parentAssociation->target();
 
         // add parent display field to order-by fields
-        array_unshift($fields, $targetTable->aliasField($targetTable->displayField()));
+        array_unshift($fields, $targetTable->aliasField($targetTable->getDisplayField()));
 
         $fields = $this->_getOrderByFields($targetTable, $query, $fields);
 

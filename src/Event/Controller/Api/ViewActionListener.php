@@ -24,8 +24,8 @@ class ViewActionListener extends BaseActionListener
      */
     public function beforeFind(Event $event, Query $query)
     {
-        if (static::FORMAT_PRETTY !== $event->subject()->request->getQuery('format')) {
-            $query->contain($this->_getFileAssociations($event->subject()->{$event->subject()->name}));
+        if (static::FORMAT_PRETTY !== $event->getSubject()->request->getQuery('format')) {
+            $query->contain($this->_getFileAssociations($event->getSubject()->{$event->getSubject()->getName()}));
         }
     }
 
@@ -34,8 +34,8 @@ class ViewActionListener extends BaseActionListener
      */
     public function afterFind(Event $event, Entity $entity)
     {
-        $table = $event->subject()->{$event->subject()->name};
-        $request = $event->subject()->request;
+        $table = $event->getSubject()->{$event->getSubject()->getName()};
+        $request = $event->getSubject()->request;
 
         $this->_resourceToString($entity);
 
@@ -45,7 +45,7 @@ class ViewActionListener extends BaseActionListener
             $this->_restructureFiles($entity, $table);
         }
 
-        $displayField = $table->displayField();
+        $displayField = $table->getDisplayField();
         $entity->{$displayField} = $entity->get($displayField);
     }
 }

@@ -218,7 +218,7 @@ class SearchableFieldsListener implements EventListenerInterface
     {
         $config = [];
         try {
-            $mc = new ModuleConfig(ConfigType::MODULE(), $table->registryAlias());
+            $mc = new ModuleConfig(ConfigType::MODULE(), $table->getRegistryAlias());
             $config = $mc->parse();
             $config = json_decode(json_encode($config), true);
         } catch (InvalidArgumentException $e) {
@@ -264,7 +264,7 @@ class SearchableFieldsListener implements EventListenerInterface
     {
         $config = [];
         try {
-            list($plugin, $module) = pluginSplit($table->registryAlias());
+            list($plugin, $module) = pluginSplit($table->getRegistryAlias());
             $mc = new ModuleConfig(ConfigType::VIEW(), $module, 'index');
             $config = $mc->parse();
             $config = !empty($config->items) ? json_decode(json_encode($config->items), true) : [];

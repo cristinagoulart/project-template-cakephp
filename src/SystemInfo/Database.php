@@ -25,7 +25,7 @@ class Database
      */
     public static function getDriver(bool $skipVersion = false): string
     {
-        $driver = ConnectionManager::get('default')->driver();
+        $driver = ConnectionManager::get('default')->getDriver();
         // Find the class name of the driver without namespace
         $driver = new ReflectionClass($driver);
         $driver = $driver->getShortName();
@@ -63,7 +63,7 @@ class Database
      */
     public static function getTables(string $match = ''): array
     {
-        $tables = ConnectionManager::get('default')->schemaCollection()->listTables();
+        $tables = ConnectionManager::get('default')->getSchemaCollection()->listTables();
 
         if (empty($match)) {
             return $tables;

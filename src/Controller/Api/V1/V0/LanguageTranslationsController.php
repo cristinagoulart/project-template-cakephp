@@ -11,7 +11,7 @@ class LanguageTranslationsController extends AppController
     public function index()
     {
         $this->Crud->on('beforePaginate', function (Event $event) {
-            $query = $event->subject()->query;
+            $query = $event->getSubject()->query;
 
             $params = $this->request->query;
 

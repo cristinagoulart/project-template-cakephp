@@ -41,7 +41,7 @@ class MagicDefaultValueListener implements EventListenerInterface
         }
 
         // Get field handler instance
-        $fieldHandler = $event->subject();
+        $fieldHandler = $event->getSubject();
 
         // Convert magic format to a method name.
         // For example: MAGIC_EXAMPLE = getMagicExampleValue
