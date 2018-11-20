@@ -3,6 +3,7 @@ namespace App\Test\External;
 
 use Cake\Core\Configure;
 use Cake\Http\Client;
+use Cake\Http\Client\Response;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\IntegrationTestCase;
 
@@ -31,8 +32,6 @@ class UsersExternalApiTest extends IntegrationTestCase
         $this->apiClient = new Client([
             'host' => 'localhost:8000',
             'scheme' => 'http',
-        ], [
-            'type' => 'json',
         ]);
     }
 
@@ -110,8 +109,10 @@ class UsersExternalApiTest extends IntegrationTestCase
      * @param string $url URL to send request to
      * @param mixed[] $data Data to send
      * @param mixed[] $headers Headers to set
+     *
+     * @return \Cake\Http\Client\Response
      */
-    protected function sendAuthPost(string $url = '', array $data = [], array $headers = [])
+    protected function sendAuthPost(string $url = '', array $data = [], array $headers = []): Response
     {
         $options = [
             'headers' => [

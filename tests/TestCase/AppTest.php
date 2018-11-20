@@ -15,7 +15,7 @@ class AppTest extends TestCase
     public function testLoadedPlugins(string $plugin, $config): void
     {
         if (empty($config)) {
-            $this->assertTrue(Plugin::loaded($plugin), "Plugin $plugin is not loaded");
+            $this->assertTrue((bool)Plugin::loaded($plugin), "Plugin $plugin is not loaded");
         } else {
             $enabled = false;
             switch (gettype($config)) {
