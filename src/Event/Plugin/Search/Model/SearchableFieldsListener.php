@@ -84,11 +84,26 @@ class SearchableFieldsListener implements EventListenerInterface
             $fields = array_keys($fields);
         }
 
+        if ($table->hasField('trashed') && !empty($fields)) {
+            $fields[] = 'trashed';
+        }
+
         $factory = new FieldHandlerFactory();
 
         $result = [];
         foreach ($fields as $field) {
-            $searchOptions = $factory->getSearchOptions($table, $field);
+            $field_definitions = [];
+            if ('trashed' == $field) {
+                $field_definitions = [
+                    'fieldDefinitions' => [
+                        'type' => 'datetime',
+                        'name' => 'trashed'
+                    ]
+                ];
+            }
+
+            $searchOptions = $factory->getSearchOptions($table, $field, $field_definitions);
+
             if (empty($searchOptions)) {
                 continue;
             }
