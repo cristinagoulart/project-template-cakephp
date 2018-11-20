@@ -61,7 +61,7 @@ class LdapAuthenticate extends BaseAuthenticate
     /**
      * {@inheritDoc}
      */
-    public function authenticate(Request $request, Response $response)
+    public function authenticate(ServerRequest $request, Response $response)
     {
         $user = $this->getUser($request);
 
@@ -93,7 +93,7 @@ class LdapAuthenticate extends BaseAuthenticate
     /**
      * {@inheritDoc}
      */
-    public function getUser(Request $request)
+    public function getUser(ServerRequest $request)
     {
         if (!isset($request->data['username']) || !isset($request->data['password'])) {
             return false;
@@ -125,7 +125,7 @@ class LdapAuthenticate extends BaseAuthenticate
      * @param \Cake\Http\ServerRequest $request Request object.
      * @return array|bool User info or false if failed.
      */
-    protected function _saveUser(array $data, Request $request)
+    protected function _saveUser(array $data, ServerRequest $request)
     {
         // return false if user data empty or username field is not set
         if (empty($data)) {
