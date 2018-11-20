@@ -27,7 +27,7 @@ class PluginShell extends CorePluginShell
     {
         $parser = parent::getOptionParser();
         $parser
-            ->description('Qobo Plugin Shell adds extended functionality to Cake\'s Plugin Shell.')
+            ->setDescription('Qobo Plugin Shell adds extended functionality to Cake\'s Plugin Shell.')
             ->addSubcommand('list', ['help' => 'List all loaded plugins', 'parser' => $this->List->getOptionParser()])
             ->addSubcommand(
                 'migrations',
