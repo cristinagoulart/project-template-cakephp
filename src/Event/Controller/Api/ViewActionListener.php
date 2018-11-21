@@ -5,6 +5,7 @@ use App\Event\EventName;
 use Cake\Event\Event;
 use Cake\ORM\Entity;
 use Cake\ORM\Query;
+use Cake\Utility\Hash;
 
 class ViewActionListener extends BaseActionListener
 {
@@ -39,7 +40,7 @@ class ViewActionListener extends BaseActionListener
 
         $this->_resourceToString($entity);
 
-        if (static::FORMAT_PRETTY === $request->query('format')) {
+        if (static::FORMAT_PRETTY === Hash::get($request->getQueryParams(), 'format', '')) {
             $this->_prettify($entity, $table, []);
         } else { // @todo temporary functionality, please see _includeFiles() method documentation.
             $this->_restructureFiles($entity, $table);

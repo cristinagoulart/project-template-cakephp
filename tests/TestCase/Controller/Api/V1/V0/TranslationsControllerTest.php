@@ -89,7 +89,7 @@ class TranslationsControllerTest extends IntegrationTestCase
 
         $this->assertResponseOk();
 
-        $response = json_decode($this->_response->body());
+        $response = json_decode($this->_response->getBody());
         $this->assertEquals(2, count($response->data));
     }
 
