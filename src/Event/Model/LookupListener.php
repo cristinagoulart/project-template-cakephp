@@ -37,7 +37,7 @@ class LookupListener implements EventListenerInterface
      * @param bool $primary Primary Standalone Query flag
      * @return void
      */
-    public function beforeFind(Event $event, QueryInterface $query, ArrayObject $options, $primary)
+    public function beforeFind(Event $event, QueryInterface $query, ArrayObject $options, bool $primary): void
     {
         if (! $primary) {
             return;
@@ -98,7 +98,7 @@ class LookupListener implements EventListenerInterface
      * @param \ArrayObject $options Query options
      * @return void
      */
-    public function beforeMarshal(Event $event, ArrayObject $data, ArrayObject $options)
+    public function beforeMarshal(Event $event, ArrayObject $data, ArrayObject $options): void
     {
         if (! isset($options['lookup']) || ! (bool)$options['lookup']) {
             return;
@@ -120,7 +120,7 @@ class LookupListener implements EventListenerInterface
      * @param \ArrayObject $data Request data
      * @return bool
      */
-    private function validate(Association $association, ArrayObject $data)
+    private function validate(Association $association, ArrayObject $data): bool
     {
         if (! $this->isValidAssociation($association)) {
             return false;
@@ -145,7 +145,7 @@ class LookupListener implements EventListenerInterface
      * @param \Cake\ORM\Association $association Table association
      * @return bool
      */
-    private function isValidAssociation(Association $association)
+    private function isValidAssociation(Association $association): bool
     {
         if (Association::MANY_TO_ONE !== $association->type()) {
             return false;
@@ -165,7 +165,7 @@ class LookupListener implements EventListenerInterface
      * @param mixed $value Foreign key value
      * @return bool
      */
-    private function isValidID(Association $association, $value)
+    private function isValidID(Association $association, $value): bool
     {
         $query = $association->getTarget()
             ->find('all')
@@ -215,7 +215,7 @@ class LookupListener implements EventListenerInterface
      *
      * @param \Cake\ORM\Association $association Table association
      * @param \ArrayObject $data Request data
-     * @param array $fields Lookup fields
+     * @param mixed[] $fields Lookup fields
      * @return \Cake\Datasource\EntityInterface|null
      */
     private function getRelatedEntity(Association $association, ArrayObject $data, array $fields)

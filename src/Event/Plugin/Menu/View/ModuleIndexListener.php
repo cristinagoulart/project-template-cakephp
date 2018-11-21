@@ -11,6 +11,7 @@ use Cake\Routing\Router;
 use Menu\Event\EventName as MenuEventName;
 use Menu\MenuBuilder\MenuInterface;
 use Menu\MenuBuilder\MenuItemFactory;
+use Menu\MenuBuilder\MenuItemInterface;
 
 class ModuleIndexListener implements EventListenerInterface
 {
@@ -32,18 +33,20 @@ class ModuleIndexListener implements EventListenerInterface
      *
      * @param Event $event Event object
      * @param string $name Menu name
-     * @param array $user Current user
+     * @param mixed[] $user Current user
      * @param bool $fullBaseUrl Flag for fullbase url on menu links
-     * @param array $modules Modules to fetch menu items for
+     * @param mixed[] $modules Modules to fetch menu items for
      * @param MenuInterface|null $menu Menu object to be updated
      * @return void
      */
-    public function getMenuItems(Event $event, $name, array $user, $fullBaseUrl = false, array $modules = [], MenuInterface $menu = null)
+    public function getMenuItems(Event $event, string $name, array $user, bool $fullBaseUrl = false, array $modules = [], MenuInterface $menu = null): void
     {
         if ($name !== MenuName::MODULE_INDEX_TOP) {
             return;
         }
-
+        /**
+         * @var \Cake\Http\ServerRequest $request
+         */
         $request = Router::getRequest();
         $menu->addMenuItem($this->getBatchMenuItem($request));
         $menu->addMenuItem($this->getImportMenuItem($request));
@@ -56,10 +59,10 @@ class ModuleIndexListener implements EventListenerInterface
     /**
      * Creates and returns the menu item for the batch operations
      *
-     * @param Cake\Http\ServerRequest $request Current server request
-     * @return Menu\MenuBuilder\MenuItemInterface
+     * @param \Cake\Http\ServerRequest $request Current server request
+     * @return \Menu\MenuBuilder\MenuItemInterface
      */
-    private function getBatchMenuItem(ServerRequest $request)
+    private function getBatchMenuItem(ServerRequest $request): MenuItemInterface
     {
         $plugin = $request->param('plugin');
         $controller = $request->param('controller');
@@ -105,10 +108,10 @@ class ModuleIndexListener implements EventListenerInterface
     /**
      * Creates and returns the menu item for the import action
      *
-     * @param Cake\Http\ServerRequest $request Current server request
-     * @return Menu\MenuBuilder\MenuItemInterface
+     * @param \Cake\Http\ServerRequest $request Current server request
+     * @return \Menu\MenuBuilder\MenuItemInterface
      */
-    private function getImportMenuItem(ServerRequest $request)
+    private function getImportMenuItem(ServerRequest $request): MenuItemInterface
     {
         $plugin = $request->param('plugin');
         $controller = $request->param('controller');
@@ -125,10 +128,10 @@ class ModuleIndexListener implements EventListenerInterface
     /**
      * Creates and returns the menu item for the add action
      *
-     * @param Cake\Http\ServerRequest $request Current server request
-     * @return Menu\MenuBuilder\MenuItemInterface
+     * @param \Cake\Http\ServerRequest $request Current server request
+     * @return \Menu\MenuBuilder\MenuItemInterface
      */
-    private function getAddMenuItem(ServerRequest $request)
+    private function getAddMenuItem(ServerRequest $request): MenuItemInterface
     {
         $plugin = $request->param('plugin');
         $controller = $request->param('controller');
@@ -145,10 +148,10 @@ class ModuleIndexListener implements EventListenerInterface
     /**
      * Delete logs from Scheduler job page
      *
-     * @param Cake\Http\ServerRequest $request Current server request
-     * @return Menu\MenuBuilder\MenuItemInterface
+     * @param \Cake\Http\ServerRequest $request Current server request
+     * @return \Menu\MenuBuilder\MenuItemInterface
      */
-    private function getDelLogItem(ServerRequest $request)
+    private function getDelLogItem(ServerRequest $request): MenuItemInterface
     {
         $age = Configure::read('ScheduledLog.stats.age');
         $controller = $request->param('controller');

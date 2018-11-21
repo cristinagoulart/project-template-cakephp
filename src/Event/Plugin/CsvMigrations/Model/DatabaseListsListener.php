@@ -27,12 +27,12 @@ class DatabaseListsListener implements EventListenerInterface
      * Skip access check for Database lists.
      *
      * @param \Cake\Event\Event $event Event instance
-     * @param Cake\ORM\Query $query Query object
+     * @param \Cake\ORM\Query $query Query object
      * @param \ArrayObject $options Query options
      * @param bool $primary Flag for Table primary query
      * @return void
      */
-    public function beforeFind(Event $event, Query $query, ArrayObject $options, $primary)
+    public function beforeFind(Event $event, Query $query, ArrayObject $options, ?bool $primary): void
     {
         if (! in_array(get_class($event->getSubject()), [DblistItemsTable::class, DblistsTable::class])) {
             return;

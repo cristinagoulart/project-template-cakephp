@@ -33,15 +33,15 @@ class DashboardMenuListener implements EventListenerInterface
     /**
      * Method that updates the provided Menu to include Dashboard links
      *
-     * @param Event $event Event object
+     * @param \Cake\Event\Event $event Event object
      * @param string $name Menu name
-     * @param array $user Current user
+     * @param mixed[] $user Current user
      * @param bool $fullBaseUrl Flag for fullbase url on menu links
-     * @param array $modules Modules to fetch menu items for
-     * @param MenuInterface|null $menu Menu object to be updated
+     * @param mixed[] $modules Modules to fetch menu items for
+     * @param \Menu\MenuBuilder\MenuInterface|null $menu Menu object to be updated
      * @return void
      */
-    public function getMenuItems(Event $event, $name, array $user, $fullBaseUrl = false, array $modules = [], MenuInterface $menu = null)
+    public function getMenuItems(Event $event, string $name, array $user, bool $fullBaseUrl = false, array $modules = [], MenuInterface $menu = null): void
     {
         if ($name === MenuName::MAIN && empty($modules)) {
             $this->addAdminMenuItems($menu, $user);
@@ -51,6 +51,9 @@ class DashboardMenuListener implements EventListenerInterface
         }
 
         if ($name === MenuName::DASHBOARD_VIEW) {
+            /**
+             * @var \Cake\Http\ServerRequest $request
+             */
             $request = Router::getRequest();
             $entity = $event->getSubject() instanceof EntityInterface ? $event->getSubject() : null;
 
@@ -66,11 +69,11 @@ class DashboardMenuListener implements EventListenerInterface
      * Creates the necessary menu items for the Dashboard menu.
      * All newly created items are added to the specified container
      *
-     * @param MenuInterface $menu The menu to add the created dashboard menu items.
-     * @param array $user Current user
+     * @param \Menu\MenuBuilder\MenuInterface $menu The menu to add the created dashboard menu items.
+     * @param mixed[] $user Current user
      * @return void
      */
-    private function addAdminMenuItems(MenuInterface $menu, array $user)
+    private function addAdminMenuItems(MenuInterface $menu, array $user): void
     {
         $link = MenuItemFactory::createMenuItem([
             'label' => 'Dashboard',
@@ -95,13 +98,16 @@ class DashboardMenuListener implements EventListenerInterface
      * Iterates through Dashboard table query and creates a new menu item for each record found
      * The newly created items will be added under the specified Menu container
      *
-     * @param MenuItemContainerInterface $container Menu Container
-     * @param array $user Current user
+     * @param \Menu\MenuBuilder\MenuItemContainerInterface $container Menu Container
+     * @param mixed[] $user Current user
      * @param int $startAt Starting order position
      * @return void
      */
-    private function addDashboardItemsFromTable(MenuItemContainerInterface $container, array $user, $startAt)
+    private function addDashboardItemsFromTable(MenuItemContainerInterface $container, array $user, int $startAt): void
     {
+        /**
+         * @var \Search\Model\Table\DashboardsTable $table
+         */
         $table = TableRegistry::get('Search.Dashboards');
         $query = $table->getUserDashboards($user);
 

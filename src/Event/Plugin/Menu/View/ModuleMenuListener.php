@@ -48,21 +48,21 @@ class ModuleMenuListener implements EventListenerInterface
      *
      * @param Event $event Event object
      * @param string $name Menu name
-     * @param array $user Current user
+     * @param mixed[] $user Current user
      * @param bool $fullBaseUrl Flag for fullbase url on menu links
-     * @param array $modules Modules to fetch menu items for
+     * @param mixed[] $modules Modules to fetch menu items for
      * @param MenuInterface|null $menu Menu object to be updated
      * @return void
      * @throws \Exception
      */
     public function getMenuItems(
         Event $event,
-        $name,
+        string $name,
         array $user,
-        $fullBaseUrl = false,
+        bool $fullBaseUrl = false,
         array $modules = [],
         MenuInterface $menu = null
-    ) {
+    ): void {
         if (empty($modules)) {
             $modules = Utility::findDirs(Configure::readOrFail('CsvMigrations.modules.path'));
             MenuFactory::addToMenu($menu, $this->getModulesMenuItems($modules, $name));
@@ -76,12 +76,12 @@ class ModuleMenuListener implements EventListenerInterface
     /**
      * Menu links getter.
      *
-     * @param array $modules Modules list
+     * @param mixed[] $modules Modules list
      * @param string $menuName Menu name
-     * @return array
+     * @return mixed[]
      * @throws \Exception
      */
-    protected function getModulesMenuItems(array $modules, $menuName)
+    protected function getModulesMenuItems(array $modules, $menuName): array
     {
         if (empty($modules)) {
             return [];
@@ -106,10 +106,10 @@ class ModuleMenuListener implements EventListenerInterface
      *
      * @param string $module Module name
      * @param string $menuName Menu name
-     * @return array
+     * @return mixed[]
      * @throws \Exception
      */
-    protected function getModuleMenuItems($module, $menuName)
+    protected function getModuleMenuItems(string $module, string $menuName): array
     {
         $moduleConfig = new ModuleConfig(ConfigType::MENUS(), $module);
         $config = json_decode(json_encode($moduleConfig->parse()), true);
@@ -128,11 +128,11 @@ class ModuleMenuListener implements EventListenerInterface
      * Applies the module defaults on the provided menu item
      *
      * @param string $module Module's name
-     * @param array $items List of menu items
-     * @return array The provided list of menu items including the defaults
+     * @param mixed[] $items List of menu items
+     * @return mixed[] The provided list of menu items including the defaults
      * @throws \Exception
      */
-    private function applyModuleDefaults($module, array $items)
+    private function applyModuleDefaults(string $module, array $items): array
     {
         return MenuFactory::applyDefaults($items, $this->getModuleDefaults($module));
     }
@@ -141,10 +141,10 @@ class ModuleMenuListener implements EventListenerInterface
      * Returns the default values for the specified module.
      *
      * @param string $module Module's name
-     * @return array The defaults
+     * @return mixed[] The defaults
      * @throws \Exception
      */
-    private function getModuleDefaults($module)
+    private function getModuleDefaults(string $module): array
     {
         return [
             'icon' => $this->getModuleIcon($module)
@@ -156,10 +156,10 @@ class ModuleMenuListener implements EventListenerInterface
      * The alternative icon is taken from table config
      *
      * @param string $module The module name
-     * @return string
+     * @return string|null
      * @throws \Exception
      */
-    private function getModuleIcon($module)
+    private function getModuleIcon(string $module): ?string
     {
         // Table icon
         $moduleConfig = new ModuleConfig(ConfigType::MODULE(), $module);

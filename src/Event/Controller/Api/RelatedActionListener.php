@@ -24,7 +24,7 @@ class RelatedActionListener extends BaseActionListener
     /**
      * {@inheritDoc}
      */
-    public function beforePaginate(Event $event, QueryInterface $query)
+    public function beforePaginate(Event $event, QueryInterface $query): void
     {
         if (static::FORMAT_PRETTY !== $event->getSubject()->request->getQuery('format')) {
             $query->contain(
