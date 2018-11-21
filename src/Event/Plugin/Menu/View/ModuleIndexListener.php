@@ -64,8 +64,8 @@ class ModuleIndexListener implements EventListenerInterface
      */
     private function getBatchMenuItem(ServerRequest $request): MenuItemInterface
     {
-        $plugin = $request->param('plugin');
-        $controller = $request->param('controller');
+        $plugin = $request->getParam('plugin');
+        $controller = $request->getParam('controller');
 
         $batchItem = MenuItemFactory::createMenuItem([
             'type' => 'button',
@@ -113,8 +113,8 @@ class ModuleIndexListener implements EventListenerInterface
      */
     private function getImportMenuItem(ServerRequest $request): MenuItemInterface
     {
-        $plugin = $request->param('plugin');
-        $controller = $request->param('controller');
+        $plugin = $request->getParam('plugin');
+        $controller = $request->getParam('controller');
 
         return MenuItemFactory::createMenuItem([
             'url' => ['plugin' => $plugin, 'controller' => $controller, 'action' => 'import'],
@@ -133,8 +133,8 @@ class ModuleIndexListener implements EventListenerInterface
      */
     private function getAddMenuItem(ServerRequest $request): MenuItemInterface
     {
-        $plugin = $request->param('plugin');
-        $controller = $request->param('controller');
+        $plugin = $request->getParam('plugin');
+        $controller = $request->getParam('controller');
 
         return MenuItemFactory::createMenuItem([
             'url' => ['plugin' => $plugin, 'controller' => $controller, 'action' => 'add'],
@@ -154,7 +154,7 @@ class ModuleIndexListener implements EventListenerInterface
     private function getDelLogItem(ServerRequest $request): MenuItemInterface
     {
         $age = Configure::read('ScheduledLog.stats.age');
-        $controller = $request->param('controller');
+        $controller = $request->getParam('controller');
 
         $delLog = MenuItemFactory::createMenuItem([
             'url' => ['plugin' => false, 'controller' => 'ScheduledJobLogs', 'action' => 'gc'],
