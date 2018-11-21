@@ -80,6 +80,7 @@ class LdapAuthenticate extends BaseAuthenticate
     protected function _connect()
     {
         try {
+            // phpcs:ignore Generic.PHP.NoSilencedErrors.Discouraged
             $this->_connection = @ldap_connect($this->_config['host'], $this->_config['port']);
             // set LDAP options
             ldap_set_option($this->_connection, LDAP_OPT_PROTOCOL_VERSION, (int)$this->_config['version']);
@@ -100,6 +101,7 @@ class LdapAuthenticate extends BaseAuthenticate
         }
 
         try {
+            // phpcs:ignore Generic.PHP.NoSilencedErrors.Discouraged
             $bind = @ldap_bind($this->_connection, $request->data['username'], $request->data['password']);
             if ($bind) {
                 $filter = '(' . $this->_config['filter'] . '=' . $request->data['username'] . ')';
@@ -211,7 +213,9 @@ class LdapAuthenticate extends BaseAuthenticate
      */
     protected function _disconnect()
     {
+        // phpcs:ignore Generic.PHP.NoSilencedErrors.Discouraged
         @ldap_unbind($this->_connection);
+        // phpcs:ignore Generic.PHP.NoSilencedErrors.Discouraged
         @ldap_close($this->_connection);
     }
 }
