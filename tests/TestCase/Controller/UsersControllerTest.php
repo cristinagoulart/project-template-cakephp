@@ -288,8 +288,7 @@ class UsersControllerTest extends IntegrationTestCase
         $this->withSession();
 
         $data = ['username' => 'john.smith'];
-
-        $this->get('/users/edit/' . $this->userId, $data);
+        $this->get('/users/edit/' . $this->userId . '?username=john.smith');
         $this->assertResponseOk();
 
         $this->put('/users/edit/' . $this->userId, $data);

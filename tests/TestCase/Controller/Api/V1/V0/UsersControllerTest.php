@@ -48,8 +48,6 @@ class UsersControllerTest extends IntegrationTestCase
         $this->apiClient = new Client([
             'host' => 'localhost:8000',
             'scheme' => 'http',
-        ], [
-            'type' => 'json',
         ]);
 
         EventManager::instance()->on(new EditActionListener());
