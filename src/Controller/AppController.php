@@ -127,7 +127,7 @@ class AppController extends Controller
         $this->_allowedResetPassword();
 
         // if user not logged in, redirect him to login page
-        $url = $event->getSubject()->request->params;
+        $url = $event->getSubject()->request->getAttribute('params');
         try {
             $user = empty($this->Auth->user()) ? [] : $this->Auth->user();
             $result = $this->_checkAccess($url, $user);
@@ -314,7 +314,7 @@ class AppController extends Controller
         ];
 
         // skip if url does not match Users requestResetPassword action.
-        if (array_diff_assoc($url, $this->request->params)) {
+        if (array_diff_assoc($url, $this->request->getAttribute('params'))) {
             return;
         }
 
@@ -359,7 +359,7 @@ class AppController extends Controller
         $renderIframe = trim((string)getenv('ALLOW_IFRAME_RENDERING'));
 
         if ('' !== $renderIframe) {
-            $this->response->header('X-Frame-Options', $renderIframe);
+            $this->setResponse($this->response->withHeader('X-Frame-Options', $renderIframe));
         }
     }
 
