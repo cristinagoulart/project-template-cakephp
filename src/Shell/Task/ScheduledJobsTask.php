@@ -112,16 +112,23 @@ class ScheduledJobsTask extends Shell
      */
     private function exists(string $job): bool
     {
-        $entity = TableRegistry::getTableLocator()->get('ScheduledJobs')
+        $result = false;
+
+        $query = TableRegistry::getTableLocator()->get('ScheduledJobs')
             ->find('all')
             ->where(['job' => $job])
-            ->first();
+            ->enableHydration(true);
 
-        if (null === $entity) {
-            return false;
+        if ($query->count()) {
+            /**
+             * @var \Cake\Datasource\EntityInterface
+             */
+            $entity = $query->first();
+            $result = true;
+
+            $this->warn(sprintf('Scheduled job "%s" already added, with status "%s"', $job, $entity->get('active')));
         }
-        $this->warn(sprintf('Scheduled job "%s" already added, with status "%s"', $job, $entity->active));
 
-        return true;
+        return $result;
     }
 }

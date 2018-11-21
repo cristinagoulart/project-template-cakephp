@@ -19,7 +19,7 @@ class Factory
      *
      * @return void
      */
-    public static function init()
+    public static function init(): void
     {
         if (static::$initialized) {
             return;
@@ -43,7 +43,7 @@ class Factory
      * @param string $name Feature name
      * @return \App\Feature\FeatureInterface
      */
-    public static function get(string $name)
+    public static function get(string $name): \App\Feature\FeatureInterface
     {
         if (!static::$initialized) {
             static::init();
@@ -59,9 +59,9 @@ class Factory
      * Features list getter.
      *
      * @param string $type Feature type
-     * @return array
+     * @return mixed[]
      */
-    public static function getList($type = '')
+    public static function getList(string $type = ''): array
     {
         $features = Configure::read('Features');
 
@@ -90,7 +90,7 @@ class Factory
      * @param string $feature Feature name
      * @return \App\Feature\Config
      */
-    protected static function getConfig($feature)
+    protected static function getConfig(string $feature): \App\Feature\Config
     {
         $options = Configure::read('Features.' . $feature);
 
@@ -111,7 +111,7 @@ class Factory
      * @param \App\Feature\Config $config Config instance
      * @return string
      */
-    protected static function getFeatureClass(Config $config)
+    protected static function getFeatureClass(Config $config): string
     {
         $name = explode(DS, $config->get('name'));
         $name = implode('\\', $name);

@@ -64,6 +64,7 @@ class AnnotationTest extends TestCase
 
     /**
      * Access protected and private method
+     *
      * @param  mixed $object Class to access
      * @param  string $methodName Method name
      * @param  mixed[] $parameters arguments of the methods

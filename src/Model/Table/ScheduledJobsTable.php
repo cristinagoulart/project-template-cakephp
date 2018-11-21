@@ -1,7 +1,10 @@
 <?php
 namespace App\Model\Table;
 
+use App\ScheduledJobs\JobInterface;
+use ArrayObject;
 use Cake\Datasource\EntityInterface;
+use Cake\Datasource\ResultSetInterface;
 use Cake\Event\Event;
 use Cake\Filesystem\Folder;
 use Cake\I18n\Time;
@@ -45,7 +48,7 @@ class ScheduledJobsTable extends AppTable
      *
      * @return void
      */
-    public function beforeSave(Event $event, EntityInterface $entity, \ArrayObject $options)
+    public function beforeSave(Event $event, EntityInterface $entity, ArrayObject $options): void
     {
         $entity->set('start_date', $this->getStartDate($entity->get('start_date')));
     }
@@ -55,9 +58,9 @@ class ScheduledJobsTable extends AppTable
      *
      * @deprecated v39.10 Please use getJobs() method instead
      *
-     * @return array $result containing record entities.
+     * @return \Cake\Datasource\ResultSetInterface $result containing record entities.
      */
-    public function getActiveJobs()
+    public function getActiveJobs(): ResultSetInterface
     {
         return $this->getJobs(self::JOB_ACTIVE);
     }
@@ -67,21 +70,15 @@ class ScheduledJobsTable extends AppTable
      *
      * @param int $state of the instance
      *
-     * @return \Cake\ORM\ResultSet $result entities
+     * @return \Cake\Datasource\ResultSetInterface $result entities
      */
-    public function getJobs($state = self::JOB_ACTIVE)
+    public function getJobs(int $state = self::JOB_ACTIVE): ResultSetInterface
     {
-        $result = [];
-
         $state = (bool)$state;
 
         $query = $this->find()
             ->where(['active' => $state])
             ->order(['priority' => 'ASC']);
-
-        if (!$query->count()) {
-            return $result;
-        }
 
         $result = $query->all();
 
@@ -93,12 +90,12 @@ class ScheduledJobsTable extends AppTable
      *
      * Retrieve job object that can be run
      *
-     * @param string $command from DB entity
-     * @param string $type Job type
+     * @param string|null $command from DB entity
+     * @param string|null $type Job type
      *
-     * @return \App\ScheduledJobs\JobInterface $instance of the job.
+     * @return \App\ScheduledJobs\JobInterface|null $instance of the job.
      */
-    public function getInstance($command = null, $type = null)
+    public function getInstance(?string $command, ?string $type)
     {
         $instance = null;
 
@@ -131,11 +128,16 @@ class ScheduledJobsTable extends AppTable
      *
      * @return bool $state whether to run it or not.
      */
-    public function timeToInvoke(Time $now, RRule $rrule)
+    public function timeToInvoke(Time $now, RRule $rrule): bool
     {
         $state = false;
 
-        $dtNow = new DateTime($now->i18nFormat('yyyy-MM-dd HH:mm'), $now->timezone);
+        /**
+         * @var string
+         */
+        $tick = $now->i18nFormat('yyyy-MM-dd HH:mm');
+
+        $dtNow = new DateTime($tick, $now->timezone);
 
         if ($rrule->occursAt($dtNow)) {
             $state = true;
@@ -149,11 +151,11 @@ class ScheduledJobsTable extends AppTable
      *
      * Iterate through all Handlers and ask for jobs list
      *
-     * @param array $options if any needed
+     * @param mixed[] $options if any needed
      *
-     * @return array $result of scripts for UI.
+     * @return mixed[] $result of scripts for UI.
      */
-    public function getList(array $options = [])
+    public function getList(array $options = []): array
     {
         $result = $handlers = [];
 
@@ -188,9 +190,10 @@ class ScheduledJobsTable extends AppTable
      * List Handlers in the directory
      *
      * @param string $path of the directory
-     * @return array
+     *
+     * @return string[]
      */
-    protected function scanDir($path)
+    protected function scanDir(string $path): array
     {
         $result = [];
         $dir = new Folder($path);
@@ -218,7 +221,7 @@ class ScheduledJobsTable extends AppTable
      *
      * @return bool $valid result check.
      */
-    public function isValidFile($file = null)
+    public function isValidFile(string $file): bool
     {
         $valid = true;
 
@@ -238,24 +241,25 @@ class ScheduledJobsTable extends AppTable
      *
      * @param \Cake\Datasource\EntityInterface $entity of the job
      *
-     * @return \RRule\RRule $rrule to be used
+     * @return \RRule\RRule|null $rrule to be used
      */
-    public function getRRule(EntityInterface $entity)
+    public function getRRule(EntityInterface $entity): ?RRule
     {
         $rrule = null;
+        $recurrence = $entity->get('recurrence');
 
-        if (empty($entity->recurrence)) {
+        if (empty($recurrence)) {
             return $rrule;
         }
 
-        $stdate = $entity->start_date;
+        $stdate = $entity->get('start_date');
 
         if (empty($stdate)) {
-            $config = RfcParser::parseRRule($entity->recurrence);
+            $config = RfcParser::parseRRule($recurrence);
         } else {
             // @NOTE: using native DateTime objects within RRule.
             $stdate = new DateTime($stdate->i18nFormat('yyyy-MM-dd HH:mm'), $stdate->timezone);
-            $config = RfcParser::parseRRule($entity->recurrence, $stdate);
+            $config = RfcParser::parseRRule($recurrence, $stdate);
         }
 
         $rrule = new RRule($config);
@@ -272,7 +276,7 @@ class ScheduledJobsTable extends AppTable
      *
      * @return \Cake\I18n\Time with zero-value seconds.
      */
-    public function getStartDate($time)
+    public function getStartDate($time): Time
     {
         if (is_object($time)) {
             return $time->second(0);

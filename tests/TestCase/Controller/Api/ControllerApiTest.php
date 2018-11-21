@@ -11,6 +11,9 @@ use Qobo\Utils\ModuleConfig\ConfigType;
 use Qobo\Utils\ModuleConfig\ModuleConfig;
 use Qobo\Utils\TestSuite\JsonIntegrationTestCase;
 
+/**
+ * @property \Cake\Http\Response $_response
+ */
 class ControllerApiTest extends JsonIntegrationTestCase
 {
     public $fixtures = [
@@ -58,11 +61,16 @@ class ControllerApiTest extends JsonIntegrationTestCase
         $entity = $table->newEntity();
         $table->save($entity);
 
-        $this->get('/api/' . Inflector::dasherize($module) . '/view/' . $entity->get($table->getPrimaryKey()));
+        /**
+         * @var string
+         */
+        $primaryKey = $table->getPrimaryKey();
+
+        $this->get('/api/' . Inflector::dasherize($module) . '/view/' . $primaryKey);
         $this->assertJsonResponseOk();
 
         $response = $this->getParsedResponse();
-        $this->assertEquals($entity->get($table->getPrimaryKey()), $response->data->{$table->getPrimaryKey()});
+        $this->assertEquals($entity->get($primaryKey), $response->data->{$primaryKey});
     }
 
     /**
@@ -72,8 +80,10 @@ class ControllerApiTest extends JsonIntegrationTestCase
     {
         $table = TableRegistry::getTableLocator()->get($module);
 
+        $statusCode = $this->_response->getStatusCode();
+
         $this->post('/api/' . Inflector::dasherize($module) . '/add/');
-        $this->assertTrue(in_array($this->_response->getStatusCode(), [201, 422]));
+        $this->assertTrue(in_array($statusCode, [201, 422]));
         $this->assertContentType('application/json');
 
         if (201 === $this->_response->getStatusCode()) {
@@ -91,7 +101,12 @@ class ControllerApiTest extends JsonIntegrationTestCase
         $entity = $table->newEntity();
         $table->save($entity);
 
-        $this->put('/api/' . Inflector::dasherize($module) . '/edit/' . $entity->get($table->getPrimaryKey()));
+        /**
+         * @var string
+         */
+        $primaryKey = $table->getPrimaryKey();
+
+        $this->put('/api/' . Inflector::dasherize($module) . '/edit/' . $entity->get($primaryKey));
         $this->assertJsonResponseOk();
 
         $response = $this->getParsedResponse();
@@ -108,13 +123,18 @@ class ControllerApiTest extends JsonIntegrationTestCase
         $entity = $table->newEntity();
         $table->save($entity);
 
-        $this->delete('/api/' . Inflector::dasherize($module) . '/delete/' . $entity->get($table->getPrimaryKey()));
+        /**
+         * @var string
+         */
+        $primaryKey = $table->getPrimaryKey();
+
+        $this->delete('/api/' . Inflector::dasherize($module) . '/delete/' . $entity->get($primaryKey));
         $this->assertJsonResponseOk();
 
         $response = $this->getParsedResponse();
         $this->assertInternalType('array', $response->data);
 
-        $query = $table->find()->where([$table->getPrimaryKey() => $entity->get($table->getPrimaryKey())]);
+        $query = $table->find()->where([$primaryKey => $entity->get($primaryKey)]);
         $this->assertTrue($query->isEmpty());
     }
 
@@ -148,7 +168,7 @@ class ControllerApiTest extends JsonIntegrationTestCase
 
     private function isModule(string $name): bool
     {
-        $config = (new ModuleConfig(ConfigType::MIGRATION(), $name, null, ['cacheSkip' => true]))->parse();
+        $config = (new ModuleConfig(ConfigType::MIGRATION(), $name, '', ['cacheSkip' => true]))->parse();
         $config = json_decode(json_encode($config), true);
 
         return ! empty($config);

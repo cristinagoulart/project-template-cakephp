@@ -581,9 +581,9 @@ class Annotation
      * @param  string $properties Swagger properties annotations
      * @return string
      */
-    protected function getDefinition(string $properties)
+    protected function getDefinition(string $properties): string
     {
-        $result = null;
+        $result = '';
         $table = TableRegistry::getTableLocator()->get($this->className);
 
         $entity = $table->newEntity();
@@ -626,11 +626,11 @@ class Annotation
      * of all visible columns to be used as sorting fields and generates
      * paths annotations on the fly.
      *
-     * @return array
+     * @return mixed[]
      */
-    protected function getPaths()
+    protected function getPaths(): array
     {
-        $result = null;
+        $result = [];
         $table = TableRegistry::getTableLocator()->get($this->className);
 
         $entity = $table->newEntity();

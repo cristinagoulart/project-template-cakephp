@@ -52,7 +52,7 @@ class UsersController extends AppController
             parent::initialize();
         } catch (ForbiddenException $e) {
             if ('token' !== $this->request->getParam('action')) {
-                throw new ForbiddenException($e->getMessage());
+                throw new ForbiddenException($e->getMessage(), null, $e);
             }
         }
 

@@ -19,6 +19,7 @@ use App\Feature\Factory as FeatureFactory;
 use AuditStash\Meta\RequestMetadata;
 use Cake\Controller\Controller;
 use Cake\Core\Configure;
+use Cake\Datasource\EntityInterface;
 use Cake\Event\Event;
 use Cake\Event\EventManager;
 use Cake\Http\Exception\ForbiddenException;
@@ -98,7 +99,7 @@ class AppController extends Controller
      * Before render callback.
      *
      * @param \Cake\Event\Event $event The beforeRender event.
-     * @return \Cake\Http\Response|null|void
+     * @return \Cake\Http\Response|void|null
      */
     public function beforeRender(Event $event)
     {
@@ -119,7 +120,7 @@ class AppController extends Controller
      * Callack method.
      *
      * @param  \Cake\Event\Event $event Event object
-     * @return void|\Cake\Http\Response
+     * @return \Cake\Http\Response|void|null
      */
     public function beforeFilter(Event $event)
     {
@@ -166,12 +167,12 @@ class AppController extends Controller
     /**
      * Index method
      *
-     * @return void
+     * @return \Cake\Http\Response|void|null
      */
     public function index()
     {
         $entity = $this->getSystemSearch();
-        $searchData = json_decode($entity->content, true);
+        $searchData = json_decode($entity->get('content'), true);
 
         // return json response and skip any further processing.
         if ($this->request->is('ajax') && $this->request->accepts('application/json')) {
@@ -203,9 +204,9 @@ class AppController extends Controller
     /**
      * System search getter.
      *
-     * @return \Search\Model\Entity\SavedSearch
+     * @return \Cake\Datasource\EntityInterface
      */
-    private function getSystemSearch()
+    private function getSystemSearch(): EntityInterface
     {
         $table = TableRegistry::getTableLocator()->get('Search.SavedSearches');
 
@@ -223,10 +224,11 @@ class AppController extends Controller
     /**
      * Creates system search for provided module.
      *
-     * @return \Search\Model\Entity\SavedSearch
      * @throws \RuntimeException when failed to create system search
+     *
+     * @return \Cake\Datasource\EntityInterface
      */
-    private function createSystemSearch()
+    private function createSystemSearch(): EntityInterface
     {
         $table = TableRegistry::getTableLocator()->get('Search.SavedSearches');
         $user = TableRegistry::getTableLocator()->get('CakeDC/Users.Users')
@@ -259,7 +261,7 @@ class AppController extends Controller
      *
      * @return void
      */
-    protected function loadAdminLTE()
+    protected function loadAdminLTE(): void
     {
         $loadAdminLTE = true;
 
@@ -303,7 +305,7 @@ class AppController extends Controller
      *
      * @return void
      */
-    protected function _allowedResetPassword()
+    protected function _allowedResetPassword(): void
     {
         $url = [
             'plugin' => 'CakeDC/Users',
@@ -329,7 +331,7 @@ class AppController extends Controller
      *
      * @return void
      */
-    protected function _generateApiToken()
+    protected function _generateApiToken(): void
     {
         Configure::write('API.token', JWT::encode(
             [
@@ -352,7 +354,7 @@ class AppController extends Controller
      *
      * @return void
      */
-    protected function _setIframeRendering()
+    protected function _setIframeRendering(): void
     {
         $renderIframe = trim((string)getenv('ALLOW_IFRAME_RENDERING'));
 
@@ -365,9 +367,9 @@ class AppController extends Controller
      * Get list of controller's skipped actions.
      *
      * @param  string $controllerName Controller name
-     * @return array
+     * @return mixed[]
      */
-    public static function getSkipActions($controllerName)
+    public static function getSkipActions(string $controllerName): array
     {
         $result = [
             'getMenu',

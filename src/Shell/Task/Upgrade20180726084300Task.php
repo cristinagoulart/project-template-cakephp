@@ -8,6 +8,12 @@ use Cake\ORM\TableRegistry;
 
 class Upgrade20180726084300Task extends Shell
 {
+
+    /**
+     * @var \App\Model\Table\UsersTable $Users
+     */
+    public $Users;
+
     /**
      * Manage the available sub-commands along with their arguments and help
      *
@@ -28,7 +34,11 @@ class Upgrade20180726084300Task extends Shell
      */
     public function main()
     {
-        $this->Users = TableRegistry::get('CakeDC/Users.Users');
+        /**
+         * @var \App\Model\Table\UsersTable $usersTable
+         */
+        $usersTable = TableRegistry::get('CakeDC/Users.Users');
+        $this->Users = $usersTable;
 
         $query = $this->Users->find()
             ->where(['image IS NOT' => null]);

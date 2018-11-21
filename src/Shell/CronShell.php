@@ -14,6 +14,9 @@ use RuntimeException;
 
 /**
  * Cron shell command.
+ *
+ * @property \App\Model\Table\ScheduledJobLogs $ScheduledJobLogs
+ * @property \App\Model\Table\ScheduledJobsTable $ScheduledJobs
  */
 class CronShell extends Shell
 {
@@ -21,6 +24,11 @@ class CronShell extends Shell
     public $tasks = ['Lock'];
 
     protected $featureName = 'ScheduledJobs';
+
+    /**
+     * @var \App\Model\Table\ScheduledJobLogsTable
+     */
+    public $ScheduledJobLogs;
 
     /**
      * Manage the available sub-commands along with their arguments and help
@@ -52,8 +60,18 @@ class CronShell extends Shell
         }
 
         $this->info('Running Scheduled Tasks...');
-        $this->ScheduledJobs = TableRegistry::get('ScheduledJobs');
-        $this->ScheduledJobLogs = TableRegistry::get('ScheduledJobLogs');
+
+        /**
+         * @var \App\Model\Table\ScheduledJobsTable $scheduledJobs
+         */
+        $scheduledJobs = TableRegistry::get('ScheduledJobs');
+        $this->ScheduledJobs = $scheduledJobs;
+
+        /**
+         * @var \App\Model\Table\ScheduledJobLogsTable $scheduledJobsLogs
+         */
+        $scheduledJobsLogs = TableRegistry::get('ScheduledJobLogs');
+        $this->ScheduledJobLogs = $scheduledJobsLogs;
 
         $jobs = $this->ScheduledJobs->getJobs(ScheduledJobsTable::JOB_ACTIVE);
 
