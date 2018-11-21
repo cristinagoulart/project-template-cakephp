@@ -34,7 +34,7 @@ class RelatedActionListener extends BaseActionListener
 
         $query->order($this->getOrderClause(
             $event->getSubject()->request,
-            $event->getSubject()->{$event->getSubject()->name}
+            $event->getSubject()->{$event->getSubject()->getName()}
         ));
     }
 
@@ -93,8 +93,8 @@ class RelatedActionListener extends BaseActionListener
     {
         $associationName = $event->getSubject()->request->getParam('pass.1');
 
-        return $event->getSubject()->{$event->getSubject()->name}
-            ->association($associationName)
+        return $event->getSubject()->{$event->getSubject()->getName()}
+            ->getAssociation($associationName)
             ->getTarget();
     }
 }

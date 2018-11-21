@@ -55,7 +55,7 @@ class SearchViewListener implements EventListenerInterface
         $menu->addMenuItem($this->getViewMenuItem($entity, $request));
         $editMenuItem = $this->getEditMenuItem($entity, $request);
         $editMenuItem->disableIf(function () use ($request) {
-            return 'Logs' === $request->param('controller');
+            return 'Logs' === $request->getParam('controller');
         });
 
         $menu->addMenuItem($editMenuItem);
@@ -65,7 +65,7 @@ class SearchViewListener implements EventListenerInterface
         ]);
 
         $deleteMenuItem->disableIf(function () use ($request) {
-            return 'Logs' === $request->param('controller');
+            return 'Logs' === $request->getParam('controller');
         });
 
         $menu->addMenuItem($deleteMenuItem);

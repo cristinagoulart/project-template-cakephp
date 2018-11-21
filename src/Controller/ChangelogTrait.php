@@ -42,7 +42,7 @@ trait ChangelogTrait
             ->order(['timestamp' => 'DESC'])
             ->group('timestamp');
 
-        $modelAlias = $this->{$this->name}->alias();
+        $modelAlias = $this->{$this->name}->getAlias();
         $methodName = 'moduleAlias';
         if (method_exists($this->{$this->name}, $methodName) && is_callable([$this->{$this->name}, $methodName])) {
             $modelAlias = $this->{$this->name}->{$methodName}();

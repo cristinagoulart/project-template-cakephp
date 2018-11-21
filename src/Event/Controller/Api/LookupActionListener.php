@@ -8,6 +8,7 @@ use Cake\Datasource\ResultSetDecorator;
 use Cake\Event\Event;
 use Cake\Http\ServerRequest;
 use Cake\ORM\TableRegistry;
+use Cake\Utility\Hash;
 use CsvMigrations\FieldHandlers\CsvField;
 use CsvMigrations\FieldHandlers\FieldHandlerFactory;
 use CsvMigrations\FieldHandlers\RelatedFieldTrait;
@@ -74,7 +75,7 @@ class LookupActionListener extends BaseActionListener
             return;
         }
 
-        if (!$request->query('query')) {
+        if (! Hash::get($request->getQueryParams(), 'query', false)) {
             return;
         }
 
