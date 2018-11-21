@@ -81,6 +81,6 @@ class LogAuditTableTest extends TestCase
             'source' => 'Foo'
         ]);
 
-        $this->assertEmpty($entity->errors());
+        $this->assertEmpty($entity->getErrors());
     }
 }

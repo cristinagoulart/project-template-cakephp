@@ -3,7 +3,7 @@ namespace App\Test\TestCase\Controller;
 
 use App\Controller\DblistsController;
 use Cake\Core\Configure;
-use Cake\Network\Exception\ForbiddenException;
+use Cake\Http\Exception\ForbiddenException;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\IntegrationTestCase;
 

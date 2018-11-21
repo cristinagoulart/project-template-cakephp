@@ -68,9 +68,9 @@ class CronShellTest extends ConsoleIntegrationTestCase
 
     /**
      * @dataProvider fileAndClassNamesProvider
-     * @param string $file File
-     * @param mixed $class Class
-     * @param string $normalized Expected result
+     * @param string $file File name
+     * @param mixed $class Class name
+     * @param string $normalized Normalized name
      * @return void
      */
     public function testLock(string $file, $class, string $normalized) : void

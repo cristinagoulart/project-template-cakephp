@@ -14,7 +14,7 @@ class ScheduledJobsController extends BaseController
      *
      * Returns a a list of scheduled jobs
      *
-     * @return void|\Cake\Network\Response
+     * @return \Cake\Http\Response|void|null
      */
     public function index()
     {

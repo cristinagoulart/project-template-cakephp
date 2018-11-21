@@ -3,7 +3,7 @@
     colors="true"
     processIsolation="false"
     stopOnFailure="false"
-    bootstrap="./tests/bootstrap.php"
+    bootstrap="tests/bootstrap.php"
     verbose="true"
     >
     <php>
@@ -44,8 +44,7 @@
     <!-- Setup a listener for fixtures -->
     <listeners>
         <listener
-        class="\Cake\TestSuite\Fixture\FixtureInjector"
-        file="./vendor/cakephp/cakephp/src/TestSuite/Fixture/FixtureInjector.php">
+        class="\Cake\TestSuite\Fixture\FixtureInjector">
             <arguments>
                 <object class="\Cake\TestSuite\Fixture\FixtureManager" />
             </arguments>
@@ -55,8 +54,8 @@
     <!-- Ignore vendor tests in code coverage reports -->
     <filter>
         <whitelist>
-            <directory suffix=".php">./src/</directory>
-            <directory suffix=".php">./webroot/</directory>
+            <directory suffix=".php">src/</directory>
+            <directory suffix=".php">webroot/</directory>
         </whitelist>
     </filter>
 </phpunit>

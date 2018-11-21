@@ -34,8 +34,8 @@ class BatchActionListener implements EventListenerInterface
         $result = [];
         foreach ($batchIds as $batchId) {
             $url = [
-                'plugin' => $event->subject()->plugin,
-                'controller' => $event->subject()->name,
+                'plugin' => $event->getSubject()->plugin,
+                'controller' => $event->getSubject()->name,
                 'action' => $operation,
                 $batchId
             ];

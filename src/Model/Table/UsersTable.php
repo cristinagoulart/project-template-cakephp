@@ -36,7 +36,7 @@ class UsersTable extends Table
      */
     protected function _initializeSchema(TableSchema $schema)
     {
-        $schema->columnType('image', 'base64');
+        $schema->setColumnType('image', 'base64');
 
         return $schema;
     }

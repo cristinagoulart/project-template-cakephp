@@ -26,7 +26,7 @@ class RelatedActionListener extends BaseActionListener
      */
     public function beforePaginate(Event $event, QueryInterface $query)
     {
-        if (static::FORMAT_PRETTY !== $event->subject()->request->getQuery('format')) {
+        if (static::FORMAT_PRETTY !== $event->getSubject()->request->getQuery('format')) {
             $query->contain(
                 $this->_getFileAssociations($this->getAssociatedTable($event))
             );

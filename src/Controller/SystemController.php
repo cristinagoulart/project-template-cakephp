@@ -124,7 +124,7 @@ class SystemController extends AppController
      * @param array $user Current user, if any
      * @return bool
      */
-    protected function _checkAccess($url, $user)
+    protected function _checkAccess(array $url, array $user): bool
     {
         if (empty($user) && $url['action'] === 'home') {
             return false;

@@ -11,7 +11,7 @@ $this->layout = 'AdminLTE/login';
             <span class="input-group-addon">
                 <span class="fa fa-user"></span>
             </span>
-            <?= $this->Form->input('reference', [
+            <?= $this->Form->control('reference', [
                 'required' => true,
                 'label' => false,
                 'placeholder' => 'Username',

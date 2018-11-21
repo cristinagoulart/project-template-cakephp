@@ -19,7 +19,7 @@ class AppExceptionRenderer extends ExceptionRenderer
     {
         $isDebug = Configure::read('debug');
         $this->controller->loadComponent('CakeDC/Users.UsersAuth');
-        $this->controller->Auth->config('authorize', false);
+        $this->controller->Auth->setConfig('authorize', false);
         $currentUser = $this->controller->Auth->user();
 
         if (empty($currentUser) || $isDebug) {

@@ -26,8 +26,8 @@ class ScheduledJobsTable extends AppTable
     {
         parent::initialize($config);
 
-        $this->table('scheduled_jobs');
-        $this->primaryKey('id');
+        $this->setTable('scheduled_jobs');
+        $this->setPrimaryKey('id');
 
         $this->addBehavior('Timestamp');
         $this->addBehavior('Muffin/Trash.Trash');

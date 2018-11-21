@@ -25,11 +25,7 @@ class LookupActionListenerTest extends TestCase
     {
         parent::setUp();
 
-        /**
-         * @var \App\Model\Table\UsersTable $table
-         */
-        $table = TableRegistry::get('Users');
-        $this->Users = $table;
+        $this->Users = TableRegistry::get('Users');
     }
 
     public function testBeforeLookupEmptyQuery(): void
@@ -61,9 +57,9 @@ class LookupActionListenerTest extends TestCase
     }
 
     /**
-     * @param mixed[] $query Query
+     * @param mixed[] $query Query parameters
      */
-    private function getRequest(array $query = []): \Cake\Http\ServerRequest
+    private function getRequest(array $query = []): ServerRequest
     {
         return new ServerRequest([
             'params' => [

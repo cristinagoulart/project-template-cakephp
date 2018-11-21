@@ -25,11 +25,7 @@ class Database
      */
     public static function getDriver(bool $skipVersion = false): string
     {
-        /**
-         * @var \Cake\Database\Connection $connection
-         */
-        $connection = ConnectionManager::get('default');
-        $driver = $connection->getDriver();
+        $driver = ConnectionManager::get('default')->getDriver();
         // Find the class name of the driver without namespace
         $driver = new ReflectionClass($driver);
         $driver = $driver->getShortName();
@@ -67,7 +63,7 @@ class Database
      */
     public static function getTables(string $match = ''): array
     {
-        $tables = ConnectionManager::get('default')->schemaCollection()->listTables();
+        $tables = ConnectionManager::get('default')->getSchemaCollection()->listTables();
 
         if (empty($match)) {
             return $tables;

@@ -65,28 +65,13 @@ class SearchableFieldsListener implements EventListenerInterface
      */
     public static function getSearchableFieldsByTable(RepositoryInterface $table, array $user, $withAssociated = true)
     {
-        if ($table instanceof UsersTable) {
-            $fields = ['first_name', 'last_name', 'username', 'email', 'created', 'modified'];
-        } elseif ($table instanceof DatabaseLogsTable) {
-            $fields = ['hostname', 'ip', 'uri', 'message', 'type', 'created'];
-        } else {
-            $method = 'getFieldsDefinitions';
-            // skip if method cannot be called
-            if (!method_exists($table, $method) || !is_callable([$table, $method])) {
-                return [];
-            }
-
-            $fields = $table->{$method}();
-            if (empty($fields)) {
-                return [];
-            }
-
-            $fields = array_keys($fields);
+        $factory = new FieldHandlerFactory();
+        $fields = static::getFieldsDefinitionsByTable($table);
+        $result = [];
+        if (empty($fields)) {
+            return $result;
         }
 
-        $factory = new FieldHandlerFactory();
-
-        $result = [];
         foreach ($fields as $field) {
             $searchOptions = $factory->getSearchOptions($table, $field);
             if (empty($searchOptions)) {
@@ -105,6 +90,39 @@ class SearchableFieldsListener implements EventListenerInterface
         }
 
         return $result;
+    }
+
+    /**
+     * Returns the fields definitions for the provided table
+     *
+     * @param \Cake\Datasource\RepositoryInterface $table Table to retrieve fields for
+     * @return array
+     */
+    private static function getFieldsDefinitionsByTable(RepositoryInterface $table)
+    {
+        $fields = [];
+        if ($table instanceof UsersTable) {
+            return ['first_name', 'last_name', 'username', 'email', 'created', 'modified'];
+        }
+
+        if ($table instanceof DatabaseLogsTable) {
+            return ['hostname', 'ip', 'uri', 'message', 'type', 'created'];
+        }
+
+        $method = 'getFieldsDefinitions';
+        // skip if method cannot be called
+        if (!method_exists($table, $method) || !is_callable([$table, $method])) {
+            return $fields;
+        }
+
+        $fields = $table->{$method}();
+        if (empty($fields)) {
+            return [];
+        }
+
+        $fields = array_keys($fields);
+
+        return $fields;
     }
 
     /**
@@ -200,7 +218,7 @@ class SearchableFieldsListener implements EventListenerInterface
     {
         $config = [];
         try {
-            $mc = new ModuleConfig(ConfigType::MODULE(), $table->registryAlias());
+            $mc = new ModuleConfig(ConfigType::MODULE(), $table->getRegistryAlias());
             $config = $mc->parse();
             $config = json_decode(json_encode($config), true);
         } catch (InvalidArgumentException $e) {
@@ -246,7 +264,7 @@ class SearchableFieldsListener implements EventListenerInterface
     {
         $config = [];
         try {
-            list($plugin, $module) = pluginSplit($table->registryAlias());
+            list($plugin, $module) = pluginSplit($table->getRegistryAlias());
             $mc = new ModuleConfig(ConfigType::VIEW(), $module, 'index');
             $config = $mc->parse();
             $config = !empty($config->items) ? json_decode(json_encode($config->items), true) : [];

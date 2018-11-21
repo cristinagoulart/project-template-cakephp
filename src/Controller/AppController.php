@@ -21,8 +21,8 @@ use Cake\Controller\Controller;
 use Cake\Core\Configure;
 use Cake\Event\Event;
 use Cake\Event\EventManager;
-use Cake\Network\Exception\ForbiddenException;
-use Cake\Network\Exception\NotFoundException;
+use Cake\Http\Exception\ForbiddenException;
+use Cake\Http\Exception\NotFoundException;
 use Cake\ORM\TableRegistry;
 use Cake\Utility\Inflector;
 use Cake\Utility\Security;
@@ -64,7 +64,9 @@ class AppController extends Controller
     {
         parent::initialize();
 
-        $this->loadComponent('RequestHandler');
+        $this->loadComponent('RequestHandler', [
+            'enableBeforeRedirect' => false,
+        ]);
         $this->loadComponent('Flash');
 
         /*
@@ -76,9 +78,9 @@ class AppController extends Controller
 
         $this->loadComponent('CakeDC/Users.UsersAuth');
 
-        $this->Auth->config('authorize', false);
-        $this->Auth->config('loginRedirect', '/');
-        $this->Auth->config('flash', ['element' => 'error', 'key' => 'auth']);
+        $this->Auth->setConfig('authorize', false);
+        $this->Auth->setConfig('loginRedirect', '/');
+        $this->Auth->setConfig('flash', ['element' => 'error', 'key' => 'auth']);
 
         // enable LDAP authentication
         if ((bool)Configure::read('Ldap.enabled')) {
@@ -124,16 +126,17 @@ class AppController extends Controller
         $this->_allowedResetPassword();
 
         // if user not logged in, redirect him to login page
-        $url = $event->subject()->request->params;
+        $url = $event->getSubject()->request->params;
         try {
-            $result = $this->_checkAccess($url, $this->Auth->user());
+            $user = empty($this->Auth->user()) ? [] : $this->Auth->user();
+            $result = $this->_checkAccess($url, $user);
             if (!$result) {
                 throw new ForbiddenException();
             }
         } catch (ForbiddenException $e) {
             $event->stopPropagation();
             if (empty($this->Auth->user())) {
-                $this->Auth->config('authError', false);
+                $this->Auth->setConfig('authError', false);
 
                 return $this->redirect('/login');
             } else {
@@ -172,7 +175,7 @@ class AppController extends Controller
 
         // return json response and skip any further processing.
         if ($this->request->is('ajax') && $this->request->accepts('application/json')) {
-            $this->viewBuilder()->className('Json');
+            $this->viewBuilder()->setClassName('Json');
             $response = $this->getAjaxViewVars(
                 $searchData['latest'],
                 $this->{$this->name},
@@ -272,11 +275,11 @@ class AppController extends Controller
 
         // Load AdminLTE for regular requests
         if ($loadAdminLTE) {
-            $this->viewBuilder()->className('AdminLTE.AdminLTE');
+            $this->viewBuilder()->setClassName('AdminLTE.AdminLTE');
         }
 
-        $this->viewBuilder()->theme('AdminLTE');
-        $this->viewBuilder()->layout('adminlte');
+        $this->viewBuilder()->setTheme('AdminLTE');
+        $this->viewBuilder()->setLayout('adminlte');
 
         $title = Inflector::humanize(Inflector::underscore($this->name));
         try {
@@ -333,7 +336,7 @@ class AppController extends Controller
                 'sub' => $this->Auth->user('id'),
                 'exp' => time() + 604800
             ],
-            Security::salt()
+            Security::getSalt()
         ));
 
         Configure::write('CsvMigrations.api.token', Configure::read('API.token'));

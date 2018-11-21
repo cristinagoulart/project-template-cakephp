@@ -2,8 +2,8 @@
 namespace App\Controller\Api\V1\V0;
 
 use Cake\Core\Configure;
-use Cake\Network\Exception\ForbiddenException;
-use Cake\Network\Exception\UnauthorizedException;
+use Cake\Http\Exception\ForbiddenException;
+use Cake\Http\Exception\UnauthorizedException;
 use Cake\Utility\Security;
 use Firebase\JWT\JWT;
 
@@ -64,7 +64,7 @@ class UsersController extends AppController
     /**
      * Method responsible for generating JSON Web Token (WT), after it authenticates the user.
      *
-     * @throws \Cake\Network\Exception\UnauthorizedException
+     * @throws \Cake\Http\Exception\UnauthorizedException
      * @link   http://www.bravo-kernel.com/2015/04/how-to-add-jwt-authentication-to-a-cakephp-3-rest-api/
      * @return \Cake\Http\Response|void|null
      */
