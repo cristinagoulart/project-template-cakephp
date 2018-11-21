@@ -42,10 +42,16 @@ class UsersExternalApiTest extends IntegrationTestCase
 
     public function testExternalApiUsersCRUD(): void
     {
-        $response = $this->apiClient->post('/api/users/token.json', [
-            'username' => getenv('DEV_USER'),
-            'password' => getenv('DEV_USER'),
-        ]);
+        $response = $this->apiClient->post(
+            '/api/users/token.json',
+            [
+                'username' => getenv('DEV_USER'),
+                'password' => getenv('DEV_USER'),
+            ],
+            [
+                'type' => 'json'
+            ]
+        );
 
         $this->assertTrue($response->isOk(), "Couldn't fetch API token from default getenv(DEV_USER) user");
 

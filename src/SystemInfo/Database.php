@@ -25,7 +25,11 @@ class Database
      */
     public static function getDriver(bool $skipVersion = false): string
     {
-        $driver = ConnectionManager::get('default')->getDriver();
+        /**
+         * @var \Cake\Database\Connection $connection
+         */
+        $connection = ConnectionManager::get('default');
+        $driver = $connection->getDriver();
         // Find the class name of the driver without namespace
         $driver = new ReflectionClass($driver);
         $driver = $driver->getShortName();
@@ -38,7 +42,7 @@ class Database
         // Find version of the database engine
         switch ($driver) {
             case 'MYSQL':
-                $version = ConnectionManager::get('default')->execute("SELECT VERSION()");
+                $version = $connection->execute("SELECT VERSION()");
                 $version = $version->fetch()[0];
                 $driver .= ' ' . $version;
 

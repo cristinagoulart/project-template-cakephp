@@ -88,12 +88,12 @@ class ScheduledJobsTable extends AppTable
     /**
      * Get Job Instance
      *
-     * Retrieve job object that can be run
+     * Retrieve Handler/Job Object for the job.
      *
      * @param string|null $command from DB entity
      * @param string|null $type Job type
      *
-     * @return \App\ScheduledJobs\JobInterface|null $instance of the job.
+     * @return object|null $instance of the job.
      */
     public function getInstance(?string $command, ?string $type)
     {
@@ -167,13 +167,12 @@ class ScheduledJobsTable extends AppTable
         foreach ($handlers as $handlerName) {
             $class = $namespace . $handlerName;
 
-            try {
-                $object = new $class();
-
-                $result = array_merge($result, $object->getList());
-            } catch (RuntimeException $e) {
-                Log::error($e->getMessage());
+            if (! class_exists($class)) {
+                continue;
             }
+
+            $object = new $class();
+            $result = array_merge($result, $object->getList());
         }
 
         $commands = array_keys(array_flip($result));
@@ -270,22 +269,20 @@ class ScheduledJobsTable extends AppTable
     /**
      * Get Start Date right
      *
-     * Avoid using second in case it might mismatch timeToInvoke() method
+     * Avoid using seconds in case it might mismatch timeToInvoke() method
      *
-     * @param mixed $time of the entity
+     * @param \Cake\I18n\Time|string $time of the entity
      *
      * @return \Cake\I18n\Time with zero-value seconds.
      */
     public function getStartDate($time): Time
     {
-        if (is_object($time)) {
+        if ($time instanceof Time) {
             return $time->second(0);
         }
 
         if (is_string($time)) {
             return Time::parse($time)->second(0);
         }
-
-        return $time;
     }
 }

@@ -4,6 +4,7 @@ namespace App\Event\Controller\Api;
 use App\Event\EventName;
 use Cake\Core\App;
 use Cake\Datasource\QueryInterface;
+use Cake\Datasource\RepositoryInterface;
 use Cake\Datasource\ResultSetInterface;
 use Cake\Event\Event;
 
@@ -49,7 +50,7 @@ class RelatedActionListener extends BaseActionListener
     /**
      * {@inheritDoc}
      */
-    public function beforeRender(Event $event, ResultSetInterface $resultSet)
+    public function beforeRender(Event $event, ResultSetInterface $resultSet): void
     {
         if ($resultSet->isEmpty()) {
             return;
@@ -89,7 +90,7 @@ class RelatedActionListener extends BaseActionListener
      * @param \Cake\Event\Event $event Event object
      * @return \Cake\Datasource\RepositoryInterface
      */
-    private function getAssociatedTable(Event $event)
+    private function getAssociatedTable(Event $event): RepositoryInterface
     {
         $associationName = $event->getSubject()->request->getParam('pass.1');
 
