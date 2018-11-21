@@ -81,11 +81,8 @@ class SearchableFieldsListener implements EventListenerInterface
             if ('trashed' == $field) {
                 $field_definitions = [
                     'fieldDefinitions' => [
-                        'type' => 'datetime',
                         'name' => 'trashed',
-                        "required" => null,
-                        "non-searchable" => null,
-                        "unique" => null
+                        'type' => 'datetime'
                     ]
                 ];
             }

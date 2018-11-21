@@ -29,6 +29,13 @@ class ThingsTable extends Table
                 'required' => null,
                 'non-searchable' => 1,
                 'unique' => null,
+            ],
+            'trashed' => [
+                'name' => 'trashed',
+                'type' => 'datetime',
+                'required' => null,
+                'non-searchable' => null,
+                'unique' => null,
             ]
         ];
     }
