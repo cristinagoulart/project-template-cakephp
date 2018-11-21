@@ -72,7 +72,7 @@ class SearchableFieldsListener implements EventListenerInterface
             return $result;
         }
 
-        if ($user['is_admin'] && $table->hasField('trashed') && !empty($fields)) {
+        if ($user['is_admin'] && $table->hasField('trashed')) {
             $fields[] = 'trashed';
         }
 
@@ -82,7 +82,10 @@ class SearchableFieldsListener implements EventListenerInterface
                 $field_definitions = [
                     'fieldDefinitions' => [
                         'type' => 'datetime',
-                        'name' => 'trashed'
+                        'name' => 'trashed',
+                        "required" => null,
+                        "non-searchable" => null,
+                        "unique" => null
                     ]
                 ];
             }
