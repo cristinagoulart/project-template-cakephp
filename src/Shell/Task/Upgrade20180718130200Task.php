@@ -82,6 +82,9 @@ class Upgrade20180718130200Task extends Shell
     private function getTables(): array
     {
         $result = $this->getTablesFromPath(APP . 'Model' . DS . 'Table' . DS);
+        /**
+         * @var mixed[] $plugins
+         */
         $plugins = Plugin::loaded();
 
         if (empty($plugins)) {
