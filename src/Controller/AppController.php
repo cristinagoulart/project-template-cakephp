@@ -19,6 +19,7 @@ use App\Feature\Factory as FeatureFactory;
 use AuditStash\Meta\RequestMetadata;
 use Cake\Controller\Controller;
 use Cake\Core\Configure;
+use Cake\Datasource\EntityInterface;
 use Cake\Event\Event;
 use Cake\Event\EventManager;
 use Cake\Http\Exception\ForbiddenException;
@@ -171,7 +172,7 @@ class AppController extends Controller
     public function index()
     {
         $entity = $this->getSystemSearch();
-        $searchData = json_decode($entity->content, true);
+        $searchData = json_decode($entity->get('content'), true);
 
         // return json response and skip any further processing.
         if ($this->request->is('ajax') && $this->request->accepts('application/json')) {
@@ -203,9 +204,9 @@ class AppController extends Controller
     /**
      * System search getter.
      *
-     * @return \Search\Model\Entity\SavedSearch
+     * @return \Cake\Datasource\EntityInterface
      */
-    private function getSystemSearch(): \Search\Model\Entity\SavedSearch
+    private function getSystemSearch(): EntityInterface
     {
         $table = TableRegistry::getTableLocator()->get('Search.SavedSearches');
 
@@ -223,10 +224,11 @@ class AppController extends Controller
     /**
      * Creates system search for provided module.
      *
-     * @return \Search\Model\Entity\SavedSearch
      * @throws \RuntimeException when failed to create system search
+     *
+     * @return \Cake\Datasource\EntityInterface
      */
-    private function createSystemSearch()
+    private function createSystemSearch(): EntityInterface
     {
         $table = TableRegistry::getTableLocator()->get('Search.SavedSearches');
         $user = TableRegistry::getTableLocator()->get('CakeDC/Users.Users')

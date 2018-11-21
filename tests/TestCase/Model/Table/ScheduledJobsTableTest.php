@@ -70,16 +70,13 @@ class ScheduledJobsTableTest extends TestCase
 
     public function testGetJobs(): void
     {
-        $result = $this->ScheduledJobsTable->getJobs(0);
-        $this->assertEquals($result, []);
-
         $result = $this->ScheduledJobsTable->getJobs(3);
         $this->assertNotEmpty($result);
     }
 
     public function testGetInstance(): void
     {
-        $result = $this->ScheduledJobsTable->getInstance();
+        $result = $this->ScheduledJobsTable->getInstance(null, null);
         $this->assertNull($result);
 
         $result = $this->ScheduledJobsTable->getInstance('CakeShell::App:clean_modules_data', 'Handler');

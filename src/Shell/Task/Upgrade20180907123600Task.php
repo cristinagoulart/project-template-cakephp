@@ -73,7 +73,7 @@ class Upgrade20180907123600Task extends Shell
      * Get an array of database lists from migrations config.
      *
      * @param string $module Module name
-     * @return string[]
+     * @return mixed[]
      */
     protected function getDatabaseListsByModule(string $module): array
     {
