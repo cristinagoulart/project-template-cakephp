@@ -51,7 +51,7 @@ class UsersController extends AppController
         try {
             parent::initialize();
         } catch (ForbiddenException $e) {
-            if ('token' !== $this->request->action) {
+            if ('token' !== $this->request->getParam('action')) {
                 throw new ForbiddenException($e->getMessage(), null, $e);
             }
         }
@@ -83,7 +83,7 @@ class UsersController extends AppController
                         'sub' => $user['id'],
                         'exp' => time() + 604800
                     ],
-                    Security::salt()
+                    Security::getSalt()
                 )
             ],
             '_serialize' => ['success', 'data']

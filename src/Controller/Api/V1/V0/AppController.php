@@ -114,7 +114,7 @@ class AppController extends Controller
     protected function enableAuthorization(): void
     {
         $user = empty($this->Auth->user()) ? [] : $this->Auth->user();
-        $hasAccess = $this->_checkAccess($this->request->params, $user);
+        $hasAccess = $this->_checkAccess($this->request->getParam(), $user);
 
         if (!$hasAccess) {
             throw new ForbiddenException();
