@@ -24,10 +24,10 @@ trait CapabilityTrait
      * Returns true only and only if the provided user has access to the provided URL.
      *
      * @param string|array $url URL to be checked
-     * @param array $user User information
+     * @param mixed[] $user User information
      * @return bool True if user has access to the provided URL
      */
-    protected function _checkAccess($url, $user)
+    protected function _checkAccess($url, array $user): bool
     {
         $stringUrl = null;
         if (is_array($url)) {
@@ -53,7 +53,7 @@ trait CapabilityTrait
      * @param array|string $url Menu item URL
      * @return string
      */
-    private function parseUrl($url)
+    private function parseUrl($url): string
     {
         if (!is_string($url)) {
             return $url;
