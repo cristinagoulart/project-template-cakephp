@@ -30,7 +30,7 @@ class MagicDefaultValueListener implements EventListenerInterface
      * @param string $default Default value (before conversion)
      * @return mixed Converted value or previous default
      */
-    public function getDefaultValue(Event $event, $default = null)
+    public function getDefaultValue(Event $event, string $default)
     {
         $result = $default;
 
@@ -61,10 +61,10 @@ class MagicDefaultValueListener implements EventListenerInterface
     /**
      * CURRENT_DATE magic value
      *
-     * @param $object $fieldHandler Field handler instance
+     * @param object $fieldHandler Field handler instance
      * @return string
      */
-    protected function getCurrentDateValue($fieldHandler = null)
+    protected function getCurrentDateValue($fieldHandler = null): string
     {
         return date('Y-m-d');
     }
@@ -72,10 +72,10 @@ class MagicDefaultValueListener implements EventListenerInterface
     /**
      * CURRENT_TIME magic value
      *
-     * @param $object $fieldHandler Field handler instance
+     * @param object $fieldHandler Field handler instance
      * @return string
      */
-    protected function getCurrentTimeValue($fieldHandler = null)
+    protected function getCurrentTimeValue($fieldHandler = null): string
     {
         return date('H:i:s');
     }
@@ -83,10 +83,10 @@ class MagicDefaultValueListener implements EventListenerInterface
     /**
      * CURRENT_DATETIME magic value
      *
-     * @param $object $fieldHandler Field handler instance
+     * @param object $fieldHandler Field handler instance
      * @return string
      */
-    protected function getCurrentDatetimeValue($fieldHandler = null)
+    protected function getCurrentDatetimeValue($fieldHandler = null): string
     {
         return date('Y-m-d H:i:s');
     }
@@ -94,10 +94,10 @@ class MagicDefaultValueListener implements EventListenerInterface
     /**
      * CURRENT_DATETIME magic value
      *
-     * @param $object $fieldHandler Field handler instance
-     * @return string
+     * @param object $fieldHandler Field handler instance
+     * @return string|null
      */
-    protected function getCurrentUserIdValue($fieldHandler = null)
+    protected function getCurrentUserIdValue($fieldHandler = null): ?string
     {
         $result = null;
 
@@ -121,7 +121,7 @@ class MagicDefaultValueListener implements EventListenerInterface
      * @param object $fieldHandler instance
      * @return string
      */
-    protected function getNextWeekDateValue($fieldHandler = null)
+    protected function getNextWeekDateValue($fieldHandler = null): string
     {
         return $this->getFutureDateValue();
     }
@@ -132,7 +132,7 @@ class MagicDefaultValueListener implements EventListenerInterface
      * @param object $fieldHandler instance
      * @return string
      */
-    protected function getNextMonthDateValue($fieldHandler = null)
+    protected function getNextMonthDateValue($fieldHandler = null): string
     {
         return $this->getFutureDateValue('month');
     }
@@ -143,7 +143,7 @@ class MagicDefaultValueListener implements EventListenerInterface
      * @param object $fieldHandler instance
      * @return string
      */
-    protected function getNextYearDateValue($fieldHandler = null)
+    protected function getNextYearDateValue($fieldHandler = null): string
     {
         return $this->getFutureDateValue('year');
     }
@@ -155,10 +155,10 @@ class MagicDefaultValueListener implements EventListenerInterface
      *
      * @return string
      */
-    private function getFutureDateValue($duration = 'week')
+    private function getFutureDateValue(string $duration = 'week'): string
     {
         $duration = strtolower($duration);
 
-        return date('Y-m-d', strtotime('+ 1 ' . $duration));
+        return date('Y-m-d', (int)strtotime('+ 1 ' . $duration));
     }
 }

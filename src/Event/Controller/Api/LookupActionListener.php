@@ -37,7 +37,7 @@ class LookupActionListener extends BaseActionListener
      * @param \Cake\Datasource\QueryInterface $query ORM Query
      * @return void
      */
-    public function beforeLookup(Event $event, QueryInterface $query)
+    public function beforeLookup(Event $event, QueryInterface $query): void
     {
         $request = $event->getSubject()->request;
         $table = $event->getSubject()->{$event->getSubject()->getName()};
@@ -62,7 +62,7 @@ class LookupActionListener extends BaseActionListener
      * @param \Cake\Http\ServerRequest $request Request object
      * @return void
      */
-    protected function _alterQuery(RepositoryInterface $table, QueryInterface $query, ServerRequest $request)
+    protected function _alterQuery(RepositoryInterface $table, QueryInterface $query, ServerRequest $request): void
     {
         $fields = $this->_getTypeaheadFields($table);
 
@@ -100,9 +100,9 @@ class LookupActionListener extends BaseActionListener
      *
      * @param string $field Field name
      * @param \Cake\Datasource\RepositoryInterface $table Table instance
-     * @return null|\CsvMigrations\FieldHandlers\CsvField
+     * @return \CsvMigrations\FieldHandlers\CsvField|null
      */
-    protected function _getCsvField($field, RepositoryInterface $table)
+    protected function _getCsvField(string $field, RepositoryInterface $table): ?CsvField
     {
         $result = null;
         if (false !== strpos($field, '.')) {
@@ -133,9 +133,9 @@ class LookupActionListener extends BaseActionListener
      *
      * @param \CsvMigrations\FieldHandlers\CsvField $csvField CsvField instance
      * @param \Cake\Http\ServerRequest $request Request object
-     * @return array
+     * @return mixed[]
      */
-    protected function _getRelatedModuleValues(CsvField $csvField, ServerRequest $request)
+    protected function _getRelatedModuleValues(CsvField $csvField, ServerRequest $request): array
     {
         $table = TableRegistry::get($csvField->getLimit());
         $query = $table->find('list', [
@@ -159,7 +159,7 @@ class LookupActionListener extends BaseActionListener
      * @param \Cake\Datasource\ResultSetDecorator $entities Entities resultset
      * @return void
      */
-    public function afterLookup(Event $event, ResultSetDecorator $entities)
+    public function afterLookup(Event $event, ResultSetDecorator $entities): void
     {
         if ($entities->isEmpty()) {
             return;
@@ -194,9 +194,9 @@ class LookupActionListener extends BaseActionListener
      * Get module's virtual fields.
      *
      * @param \Cake\Datasource\RepositoryInterface $table Table instance
-     * @return array
+     * @return mixed[]
      */
-    protected function _getVirtualFields(RepositoryInterface $table)
+    protected function _getVirtualFields(RepositoryInterface $table): array
     {
         $config = (new ModuleConfig(ConfigType::MODULE(), $table->getRegistryAlias()))->parse();
 
@@ -207,11 +207,11 @@ class LookupActionListener extends BaseActionListener
      * Updates the provided list of mixed real and virtual fields, so that the final list includes only real fields.
      * This is done by taking into consideration the corresponding section in config.json
      *
-     * @param RepositoryInterface $table Table instance
-     * @param array $fields List of mixed real and virtual fields
-     * @return array
+     * @param \Cake\Datasource\RepositoryInterface $table Table instance
+     * @param mixed[] $fields List of mixed real and virtual fields
+     * @return mixed[]
      */
-    private function extractVirtualFields(RepositoryInterface $table, array $fields)
+    private function extractVirtualFields(RepositoryInterface $table, array $fields): array
     {
         $virtualFields = $this->_getVirtualFields($table);
 
@@ -231,9 +231,9 @@ class LookupActionListener extends BaseActionListener
      * Get module's type-ahead fields.
      *
      * @param \Cake\Datasource\RepositoryInterface $table Table instance
-     * @return array
+     * @return mixed[]
      */
-    protected function _getTypeaheadFields(RepositoryInterface $table)
+    protected function _getTypeaheadFields(RepositoryInterface $table): array
     {
         $config = (new ModuleConfig(ConfigType::MODULE(), $table->getRegistryAlias()))->parse();
 
@@ -255,10 +255,10 @@ class LookupActionListener extends BaseActionListener
      *
      * @param \Cake\Datasource\RepositoryInterface $table Table instance
      * @param \Cake\Datasource\QueryInterface $query ORM Query
-     * @param array $fields Optional fields to be used in order by clause
-     * @return array
+     * @param mixed[] $fields Optional fields to be used in order by clause
+     * @return mixed[]
      */
-    protected function _getOrderByFields(RepositoryInterface $table, QueryInterface $query, array $fields = [])
+    protected function _getOrderByFields(RepositoryInterface $table, QueryInterface $query, array $fields = []): array
     {
         $parentModule = $this->_getParentModule($table);
         if ('' === $parentModule) {
@@ -266,6 +266,10 @@ class LookupActionListener extends BaseActionListener
         }
 
         $parentAssociation = null;
+        /**
+         * @var \Cake\ORM\Table $table
+         */
+        $table = $table;
         foreach ($table->associations() as $association) {
             if ($association->className() !== $parentModule) {
                 continue;
@@ -295,7 +299,7 @@ class LookupActionListener extends BaseActionListener
      * @param \Cake\Datasource\QueryInterface $query ORM Query
      * @return void
      */
-    protected function _joinParentTables(RepositoryInterface $table, QueryInterface $query)
+    protected function _joinParentTables(RepositoryInterface $table, QueryInterface $query): void
     {
         $parentModule = $this->_getParentModule($table);
         if ('' === $parentModule) {
@@ -303,6 +307,10 @@ class LookupActionListener extends BaseActionListener
         }
 
         $parentAssociation = null;
+        /**
+         * @var \Cake\ORM\Table $table
+         */
+        $table = $table;
         foreach ($table->associations() as $association) {
             if ($association->className() !== $parentModule) {
                 continue;
@@ -337,7 +345,7 @@ class LookupActionListener extends BaseActionListener
      * @param \Cake\Datasource\RepositoryInterface $table Table instance
      * @return string
      */
-    protected function _getParentModule(RepositoryInterface $table)
+    protected function _getParentModule(RepositoryInterface $table): string
     {
         $config = (new ModuleConfig(ConfigType::MODULE(), $table->getRegistryAlias()))->parse();
 
@@ -351,9 +359,9 @@ class LookupActionListener extends BaseActionListener
      * @param string $parentModule Parent module name
      * @param string $id uuid
      * @param string $label Label
-     * @return array
+     * @return string
      */
-    protected function _prependParentModule($tableName, $parentModule, $id, $label)
+    protected function _prependParentModule(string $tableName, string $parentModule, string $id, string $label): string
     {
         $properties = $this->_getRelatedParentProperties(
             $this->_getRelatedProperties($tableName, $id)

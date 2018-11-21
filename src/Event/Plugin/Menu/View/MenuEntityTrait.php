@@ -6,6 +6,7 @@ use Cake\Datasource\EntityInterface;
 use Cake\Http\ServerRequest;
 use Cake\ORM\TableRegistry;
 use Menu\MenuBuilder\MenuItemFactory;
+use Menu\MenuBuilder\MenuItemInterface;
 
 /**
  * trait MenuEntityTrait
@@ -23,11 +24,11 @@ trait MenuEntityTrait
     /**
      * Creates and returns the menu item for the view action
      *
-     * @param EntityInterface $entity Entity to be viewed
-     * @param ServerRequest $request Current server request
+     * @param \Cake\Datasource\EntityInterface $entity Entity to be viewed
+     * @param \Cake\Http\ServerRequest $request Current server request
      * @return \Menu\MenuBuilder\MenuItemInterface
      */
-    public function getViewMenuItem(EntityInterface $entity, ServerRequest $request)
+    public function getViewMenuItem(EntityInterface $entity, ServerRequest $request): MenuItemInterface
     {
         $plugin = $request->param('plugin');
         $controller = $request->param('controller');
@@ -45,11 +46,11 @@ trait MenuEntityTrait
     /**
      * Creates and returns the menu item for the edit action
      *
-     * @param EntityInterface $entity Entity to be edited
-     * @param ServerRequest $request Current server request
+     * @param \Cake\Datasource\EntityInterface $entity Entity to be edited
+     * @param \Cake\Http\ServerRequest $request Current server request
      * @return \Menu\MenuBuilder\MenuItemInterface
      */
-    public function getEditMenuItem(EntityInterface $entity, ServerRequest $request)
+    public function getEditMenuItem(EntityInterface $entity, ServerRequest $request): MenuItemInterface
     {
         $plugin = $request->param('plugin');
         $controller = $request->param('controller');
@@ -67,12 +68,12 @@ trait MenuEntityTrait
     /**
      * Creates and returns the menu item for the delete action
      *
-     * @param EntityInterface $entity Entity to be deleted
-     * @param ServerRequest $request Current server request
+     * @param \Cake\Datasource\EntityInterface $entity Entity to be deleted
+     * @param \Cake\Http\ServerRequest $request Current server request
      * @param bool $useApi Indicates whether to use API or not
      * @return \Menu\MenuBuilder\MenuItemInterface
      */
-    public function getDeleteMenuItem(EntityInterface $entity, ServerRequest $request, $useApi = false)
+    public function getDeleteMenuItem(EntityInterface $entity, ServerRequest $request, bool $useApi = false): MenuItemInterface
     {
         $plugin = $request->param('plugin');
         $controller = $request->param('controller');

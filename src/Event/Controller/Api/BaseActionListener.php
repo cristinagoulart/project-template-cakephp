@@ -82,7 +82,7 @@ abstract class BaseActionListener implements EventListenerInterface
      * @param \Cake\Datasource\RepositoryInterface $table Table instance
      * @return void
      */
-    protected function _restructureFiles(EntityInterface $entity, RepositoryInterface $table)
+    protected function _restructureFiles(EntityInterface $entity, RepositoryInterface $table): void
     {
         foreach ($this->_getFileAssociationFields($table) as $association => $target) {
             $source = Inflector::underscore($association);
@@ -96,17 +96,21 @@ abstract class BaseActionListener implements EventListenerInterface
     /**
      * Attach image file thumbnails into the entity.
      *
-     * @param array $images Entity images
-     * @param \Cake\ORM\Table $table Table instance
+     * @param mixed[] $images Entity images
+     * @param \Cake\Datasource\RepositoryInterface $table Table instance
      * @return void
      */
-    protected function _attachThumbnails(array $images, Table $table)
+    protected function _attachThumbnails(array $images, RepositoryInterface $table): void
     {
         if (empty($images)) {
             return;
         }
 
         $hashes = Configure::read('FileStorage.imageHashes.file_storage');
+        /**
+         * @var \Cake\ORM\Table $table
+         */
+        $table = $table;
         $fileUpload = new FileUpload($table);
         $extensions = $fileUpload->getImgExtensions();
 
@@ -134,7 +138,7 @@ abstract class BaseActionListener implements EventListenerInterface
      * @param  string $name Association name
      * @return string
      */
-    protected function _associationPropertyName($name)
+    protected function _associationPropertyName(string $name): string
     {
         list(, $name) = pluginSplit($name);
 
@@ -144,13 +148,17 @@ abstract class BaseActionListener implements EventListenerInterface
     /**
      * Method responsible for retrieving current Table's file associations
      *
-     * @param  \Cake\ORM\Table $table Table instance
-     * @return array
+     * @param  \Cake\Datasource\RepositoryInterface $table Table instance
+     * @return mixed[]
      */
-    protected function _getFileAssociations(Table $table)
+    protected function _getFileAssociations(RepositoryInterface $table): array
     {
         $result = [];
 
+        /**
+         * @var \Cake\ORM\Table $table
+         */
+        $table = $table;
         foreach ($table->associations() as $association) {
             if (static::FILE_CLASS_NAME !== $association->className()) {
                 continue;
@@ -165,10 +173,10 @@ abstract class BaseActionListener implements EventListenerInterface
     /**
      * Method responsible for retrieving file associations field names
      *
-     * @param  \Cake\ORM\Table $table Table instance
-     * @return array
+     * @param  \Cake\Datasource\RepositoryInterface $table Table instance
+     * @return mixed[]
      */
-    protected function _getFileAssociationFields(Table $table)
+    protected function _getFileAssociationFields(RepositoryInterface $table): array
     {
         $result = [];
 
@@ -176,6 +184,10 @@ abstract class BaseActionListener implements EventListenerInterface
             return $this->_fileAssociationFields;
         }
 
+        /**
+         * @var \Cake\ORM\Table $table
+         */
+        $table = $table;
         foreach ($table->associations() as $association) {
             if (static::FILE_CLASS_NAME !== $association->className()) {
                 continue;
@@ -196,7 +208,7 @@ abstract class BaseActionListener implements EventListenerInterface
      * @return void
      * @link   https://github.com/cakephp/cakephp/issues/9658
      */
-    protected function _resourceToString(Entity $entity)
+    protected function _resourceToString(Entity $entity): void
     {
         $fields = array_keys($entity->toArray());
         foreach ($fields as $field) {
@@ -231,10 +243,10 @@ abstract class BaseActionListener implements EventListenerInterface
      *
      * @param  \Cake\ORM\Entity       $entity    Entity instance
      * @param  \Cake\ORM\Table|string $table     Table instance
-     * @param  array                 $fields    Fields to prettify
+     * @param  mixed[]                 $fields    Fields to prettify
      * @return void
      */
-    protected function _prettify(Entity $entity, $table, array $fields = [])
+    protected function _prettify(Entity $entity, $table, array $fields = []): void
     {
         if (!$this->factory instanceof FieldHandlerFactory) {
             $this->factory = new FieldHandlerFactory();
@@ -280,9 +292,9 @@ abstract class BaseActionListener implements EventListenerInterface
      *
      * @param \Psr\Http\Message\ServerRequestInterface $request Request instance
      * @param \Cake\Datasource\RepositoryInterface $table Table instance
-     * @return array
+     * @return mixed[]
      */
-    protected function getOrderClause(ServerRequestInterface $request, RepositoryInterface $table = null)
+    protected function getOrderClause(ServerRequestInterface $request, RepositoryInterface $table = null): array
     {
         if (! $request->getQuery('sort')) {
             return [];
@@ -306,10 +318,10 @@ abstract class BaseActionListener implements EventListenerInterface
      *
      * @param \Cake\Datasource\ResultSetInterface $resultSet ResultSet object
      * @param \Cake\Datasource\RepositoryInterface $table Table instance
-     * @param array $user User info
+     * @param mixed[] $user User info
      * @return void
      */
-    protected function attachMenu(ResultSetInterface $resultSet, RepositoryInterface $table, array $user)
+    protected function attachMenu(ResultSetInterface $resultSet, RepositoryInterface $table, array $user): void
     {
         $view = new View();
         $controllerName = App::shortName(get_class($table), 'Model/Table', 'Table');
@@ -330,11 +342,11 @@ abstract class BaseActionListener implements EventListenerInterface
      *
      * @param \Cake\Datasource\ResultSetInterface $resultSet ResultSet object
      * @param \Cake\Datasource\RepositoryInterface $table Table instance
-     * @param array $user User info
-     * @param array $data for extra fields like origin Id
+     * @param mixed[] $user User info
+     * @param mixed[] $data for extra fields like origin Id
      * @return void
      */
-    protected function attachRelatedMenu(ResultSetInterface $resultSet, RepositoryInterface $table, array $user, array $data)
+    protected function attachRelatedMenu(ResultSetInterface $resultSet, RepositoryInterface $table, array $user, array $data): void
     {
         $view = new View();
         $controllerName = App::shortName(get_class($table), 'Model/Table', 'Table');

@@ -23,7 +23,7 @@ class ViewActionListener extends BaseActionListener
     /**
      * {@inheritDoc}
      */
-    public function beforeFind(Event $event, Query $query)
+    public function beforeFind(Event $event, Query $query): void
     {
         if (static::FORMAT_PRETTY !== $event->getSubject()->request->getQuery('format')) {
             $query->contain($this->_getFileAssociations($event->getSubject()->{$event->getSubject()->getName()}));
@@ -33,7 +33,7 @@ class ViewActionListener extends BaseActionListener
     /**
      * {@inheritDoc}
      */
-    public function afterFind(Event $event, Entity $entity)
+    public function afterFind(Event $event, Entity $entity): void
     {
         $table = $event->getSubject()->{$event->getSubject()->getName()};
         $request = $event->getSubject()->request;

@@ -11,6 +11,7 @@ use Cake\Routing\Router;
 use Menu\Event\EventName as MenuEventName;
 use Menu\MenuBuilder\MenuInterface;
 use Menu\MenuBuilder\MenuItemFactory;
+use Menu\MenuBuilder\MenuItemInterface;
 
 class ModuleViewListener implements EventListenerInterface
 {
@@ -34,13 +35,13 @@ class ModuleViewListener implements EventListenerInterface
      *
      * @param Event $event Event object
      * @param string $name Menu name
-     * @param array $user Current user
+     * @param mixed[] $user Current user
      * @param bool $fullBaseUrl Flag for fullbase url on menu links
-     * @param array $modules Modules to fetch menu items for
+     * @param mixed[] $modules Modules to fetch menu items for
      * @param MenuInterface|null $menu Menu object to be updated
      * @return void
      */
-    public function getMenuItems(Event $event, $name, array $user, $fullBaseUrl = false, array $modules = [], MenuInterface $menu = null)
+    public function getMenuItems(Event $event, string $name, array $user, bool $fullBaseUrl = false, array $modules = [], MenuInterface $menu = null): void
     {
         $listens = [MenuName::MODULE_VIEW];
         if (!in_array($name, $listens)) {
@@ -53,6 +54,9 @@ class ModuleViewListener implements EventListenerInterface
             return;
         }
 
+        /**
+         * @var \Cake\Http\ServerRequest $request
+         */
         $request = Router::getRequest();
         $menu->addMenuItem($this->getPermissionsMenuItem($entity, $request));
         $menu->addMenuItem($this->getChangelogMenuItem($entity, $request));
@@ -69,7 +73,7 @@ class ModuleViewListener implements EventListenerInterface
      * @param ServerRequest $request Current server request
      * @return \Menu\MenuBuilder\MenuItemInterface
      */
-    public function getPermissionsMenuItem(EntityInterface $entity, ServerRequest $request)
+    public function getPermissionsMenuItem(EntityInterface $entity, ServerRequest $request): MenuItemInterface
     {
         $plugin = $request->param('plugin');
         $controller = $request->param('controller');
@@ -93,7 +97,7 @@ class ModuleViewListener implements EventListenerInterface
      * @param ServerRequest $request Current server request
      * @return \Menu\MenuBuilder\MenuItemInterface
      */
-    public function getChangelogMenuItem(EntityInterface $entity, ServerRequest $request)
+    public function getChangelogMenuItem(EntityInterface $entity, ServerRequest $request): MenuItemInterface
     {
         $plugin = $request->param('plugin');
         $controller = $request->param('controller');

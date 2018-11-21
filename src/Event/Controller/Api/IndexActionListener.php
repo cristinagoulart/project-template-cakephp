@@ -23,7 +23,7 @@ class IndexActionListener extends BaseActionListener
     /**
      * {@inheritDoc}
      */
-    public function beforePaginate(Event $event, QueryInterface $query)
+    public function beforePaginate(Event $event, QueryInterface $query): void
     {
         $request = $event->getSubject()->request;
 
@@ -44,7 +44,7 @@ class IndexActionListener extends BaseActionListener
     /**
      * {@inheritDoc}
      */
-    public function afterPaginate(Event $event, ResultSetInterface $resultSet)
+    public function afterPaginate(Event $event, ResultSetInterface $resultSet): void
     {
         //
     }
@@ -52,7 +52,7 @@ class IndexActionListener extends BaseActionListener
     /**
      * {@inheritDoc}
      */
-    public function beforeRender(Event $event, ResultSetInterface $resultSet)
+    public function beforeRender(Event $event, ResultSetInterface $resultSet): void
     {
         if ($resultSet->isEmpty()) {
             return;
@@ -89,7 +89,7 @@ class IndexActionListener extends BaseActionListener
      * @param \Cake\Event\Event $event The event
      * @return void
      */
-    private function filterByConditions(QueryInterface $query, Event $event)
+    private function filterByConditions(QueryInterface $query, Event $event): void
     {
         if (empty($event->getSubject()->request->query('conditions'))) {
             return;
