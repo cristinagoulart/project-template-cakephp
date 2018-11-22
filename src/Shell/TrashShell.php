@@ -102,15 +102,9 @@ class TrashShell extends Shell
             return;
         }
 
-        try {
-            $trashEntities = TableRegistry::get($module)->find('onlyTrashed')->toArray();
-        } catch (\BadMethodCallException $e) {
-            // The module has not trash entities
-            return;
-        }
-
-        if (!$this->params['dry-run']) {
-            $this->out("The module $module had " . count($trashEntities) . " record(s) in the trash.");
+        if ($this->params['dry-run']) {
+            $trashEntities = TableRegistry::get($module)->find('onlyTrashed')->count();
+            $this->out("The module $module have " . number_format($trashEntities) . " record(s) in the trash.");
 
             return;
         }
