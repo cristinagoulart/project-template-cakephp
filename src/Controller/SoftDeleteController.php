@@ -17,17 +17,20 @@ class SoftDeleteController extends AppController
      */
     public function restore()
     {
-        $this->request->allowMethod(['post']);
+        $this->request->allowMethod(['get']);
         $this->autoRender = false;
 
-        $id = $this->request->data('id');
-        $table = $this->request->data('table');
+        $table = $this->request->param('pass')[0];
+        $id = $this->request->param('pass')[1];
 
         $toRestore = $this->checkData($table, $id);
         $restore = TableRegistry::get($table)->restoreTrash($toRestore);
 
+        $this->redirect($this->referer());
         if ($restore) {
             $this->Flash->success(__('The record is restored'));
+
+            return;
         }
         $this->Flash->error(__('Can not restore the record. Please, try again.'));
     }
@@ -40,17 +43,20 @@ class SoftDeleteController extends AppController
      */
     public function delete()
     {
-        $this->request->allowMethod(['post']);
+        $this->request->allowMethod(['get']);
         $this->autoRender = false;
 
-        $id = $this->request->data('id');
-        $table = $this->request->data('table');
+        $table = $this->request->param('pass')[0];
+        $id = $this->request->param('pass')[1];
 
         $toDel = $this->checkData($table, $id);
         $delete = TableRegistry::get($table)->removeBehavior('Trash')->delete($toDel);
 
+        $this->redirect($this->referer());
         if ($delete) {
             $this->Flash->success(__('The record is permanently delete'));
+
+            return;
         }
         $this->Flash->error(__('Can not delete the record. Please, try again.'));
     }
@@ -63,9 +69,6 @@ class SoftDeleteController extends AppController
      */
     private function checkData($table, $id)
     {
-        if (!TableRegistry::exists($table)) {
-            throw new \Exception('Table $table not found');
-        }
         if (!TableRegistry::get($table)->behaviors()->has('Trash')) {
             throw new \Exception('The table $table has no trashed fields');
         }

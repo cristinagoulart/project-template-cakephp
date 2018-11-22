@@ -6,9 +6,11 @@ use App\Menu\MenuName;
 use Cake\Datasource\EntityInterface;
 use Cake\Event\Event;
 use Cake\Event\EventListenerInterface;
+use Cake\ORM\TableRegistry;
 use Cake\Routing\Router;
 use Menu\Event\EventName as MenuEventName;
 use Menu\MenuBuilder\MenuInterface;
+use Menu\MenuBuilder\MenuItemFactory;
 
 class SearchViewListener implements EventListenerInterface
 {
@@ -52,6 +54,42 @@ class SearchViewListener implements EventListenerInterface
         }
 
         $request = Router::getRequest();
+
+        $controller = $request->param('controller');
+        $id_search = $request->param('pass')[0];
+
+        // @todo move all this in singolar method
+        if ($this->isTrashedFilter($id_search, $controller)) {
+            $delete = MenuItemFactory::createMenuItem([
+                'url' => [
+                    'plugin' => false,
+                    'controller' => 'soft-delete',
+                    'action' => 'delete',
+                    $entity->getSource(),
+                    $entity->id
+                ],
+                'label' => __('Permissions'),
+                'icon' => 'shield',
+            ]);
+            $restore = MenuItemFactory::createMenuItem([
+                'url' => [
+                    'plugin' => false,
+                    'controller' => 'soft-delete',
+                    'action' => 'restore',
+                    $entity->getSource(),
+                    $entity->id
+                ],
+                'label' => __('Permissions'),
+                'icon' => 'recycle',
+            ]);
+
+            $menu->addMenuItem($delete);
+            $menu->addMenuItem($restore);
+            $event->setResult($event);
+
+            return;
+        }
+
         $menu->addMenuItem($this->getViewMenuItem($entity, $request));
         $editMenuItem = $this->getEditMenuItem($entity, $request);
         $editMenuItem->disableIf(function () use ($request) {
@@ -71,5 +109,18 @@ class SearchViewListener implements EventListenerInterface
         $menu->addMenuItem($deleteMenuItem);
 
         $event->setResult($event);
+    }
+
+    /**
+     * Check if is used the "trashed" filter.
+     * @param  string  $id         The id of the search in SavedSearches table
+     * @param  string  $controller The controller name
+     * @return bool                True if is trashed exists
+     */
+    private function isTrashedFilter($id, $controller)
+    {
+        $query = TableRegistry::get('SavedSearches')->find('all')->where(['id' => $id])->first();
+
+        return in_array($controller . ".trashed", array_keys(json_decode($query->content, true)['saved']['criteria']));
     }
 }
