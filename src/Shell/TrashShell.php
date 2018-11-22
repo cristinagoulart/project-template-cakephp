@@ -43,7 +43,7 @@ class TrashShell extends Shell
             'help' => 'Clear all trashed records.',
             'parser' => [
                 'description' => [
-                    'Clear the trashed records for the supperted modules.',
+                    'Clear the trashed records for the supported modules.',
                     'Use `cake cache list_modules` to list available CSV modules'
                 ],
                 'options' => $option
@@ -104,7 +104,7 @@ class TrashShell extends Shell
 
         if ($this->params['dry-run']) {
             $trashEntities = TableRegistry::get($module)->find('onlyTrashed')->count();
-            $this->out("The module $module have " . number_format($trashEntities) . " record(s) in the trash.");
+            $this->out("The module $module has " . number_format($trashEntities) . " record(s) in the trash.");
 
             return;
         }
@@ -112,7 +112,7 @@ class TrashShell extends Shell
         $age = $this->getDaysConfig();
         $date = new Time($age);
         $count = $query->removeBehavior('Trash')->deleteAll(['trashed <' => $date]);
-        Log::write('info', "Clean up $module: " . number_format($count) . " trash record older than $age.");
+        Log::write('info', "Clean up $module: " . number_format($count) . " trash record(s) older than $age.");
     }
 
     /**
