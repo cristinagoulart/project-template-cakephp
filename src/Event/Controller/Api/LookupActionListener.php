@@ -40,9 +40,13 @@ class LookupActionListener extends BaseActionListener
      */
     public function beforeLookup(Event $event, QueryInterface $query): void
     {
-        $request = $event->getSubject()->request;
-        $table = $event->getSubject()->{$event->getSubject()->getName()};
+        /**
+         * @var \Cake\Controller\Controller $controller
+         */
+        $controller = $event->getSubject();
+        $request = $controller->getRequest();
 
+        $table = $controller->loadModel();
         $this->_alterQuery($table, $query, $request);
     }
 
@@ -139,7 +143,7 @@ class LookupActionListener extends BaseActionListener
      */
     protected function _getRelatedModuleValues(CsvField $csvField, ServerRequest $request): array
     {
-        $table = TableRegistry::get($csvField->getLimit());
+        $table = TableRegistry::get((string)$csvField->getLimit());
         $query = $table->find('list', [
             'keyField' => $table->primaryKey()
         ]);
@@ -163,11 +167,16 @@ class LookupActionListener extends BaseActionListener
      */
     public function afterLookup(Event $event, ResultSetDecorator $entities): void
     {
+        /**
+         * @var \Cake\Controller\Controller $controller
+         */
+        $controller = $event->getSubject();
+
         if ($entities->isEmpty()) {
             return;
         }
 
-        $table = $event->getSubject()->{$event->getSubject()->getName()};
+        $table = $controller->loadModel();
 
         // Properly populate display values for the found entries.
         // This will recurse into related modules and get display
@@ -328,8 +337,8 @@ class LookupActionListener extends BaseActionListener
         }
 
         $targetTable = $parentAssociation->target();
-        $primaryKey = $targetTable->aliasField($parentAssociation->primaryKey());
-        $foreignKey = $table->aliasField($parentAssociation->foreignKey());
+        $primaryKey = $targetTable->aliasField($parentAssociation->getPrimaryKey());
+        $foreignKey = $table->aliasField($parentAssociation->getForeignKey());
 
         // join parent table
         $query->join([
