@@ -254,11 +254,11 @@ class Annotation
 
         $replacement = [$this->getInfo(), $this->getDefinition($this->getProperties()), $this->getPaths()];
         $replacement = implode("\n", $replacement) . "\n$1";
-        $content = file_get_contents($this->path);
+        $content = (string)file_get_contents($this->path);
 
         $pattern = '/(^class\s)/im';
         $content = preg_replace($pattern, $replacement, $content);
-        $content = trim($content);
+        $content = trim((string)$content);
 
         $this->setContent($content);
 
