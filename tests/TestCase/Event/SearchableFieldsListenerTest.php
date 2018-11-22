@@ -57,7 +57,8 @@ class SearchableFieldsListenerTest extends TestCase
             $this->Users->find('all')->firstOrFail()->toArray(),
             false
         );
-        $this->assertCount(1, $searchableFields);
+
+        $this->assertCount(2, $searchableFields);
         $this->assertEquals('string', $searchableFields['Things.searchable']['type']);
     }
 
@@ -68,7 +69,8 @@ class SearchableFieldsListenerTest extends TestCase
             $this->Users->find('all')->firstOrFail()->toArray(),
             true
         );
-        $this->assertCount(7, $searchableFields);
+
+        $this->assertCount(8, $searchableFields);
         $this->assertEquals('string', $searchableFields['Things.searchable']['type']);
         $this->assertEquals('string', $searchableFields['Users.email']['type']);
     }
