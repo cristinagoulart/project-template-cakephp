@@ -24,18 +24,18 @@ class BatchActionListener implements EventListenerInterface
      * Access check for batch operation ids.
      *
      * @param \Cake\Event\Event $event Event instance
-     * @param array $batchIds Batch ids
+     * @param mixed[] $batchIds Batch ids
      * @param string $operation Batch operation
-     * @param array $user User info
+     * @param mixed[] $user User info
      * @return void
      */
-    public function batchAccessCheck(Event $event, array $batchIds, $operation, array $user)
+    public function batchAccessCheck(Event $event, array $batchIds, string $operation, array $user): void
     {
         $result = [];
         foreach ($batchIds as $batchId) {
             $url = [
-                'plugin' => $event->subject()->plugin,
-                'controller' => $event->subject()->name,
+                'plugin' => $event->getSubject()->plugin,
+                'controller' => $event->getSubject()->name,
                 'action' => $operation,
                 $batchId
             ];

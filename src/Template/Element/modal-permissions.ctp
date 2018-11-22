@@ -59,7 +59,7 @@ $permissions = $query->all();
                 <?= $this->Form->hidden('model', ['value' => $this->name]) ?>
                 <div class="row">
                     <div class="col-xs-6">
-                        <?= $this->Form->input('type', [
+                        <?= $this->Form->control('type', [
                             'type' => 'select',
                             'options' => ['user' => 'User', 'group' => 'Group'],
                             'class' => 'select2',

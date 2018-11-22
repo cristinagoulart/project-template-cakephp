@@ -42,7 +42,7 @@ class LogsController extends BaseController
      *
      * This is identical to `./bin/cake database_logs gc` functionality.
      *
-     * @return \Cake\Http\Response|null
+     * @return \Cake\Http\Response|void|null
      */
     public function gc()
     {

@@ -20,7 +20,7 @@ if ($accessFactory->hasAccess($url, $user)) : ?>
         ]
     ]); ?>
     <div class="input-group">
-        <?= $this->Form->input('name', [
+        <?= $this->Form->control('name', [
             'label' => false,
             'class' => 'form-control input-sm',
             'placeholder' => 'Save criteria name',

@@ -30,7 +30,7 @@ class IndexActionListener extends BaseActionListener
         /**
          * @var \Psr\Http\Message\ServerRequestInterface
          */
-        $request = $event->getSubject()->request;
+        $request = $event->getSubject()->getRequest();
 
         /**
          * @var \Cake\Datasource\RepositoryInterface
@@ -94,7 +94,7 @@ class IndexActionListener extends BaseActionListener
         /**
          * @var \Psr\Http\Message\ServerRequestInterface
          */
-        $request = $event->getSubject()->request;
+        $request = $event->getSubject()->getRequest();
 
         /**
          * @var \Cake\Datasource\RepositoryInterface

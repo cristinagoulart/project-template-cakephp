@@ -66,7 +66,7 @@ class RelatedActionListener extends BaseActionListener
         /**
          * @var \Psr\Http\Message\ServerRequestInterface
          */
-        $request = $controller->request;
+        $request = $controller->getRequest();
 
         /**
          * Associated table instance.

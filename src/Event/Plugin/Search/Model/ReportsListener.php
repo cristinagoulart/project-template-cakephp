@@ -29,9 +29,10 @@ class ReportsListener implements EventListenerInterface
      * from the ini file on the dynamic model/table.
      *
      * @param \Cake\Event\Event $event Event instance
+     *
      * @return void
      */
-    public function getReports(Event $event)
+    public function getReports(Event $event): void
     {
         $path = Configure::read('CsvMigrations.modules.path');
 
@@ -52,6 +53,6 @@ class ReportsListener implements EventListenerInterface
             $result[$module] = $report;
         }
 
-        $event->result = (array)$result;
+        $event->result = $result;
     }
 }

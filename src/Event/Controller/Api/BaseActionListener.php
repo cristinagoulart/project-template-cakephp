@@ -212,7 +212,7 @@ abstract class BaseActionListener implements EventListenerInterface
      *
      * @param \Psr\Http\Message\ServerRequestInterface $request Request instance
      * @param \Cake\Datasource\RepositoryInterface $table Table instance
-     * @return array
+     * @return mixed[]
      */
     protected function getOrderClause(ServerRequestInterface $request, RepositoryInterface $table = null) : array
     {
@@ -238,7 +238,7 @@ abstract class BaseActionListener implements EventListenerInterface
      *
      * @param \Cake\Datasource\EntityInterface $entity Entity instance
      * @param \Cake\Datasource\RepositoryInterface $table Table instance
-     * @param array $user User info
+     * @param mixed[] $user User info
      * @return void
      */
     protected function attachMenu(EntityInterface $entity, RepositoryInterface $table, array $user) : void
@@ -259,8 +259,8 @@ abstract class BaseActionListener implements EventListenerInterface
      *
      * @param \Cake\Datasource\EntityInterface $entity Entity instance
      * @param \Cake\Datasource\RepositoryInterface $table Table instance
-     * @param array $user User info
-     * @param array $data for extra fields like origin Id
+     * @param mixed[] $user User info
+     * @param mixed[] $data for extra fields like origin Id
      * @return void
      */
     protected function attachRelatedMenu(EntityInterface $entity, RepositoryInterface $table, array $user, array $data) : void

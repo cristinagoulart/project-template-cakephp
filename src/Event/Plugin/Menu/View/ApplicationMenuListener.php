@@ -33,15 +33,15 @@ class ApplicationMenuListener implements EventListenerInterface
     /**
      * Method that returns menu nested array based on provided menu name
      *
-     * @param Event $event Event object
+     * @param \Cake\Event\Event $event Event object
      * @param string $name Menu name
-     * @param array $user Current user
+     * @param mixed[] $user Current user
      * @param bool $fullBaseUrl Flag for fullbase url on menu links
-     * @param array $modules Modules to fetch menu items for
-     * @param MenuInterface|null $menu Menu object to be updated
+     * @param mixed[] $modules Modules to fetch menu items for
+     * @param \Menu\MenuBuilder\MenuInterface|null $menu Menu object to be updated
      * @return void
      */
-    public function getMenuItems(Event $event, $name, array $user, $fullBaseUrl = false, array $modules = [], MenuInterface $menu = null)
+    public function getMenuItems(Event $event, string $name, array $user, bool $fullBaseUrl = false, array $modules = [], MenuInterface $menu = null): void
     {
         if (!empty($modules)) {
             return;

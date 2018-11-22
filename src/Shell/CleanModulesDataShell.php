@@ -8,6 +8,7 @@ use Cake\ORM\TableRegistry;
 use Cake\Utility\Inflector;
 use Exception;
 use Qobo\Utils\Utility\Lock\FileLock;
+use RuntimeException;
 
 class CleanModulesDataShell extends Shell
 {
@@ -39,16 +40,14 @@ class CleanModulesDataShell extends Shell
      */
     public function main()
     {
-        try {
-            $lock = new FileLock('clean_records_' . md5(__FILE__) . '.lock');
-        } catch (Exception $e) {
-            $this->abort($e->getMessage());
-        }
+        $lock = new FileLock('clean_records_' . md5(__FILE__) . '.lock');
 
         if (!$lock->lock()) {
             $this->abort('Clean Module Data is already in progress');
         }
-
+        /**
+         * @var string
+         */
         $modulesstr = $this->param('modules');
         if (empty($modulesstr)) {
             $lock->unlock();
@@ -61,7 +60,11 @@ class CleanModulesDataShell extends Shell
             $this->err("0 Modules Provided");
         }
 
-        $tables = ConnectionManager::get('default')->schemaCollection()->listTables();
+        /**
+         * @var \Cake\Database\Connection $connection
+         */
+        $connection = ConnectionManager::get('default');
+        $tables = $connection->schemaCollection()->listTables();
         $this->modules = $modules;
 
         //tranform module names into lowercase.
@@ -109,6 +112,8 @@ class CleanModulesDataShell extends Shell
             $rowCount = $table->deleteAll([]);
         } catch (Exception $e) {
             $this->warn('Failed to clean ' . $moduleName . ': ' . $e->getMessage());
+
+            throw new RuntimeException("Failed to clean a module $moduleName", 0, $e);
         }
         $this->info($moduleName . ' Module Deleted Records: ' . $rowCount);
 

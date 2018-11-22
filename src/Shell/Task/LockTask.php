@@ -5,6 +5,8 @@ use Cake\Console\Shell;
 use Cake\Utility\Inflector;
 use Exception;
 use Qobo\Utils\Utility\Lock\FileLock;
+use Qobo\Utils\Utility\Lock\LockInterface;
+use RuntimeException;
 
 class LockTask extends Shell
 {
@@ -13,16 +15,16 @@ class LockTask extends Shell
      *
      * @param string $file Path to the shell script which acquires lock
      * @param string $class Name of the shell class which acquires lock
-     * @return \Qobo\Utils\Utility\FileLock
+     * @return \Qobo\Utils\Utility\Lock\LockInterface
      */
-    public function lock(string $file, string $class)
+    public function lock(string $file, string $class): LockInterface
     {
         $lockFile = $this->getLockFileName($file, $class);
 
         try {
             $lock = new FileLock($lockFile);
         } catch (Exception $e) {
-            $this->abort($e->getMessage());
+            throw new RuntimeException("Couldn't create a lock file for $file", 0, $e);
         }
 
         if (!$lock->lock()) {
@@ -41,7 +43,13 @@ class LockTask extends Shell
      */
     public function getLockFileName(string $file, string $class): string
     {
-        $class = Inflector::underscore(preg_replace('/\\\/', '', $class));
+        /**
+         * @var string $className
+         */
+        $className = preg_replace('/\\\/', '', $class);
+
+        $class = Inflector::underscore($className);
+
         $lockFile = $class . '_' . md5($file) . '.lock';
 
         return $lockFile;

@@ -8,14 +8,17 @@ use CakeDC\Users\Controller\Traits\RegisterTrait;
 use CakeDC\Users\Controller\Traits\SimpleCrudTrait;
 use CakeDC\Users\Exception\UserNotFoundException;
 use CakeDC\Users\Exception\WrongPasswordException;
-use Cake\Network\Exception\ForbiddenException;
-use Cake\Network\Exception\UnauthorizedException;
+use Cake\Http\Exception\ForbiddenException;
+use Cake\Http\Exception\UnauthorizedException;
 use Cake\ORM\TableRegistry;
+use Cake\Utility\Hash;
 use Cake\Validation\Validator;
 use Exception;
 
 /**
  * Users Controller
+ *
+ * @property \App\Model\Table\UsersTable $Users
  */
 class UsersController extends AppController
 {
@@ -33,7 +36,7 @@ class UsersController extends AppController
      * change user passwords by the superusers
      *
      * @param mixed $id user id
-     * @return \Cake\Network\Response|null Redirects on successful edit, renders view otherwise.
+     * @return \Cake\Http\Response|void|null Redirects on successful edit, renders view otherwise.
      */
     public function changeUserPassword($id)
     {
@@ -46,24 +49,22 @@ class UsersController extends AppController
                 $validator = $this->getUsersTable()->validationPasswordConfirm(new Validator());
                 $user = $this->getUsersTable()->patchEntity($user, $this->request->data(), ['validate' => $validator]);
 
-                if ($user->errors()) {
-                    $this->Flash->error(__d('CakeDC/Users', 'Password could not be changed'));
+                if ($user->getErrors()) {
+                    $this->Flash->error((string)__d('CakeDC/Users', 'Password could not be changed'));
                 } else {
                     $user = $this->getUsersTable()->changePassword($user);
                     if ($user) {
-                        $this->Flash->success(__d('CakeDC/Users', 'Password has been changed successfully'));
+                        $this->Flash->success((string)__d('CakeDC/Users', 'Password has been changed successfully'));
 
                         return $this->redirect($redirect);
                     } else {
-                        $this->Flash->error(__d('CakeDC/Users', 'Password could not be changed'));
+                        $this->Flash->error((string)__d('CakeDC/Users', 'Password could not be changed'));
                     }
                 }
             } catch (UserNotFoundException $exception) {
-                $this->Flash->error(__d('CakeDC/Users', 'User was not found'));
+                $this->Flash->error((string)__d('CakeDC/Users', 'User was not found'));
             } catch (WrongPasswordException $wpe) {
-                $this->Flash->error(__d('CakeDC/Users', '{0}', $wpe->getMessage()));
-            } catch (Exception $exception) {
-                $this->Flash->error(__d('CakeDC/Users', 'Password could not be changed'));
+                $this->Flash->error((string)__d('CakeDC/Users', '{0}', $wpe->getMessage()));
             }
         }
 
@@ -76,9 +77,9 @@ class UsersController extends AppController
      * Converts and stores user image in base64 scheme.
      *
      * @param string $id User id
-     * @return \Cake\Network\Response
+     * @return \Cake\Http\Response|void|null
      */
-    public function uploadImage($id)
+    public function uploadImage(string $id)
     {
         $this->request->allowMethod(['patch', 'post', 'put']);
 
@@ -86,7 +87,7 @@ class UsersController extends AppController
         $data = $this->request->data('Users.image');
 
         if (! $data) {
-            $this->Flash->error(__('Failed to upload image, please try again.'));
+            $this->Flash->error((string)__('Failed to upload image, please try again.'));
 
             return $this->redirect($this->request->referer());
         }
@@ -94,13 +95,13 @@ class UsersController extends AppController
         $avatarService = new AvatarService();
 
         if (! $avatarService->isAllowedSize($data)) {
-            $this->Flash->error(__('Image is too large. Max size 512kb.'));
+            $this->Flash->error((string)__('Image is too large. Max size 512kb.'));
 
             return $this->redirect($this->request->referer());
         }
 
         if (! $avatarService->isImage($data)) {
-            $this->Flash->error(__('Unsupported image type.'));
+            $this->Flash->error((string)__('Unsupported image type.'));
 
             return $this->redirect($this->request->referer());
         }
@@ -109,9 +110,9 @@ class UsersController extends AppController
         $processed = $this->Users->saveCustomAvatar($user, $resource);
 
         if ($processed) {
-            $this->Flash->success(__('The image has been uploaded.'));
+            $this->Flash->success((string)__('The image has been uploaded.'));
         } else {
-            $this->Flash->error(__('Couldn\'t upload the image'));
+            $this->Flash->error((string)__('Couldn\'t upload the image'));
         }
 
         return $this->redirect($this->request->referer());
@@ -124,9 +125,9 @@ class UsersController extends AppController
      * separate user record update by admin and editing profile
      * by logged in user
      *
-     * @return \Cake\Network\Response
+     * @return \Cake\Http\Response|void|null
      * @throws \CakeDC\Users\Exception\UserNotFoundException When user not found.
-     * @throws \Cake\Network\Exception\UnauthorizedException When user is not authorized.
+     * @throws \Cake\Http\Exception\UnauthorizedException When user is not authorized.
      */
     public function editProfile()
     {
@@ -143,13 +144,13 @@ class UsersController extends AppController
             throw new UserNotFoundException('User not found!');
         }
 
-        $user = $this->Users->patchEntity($user, $this->request->data);
+        $user = $this->Users->patchEntity($user, (array)$this->request->getData());
 
         if ($this->Users->save($user)) {
-            $this->Flash->success(__('Profile successfully updated'));
+            $this->Flash->success((string)__('Profile successfully updated'));
             $this->Auth->setUser($user->toArray());
         } else {
-            $this->Flash->error(__('Failed to update profile data, please try again.'));
+            $this->Flash->error((string)__('Failed to update profile data, please try again.'));
         }
 
         return $this->redirect($this->request->referer());
@@ -158,12 +159,12 @@ class UsersController extends AppController
     /**
      * Index method
      *
-     * @return void
+     * @return \Cake\Http\Response|null
      */
     public function index()
     {
         $table = $this->loadModel();
-        $tableAlias = $table->alias();
+        $tableAlias = $table->getAlias();
         $users = $table->find()->all();
         $this->set($tableAlias, $users);
         $this->set('lockedUsers', $this->getLockedUsers());
@@ -174,17 +175,21 @@ class UsersController extends AppController
     /**
      * View method
      *
-     * @param string|null $id User id.
-     * @return void
+     * @param string $id User id.
+     *
+     * @return \Cake\Http\Response|null|void
      */
-    public function view($id = null)
+    public function view(string $id)
     {
         $table = $this->loadModel();
-        $tableAlias = $table->alias();
+        $tableAlias = $table->getAlias();
         $entity = $table->get($id, [
             'contain' => []
         ]);
 
+        /**
+         * @var \App\Model\Table\GroupsTable $groupsTable
+         */
         $groupsTable = TableRegistry::get('Groups.Groups');
         $userGroups = $groupsTable->getUserGroupsAll($id, [
             'fields' => ['id', 'name', 'description'],
@@ -202,10 +207,10 @@ class UsersController extends AppController
      * Delete method
      *
      * @param string|null $id User id.
-     * @return void
-     * @throws \Cake\Network\Exception\ForbiddenException When user is locked.
+     * @return \Cake\Http\Response|void|null
+     * @throws \Cake\Http\Exception\ForbiddenException When user is locked.
      */
-    public function delete($id = null)
+    public function delete(?string $id)
     {
         $table = $this->loadModel();
         $entity = $table->get($id, [
@@ -227,7 +232,9 @@ class UsersController extends AppController
      */
     protected function _setIframeRendering(): void
     {
-        if (empty($this->request->query['embed'])) {
+        $embed = Hash::get($this->request->getQueryParams(), 'embed', '');
+
+        if (empty($embed)) {
             parent::_setIframeRendering();
         }
     }
@@ -235,7 +242,7 @@ class UsersController extends AppController
     /**
      * Returns an array including the usernames of the currently locked users.
      *
-     * @return string[] List of locked users
+     * @return mixed[] List of locked users
      */
     private function getLockedUsers(): array
     {

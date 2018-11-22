@@ -61,11 +61,17 @@ class Server
     {
         $result = 0;
         $cpuInfoFile = '/proc/cpuinfo';
-        if (is_file($cpuInfoFile) && is_readable($cpuInfoFile)) {
-            $cpuInfoFile = file($cpuInfoFile);
-            $cpus = preg_grep("/^processor/", $cpuInfoFile);
-            $result = count($cpus);
+        if (!is_file($cpuInfoFile) || !is_readable($cpuInfoFile)) {
+            return $result;
         }
+
+        $cpuInfoFile = file($cpuInfoFile);
+        if (empty($cpuInfoFile)) {
+            return $result;
+        }
+
+        $cpus = preg_grep("/^processor/", $cpuInfoFile);
+        $result = count($cpus);
 
         return $result;
     }
@@ -79,12 +85,18 @@ class Server
     {
         $result = 'N/A';
         $memoryInfoFile = '/proc/meminfo';
-        if (is_file($memoryInfoFile) && is_readable($memoryInfoFile)) {
-            $memoryInfoFile = file($memoryInfoFile);
-            $totalMemory = preg_grep("/^MemTotal:/", $memoryInfoFile);
-            list($key, $size, $unit) = preg_split('/\s+/', $totalMemory[0], 3);
-            $result = number_format($size) . ' ' . $unit;
+        if (!is_file($memoryInfoFile) || !is_readable($memoryInfoFile)) {
+            return $result;
         }
+
+        $memoryInfoFile = file($memoryInfoFile);
+        if (empty($memoryInfoFile)) {
+            return $result;
+        }
+
+        $totalMemory = preg_grep("/^MemTotal:/", $memoryInfoFile);
+        list($key, $size, $unit) = preg_split('/\s+/', $totalMemory[0], 3);
+        $result = number_format((float)$size) . ' ' . $unit;
 
         return $result;
     }

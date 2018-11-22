@@ -51,6 +51,9 @@ class Upgrade20170316000000Task extends Shell
         $targetTable = !empty($this->args[0]) ? $this->args[0] : null;
         $targetColumn = !empty($this->args[1]) ? $this->args[1] : self::DEFAULT_COLUMN_NAME;
 
+        /**
+         * @var \Cake\Database\Connection $db
+         */
         $db = ConnectionManager::get('default');
         $collection = $db->schemaCollection();
 

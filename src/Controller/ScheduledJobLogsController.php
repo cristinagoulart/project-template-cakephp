@@ -20,7 +20,7 @@ class ScheduledJobLogsController extends BaseController
      *
      * Returns a a list of scheduled jobs
      *
-     * @return void|\Cake\Network\Response
+     * @return \Cake\Http\Response|void|null
      */
     public function index()
     {
@@ -29,11 +29,11 @@ class ScheduledJobLogsController extends BaseController
     /**
      * View method
      *
-     * @param string|null $id Entity id.
-     * @return void
-     * @throws \Cake\Network\Exception\NotFoundException When record not found.
+     * @param string $id Entity id.
+     * @return \Cake\Http\Response|void|null
+     * @throws \Cake\Http\Exception\NotFoundException When record not found.
      */
-    public function view($id = null)
+    public function view(string $id)
     {
         $entity = $this->{$this->name}->find()
             ->where([$this->{$this->name}->getPrimaryKey() => $id])
@@ -61,7 +61,7 @@ class ScheduledJobLogsController extends BaseController
      *
      * This is identical to `./bin/cake database_logs gc` functionality.
      *
-     * @return \Cake\Http\Response|null
+     * @return \Cake\Http\Response|null|void
      */
     public function gc()
     {

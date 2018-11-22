@@ -365,11 +365,11 @@ class Annotation
 
         $factory = new FieldHandlerFactory();
         $table = TableRegistry::getTableLocator()->get($this->className);
-        $columns = array_diff($table->getSchema()->columns(), $table->newEntity()->hiddenProperties());
+        $columns = array_diff($table->getSchema()->columns(), $table->newEntity()->getHidden());
         foreach ($columns as $column) {
             $type = $table->getSchema()->getColumnType($column);
             // handle custom database types
-            if (false === strpos(Type::map($type), 'Cake\\Database\\Type\\')) {
+            if (false === strpos(Type::getMap($type), 'Cake\\Database\\Type\\')) {
                 $type = 'string';
             }
             $column = [
@@ -581,15 +581,15 @@ class Annotation
      * @param  string $properties Swagger properties annotations
      * @return string
      */
-    protected function getDefinition(string $properties)
+    protected function getDefinition(string $properties): string
     {
-        $result = null;
+        $result = '';
         $table = TableRegistry::getTableLocator()->get($this->className);
 
         $entity = $table->newEntity();
         $hiddenProperties = $entity->hiddenProperties();
         try {
-            $columns = $table->schema()->columns();
+            $columns = $table->getSchema()->columns();
             $columns = array_diff($columns, $hiddenProperties);
         } catch (Exception $e) {
             return $result;
@@ -597,7 +597,7 @@ class Annotation
 
         $required = [];
         foreach ($columns as $column) {
-            $data = $table->schema()->column($column);
+            $data = $table->getSchema()->getColumn($column);
             if ($data['null']) {
                 continue;
             }
@@ -626,17 +626,17 @@ class Annotation
      * of all visible columns to be used as sorting fields and generates
      * paths annotations on the fly.
      *
-     * @return array
+     * @return mixed[]
      */
-    protected function getPaths()
+    protected function getPaths(): array
     {
-        $result = null;
+        $result = [];
         $table = TableRegistry::getTableLocator()->get($this->className);
 
         $entity = $table->newEntity();
         $hiddenProperties = $entity->hiddenProperties();
         try {
-            $fields = $table->schema()->columns();
+            $fields = $table->getSchema()->columns();
             $fields = array_diff($fields, $hiddenProperties);
             sort($fields);
         } catch (Exception $e) {
