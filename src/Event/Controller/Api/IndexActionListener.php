@@ -5,6 +5,7 @@ use App\Event\EventName;
 use Cake\Datasource\QueryInterface;
 use Cake\Datasource\ResultSetInterface;
 use Cake\Event\Event;
+use Cake\Utility\Hash;
 
 class IndexActionListener extends BaseActionListener
 {
@@ -27,15 +28,14 @@ class IndexActionListener extends BaseActionListener
      */
     public function beforePaginate(Event $event, QueryInterface $query) : void
     {
-        /**
-         * @var \Psr\Http\Message\ServerRequestInterface
-         */
-        $request = $event->getSubject()->getRequest();
+        /** @var \Cake\Controller\Controller */
+        $controller = $event->getSubject();
 
-        /**
-         * @var \Cake\Datasource\RepositoryInterface
-         */
-        $table = $event->getSubject()->{$event->getSubject()->name};
+        /** @var \Psr\Http\Message\ServerRequestInterface&\Cake\Http\ServerRequest */
+        $request = $controller->getRequest();
+
+        /** @var \Cake\Datasource\RepositoryInterface&\Cake\ORM\Table */
+        $table = $controller->loadModel();
 
         $this->filterByConditions($query, $event);
 
@@ -59,15 +59,14 @@ class IndexActionListener extends BaseActionListener
             return;
         }
 
-        /**
-         * @var \Psr\Http\Message\ServerRequestInterface
-         */
-        $request = $event->getSubject()->request;
+        /** @var \Cake\Controller\Controller */
+        $controller = $event->getSubject();
 
-        /**
-         * @var \Cake\Datasource\RepositoryInterface
-         */
-        $table = $event->getSubject()->{$event->getSubject()->name};
+        /** @var \Psr\Http\Message\ServerRequestInterface&\Cake\Http\ServerRequest */
+        $request = $controller->getRequest();
+
+        /** @var \Cake\Datasource\RepositoryInterface&\Cake\ORM\Table */
+        $table = $controller->loadModel();
 
         foreach ($resultSet as $entity) {
             $this->resourceToString($entity);
@@ -77,7 +76,7 @@ class IndexActionListener extends BaseActionListener
                 $this->attachFiles($entity, $table);
 
             if ((bool)$request->getQuery(static::FLAG_INCLUDE_MENUS)) {
-                $this->attachMenu($entity, $table, $event->getSubject()->Auth->user());
+                $this->attachMenu($entity, $table, $controller->Auth->user());
             }
         }
     }
@@ -91,22 +90,22 @@ class IndexActionListener extends BaseActionListener
      */
     private function filterByConditions(QueryInterface $query, Event $event) : void
     {
-        /**
-         * @var \Psr\Http\Message\ServerRequestInterface
-         */
-        $request = $event->getSubject()->getRequest();
+        /** @var \Cake\Controller\Controller */
+        $controller = $event->getSubject();
 
-        /**
-         * @var \Cake\Datasource\RepositoryInterface
-         */
-        $table = $event->getSubject()->{$event->getSubject()->name};
+        /** @var \Psr\Http\Message\ServerRequestInterface&\Cake\Http\ServerRequest */
+        $request = $controller->getRequest();
 
-        if (empty($request->query('conditions'))) {
+        /** @var \Cake\Datasource\RepositoryInterface&\Cake\ORM\Table */
+        $table = $controller->loadModel();
+
+        $queryParam = Hash::get($request->getQueryParams(), 'conditions', []);
+        if (empty($queryParam)) {
             return;
         }
 
         $conditions = [];
-        foreach ($request->query('conditions') as $field => $value) {
+        foreach ($queryParam as $field => $value) {
             $conditions[$table->aliasField($field)] = $value;
         };
 

@@ -47,15 +47,14 @@ class ViewActionListener extends BaseActionListener
      */
     public function afterFind(Event $event, EntityInterface $entity) : void
     {
-        /**
-         * @var \Psr\Http\Message\ServerRequestInterface
-         */
-        $request = $event->getSubject()->request;
+        /** @var \Cake\Controller\Controller */
+        $controller = $event->getSubject();
 
-        /**
-         * @var \Cake\Datasource\RepositoryInterface
-         */
-        $table = $event->getSubject()->{$event->getSubject()->name};
+        /** @var \Psr\Http\Message\ServerRequestInterface&\Cake\Http\ServerRequest */
+        $request = $controller->getRequest();
+
+        /** @var \Cake\Datasource\RepositoryInterface&\Cake\ORM\Table */
+        $table = $controller->loadModel();
 
         $this->resourceToString($entity);
 
