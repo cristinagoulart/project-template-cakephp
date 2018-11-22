@@ -67,6 +67,10 @@ class SearchableFieldsListener implements EventListenerInterface
     public static function getSearchableFieldsByTable(RepositoryInterface $table, array $user, bool $withAssociated = true): array
     {
         $factory = new FieldHandlerFactory();
+        /**
+         * @var \Cake\ORM\Table $table
+         */
+        $table = $table;
         $fields = static::getFieldsDefinitionsByTable($table);
         $result = [];
         if (empty($fields)) {
@@ -177,6 +181,10 @@ class SearchableFieldsListener implements EventListenerInterface
      */
     public function getBasicSearchFields(Event $event, RepositoryInterface $table): void
     {
+        /**
+         * @var \Cake\ORM\Table $table
+         */
+        $table = $table;
         $result = $this->getBasicSearchFieldsFromConfig($table);
 
         if (empty($result)) {
@@ -204,6 +212,10 @@ class SearchableFieldsListener implements EventListenerInterface
      */
     public function getDisplayFields(Event $event, RepositoryInterface $table): void
     {
+        /**
+         * @var \Cake\ORM\Table $table
+         */
+        $table = $table;
         $result = $this->getBasicSearchFieldsFromSystemSearch($table);
 
         if (empty($result)) {
@@ -252,14 +264,18 @@ class SearchableFieldsListener implements EventListenerInterface
      */
     private function getBasicSearchFieldsFromSystemSearch(RepositoryInterface $table): array
     {
-        $entity = TableRegistry::getTableLocator()->get('Search.SavedSearches')->find()
+        $query = TableRegistry::getTableLocator()->get('Search.SavedSearches')->find()
             ->where(['SavedSearches.model' => $table->getAlias(), 'SavedSearches.system' => true])
-            ->enableHydration(true)
-            ->first();
+            ->enableHydration(true);
 
-        if (is_null($entity)) {
+        if (! $query->count()) {
             return [];
         }
+
+        /**
+         * @var \Cake\Datasource\EntityInterface
+         */
+        $entity = $query->first();
 
         $searchData = json_decode($entity->get('content'));
 

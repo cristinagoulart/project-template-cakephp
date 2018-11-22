@@ -35,7 +35,7 @@ class SearchViewListener implements EventListenerInterface
      * @param mixed[] $user Current user
      * @param bool $fullBaseUrl Flag for fullbase url on menu links
      * @param mixed[] $modules Modules to fetch menu items for
-     * @param MenuInterface|null $menu Menu object to be updated
+     * @param \Menu\MenuBuilder\MenuInterface|null $menu Menu object to be updated
      *
      * @return void
      */
@@ -56,6 +56,10 @@ class SearchViewListener implements EventListenerInterface
          * @var \Cake\Http\ServerRequest $request
          */
         $request = Router::getRequest();
+        /**
+         * @var \Menu\MenuBuilder\MenuInterface $menu
+         */
+        $menu = $menu;
         $menu->addMenuItem($this->getViewMenuItem($entity, $request));
         $editMenuItem = $this->getEditMenuItem($entity, $request);
         $editMenuItem->disableIf(function () use ($request) {

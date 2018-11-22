@@ -58,6 +58,10 @@ class ModuleViewListener implements EventListenerInterface
          * @var \Cake\Http\ServerRequest $request
          */
         $request = Router::getRequest();
+        /**
+         * @var \Menu\MenuBuilder\MenuInterface $menu
+         */
+        $menu = $menu;
         $menu->addMenuItem($this->getPermissionsMenuItem($entity, $request));
         $menu->addMenuItem($this->getChangelogMenuItem($entity, $request));
         $menu->addMenuItem($this->getEditMenuItem($entity, $request));

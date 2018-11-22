@@ -21,12 +21,12 @@ class SearchableFieldsListenerTest extends TestCase
     /**
      * @var \App\Model\Table\UsersTable Table instance for Users
      */
-    private $Users;
+    protected $Users;
 
     /**
      * @var \App\Model\Table\ScheduledJobsTable Table instance for ScheduledJobs
      */
-    private $ScheduledJobs;
+    protected $ScheduledJobs;
 
     /**
      * Fixtures
@@ -46,15 +46,31 @@ class SearchableFieldsListenerTest extends TestCase
 
         $config = TableRegistry::exists('Things') ? [] : ['className' => ThingsTable::class];
         $this->Things = TableRegistry::get('Things', $config);
-        $this->Users = TableRegistry::get('Users');
-        $this->ScheduledJobs = TableRegistry::get('ScheduledJobs');
+        /**
+         * @var \App\Model\Table\UsersTable $usersTable
+         */
+        $usersTable = TableRegistry::get('Users');
+        $this->Users = $usersTable;
+
+        /**
+         * @var \App\Model\Table\ScheduledJobsTable $scheduledJobs
+         */
+        $scheduledJobs = TableRegistry::get('ScheduledJobs');
+        $this->ScheduledJobs = $scheduledJobs;
     }
 
     public function testGetSearchableFields(): void
     {
+        /**
+         * @var \Cake\Datasource\EntityInterface
+         */
+        $query = $this->Users->find('all')
+            ->enableHydration(true)
+            ->firstOrFail();
+        $user = $query->toArray();
         $searchableFields = SearchableFieldsListener::getSearchableFieldsByTable(
             $this->Things,
-            $this->Users->find('all')->firstOrFail()->toArray(),
+            $user,
             false
         );
         $this->assertCount(1, $searchableFields);
@@ -63,9 +79,17 @@ class SearchableFieldsListenerTest extends TestCase
 
     public function testGetSearchableFieldsWithAssociations(): void
     {
+        /**
+         * @var \Cake\Datasource\EntityInterface
+         */
+        $query = $this->Users->find('all')
+            ->enableHydration(true)
+            ->firstOrFail();
+        $user = $query->toArray();
+
         $searchableFields = SearchableFieldsListener::getSearchableFieldsByTable(
             $this->Things,
-            $this->Users->find('all')->firstOrFail()->toArray(),
+            $user,
             true
         );
         $this->assertCount(7, $searchableFields);

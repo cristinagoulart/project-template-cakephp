@@ -7,6 +7,10 @@ use Cake\Shell\PluginShell as CorePluginShell;
 /**
  * Custom Plugin Shell class that adds extended
  * functionality to Cake's core Plugin Shell.
+ *
+ * @property \App\Shell\Task\ListTask $List
+ * @property \App\Shell\Task\MigrationsTask $Migrations
+ *
  */
 class PluginShell extends CorePluginShell
 {

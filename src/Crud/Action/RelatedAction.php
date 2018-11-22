@@ -130,7 +130,7 @@ class RelatedAction extends BaseAction
         $table = TableRegistry::get(Inflector::camelize($association->table()));
 
         // pagination hack to modify alias
-        $association->setTarget($association->getTarget())->setAlias($this->_controller()->name);
+        $association->setTarget($association->getTarget())->setAlias($this->_controller()->getName());
 
         $related = $this->getManyToManyAssociation($association->getTarget());
         if (is_null($related)) {
@@ -159,7 +159,7 @@ class RelatedAction extends BaseAction
     private function oneToManyQuery(Association $association, string $id): ?\Cake\Datasource\QueryInterface
     {
         // pagination hack to modify alias
-        $association->setTarget($association->getTarget())->setAlias($this->_controller()->name);
+        $association->setTarget($association->getTarget())->setAlias($this->_controller()->getName());
 
         // $table = $association->getTarget();
         $query = $association->find('all')->where([
@@ -178,6 +178,10 @@ class RelatedAction extends BaseAction
      */
     private function getManyToManyAssociation(RepositoryInterface $table): ?\Cake\ORM\Association
     {
+        /**
+         * @var \Cake\ORM\Table $table
+         */
+        $table = $table;
         foreach ($table->associations() as $association) {
             if (Association::MANY_TO_MANY !== $association->type()) {
                 continue;
