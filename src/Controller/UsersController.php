@@ -47,7 +47,7 @@ class UsersController extends AppController
         if ($this->request->is('post')) {
             try {
                 $validator = $this->getUsersTable()->validationPasswordConfirm(new Validator());
-                $user = $this->getUsersTable()->patchEntity($user, $this->request->data(), ['validate' => $validator]);
+                $user = $this->getUsersTable()->patchEntity($user, $this->request->getData(), ['validate' => $validator]);
 
                 if ($user->getErrors()) {
                     $this->Flash->error((string)__d('CakeDC/Users', 'Password could not be changed'));
@@ -84,7 +84,7 @@ class UsersController extends AppController
         $this->request->allowMethod(['patch', 'post', 'put']);
 
         $user = $this->Users->get($id);
-        $data = $this->request->data('Users.image');
+        $data = $this->request->getData('Users.image');
 
         if (! $data) {
             $this->Flash->error((string)__('Failed to upload image, please try again.'));

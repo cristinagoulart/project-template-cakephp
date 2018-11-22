@@ -75,12 +75,13 @@ class LookupActionListener extends BaseActionListener
             return;
         }
 
-        if (! Hash::get($request->getQueryParams(), 'query', false)) {
+        $value = Hash::get($request->getQueryParams(), 'query', false);
+
+        if (! $value) {
             return;
         }
 
         // add typeahead fields to where clause
-        $value = $request->query('query');
         foreach ($fields as $field) {
             $csvField = $this->_getCsvField($field, $table);
             if (!empty($csvField) && 'related' === $csvField->getType()) {
@@ -200,8 +201,10 @@ class LookupActionListener extends BaseActionListener
     protected function _getVirtualFields(RepositoryInterface $table): array
     {
         $config = (new ModuleConfig(ConfigType::MODULE(), $table->getRegistryAlias()))->parse();
+        $config = json_encode($config);
+        $config = false !== $config ? json_decode($config, true) : [];
 
-        return $config->virtualFields;
+        return array_key_exists('virtualFields', $config) ? $config['virtualFields'] : [];
     }
 
     /**
@@ -218,8 +221,8 @@ class LookupActionListener extends BaseActionListener
 
         $extractedFields = [];
         foreach ($fields as $fieldName) {
-            if (isset($virtualFields->{$fieldName})) {
-                $extractedFields = array_merge($extractedFields, $virtualFields->{$fieldName});
+            if (array_key_exists($fieldName, $virtualFields)) {
+                $extractedFields = array_merge($extractedFields, $virtualFields[$fieldName]);
             } else {
                 $extractedFields[] = $fieldName;
             }

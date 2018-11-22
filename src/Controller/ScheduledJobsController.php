@@ -68,7 +68,7 @@ class ScheduledJobsController extends BaseController
         $commands = $model->getList();
 
         if ($this->request->is(['patch', 'post', 'put'])) {
-            if ($this->request->data('btn_operation') == 'cancel') {
+            if ($this->request->getData('btn_operation') == 'cancel') {
                 return $this->redirect($redirectUrl);
             }
 

@@ -338,7 +338,7 @@ class AppController extends Controller
         $saved = null;
         $response = [];
 
-        foreach ($this->request->data() as $model => $files) {
+        foreach ($this->request->getData() as $model => $files) {
             if (!is_array($files)) {
                 continue;
             }
