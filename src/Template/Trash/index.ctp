@@ -1,7 +1,7 @@
 <section class="content-header">
     <div class="row">
         <div class="col-xs-12 col-md-6">
-            <h4>Trash tables</h4>
+            <h4>Trash</h4>
         </div>
     </div>
 </section>

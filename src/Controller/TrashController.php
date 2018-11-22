@@ -6,7 +6,7 @@ use Cake\Datasource\ConnectionManager;
 use Cake\ORM\TableRegistry;
 use Cake\Routing\Router;
 
-class TrashsController extends AppController
+class TrashController extends AppController
 {
     /**
      * Display the tables that support trash
