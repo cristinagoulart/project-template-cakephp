@@ -64,13 +64,13 @@ class AppController extends Controller
         'authenticate' => [
             // used for validating user credentials before the token is generated
             'Form' => [
-                'scope' => ['Users.active' => 1]
+                'finder' => 'auth'
             ],
             // used for token validation
             'ADmad/JwtAuth.Jwt' => [
                 'parameter' => 'token',
                 'userModel' => 'Users',
-                'scope' => ['Users.active' => 1],
+                'finder' => 'auth',
                 'fields' => [
                     'username' => 'id'
                 ],
@@ -338,7 +338,7 @@ class AppController extends Controller
         $saved = null;
         $response = [];
 
-        foreach ($this->request->data() as $model => $files) {
+        foreach ($this->request->getData() as $model => $files) {
             if (!is_array($files)) {
                 continue;
             }

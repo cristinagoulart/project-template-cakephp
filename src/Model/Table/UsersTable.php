@@ -6,6 +6,7 @@ use CakeDC\Users\Model\Table\UsersTable as Table;
 use Cake\Core\Configure;
 use Cake\Database\Schema\TableSchema;
 use Cake\Datasource\EntityInterface;
+use Cake\Datasource\QueryInterface;
 use Cake\Validation\Validator;
 use CsvMigrations\Model\AssociationsAwareTrait;
 
@@ -66,6 +67,21 @@ class UsersTable extends Table
         ]);
 
         return $validator;
+    }
+
+    /**
+     * Custom finder method for adjusting the query when fetching authenticated user record.
+     *
+     * @param \Cake\Datasource\QueryInterface $query Query instance
+     * @param mixed[] $options Query options
+     * @return \Cake\Datasource\QueryInterface
+     * @link https://book.cakephp.org/3.0/en/controllers/components/authentication.html#customizing-find-query
+     */
+    public function findAuth(QueryInterface $query, array $options) : QueryInterface
+    {
+        $query->where(['Users.active' => 1]);
+
+        return $query;
     }
 
     /**

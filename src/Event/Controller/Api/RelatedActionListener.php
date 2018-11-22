@@ -117,7 +117,7 @@ class RelatedActionListener extends BaseActionListener
         $associationName = $request->getParam('pass.1');
 
         return $controller->{$controller->getName()}
-            ->association($associationName)
+            ->getAssociation($associationName)
             ->getTarget();
     }
 }

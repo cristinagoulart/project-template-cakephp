@@ -80,10 +80,8 @@ class ControllerApiTest extends JsonIntegrationTestCase
     {
         $table = TableRegistry::getTableLocator()->get($module);
 
-        $statusCode = $this->_response->getStatusCode();
-
         $this->post('/api/' . Inflector::dasherize($module) . '/add/');
-        $this->assertTrue(in_array($statusCode, [201, 422]));
+        $this->assertTrue(in_array($this->_response->getStatusCode(), [201, 422]));
         $this->assertContentType('application/json');
 
         if (201 === $this->_response->getStatusCode()) {
@@ -169,7 +167,8 @@ class ControllerApiTest extends JsonIntegrationTestCase
     private function isModule(string $name): bool
     {
         $config = (new ModuleConfig(ConfigType::MIGRATION(), $name, '', ['cacheSkip' => true]))->parse();
-        $config = json_decode(json_encode($config), true);
+        $config = json_encode($config);
+        $config = false !== $config ? json_decode($config, true) : [];
 
         return ! empty($config);
     }

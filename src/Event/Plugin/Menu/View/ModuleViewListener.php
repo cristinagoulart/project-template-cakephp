@@ -79,8 +79,8 @@ class ModuleViewListener implements EventListenerInterface
      */
     public function getPermissionsMenuItem(EntityInterface $entity, ServerRequest $request): MenuItemInterface
     {
-        $plugin = $request->param('plugin');
-        $controller = $request->param('controller');
+        $plugin = $request->getParam('plugin');
+        $controller = $request->getParam('controller');
         $id = $entity->get('id');
 
         return MenuItemFactory::createMenuItem([
@@ -103,8 +103,8 @@ class ModuleViewListener implements EventListenerInterface
      */
     public function getChangelogMenuItem(EntityInterface $entity, ServerRequest $request): MenuItemInterface
     {
-        $plugin = $request->param('plugin');
-        $controller = $request->param('controller');
+        $plugin = $request->getParam('plugin');
+        $controller = $request->getParam('controller');
         $id = $entity->get('id');
 
         return MenuItemFactory::createMenuItem([

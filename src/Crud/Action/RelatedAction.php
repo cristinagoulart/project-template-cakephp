@@ -107,7 +107,7 @@ class RelatedAction extends BaseAction
     private function getAssociation(string $associationName): ?\Cake\ORM\Association
     {
         foreach ($this->_table()->associations() as $association) {
-            if ($association->name() !== $associationName) {
+            if ($association->getName() !== $associationName) {
                 continue;
             }
 
@@ -125,9 +125,9 @@ class RelatedAction extends BaseAction
      * @return \Cake\Datasource\QueryInterface|null
      * @throws \InvalidArgumentException When reversed many-to-many association is not found
      */
-    private function manyToManyQuery(Association $association, strign $id): ?\Cake\Datasource\QueryInterface
+    private function manyToManyQuery(Association $association, string $id): ?\Cake\Datasource\QueryInterface
     {
-        $table = TableRegistry::get(Inflector::camelize($association->table()));
+        $table = TableRegistry::get(Inflector::camelize($association->getTable()));
 
         // pagination hack to modify alias
         $association->setTarget($association->getTarget())->setAlias($this->_controller()->getName());
@@ -141,7 +141,7 @@ class RelatedAction extends BaseAction
             ));
         }
 
-        $query = $association->find('all')->innerJoinWith($related->name(), function ($q) use ($related, $id) {
+        $query = $association->find('all')->innerJoinWith($related->getName(), function ($q) use ($related, $id) {
             return $q->where([$related->aliasField($this->_table()->getPrimaryKey()) => $id]);
         });
 

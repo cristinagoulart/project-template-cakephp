@@ -5,6 +5,7 @@ use App\Event\EventName;
 use Cake\Datasource\QueryInterface;
 use Cake\Datasource\ResultSetInterface;
 use Cake\Event\Event;
+use Cake\Utility\Hash;
 
 class IndexActionListener extends BaseActionListener
 {
@@ -107,7 +108,7 @@ class IndexActionListener extends BaseActionListener
         $controller = $event->getSubject();
         $request = $controller->getRequest();
 
-        if (empty($request->query('conditions'))) {
+        if (empty(Hash::get($request->getQueryParams(), 'conditions', []))) {
             return;
         }
 
