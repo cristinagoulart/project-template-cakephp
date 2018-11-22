@@ -29,7 +29,7 @@ class ScheduledJobsController extends BaseController
      */
     public function add()
     {
-        $model = $this->{$this->name};
+        $model = $this->loadModel();
         $entity = $model->newEntity();
 
         $commands = $model->getList();
@@ -59,7 +59,7 @@ class ScheduledJobsController extends BaseController
      */
     public function edit(string $entityId)
     {
-        $model = $this->{$this->name};
+        $model = $this->loadModel();
         $entity = $model->get($entityId, [
             'contain' => [],
         ]);
