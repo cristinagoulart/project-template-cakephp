@@ -8,6 +8,7 @@ use Cake\Datasource\ResultSetDecorator;
 use Cake\Event\Event;
 use Cake\Http\ServerRequest;
 use Cake\ORM\TableRegistry;
+use Cake\Utility\Hash;
 use CsvMigrations\FieldHandlers\CsvField;
 use CsvMigrations\FieldHandlers\FieldHandlerFactory;
 use CsvMigrations\FieldHandlers\RelatedFieldTrait;
@@ -39,9 +40,13 @@ class LookupActionListener extends BaseActionListener
      */
     public function beforeLookup(Event $event, QueryInterface $query): void
     {
-        $request = $event->getSubject()->request;
-        $table = $event->getSubject()->{$event->getSubject()->getName()};
+        /**
+         * @var \Cake\Controller\Controller $controller
+         */
+        $controller = $event->getSubject();
+        $request = $controller->getRequest();
 
+        $table = $controller->loadModel();
         $this->_alterQuery($table, $query, $request);
     }
 
@@ -74,12 +79,13 @@ class LookupActionListener extends BaseActionListener
             return;
         }
 
-        if (!$request->query('query')) {
+        $value = Hash::get($request->getQueryParams(), 'query', false);
+
+        if (! $value) {
             return;
         }
 
         // add typeahead fields to where clause
-        $value = $request->query('query');
         foreach ($fields as $field) {
             $csvField = $this->_getCsvField($field, $table);
             if (!empty($csvField) && 'related' === $csvField->getType()) {
@@ -137,7 +143,7 @@ class LookupActionListener extends BaseActionListener
      */
     protected function _getRelatedModuleValues(CsvField $csvField, ServerRequest $request): array
     {
-        $table = TableRegistry::get($csvField->getLimit());
+        $table = TableRegistry::get((string)$csvField->getLimit());
         $query = $table->find('list', [
             'keyField' => $table->primaryKey()
         ]);
@@ -161,11 +167,16 @@ class LookupActionListener extends BaseActionListener
      */
     public function afterLookup(Event $event, ResultSetDecorator $entities): void
     {
+        /**
+         * @var \Cake\Controller\Controller $controller
+         */
+        $controller = $event->getSubject();
+
         if ($entities->isEmpty()) {
             return;
         }
 
-        $table = $event->getSubject()->{$event->getSubject()->getName()};
+        $table = $controller->loadModel();
 
         // Properly populate display values for the found entries.
         // This will recurse into related modules and get display
@@ -199,8 +210,10 @@ class LookupActionListener extends BaseActionListener
     protected function _getVirtualFields(RepositoryInterface $table): array
     {
         $config = (new ModuleConfig(ConfigType::MODULE(), $table->getRegistryAlias()))->parse();
+        $config = json_encode($config);
+        $config = false !== $config ? json_decode($config, true) : [];
 
-        return $config->virtualFields;
+        return array_key_exists('virtualFields', $config) ? $config['virtualFields'] : [];
     }
 
     /**
@@ -217,8 +230,8 @@ class LookupActionListener extends BaseActionListener
 
         $extractedFields = [];
         foreach ($fields as $fieldName) {
-            if (isset($virtualFields->{$fieldName})) {
-                $extractedFields = array_merge($extractedFields, $virtualFields->{$fieldName});
+            if (array_key_exists($fieldName, $virtualFields)) {
+                $extractedFields = array_merge($extractedFields, $virtualFields[$fieldName]);
             } else {
                 $extractedFields[] = $fieldName;
             }
@@ -324,8 +337,8 @@ class LookupActionListener extends BaseActionListener
         }
 
         $targetTable = $parentAssociation->target();
-        $primaryKey = $targetTable->aliasField($parentAssociation->primaryKey());
-        $foreignKey = $table->aliasField($parentAssociation->foreignKey());
+        $primaryKey = $targetTable->aliasField($parentAssociation->getPrimaryKey());
+        $foreignKey = $table->aliasField($parentAssociation->getForeignKey());
 
         // join parent table
         $query->join([

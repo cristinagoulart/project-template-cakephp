@@ -254,11 +254,11 @@ class Annotation
 
         $replacement = [$this->getInfo(), $this->getDefinition($this->getProperties()), $this->getPaths()];
         $replacement = implode("\n", $replacement) . "\n$1";
-        $content = file_get_contents($this->path);
+        $content = (string)file_get_contents($this->path);
 
         $pattern = '/(^class\s)/im';
         $content = preg_replace($pattern, $replacement, $content);
-        $content = trim($content);
+        $content = trim((string)$content);
 
         $this->setContent($content);
 
@@ -566,7 +566,7 @@ class Annotation
     private function getDatabaseList(string $listName): array
     {
         $result = TableRegistry::get('CsvMigrations.Dblists')
-            ->find('options', ['name' => $listName]);
+            ->getOptions($listName);
 
         return is_array($result) ? $result : $result->toArray();
     }
@@ -587,10 +587,9 @@ class Annotation
         $table = TableRegistry::getTableLocator()->get($this->className);
 
         $entity = $table->newEntity();
-        $hiddenProperties = $entity->hiddenProperties();
         try {
             $columns = $table->getSchema()->columns();
-            $columns = array_diff($columns, $hiddenProperties);
+            $columns = array_diff($columns, $entity->getHidden());
         } catch (Exception $e) {
             return $result;
         }
@@ -634,10 +633,9 @@ class Annotation
         $table = TableRegistry::getTableLocator()->get($this->className);
 
         $entity = $table->newEntity();
-        $hiddenProperties = $entity->hiddenProperties();
         try {
             $fields = $table->getSchema()->columns();
-            $fields = array_diff($fields, $hiddenProperties);
+            $fields = array_diff($fields, $entity->getHidden());
             sort($fields);
         } catch (Exception $e) {
             return $result;

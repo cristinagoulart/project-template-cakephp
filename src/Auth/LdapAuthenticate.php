@@ -97,22 +97,22 @@ class LdapAuthenticate extends BaseAuthenticate
      */
     public function getUser(ServerRequest $request)
     {
-        if (!isset($request->data['username']) || !isset($request->data['password'])) {
+        if (! ($request->getData('username')) || ! ($request->getData('password'))) {
             return false;
         }
 
         try {
             // phpcs:ignore Generic.PHP.NoSilencedErrors.Discouraged
-            $bind = @ldap_bind($this->_connection, $request->data['username'], $request->data['password']);
+            $bind = @ldap_bind($this->_connection, $request->getData('username'), $request->getData('password'));
             if ($bind) {
-                $filter = '(' . $this->_config['filter'] . '=' . $request->data['username'] . ')';
+                $filter = '(' . $this->_config['filter'] . '=' . $request->getData('username') . ')';
                 $attributes = $this->_config['attributes']();
                 $search = ldap_search($this->_connection, $this->_config['baseDn'], $filter, array_keys($attributes));
                 $entry = ldap_first_entry($this->_connection, $search);
 
                 return ldap_get_attributes($this->_connection, $entry);
             } else {
-                $this->log('LDAP server bind failed for [' . $request->data['username'] . '].', LogLevel::CRITICAL);
+                $this->log('LDAP server bind failed for [' . $request->getData('username') . '].', LogLevel::CRITICAL);
             }
         } catch (Exception $e) {
             $this->log($e->getMessage());
@@ -141,7 +141,7 @@ class LdapAuthenticate extends BaseAuthenticate
 
         // look for the user in the database
         $query = $table->find('all', [
-            'conditions' => [$this->_config['fields']['username'] => $request->data['username']]
+            'conditions' => [$this->_config['fields']['username'] => $request->getData('username')]
         ]);
         $entity = $query->first();
 
@@ -151,7 +151,7 @@ class LdapAuthenticate extends BaseAuthenticate
         }
 
         // set username
-        $data[$this->_config['fields']['username']] = $request->data['username'];
+        $data[$this->_config['fields']['username']] = $request->getData('username');
 
         // use random password for local entity of ldap user
         $data[$this->_config['fields']['password']] = uniqid();

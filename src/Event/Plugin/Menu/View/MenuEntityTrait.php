@@ -30,8 +30,8 @@ trait MenuEntityTrait
      */
     public function getViewMenuItem(EntityInterface $entity, ServerRequest $request): MenuItemInterface
     {
-        $plugin = $request->param('plugin');
-        $controller = $request->param('controller');
+        $plugin = $request->getParam('plugin');
+        $controller = $request->getParam('controller');
         $id = $entity->get('id');
 
         return MenuItemFactory::createMenuItem([
@@ -52,8 +52,8 @@ trait MenuEntityTrait
      */
     public function getEditMenuItem(EntityInterface $entity, ServerRequest $request): MenuItemInterface
     {
-        $plugin = $request->param('plugin');
-        $controller = $request->param('controller');
+        $plugin = $request->getParam('plugin');
+        $controller = $request->getParam('controller');
         $id = $entity->get('id');
 
         return MenuItemFactory::createMenuItem([
@@ -75,8 +75,8 @@ trait MenuEntityTrait
      */
     public function getDeleteMenuItem(EntityInterface $entity, ServerRequest $request, bool $useApi = false): MenuItemInterface
     {
-        $plugin = $request->param('plugin');
-        $controller = $request->param('controller');
+        $plugin = $request->getParam('plugin');
+        $controller = $request->getParam('controller');
         $id = $entity->get('id');
 
         $table = TableRegistry::get($entity->getSource());

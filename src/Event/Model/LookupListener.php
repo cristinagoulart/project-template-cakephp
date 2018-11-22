@@ -2,6 +2,7 @@
 namespace App\Event\Model;
 
 use ArrayObject;
+use Cake\Datasource\EntityInterface;
 use Cake\Datasource\QueryInterface;
 use Cake\Event\Event;
 use Cake\Event\EventListenerInterface;
@@ -39,6 +40,11 @@ class LookupListener implements EventListenerInterface
      */
     public function beforeFind(Event $event, QueryInterface $query, ArrayObject $options, bool $primary): void
     {
+        /**
+         * @var \Cake\ORM\Table $table
+         */
+        $table = $event->getSubject();
+
         if (! $primary) {
             return;
         }
@@ -51,20 +57,24 @@ class LookupListener implements EventListenerInterface
             return;
         }
 
-        $config = (new ModuleConfig(ConfigType::MODULE(), $event->getSubject()->getAlias()))->parse();
+        $config = (new ModuleConfig(ConfigType::MODULE(), $table->getAlias()))->parse();
         if (empty($config->table->lookup_fields)) {
             // fail-safe binding of primary key to query's where clause, if lookup
             // fields are not defined, to avoid random record retrieval.
+            /**
+             * @var string
+             */
+            $primaryKey = $table->getPrimaryKey();
             $query->where([
-                $event->getSubject()->aliasField($event->getSubject()->getPrimaryKey()) => $options['value']
+                $table->aliasField($primaryKey) => $options['value']
             ]);
 
             return;
         }
 
         foreach ($config->table->lookup_fields as $field) {
-            $query->where(function ($exp, $query) use ($event, $field, $options) {
-                $or = $exp->or_([$event->getSubject()->aliasField($field) => $options['value']]);
+            $query->where(function ($exp, $query) use ($table, $field, $options) {
+                $or = $exp->or_([$table->aliasField($field) => $options['value']]);
 
                 return $or;
             });
@@ -104,7 +114,11 @@ class LookupListener implements EventListenerInterface
             return;
         }
 
-        foreach ($event->getSubject()->associations() as $association) {
+        /**
+         * @var \Cake\ORM|Table $table
+         */
+        $table = $event->getSubject();
+        foreach ($table->associations() as $association) {
             if (! $this->validate($association, $data)) {
                 continue;
             }
@@ -167,9 +181,13 @@ class LookupListener implements EventListenerInterface
      */
     private function isValidID(Association $association, $value): bool
     {
-        $query = $association->getTarget()
-            ->find('all')
-            ->where([$association->primaryKey() => $value])
+        /**
+         * @var \Cake\ORM\Table $table
+         */
+        $table = $association->getTarget();
+
+        $query = $table->find('all')
+            ->where([$association->getPrimaryKey() => $value])
             ->limit(1);
 
         return ! $query->isEmpty();
@@ -182,7 +200,7 @@ class LookupListener implements EventListenerInterface
      * @param \ArrayObject $data Request data
      * @return void
      */
-    private function getRelatedIdByLookupField(Association $association, ArrayObject $data)
+    private function getRelatedIdByLookupField(Association $association, ArrayObject $data): void
     {
         $lookupFields = $this->getLookupFields($association->className());
         if (empty($lookupFields)) {
@@ -201,9 +219,9 @@ class LookupListener implements EventListenerInterface
      * Module lookup fields getter.
      *
      * @param string $moduleName Module name
-     * @return array
+     * @return mixed[]
      */
-    private function getLookupFields($moduleName)
+    private function getLookupFields(string $moduleName): array
     {
         $config = (new ModuleConfig(ConfigType::MODULE(), $moduleName))->parse();
 
@@ -218,7 +236,7 @@ class LookupListener implements EventListenerInterface
      * @param mixed[] $fields Lookup fields
      * @return \Cake\Datasource\EntityInterface|null
      */
-    private function getRelatedEntity(Association $association, ArrayObject $data, array $fields)
+    private function getRelatedEntity(Association $association, ArrayObject $data, array $fields): ?EntityInterface
     {
         $query = $association->getTarget()
             ->find('all')
