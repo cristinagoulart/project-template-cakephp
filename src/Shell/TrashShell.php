@@ -157,13 +157,13 @@ class TrashShell extends Shell
             return $this->params['age'];
         }
 
-        $result = Configure::read('SoftDelete.stats.age');
+        $result = Configure::read('Trash.stats.age');
         if ($result) {
             return $result;
         }
 
-        $this->info('Parameter "age" is not set in config/SoftDelete');
+        $this->info('Parameter "age" is not set in config/Trash.php');
 
-        throw new RuntimeException('Parameter "age" is not set in config/SoftDelete');
+        throw new RuntimeException('Parameter "age" is not set in config/Trash.php');
     }
 }

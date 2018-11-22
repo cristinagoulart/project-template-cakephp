@@ -1,7 +1,7 @@
 <?php
 // Soft delete time configuration
 return [
-   'SoftDelete' => [
+   'Trash' => [
       'stats' => [
          'age' => '-1 month'
       ]
