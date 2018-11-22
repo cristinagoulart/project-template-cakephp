@@ -17,7 +17,7 @@ class LanguageTranslationsController extends AppController
             $params = $this->request->getQueryParams();
 
             if (Hash::get($params, 'object_model') && Hash::get($params, 'object_foreign_key')) {
-                $table = $this->{$this->name};
+                $table = $this->loadModel();
                 $conditions = [
                     'object_model' => Hash::get($params, 'object_model'),
                     'object_foreign_key' => Hash::get($params, 'object_foreign_key'),
