@@ -46,8 +46,7 @@ class LookupActionListener extends BaseActionListener
         $controller = $event->getSubject();
         $request = $controller->getRequest();
 
-        $table = $controller->{$controller->getName()};
-
+        $table = $controller->loadModel();
         $this->_alterQuery($table, $query, $request);
     }
 
@@ -177,7 +176,7 @@ class LookupActionListener extends BaseActionListener
             return;
         }
 
-        $table = $controller->{$controller->getName()};
+        $table = $controller->loadModel();
 
         // Properly populate display values for the found entries.
         // This will recurse into related modules and get display
