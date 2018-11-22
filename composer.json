@@ -24,22 +24,28 @@
             "php": "7.1"
         }
     },
+    "repositories": [
+        {
+            "type": "git",
+            "url": "https://github.com/QoboLtd/cakephp-file-storage.git"
+        }
+    ],
     "require": {
         "aws/aws-sdk-php": "^3.52",
         "brainmaestro/composer-git-hooks": "^2.4",
-        "cakephp/cakephp": "^3.5 <3.6",
+        "cakephp/cakephp": "^3.6",
         "cakephp/plugin-installer": "^1.1",
         "dereuromark/cakephp-databaselog": "^2.1",
         "dereuromark/cakephp-whoops": "^0.1.2",
         "lasserafn/php-initial-avatar-generator": "^2.3",
         "pelago/emogrifier": "^1.2",
         "pyrech/composer-changelogs": "^1.4",
-        "qobo/cakephp-csv-migrations": "^32.0",
-        "qobo/cakephp-groups": "^10.0",
-        "qobo/cakephp-menu": "^15.0",
-        "qobo/cakephp-roles-capabilities": "^17.0",
-        "qobo/cakephp-search": "^19.0",
-        "qobo/cakephp-utils": "^9.1",
+        "qobo/cakephp-csv-migrations": "^33.0",
+        "qobo/cakephp-groups": "^11.0",
+        "qobo/cakephp-menu": "^16.0",
+        "qobo/cakephp-roles-capabilities": "^18.0",
+        "qobo/cakephp-search": "^20.0",
+        "qobo/cakephp-utils": "^10.3",
         "qobo/qobo-robo": "^2.0",
         "qobo/qobo-robo-cakephp": "^2.0"
     },
@@ -58,14 +64,14 @@
     "autoload-dev": {
         "psr-4": {
             "App\\Test\\": "tests/",
-            "Cake\\Test\\": "./vendor/cakephp/cakephp/tests/",
-            "CakeDC\\Users\\Test\\": "./vendor/cakedc/users/tests/",
-            "CsvMigrations\\Test\\": "./vendor/qobo/cakephp-csv-migrations/tests/",
-            "Groups\\Test\\": "./vendor/qobo/cakephp-groups/tests/",
-            "Menu\\Test\\": "./vendor/qobo/cakephp-menu/tests/",
-            "RolesCapabilities\\Test\\": "./vendor/qobo/cakephp-roles-capabilities/tests/",
-            "Search\\Test\\": "./vendor/qobo/cakephp-search/tests/",
-            "Translations\\Test\\": "./vendor/qobo/cakephp-translations/tests/"
+            "Cake\\Test\\": "vendor/cakephp/cakephp/tests/",
+            "CakeDC\\Users\\Test\\": "vendor/cakedc/users/tests/",
+            "CsvMigrations\\Test\\": "vendor/qobo/cakephp-csv-migrations/tests/",
+            "Groups\\Test\\": "vendor/qobo/cakephp-groups/tests/",
+            "Menu\\Test\\": "vendor/qobo/cakephp-menu/tests/",
+            "RolesCapabilities\\Test\\": "vendor/qobo/cakephp-roles-capabilities/tests/",
+            "Search\\Test\\": "vendor/qobo/cakephp-search/tests/",
+            "Translations\\Test\\": "vendor/qobo/cakephp-translations/tests/"
         }
     },
     "scripts": {
@@ -94,5 +100,6 @@
             "pre-commit": "PHPCS_FILES=$(git diff-index --name-only --cached --diff-filter=ACMR HEAD 'tests/**.php' 'src/**.php' 'webroot/**.php'); if [ \"$PHPCS_FILES\" ]; then ./vendor/bin/phpcs $PHPCS_FILES; fi"
         }
     },
-    "prefer-stable": true
+    "prefer-stable": true,
+    "minimum-stability": "dev"
 }

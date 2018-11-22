@@ -1,6 +1,7 @@
 <?php
 namespace App\Event\Plugin\Search\Model;
 
+use Cake\Datasource\RepositoryInterface;
 use Cake\Event\Event;
 use Cake\Event\EventListenerInterface;
 use Cake\ORM\TableRegistry;
@@ -28,7 +29,7 @@ class ChildListItemsListener implements EventListenerInterface
     public function implementedEvents()
     {
         return [
-            (string)EventName::MODEL_SEARCH_CHILD_ITEMS => 'childItemsForParent',
+            (string)EventName::MODEL_SEARCH_CHILD_ITEMS() => 'childItemsForParent',
         ];
     }
 
@@ -36,10 +37,11 @@ class ChildListItemsListener implements EventListenerInterface
      * childItemsForParent method
      *
      * @param \Cake\Event\Event $event Event instance
-     * @param array $criteria to build where statement
-     * @return array
+     * @param mixed[] $criteria to build where statement
+     *
+     * @return mixed[]
      */
-    public function childItemsForParent(Event $event, $criteria)
+    public function childItemsForParent(Event $event, array $criteria): array
     {
         if (empty($criteria['criteria'])) {
             return $criteria;
@@ -74,10 +76,11 @@ class ChildListItemsListener implements EventListenerInterface
      * getDbListChildren method
      *
      * @param string $parentId of parent item
-     * @param object $table where lists are stored
-     * @return array
+     * @param \Cake\Datasource\RepositoryInterface $table where lists are stored
+     *
+     * @return mixed[]
      */
-    private function getDbListChildren($parentId, $table)
+    private function getDbListChildren(string $parentId, RepositoryInterface $table): array
     {
         $query = $table->find('all', [
             'conditions' => ['parent_id' => $parentId],
@@ -92,9 +95,9 @@ class ChildListItemsListener implements EventListenerInterface
      *
      * @param string $parentValue of parent item
      * @param string $listName for target list
-     * @return array with children elements or empty
+     * @return mixed[] with children elements or empty
      */
-    private function getFileListChildren($parentValue, $listName)
+    private function getFileListChildren(string $parentValue, string $listName): array
     {
         if (strpos($listName, '.') !== false) {
             list ($module, $name) = explode('.', $listName);
@@ -133,9 +136,10 @@ class ChildListItemsListener implements EventListenerInterface
      * @param string $value to search
      * @param string $type - dblist of list stored in files
      * @param string $listName to find children in
-     * @return array with childen items or empty
+     *
+     * @return mixed[] with childen items or empty
      */
-    private function processChildren($value, $type = self::LIST_TYPE_DBLIST, $listName = '')
+    private function processChildren(string $value, string $type = self::LIST_TYPE_DBLIST, string $listName = ''): array
     {
         $result = [];
         $list = [];

@@ -6,7 +6,7 @@ if (empty($user)) {
     $this->layout = 'error';
 }
 
-$currentError = $this->request->session()->read('currentError');
+$currentError = $this->request->getSession()->read('currentError');
 
 $code = '000';
 $message = 'Unknown Error';

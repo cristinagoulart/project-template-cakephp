@@ -26,7 +26,7 @@ foreach ($table->associations() as $association) {
     }
 
     // skip hidden associations
-    if (in_array($association->name(), $hiddenAssociations)) {
+    if (in_array($association->getName(), $hiddenAssociations)) {
         continue;
     }
 

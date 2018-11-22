@@ -28,15 +28,14 @@ class RelatedActionListener extends BaseActionListener
      */
     public function beforePaginate(Event $event, QueryInterface $query) : void
     {
-        /**
-         * @var \Psr\Http\Message\ServerRequestInterface
-         */
-        $request = $event->getSubject()->request;
+        /** @var \Cake\Controller\Controller */
+        $controller = $event->getSubject();
 
-        /**
-         * @var \Cake\Datasource\RepositoryInterface
-         */
-        $table = $event->getSubject()->{$event->getSubject()->name};
+        /** @var \Psr\Http\Message\ServerRequestInterface&\Cake\Http\ServerRequest */
+        $request = $controller->getRequest();
+
+        /** @var \Cake\Datasource\RepositoryInterface&\Cake\ORM\Table */
+        $table = $controller->loadModel();
 
         $query->order($this->getOrderClause($request, $table));
     }
@@ -58,36 +57,29 @@ class RelatedActionListener extends BaseActionListener
             return;
         }
 
-        /**
-         * @var \Cake\Controller\Controller
-         */
+        /** @var \Cake\Controller\Controller */
         $controller = $event->getSubject();
 
-        /**
-         * @var \Psr\Http\Message\ServerRequestInterface
-         */
-        $request = $controller->request;
+        /** @var \Psr\Http\Message\ServerRequestInterface&\Cake\Http\ServerRequest */
+        $request = $controller->getRequest();
 
-        /**
-         * Associated table instance.
-         *
-         * @var \Cake\Datasource\RepositoryInterface
-         */
-        $table = $controller->{$controller->name}
-            ->association($request->getParam('pass.1'))
-            ->getTarget();
+        /** @var \Cake\Datasource\RepositoryInterface&\Cake\ORM\Table */
+        $table = $controller->loadModel();
+
+        // Associated table instance.
+        $target = $table->getAssociation($request->getParam('pass.1'))->getTarget();
 
         foreach ($resultSet as $entity) {
             $this->resourceToString($entity);
 
             static::FORMAT_PRETTY === $request->getQuery('format') ?
-                $this->prettify($entity, $table) :
-                $this->attachFiles($entity, $table);
+                $this->prettify($entity, $target) :
+                $this->attachFiles($entity, $target);
 
             if ((bool)$request->getQuery(static::FLAG_INCLUDE_MENUS)) {
-                $this->attachRelatedMenu($entity, $table, $controller->Auth->user(), [
+                $this->attachRelatedMenu($entity, $target, $controller->Auth->user(), [
                     'associationController' => $request->getParam('controller'),
-                    'associationName' => $table->getRegistryAlias(),
+                    'associationName' => $target->getRegistryAlias(),
                     'associationId' => $request->getParam('pass.0'),
                 ]);
             }

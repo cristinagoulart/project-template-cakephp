@@ -28,7 +28,7 @@ class PagesControllerTest extends IntegrationTestCase
      *
      * @return void
      */
-    public function testDisplay()
+    public function testDisplay(): void
     {
         $this->get('/');
         $this->assertRedirect(['plugin' => 'CakeDC/Users', 'controller' => 'Users', 'action' => 'login']);

@@ -14,7 +14,7 @@ class ScheduledJobsController extends BaseController
      *
      * Returns a a list of scheduled jobs
      *
-     * @return void|\Cake\Network\Response
+     * @return \Cake\Http\Response|void|null
      */
     public function index()
     {
@@ -25,7 +25,7 @@ class ScheduledJobsController extends BaseController
      *
      * Saving executing Scheduled Job with RRule params
      *
-     * @return void|\Cake\Network\Response
+     * @return \Cake\Http\Response|void|null
      */
     public function add()
     {
@@ -38,12 +38,12 @@ class ScheduledJobsController extends BaseController
             $entity = $model->patchEntity($entity, $this->request->getData());
 
             if ($model->save($entity)) {
-                $this->Flash->success(__('Scheduled Job has been saved.'));
+                $this->Flash->success((string)__('Scheduled Job has been saved.'));
 
                 return $this->redirect(['action' => 'index']);
             }
 
-            $this->Flash->error(__('Scheduled Job could not be saved. Please, try again'));
+            $this->Flash->error((string)__('Scheduled Job could not be saved. Please, try again'));
         }
 
         $this->set(compact('entity', 'commands'));
@@ -53,11 +53,11 @@ class ScheduledJobsController extends BaseController
     /**
      * Edit Scheduled Jobs record
      *
-     * @param mixed $entityId of the scheduled job
+     * @param string $entityId of the scheduled job
      *
-     * @return void|\Cake\Network\Response
+     * @return \Cake\Http\Response|void|null
      */
-    public function edit($entityId = null)
+    public function edit(string $entityId)
     {
         $model = $this->loadModel();
         $entity = $model->get($entityId, [
@@ -68,7 +68,7 @@ class ScheduledJobsController extends BaseController
         $commands = $model->getList();
 
         if ($this->request->is(['patch', 'post', 'put'])) {
-            if ($this->request->data('btn_operation') == 'cancel') {
+            if ($this->request->getData('btn_operation') == 'cancel') {
                 return $this->redirect($redirectUrl);
             }
 
@@ -76,9 +76,9 @@ class ScheduledJobsController extends BaseController
             $saved = $model->save($entity);
 
             if ($saved) {
-                $this->Flash->success(__('The record has been saved.'));
+                $this->Flash->success((string)__('The record has been saved.'));
             } else {
-                $this->Flash->error(__('This record could not be saved.'));
+                $this->Flash->error((string)__('This record could not be saved.'));
             }
 
             return $this->redirect($redirectUrl);

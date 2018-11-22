@@ -78,7 +78,7 @@ $event = new Event((string)EventName::GET_MENU_ITEMS(), $entity, [
     'menu' => $menu,
     'entity' => $entity,
 ]);
-$this->eventManager()->dispatch($event);
+$this->getEventManager()->dispatch($event);
 
 /** @var \Menu\MenuBuilder\Menu $menu */
 $menu = $event->getResult();
