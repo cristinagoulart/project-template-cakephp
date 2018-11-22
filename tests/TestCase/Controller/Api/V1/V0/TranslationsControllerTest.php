@@ -12,6 +12,8 @@ use Firebase\JWT\JWT;
 
 /**
  * Translations\Controller\TranslationsController Test Case
+ *
+ * @property \Cake\Http\Response $_response
  */
 class TranslationsControllerTest extends IntegrationTestCase
 {
@@ -68,7 +70,9 @@ class TranslationsControllerTest extends IntegrationTestCase
         $this->assertResponseOk();
         $this->assertContentType('application/json');
 
-        $response = json_decode($this->_response->body());
+        $body = $this->_response->getBody();
+        $response = json_decode($body);
+        // $response = json_decode($this->_response->getBody());
         $this->assertTrue($response->success);
         $this->assertEmpty($response->data);
     }
@@ -79,7 +83,7 @@ class TranslationsControllerTest extends IntegrationTestCase
 
         $this->assertResponseOk();
 
-        $response = json_decode($this->_response->body());
+        $response = json_decode($this->_response->getBody());
         $this->assertEquals(3, count($response->data));
     }
 
@@ -99,7 +103,7 @@ class TranslationsControllerTest extends IntegrationTestCase
 
         $this->assertResponseOk();
 
-        $response = json_decode($this->_response->body());
+        $response = json_decode($this->_response->getBody());
         $this->assertEquals(2, count($response->data));
     }
 
@@ -109,7 +113,7 @@ class TranslationsControllerTest extends IntegrationTestCase
 
         $this->assertResponseOk();
 
-        $response = json_decode($this->_response->body());
+        $response = json_decode($this->_response->getBody());
         $this->assertEquals(1, count($response->data));
     }
 }
