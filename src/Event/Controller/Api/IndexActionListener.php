@@ -5,6 +5,7 @@ use App\Event\EventName;
 use Cake\Datasource\QueryInterface;
 use Cake\Datasource\ResultSetInterface;
 use Cake\Event\Event;
+use Cake\Utility\Hash;
 
 class IndexActionListener extends BaseActionListener
 {
@@ -91,7 +92,7 @@ class IndexActionListener extends BaseActionListener
      */
     private function filterByConditions(QueryInterface $query, Event $event)
     {
-        if (empty($event->getSubject()->request->query('conditions'))) {
+        if (empty(Hash::get($event->getSubject()->request->getQueryParams(), 'conditions', []))) {
             return;
         }
 

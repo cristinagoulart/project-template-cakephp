@@ -28,7 +28,7 @@ class UserIdentifyListener implements EventListenerInterface
      */
     public function afterIdentify(Event $event, array $user, BaseAuthenticate $auth)
     {
-        $userModel = $auth->config('userModel');
+        $userModel = $auth->getConfig('userModel');
         // skip if user model is not defined
         if (empty($userModel)) {
             return;
