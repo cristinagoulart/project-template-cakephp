@@ -2,9 +2,9 @@
 namespace App\Controller;
 
 use App\Controller\AppController;
+use App\SystemInfo\Database;
 use Cake\Datasource\ConnectionManager;
 use Cake\ORM\TableRegistry;
-use Cake\Routing\Router;
 
 class TrashController extends AppController
 {
@@ -15,7 +15,8 @@ class TrashController extends AppController
     public function index()
     {
         $tableList = [];
-        $tables = ConnectionManager::get('default')->schemaCollection()->listTables();
+        $tables = Database::getTables();
+
         foreach ($tables as $tableName) {
             $table = TableRegistry::get($tableName);
             if ($table->behaviors()->has('Trash')) {

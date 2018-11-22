@@ -80,6 +80,13 @@
                     "url": "/system/info/",
                     "icon": "info-circle",
                     "order": 70
+                },
+                {
+                    "label": "Trash",
+                    "desc": "View deleted records",
+                    "url": "/trash/",
+                    "icon": "trash",
+                    "order": 70
                 }
             ]
         }
