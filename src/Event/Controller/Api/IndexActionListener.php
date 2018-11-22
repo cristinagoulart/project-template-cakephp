@@ -10,9 +10,11 @@ use Cake\Utility\Hash;
 class IndexActionListener extends BaseActionListener
 {
     /**
-     * {@inheritDoc}
+     * Returns a list of all events that the API Index endpoint will listen to.
+     *
+     * @return array
      */
-    public function implementedEvents()
+    public function implementedEvents() : array
     {
         return [
             (string)EventName::API_INDEX_BEFORE_PAGINATE() => 'beforePaginate',
@@ -24,32 +26,26 @@ class IndexActionListener extends BaseActionListener
     /**
      * {@inheritDoc}
      */
-    public function beforePaginate(Event $event, QueryInterface $query): void
+    public function beforePaginate(Event $event, QueryInterface $query) : void
     {
-        /**
-         * @var \Cake\Controller\Controller $controller
-         */
+        /** @var \Cake\Controller\Controller */
         $controller = $event->getSubject();
+
+        /** @var \Psr\Http\Message\ServerRequestInterface&\Cake\Http\ServerRequest */
         $request = $controller->getRequest();
 
-        if (static::FORMAT_PRETTY !== $request->getQuery('format')) {
-            $query->contain(
-                $this->_getFileAssociations($controller->{$controller->getName()})
-            );
-        }
+        /** @var \Cake\Datasource\RepositoryInterface&\Cake\ORM\Table */
+        $table = $controller->loadModel();
 
         $this->filterByConditions($query, $event);
 
-        $query->order($this->getOrderClause(
-            $request,
-            $controller->{$controller->getName()}
-        ));
+        $query->order($this->getOrderClause($request, $table));
     }
 
     /**
      * {@inheritDoc}
      */
-    public function afterPaginate(Event $event, ResultSetInterface $resultSet): void
+    public function afterPaginate(Event $event, ResultSetInterface $resultSet) : void
     {
         //
     }
@@ -57,39 +53,31 @@ class IndexActionListener extends BaseActionListener
     /**
      * {@inheritDoc}
      */
-    public function beforeRender(Event $event, ResultSetInterface $resultSet): void
+    public function beforeRender(Event $event, ResultSetInterface $resultSet) : void
     {
-        /**
-         * @var \Cake\Controller\Controller $controller
-         */
-        $controller = $event->getSubject();
-        $request = $controller->getRequest();
-
         if ($resultSet->isEmpty()) {
             return;
         }
 
-        $table = $controller->{$controller->getName()};
+        /** @var \Cake\Controller\Controller */
+        $controller = $event->getSubject();
+
+        /** @var \Psr\Http\Message\ServerRequestInterface&\Cake\Http\ServerRequest */
+        $request = $controller->getRequest();
+
+        /** @var \Cake\Datasource\RepositoryInterface&\Cake\ORM\Table */
+        $table = $controller->loadModel();
 
         foreach ($resultSet as $entity) {
-            $this->_resourceToString($entity);
-        }
+            $this->resourceToString($entity);
 
-        if (static::FORMAT_PRETTY === $request->getQuery('format')) {
-            foreach ($resultSet as $entity) {
-                $this->_prettify($entity, $table);
+            static::FORMAT_PRETTY === $request->getQuery('format') ?
+                $this->prettify($entity, $table) :
+                $this->attachFiles($entity, $table);
+
+            if ((bool)$request->getQuery(static::FLAG_INCLUDE_MENUS)) {
+                $this->attachMenu($entity, $table, $controller->Auth->user());
             }
-        }
-
-        // @todo temporary functionality, please see _includeFiles() method documentation.
-        if (static::FORMAT_PRETTY !== $request->getQuery('format')) {
-            foreach ($resultSet as $entity) {
-                $this->_restructureFiles($entity, $table);
-            }
-        }
-
-        if ((bool)$request->getQuery(static::FLAG_INCLUDE_MENUS)) {
-            $this->attachMenu($resultSet, $table, $controller->Auth->user());
         }
     }
 
@@ -100,26 +88,25 @@ class IndexActionListener extends BaseActionListener
      * @param \Cake\Event\Event $event The event
      * @return void
      */
-    private function filterByConditions(QueryInterface $query, Event $event): void
+    private function filterByConditions(QueryInterface $query, Event $event) : void
     {
-        /**
-         * @var \Cake\Controller\Controller $controller
-         */
+        /** @var \Cake\Controller\Controller */
         $controller = $event->getSubject();
+
+        /** @var \Psr\Http\Message\ServerRequestInterface&\Cake\Http\ServerRequest */
         $request = $controller->getRequest();
 
-        if (empty(Hash::get($request->getQueryParams(), 'conditions', []))) {
+        /** @var \Cake\Datasource\RepositoryInterface&\Cake\ORM\Table */
+        $table = $controller->loadModel();
+
+        $queryParam = Hash::get($request->getQueryParams(), 'conditions', []);
+        if (empty($queryParam)) {
             return;
         }
 
         $conditions = [];
-        $tableName = $controller->getName();
-        foreach ($request->query('conditions') as $k => $v) {
-            if (false === strpos($k, '.')) {
-                $k = $tableName . '.' . $k;
-            }
-
-            $conditions[$k] = $v;
+        foreach ($queryParam as $field => $value) {
+            $conditions[$table->aliasField($field)] = $value;
         };
 
         $query->applyOptions(['conditions' => $conditions]);

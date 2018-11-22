@@ -81,8 +81,6 @@ class AppController extends Controller
         'checkAuthIn' => 'Controller.initialize'
     ];
 
-    protected $fileUpload;
-
     /**
      * {@inheritDoc}
      */
@@ -101,8 +99,6 @@ class AppController extends Controller
         if (Configure::read('API.auth')) {
             $this->enableAuthorization();
         }
-
-        $this->fileUpload = new FileUpload($this->{$this->name});
     }
 
     /**
@@ -260,7 +256,11 @@ class AppController extends Controller
 
         $this->Crud->on('afterSave', function (Event $event) {
             // handle file uploads if found in the request data
-            $linked = $this->fileUpload->linkFilesToEntity($event->getSubject()->entity, $this->{$this->name}, $this->request->getData());
+            $fileUpload = new FileUpload($this->loadModel());
+            $fileUpload->link(
+                $event->getSubject()->entity->get($this->loadModel()->getPrimaryKey()),
+                $this->request->getData()
+            );
 
             $ev = new Event((string)EventName::API_ADD_AFTER_SAVE(), $this, [
                 'entity' => $event->getSubject()->entity
@@ -308,7 +308,11 @@ class AppController extends Controller
 
         $this->Crud->on('afterSave', function (Event $event) {
             // handle file uploads if found in the request data
-            $linked = $this->fileUpload->linkFilesToEntity($event->getSubject()->entity, $this->{$this->name}, $this->request->getData());
+            $fileUpload = new FileUpload($this->loadModel());
+            $fileUpload->link(
+                $event->getSubject()->entity->get($this->loadModel()->getPrimaryKey()),
+                $this->request->getData()
+            );
         });
 
         return $this->Crud->execute();
@@ -333,34 +337,22 @@ class AppController extends Controller
     {
         $this->request->allowMethod(['post']);
 
-        $this->autoRender = false;
+        $fileUpload = new FileUpload($this->loadModel());
 
-        $saved = null;
-        $response = [];
-
-        foreach ($this->request->getData() as $model => $files) {
-            if (!is_array($files)) {
+        $result = [
+            'success' => true,
+            'data' => []
+        ];
+        foreach ($this->request->getData($this->name) as $field => $files) {
+            if (! is_array($files)) {
                 continue;
             }
 
-            foreach ($files as $modelField => $fileInfo) {
-                $saved = $this->fileUpload->ajaxSave(
-                    $this->{$this->name},
-                    $modelField,
-                    $fileInfo,
-                    ['ajax' => true]
-                );
-            }
+            $result['data'] = $fileUpload->saveAll($field, $files);
         }
 
-        if ($saved) {
-            $response = $saved;
-        } else {
-            $this->response->statusCode(400);
-            $response['errors'] = "Couldn't save the File";
-        }
-
-        echo json_encode($response);
+        $this->set('result', $result);
+        $this->set('_serialize', 'result');
     }
 
     /**
