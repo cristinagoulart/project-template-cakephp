@@ -43,6 +43,11 @@ class DashboardMenuListener implements EventListenerInterface
      */
     public function getMenuItems(Event $event, string $name, array $user, bool $fullBaseUrl = false, array $modules = [], MenuInterface $menu = null): void
     {
+        /**
+         * @var \Menu\MenuBuilder\MenuInterface $menu
+         */
+        $menu = $menu;
+
         if ($name === MenuName::MAIN && empty($modules)) {
             $this->addAdminMenuItems($menu, $user);
             $event->setResult($menu);
@@ -113,7 +118,7 @@ class DashboardMenuListener implements EventListenerInterface
 
         /**
          * @var int $i
-         * @var EntityInterface $entity
+         * @var \Cake\Datasource\EntityInterface $entity
          */
         foreach ($query as $i => $entity) {
             $entityItem = MenuItemFactory::createMenuItem([

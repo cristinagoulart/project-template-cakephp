@@ -53,11 +53,11 @@ class ScheduledJobsController extends BaseController
     /**
      * Edit Scheduled Jobs record
      *
-     * @param mixed $entityId of the scheduled job
+     * @param string $entityId of the scheduled job
      *
      * @return \Cake\Http\Response|void|null
      */
-    public function edit($entityId = null)
+    public function edit(string $entityId)
     {
         $model = $this->{$this->name};
         $entity = $model->get($entityId, [

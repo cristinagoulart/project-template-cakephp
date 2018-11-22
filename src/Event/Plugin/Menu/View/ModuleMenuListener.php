@@ -65,6 +65,10 @@ class ModuleMenuListener implements EventListenerInterface
     ): void {
         if (empty($modules)) {
             $modules = Utility::findDirs(Configure::readOrFail('CsvMigrations.modules.path'));
+            /**
+             * @var \Menu\MenuBuilder\MenuInterface $menu
+             */
+            $menu = $menu;
             MenuFactory::addToMenu($menu, $this->getModulesMenuItems($modules, $name));
             $event->setResult($menu);
         } else {

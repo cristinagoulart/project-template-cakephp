@@ -27,22 +27,32 @@ class RelatedActionListener extends BaseActionListener
      */
     public function beforePaginate(Event $event, QueryInterface $query): void
     {
-        if (static::FORMAT_PRETTY !== $event->getSubject()->request->getQuery('format')) {
+        /**
+         * @var \Cake\Controller\Controller $controller
+         */
+        $controller = $event->getSubject();
+        $request = $controller->getRequest();
+
+        if (static::FORMAT_PRETTY !== $request->getQuery('format')) {
+            /**
+             * @var \Cake\ORM\Query $query
+             */
+            $query = $query;
             $query->contain(
                 $this->_getFileAssociations($this->getAssociatedTable($event))
             );
         }
 
         $query->order($this->getOrderClause(
-            $event->getSubject()->request,
-            $event->getSubject()->{$event->getSubject()->name}
+            $request,
+            $controller->{$controller->getName()}
         ));
     }
 
     /**
      * {@inheritDoc}
      */
-    public function afterPaginate(Event $event, ResultSetInterface $resultSet)
+    public function afterPaginate(Event $event, ResultSetInterface $resultSet): void
     {
         //
     }
@@ -52,6 +62,12 @@ class RelatedActionListener extends BaseActionListener
      */
     public function beforeRender(Event $event, ResultSetInterface $resultSet): void
     {
+        /**
+         * @var \Cake\Controller\Controller $controller
+         */
+        $controller = $event->getSubject();
+        $request = $controller->getRequest();
+
         if ($resultSet->isEmpty()) {
             return;
         }
@@ -62,24 +78,24 @@ class RelatedActionListener extends BaseActionListener
             $this->_resourceToString($entity);
         }
 
-        if (static::FORMAT_PRETTY === $event->getSubject()->request->getQuery('format')) {
+        if (static::FORMAT_PRETTY === $request->getQuery('format')) {
             foreach ($resultSet as $entity) {
                 $this->_prettify($entity, App::shortName(get_class($table), 'Model/Table', 'Table'));
             }
         }
 
         // @todo temporary functionality, please see _includeFiles() method documentation.
-        if (static::FORMAT_PRETTY !== $event->getSubject()->request->getQuery('format')) {
+        if (static::FORMAT_PRETTY !== $request->getQuery('format')) {
             foreach ($resultSet as $entity) {
                 $this->_restructureFiles($entity, $table);
             }
         }
 
-        if ((bool)$event->getSubject()->request->getQuery(static::FLAG_INCLUDE_MENUS)) {
-            $this->attachRelatedMenu($resultSet, $table, $event->getSubject()->Auth->user(), [
-                'associationController' => $event->getSubject()->request->getParam('controller'),
+        if ((bool)$request->getQuery(static::FLAG_INCLUDE_MENUS)) {
+            $this->attachRelatedMenu($resultSet, $table, $controller->Auth->user(), [
+                'associationController' => $request->getParam('controller'),
                 'associationName' => $table->getRegistryAlias(),
-                'associationId' => $event->getSubject()->request->getParam('pass.0'),
+                'associationId' => $request->getParam('pass.0'),
             ]);
         }
     }
@@ -92,9 +108,15 @@ class RelatedActionListener extends BaseActionListener
      */
     private function getAssociatedTable(Event $event): RepositoryInterface
     {
-        $associationName = $event->getSubject()->request->getParam('pass.1');
+        /**
+         * @var \Cake\Controller\Controller $controller
+         */
+        $controller = $event->getSubject();
+        $request = $controller->getRequest();
 
-        return $event->getSubject()->{$event->getSubject()->name}
+        $associationName = $request->getParam('pass.1');
+
+        return $controller->{$controller->getName()}
             ->association($associationName)
             ->getTarget();
     }
