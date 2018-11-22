@@ -24,28 +24,32 @@ class IndexActionListener extends BaseActionListener
     /**
      * {@inheritDoc}
      */
-    public function beforePaginate(Event $event, QueryInterface $query)
+    public function beforePaginate(Event $event, QueryInterface $query): void
     {
-        $request = $event->getSubject()->request;
+        /**
+         * @var \Cake\Controller\Controller $controller
+         */
+        $controller = $event->getSubject();
+        $request = $controller->getRequest();
 
-        if (static::FORMAT_PRETTY !== $event->getSubject()->request->getQuery('format')) {
+        if (static::FORMAT_PRETTY !== $request->getQuery('format')) {
             $query->contain(
-                $this->_getFileAssociations($event->getSubject()->{$event->getSubject()->getName()})
+                $this->_getFileAssociations($controller->{$controller->getName()})
             );
         }
 
         $this->filterByConditions($query, $event);
 
         $query->order($this->getOrderClause(
-            $event->getSubject()->request,
-            $event->getSubject()->{$event->getSubject()->getName()}
+            $request,
+            $controller->{$controller->getName()}
         ));
     }
 
     /**
      * {@inheritDoc}
      */
-    public function afterPaginate(Event $event, ResultSetInterface $resultSet)
+    public function afterPaginate(Event $event, ResultSetInterface $resultSet): void
     {
         //
     }
@@ -53,33 +57,39 @@ class IndexActionListener extends BaseActionListener
     /**
      * {@inheritDoc}
      */
-    public function beforeRender(Event $event, ResultSetInterface $resultSet)
+    public function beforeRender(Event $event, ResultSetInterface $resultSet): void
     {
+        /**
+         * @var \Cake\Controller\Controller $controller
+         */
+        $controller = $event->getSubject();
+        $request = $controller->getRequest();
+
         if ($resultSet->isEmpty()) {
             return;
         }
 
-        $table = $event->getSubject()->{$event->getSubject()->getName()};
+        $table = $controller->{$controller->getName()};
 
         foreach ($resultSet as $entity) {
             $this->_resourceToString($entity);
         }
 
-        if (static::FORMAT_PRETTY === $event->getSubject()->request->getQuery('format')) {
+        if (static::FORMAT_PRETTY === $request->getQuery('format')) {
             foreach ($resultSet as $entity) {
                 $this->_prettify($entity, $table);
             }
         }
 
         // @todo temporary functionality, please see _includeFiles() method documentation.
-        if (static::FORMAT_PRETTY !== $event->getSubject()->request->getQuery('format')) {
+        if (static::FORMAT_PRETTY !== $request->getQuery('format')) {
             foreach ($resultSet as $entity) {
                 $this->_restructureFiles($entity, $table);
             }
         }
 
-        if ((bool)$event->getSubject()->request->getQuery(static::FLAG_INCLUDE_MENUS)) {
-            $this->attachMenu($resultSet, $table, $event->getSubject()->Auth->user());
+        if ((bool)$request->getQuery(static::FLAG_INCLUDE_MENUS)) {
+            $this->attachMenu($resultSet, $table, $controller->Auth->user());
         }
     }
 
@@ -90,15 +100,21 @@ class IndexActionListener extends BaseActionListener
      * @param \Cake\Event\Event $event The event
      * @return void
      */
-    private function filterByConditions(QueryInterface $query, Event $event)
+    private function filterByConditions(QueryInterface $query, Event $event): void
     {
-        if (empty(Hash::get($event->getSubject()->request->getQueryParams(), 'conditions', []))) {
+        /**
+         * @var \Cake\Controller\Controller $controller
+         */
+        $controller = $event->getSubject();
+        $request = $controller->getRequest();
+
+        if (empty(Hash::get($request->getQueryParams(), 'conditions', []))) {
             return;
         }
 
         $conditions = [];
-        $tableName = $event->getSubject()->getName();
-        foreach ($event->getSubject()->request->query('conditions') as $k => $v) {
+        $tableName = $controller->getName();
+        foreach ($request->query('conditions') as $k => $v) {
             if (false === strpos($k, '.')) {
                 $k = $tableName . '.' . $k;
             }

@@ -70,6 +70,9 @@ class Factory
         }
 
         $result = [];
+        /**
+         * @var string $feature
+         */
         foreach (array_keys($features) as $feature) {
             if ($type && 0 !== strpos($feature, $type)) {
                 continue;

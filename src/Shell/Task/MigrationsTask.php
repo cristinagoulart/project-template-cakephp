@@ -20,6 +20,7 @@ use Cake\Console\Shell;
  * Task for migrating plugins.
  * @todo add support for CakePHP Migrations rollback, status and mark_migrated commands
  *
+ * @property \Migrations\Shell\Task $Migrate
  */
 class MigrationsTask extends Shell
 {

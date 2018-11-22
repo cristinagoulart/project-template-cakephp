@@ -3,6 +3,7 @@ namespace App\Shell;
 
 use App\Feature\Factory as FeatureFactory;
 use App\Model\Table\ScheduledJobsTable;
+use App\ScheduledJobs\Jobs\JobInterface;
 use Cake\Console\Shell;
 use Cake\I18n\Time;
 use Cake\Log\Log;
@@ -17,6 +18,7 @@ use RuntimeException;
  *
  * @property \App\Model\Table\ScheduledJobLogs $ScheduledJobLogs
  * @property \App\Model\Table\ScheduledJobsTable $ScheduledJobs
+ * @property \App\Shell\Task\LockTask $Lock
  */
 class CronShell extends Shell
 {
@@ -92,25 +94,28 @@ class CronShell extends Shell
             }
 
             if (!$shouldRun) {
-                $this->verbose("Skipping Scheduled Task [{$entity->name}]");
+                $this->verbose("Skipping Scheduled Task [{$entity->get('name')}]");
                 continue;
             }
 
-            $instance = $this->ScheduledJobs->getInstance($entity->job, 'Job');
+            /**
+             * @var \App\ScheduledJobs\Jobs\JobInterface $instance
+             */
+            $instance = $this->ScheduledJobs->getInstance($entity->get('job'), 'Job');
 
-            if (!$instance) {
-                $message = sprintf("Failed to instatiate Job class for [%s]", $entity->job);
+            if (!$instance instanceof JobInterface) {
+                $message = sprintf("Failed to instatiate Job class for [%s]", $entity->get('job'));
                 $this->warn($message);
                 Log::warning($message);
                 continue;
             }
 
             try {
-                $this->info("Starting Scheduled Task [{$entity->name}]");
-                $lock = $this->lock(__FILE__, $entity->job);
-                $state = $instance->run($entity->options);
-                $this->info("Finished Scheduled Task [{$entity->name}]");
-                $this->verbose("Scheduled Task [" . $entity->name . "] finished with: " . print_r($state, true));
+                $this->info("Starting Scheduled Task [{$entity->get('name')}]");
+                $lock = $this->lock(__FILE__, $entity->get('job'));
+                $state = $instance->run($entity->get('options'));
+                $this->info("Finished Scheduled Task [{$entity->get('name')}]");
+                $this->verbose("Scheduled Task [" . $entity->get('name') . "] finished with: " . print_r($state, true));
                 if ($state['state'] > 0) {
                     $this->ScheduledJobLogs->logJob($entity, $state, $now);
                 }
@@ -118,7 +123,7 @@ class CronShell extends Shell
                 $entity = $this->ScheduledJobs->patchEntity($entity, ['last_run_date' => Time::now()]);
                 $this->ScheduledJobs->save($entity);
             } catch (Exception $e) {
-                $this->info("Scheduled Task [{$entity->name}] is already in progress. Skipping.");
+                $this->info("Scheduled Task [{$entity->get('name')}] is already in progress. Skipping.");
                 continue;
             }
             $lock->unlock();
@@ -132,17 +137,21 @@ class CronShell extends Shell
      *
      * @param string $file Path to the shell script which acquires lock
      * @param string $class Name of the shell class which acquires lock
-     * @return \Qobo\Utils\Utility\FileLock
+     *
+     * @return \Qobo\Utils\Utility\Lock\FileLock
      */
-    public function lock(string $file, string $class)
+    public function lock(string $file, string $class): FileLock
     {
+        /**
+         * @var string $class
+         */
         $class = preg_replace('/[^\da-z]/i', '_', $class);
         $lockFile = $this->Lock->getLockFileName($file, $class);
 
         try {
             $lock = new FileLock($lockFile);
         } catch (Exception $e) {
-            $this->abort($e->getMessage());
+            throw new RuntimeException("Couldn't create lock file", 0, $e);
         }
 
         if (!$lock->lock()) {

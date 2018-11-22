@@ -2,10 +2,15 @@
 namespace App\Shell;
 
 use CakeDC\Users\Shell\UsersShell as BaseShell;
+use Cake\Datasource\EntityInterface;
 use Cake\ORM\Entity;
 
 class UsersShell extends BaseShell
 {
+    /**
+     * @var \App\Model\Table\UsersTable $Users
+     */
+    public $Users;
     /**
      * Add a new superadmin user
      *
@@ -25,14 +30,14 @@ class UsersShell extends BaseShell
         ];
 
         $userEntity = $this->Users->newEntity($user);
-        $userEntity->is_superuser = true;
-        $userEntity->role = 'superuser';
+        $userEntity->set('is_superuser', true);
+        $userEntity->set('role', 'superuser');
         $savedUser = $this->Users->save($userEntity);
         if (!empty($savedUser)) {
             $this->printUserInfo($savedUser, $password);
         } else {
             $this->printUserErrors($userEntity);
-            $this->abort(__d('CakeDC/Users', 'Failed to add superuser'));
+            $this->abort((string)__d('CakeDC/Users', 'Failed to add superuser'));
         }
     }
 
@@ -94,26 +99,26 @@ class UsersShell extends BaseShell
     /**
      * Print out user information
      *
-     * @param \Cake\ORM\Entity $user User entity
+     * @param \Cake\Datasource\EntityInterface $user User entity
      * @param string $password Plain text password
      * @return void
      */
-    protected function printUserInfo(Entity $user, string $password): void
+    protected function printUserInfo(EntityInterface $user, string $password): void
     {
         $this->out('<success>' . __d('CakeDC/Users', 'Superuser added successfully.') . '</success>');
-        $this->out('<info>' . __d('CakeDC/Users', 'User Id : {0}', $user->id) . '</info>');
-        $this->out('<info>' . __d('CakeDC/Users', 'Username: {0}', $user->username) . '</info>');
-        $this->out('<info>' . __d('CakeDC/Users', 'Email   : {0}', $user->email) . '</info>');
+        $this->out('<info>' . __d('CakeDC/Users', 'User Id : {0}', $user->get('id')) . '</info>');
+        $this->out('<info>' . __d('CakeDC/Users', 'Username: {0}', $user->get('username')) . '</info>');
+        $this->out('<info>' . __d('CakeDC/Users', 'Email   : {0}', $user->get('email')) . '</info>');
         $this->out('<info>' . __d('CakeDC/Users', 'Password: {0}', $password) . '</info>');
     }
 
     /**
      * Print out user errors
      *
-     * @param \Cake\ORM\Entity $user User entity
+     * @param \Cake\Datasource\EntityInterface $user User entity
      * @return void
      */
-    protected function printUserErrors(Entity $user): void
+    protected function printUserErrors(EntityInterface $user): void
     {
         $this->err(__d('CakeDC/Users', 'Errors while trying to add a superuser:'));
 

@@ -33,15 +33,15 @@ class AccessMenuListener implements EventListenerInterface
     /**
      * Disables all menu items that the provided user doesn't have access to
      *
-     * @param Event $event Event object
+     * @param \Cake\Event\Event $event Event object
      * @param string $name Menu name
-     * @param array $user Current user
+     * @param mixed[] $user Current user
      * @param bool $fullBaseUrl Flag for fullbase url on menu links
-     * @param array $modules Modules to fetch menu items for
-     * @param MenuInterface|null $menu Menu object to be updated
+     * @param mixed[] $modules Modules to fetch menu items for
+     * @param \Menu\MenuBuilder\MenuInterface|null $menu Menu object to be updated
      * @return void
      */
-    public function getMenuItems(Event $event, $name, array $user, $fullBaseUrl = false, array $modules = [], MenuInterface $menu = null)
+    public function getMenuItems(Event $event, string $name, array $user, bool $fullBaseUrl = false, array $modules = [], MenuInterface $menu = null): void
     {
         if ($menu === null) {
             return;
@@ -56,13 +56,15 @@ class AccessMenuListener implements EventListenerInterface
      * If not, the menu item will be marked as disabled.
      * Recursively, applies the checks to all levels starting from the specified container.
      *
-     * @param MenuItemContainerInterface $container Starting menu container
-     * @param array $user Current user
+     * @param \Menu\MenuBuilder\MenuItemContainerInterface $container Starting menu container
+     * @param mixed[] $user Current user
      * @return void
      */
-    private function disableUnauthorisedItems(MenuItemContainerInterface $container, array $user)
+    private function disableUnauthorisedItems(MenuItemContainerInterface $container, array $user): void
     {
-        /** @var MenuItemInterface $item */
+        /**
+        * @var \Menu\MenuBuilder\MenuItemInterface $item
+        */
         foreach ($container->getMenuItems() as $item) {
             $item->disableIf(function (MenuItemInterface $item) use ($user) {
                 return !$this->_checkAccess($item->getUrl(), $user);

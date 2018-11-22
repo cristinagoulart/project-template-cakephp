@@ -22,11 +22,11 @@ class UserIdentifyListener implements EventListenerInterface
      * Add 'name' parameter to Auth user information.
      *
      * @param \Cake\Event\Event $event Event instance
-     * @param array $user User info
+     * @param mixed[] $user User info
      * @param \Cake\Auth\BaseAuthenticate $auth Authentication adapter instance
      * @return void
      */
-    public function afterIdentify(Event $event, array $user, BaseAuthenticate $auth)
+    public function afterIdentify(Event $event, array $user, BaseAuthenticate $auth): void
     {
         $userModel = $auth->getConfig('userModel');
         // skip if user model is not defined
@@ -39,7 +39,7 @@ class UserIdentifyListener implements EventListenerInterface
         $entity = $table->get($user['id']);
 
         // add user 'name' to user info array
-        $user['name'] = $entity->name;
+        $user['name'] = $entity->get('name');
         $event->result = $user;
     }
 }

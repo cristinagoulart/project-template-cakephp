@@ -1,8 +1,10 @@
 <?php
 namespace App\Avatar;
 
+use App\Avatar\AvatarInterface;
 use App\Avatar\Type\ImageSource;
 use Cake\Core\Configure;
+use InvalidArgumentException;
 
 final class Service
 {
@@ -15,7 +17,6 @@ final class Service
      * Constructor method.
      *
      * @param \App\Avatar\AvatarInterface $avatar Avatar instance
-     * @return void
      */
     public function __construct(AvatarInterface $avatar = null)
     {
@@ -33,7 +34,7 @@ final class Service
      *
      * @return void
      */
-    public function setAvatarSource(AvatarInterface $avatar)
+    public function setAvatarSource(AvatarInterface $avatar): void
     {
         $this->avatar = $avatar;
     }
@@ -41,11 +42,11 @@ final class Service
     /**
      * Fetches avatar image.
      *
-     * @param array $options if any present on the avatar provider
+     * @param mixed[] $options if any present on the avatar provider
      *
      * @return string
      */
-    public function getImage(array $options)
+    public function getImage(array $options): string
     {
         $filename = $this->getImageName($options);
         $options['filename'] = $filename;
@@ -55,6 +56,10 @@ final class Service
         foreach ($order as $classType) {
             $defaultOptions = Configure::read('Avatar.options.' . $classType);
             $options = array_merge($defaultOptions, $options);
+
+            /**
+             * @var \App\Avatar\AvatarInterface $source
+             */
             $source = $this->getAvatarSource($classType, $options);
             $image = $source->get();
 
@@ -65,6 +70,9 @@ final class Service
 
         // using anonymous image as the default.
         $defaultAvatar = Configure::read('Avatar.defaultImage');
+        /**
+         * @var \App\Avatar\AvatarInterface $imageSource
+         */
         $imageSource = $this->getAvatarSource('ImageSource', ['src' => $defaultAvatar]);
         $this->setAvatarSource($imageSource);
 
@@ -75,15 +83,19 @@ final class Service
      * Initiate class object base on its name
      *
      * @param string $class name
-     * @param array $options if any required
+     * @param mixed[] $options if any required
+     *
+     * @throws InvalidArgumentException in case we couldn't allocate AvatarSource service
      *
      * @return \App\Avatar\AvatarInterface $instance of the class
      */
-    public function getAvatarSource($class, $options)
+    public function getAvatarSource(string $class, array $options = []): ?AvatarInterface
     {
-        if (class_exists($class)) {
-            $instance = new $class($options);
+        if (!class_exists($class)) {
+            throw new InvalidArgumentException("Avatar Source [$class] wasn't found");
         }
+
+        $instance = new $class($options);
 
         return $instance;
     }
@@ -91,12 +103,12 @@ final class Service
     /**
      * Get Image Name of the service
      *
-     * @param array $options config
+     * @param mixed[] $options config
      * @param bool $ext whether to use file extension or not
      *
      * @return string $name of the file.
      */
-    public function getImageName(array $options, $ext = true)
+    public function getImageName(array $options, bool $ext = true): string
     {
         $extension = ($ext) ? Configure::read('Avatar.extension') : '';
         $name = $options['id'] . $extension;
@@ -112,7 +124,7 @@ final class Service
      *
      * @return bool $status of the file save.
      */
-    public function saveImage($file, $resource)
+    public function saveImage(string $file, $resource): bool
     {
         $status = $this->avatar->processAvatarResource($file, $resource);
 
@@ -126,7 +138,7 @@ final class Service
      *
      * @return bool whether the resource was removed from the memory
      */
-    public function removeImageResource($resource)
+    public function removeImageResource($resource): bool
     {
         return $this->avatar->removeAvatarResource($resource);
     }
@@ -134,11 +146,11 @@ final class Service
     /**
      * is uploading resource is Image
      *
-     * @param array $data from the form
+     * @param mixed[] $data from the form
      *
      * @return bool $result whether mime type is image.
      */
-    public function isImage($data)
+    public function isImage(array $data): bool
     {
         $result = false;
         list($mimeGroup, ) = explode('/', $data['type']);
@@ -153,11 +165,11 @@ final class Service
     /**
      * File size check
      *
-     * @param array $data of the image from the form
+     * @param mixed[] $data of the image from the form
      *
      * @return bool $result comparing with config/avatar.
      */
-    public function isAllowedSize($data)
+    public function isAllowedSize(array $data): bool
     {
         $result = false;
         $allowedSize = Configure::read('Avatar.fileSize');
@@ -177,7 +189,7 @@ final class Service
      *
      * @return resource $source of the image
      */
-    public function getImageResource($data, $isBase64 = false)
+    public function getImageResource($data, bool $isBase64 = false)
     {
         if ($isBase64) {
             $source = imagecreatefromstring(file_get_contents($data));

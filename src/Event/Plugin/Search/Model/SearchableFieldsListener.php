@@ -35,10 +35,10 @@ class SearchableFieldsListener implements EventListenerInterface
      *
      * @param \Cake\Event\Event $event Event instance
      * @param \Cake\Datasource\RepositoryInterface $table Table instance
-     * @param array $user User info
+     * @param mixed[] $user User info
      * @return void
      */
-    public function getSearchableFields(Event $event, RepositoryInterface $table, array $user)
+    public function getSearchableFields(Event $event, RepositoryInterface $table, array $user): void
     {
         list($plugin, $controller) = pluginSplit(App::shortName(get_class($table), 'Model/Table', 'Table'));
         $url = [
@@ -59,13 +59,18 @@ class SearchableFieldsListener implements EventListenerInterface
      * Searchable fields getter by Table instance.
      *
      * @param \Cake\Datasource\RepositoryInterface $table Table instance
-     * @param array $user User info
+     * @param mixed[] $user User info
      * @param bool $withAssociated Flag for including associated searchable fields
-     * @return array
+     *
+     * @return mixed[]
      */
-    public static function getSearchableFieldsByTable(RepositoryInterface $table, array $user, $withAssociated = true)
+    public static function getSearchableFieldsByTable(RepositoryInterface $table, array $user, bool $withAssociated = true): array
     {
         $factory = new FieldHandlerFactory();
+        /**
+         * @var \Cake\ORM\Table $table
+         */
+        $table = $table;
         $fields = static::getFieldsDefinitionsByTable($table);
         $result = [];
         if (empty($fields)) {
@@ -96,9 +101,9 @@ class SearchableFieldsListener implements EventListenerInterface
      * Returns the fields definitions for the provided table
      *
      * @param \Cake\Datasource\RepositoryInterface $table Table to retrieve fields for
-     * @return array
+     * @return mixed[]
      */
-    private static function getFieldsDefinitionsByTable(RepositoryInterface $table)
+    private static function getFieldsDefinitionsByTable(RepositoryInterface $table): array
     {
         $fields = [];
         if ($table instanceof UsersTable) {
@@ -129,12 +134,18 @@ class SearchableFieldsListener implements EventListenerInterface
      * Get associated tables searchable fields.
      *
      * @param \Cake\Datasource\RepositoryInterface $table Table instance
-     * @param array $user User info
-     * @return array
+     * @param mixed[] $user User info
+     *
+     * @return mixed[]
      */
-    private static function byAssociations(RepositoryInterface $table, array $user)
+    private static function byAssociations(RepositoryInterface $table, array $user): array
     {
         $result = [];
+
+        /**
+         * @var \Cake\ORM\Table $table
+         */
+        $table = $table;
         foreach ($table->associations() as $association) {
             // skip non-supported associations
             if (!in_array($association->type(), ['manyToOne'])) {
@@ -165,10 +176,15 @@ class SearchableFieldsListener implements EventListenerInterface
      *
      * @param \Cake\Event\Event $event Event instance
      * @param \Cake\Datasource\RepositoryInterface $table Table instance
+     *
      * @return void
      */
-    public function getBasicSearchFields(Event $event, RepositoryInterface $table)
+    public function getBasicSearchFields(Event $event, RepositoryInterface $table): void
     {
+        /**
+         * @var \Cake\ORM\Table $table
+         */
+        $table = $table;
         $result = $this->getBasicSearchFieldsFromConfig($table);
 
         if (empty($result)) {
@@ -191,10 +207,15 @@ class SearchableFieldsListener implements EventListenerInterface
      *
      * @param \Cake\Event\Event $event Event instance
      * @param \Cake\Datasource\RepositoryInterface $table Table instance
+     *
      * @return void
      */
-    public function getDisplayFields(Event $event, RepositoryInterface $table)
+    public function getDisplayFields(Event $event, RepositoryInterface $table): void
     {
+        /**
+         * @var \Cake\ORM\Table $table
+         */
+        $table = $table;
         $result = $this->getBasicSearchFieldsFromSystemSearch($table);
 
         if (empty($result)) {
@@ -212,9 +233,10 @@ class SearchableFieldsListener implements EventListenerInterface
      * Returns basic search fields from provided Table's configuration.
      *
      * @param \Cake\Datasource\RepositoryInterface $table Table instance
-     * @return array
+     *
+     * @return mixed[]
      */
-    private function getBasicSearchFieldsFromConfig(RepositoryInterface $table)
+    private function getBasicSearchFieldsFromConfig(RepositoryInterface $table): array
     {
         $config = [];
         try {
@@ -237,19 +259,25 @@ class SearchableFieldsListener implements EventListenerInterface
      * Returns basic search fields from provided Table's system search.
      *
      * @param \Cake\Datasource\RepositoryInterface $table Table instance
-     * @return array
+     *
+     * @return mixed[]
      */
-    private function getBasicSearchFieldsFromSystemSearch(RepositoryInterface $table)
+    private function getBasicSearchFieldsFromSystemSearch(RepositoryInterface $table): array
     {
-        $entity = TableRegistry::getTableLocator()->get('Search.SavedSearches')->find()
+        $query = TableRegistry::getTableLocator()->get('Search.SavedSearches')->find()
             ->where(['SavedSearches.model' => $table->getAlias(), 'SavedSearches.system' => true])
-            ->first();
+            ->enableHydration(true);
 
-        if (is_null($entity)) {
+        if (! $query->count()) {
             return [];
         }
 
-        $searchData = json_decode($entity->content);
+        /**
+         * @var \Cake\Datasource\EntityInterface
+         */
+        $entity = $query->first();
+
+        $searchData = json_decode($entity->get('content'));
 
         return (array)$searchData->saved->display_columns;
     }
@@ -258,9 +286,10 @@ class SearchableFieldsListener implements EventListenerInterface
      * Returns basic search fields from provided Table's index View csv fields.
      *
      * @param \Cake\Datasource\RepositoryInterface $table Table instance
-     * @return array
+     *
+     * @return mixed[]
      */
-    private function getBasicSearchFieldsFromView(RepositoryInterface $table)
+    private function getBasicSearchFieldsFromView(RepositoryInterface $table): array
     {
         $config = [];
         try {

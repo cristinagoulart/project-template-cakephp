@@ -178,6 +178,10 @@ class RelatedAction extends BaseAction
      */
     private function getManyToManyAssociation(RepositoryInterface $table): ?\Cake\ORM\Association
     {
+        /**
+         * @var \Cake\ORM\Table $table
+         */
+        $table = $table;
         foreach ($table->associations() as $association) {
             if (Association::MANY_TO_MANY !== $association->type()) {
                 continue;

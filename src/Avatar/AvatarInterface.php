@@ -8,5 +8,5 @@ interface AvatarInterface
      *
      * @return string
      */
-    public function get();
+    public function get(): string;
 }
