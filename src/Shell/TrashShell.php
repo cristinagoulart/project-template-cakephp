@@ -24,17 +24,17 @@ class TrashShell extends Shell
     {
         $parser = parent::getOptionParser();
         $option = [
-                    'age' => [
-                        'help' => __('Time to delete (ex: -1 day / -1 months)'),
-                        'required' => false,
-                        'short' => 'a'
-                    ],
-                    'dry-run' => [
-                        'help' => __('Permanently delete soft-deleted record)'),
-                        'required' => false,
-                        'boolean' => true
-                    ]
-                ];
+            'age' => [
+                'help' => __('Time to delete (ex: -1 day / -1 months)'),
+                'required' => false,
+                'short' => 'a'
+            ],
+            'dry-run' => [
+                'help' => __('Permanently delete soft-deleted record)'),
+                'required' => false,
+                'boolean' => true
+            ]
+        ];
         $parser->addSubcommand('list_modules', [
             'help' => 'Show a list of all available CSV modules.',
             'required' => false
