@@ -29,7 +29,7 @@ class AppTable extends Table
      *
      * {@inheritDoc}
      */
-    protected function setAssociation($type, $alias, array $options)
+    protected function setAssociation(string $type, string $alias, array $options): void
     {
         // skip if associated module is disabled
         if (isset($options['className']) && ! FeatureFactory::get('Module' . DS . $options['className'])->isActive()) {

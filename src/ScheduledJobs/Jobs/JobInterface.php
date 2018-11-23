@@ -11,7 +11,7 @@ interface JobInterface
      *
      * @param mixed $arguments to be passed in the execution stage.
      *
-     * @return array $result containing response state and output.
+     * @return mixed[] $result containing response state and output.
      */
-    public function run($arguments = null);
+    public function run($arguments = null): array;
 }

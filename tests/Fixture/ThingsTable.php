@@ -13,7 +13,7 @@ class ThingsTable extends Table
         $this->belongsTo('Users')->setForeignKey('created_by');
     }
 
-    public function getFieldsDefinitions(array $stubFields = [])
+    public function getFieldsDefinitions(array $stubFields = []): array
     {
         return [
             'searchable' => [

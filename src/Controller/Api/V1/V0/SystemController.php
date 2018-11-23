@@ -8,7 +8,7 @@ class SystemController extends AppController
     /**
      * Return dynamic info tabs
      *
-     * @return void
+     * @return \Cake\Http\Response|void|null
      */
     public function info()
     {

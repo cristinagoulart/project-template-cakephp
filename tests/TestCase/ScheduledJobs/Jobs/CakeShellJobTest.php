@@ -21,7 +21,7 @@ class CakeShellJobText extends TestCase
 
         $this->assertEquals(1, $result['state'], 'Unexpected exit code returned for non-existing command');
         $this->assertNotEmpty($result['response']['stderr']);
-        $this->assertEmpty($result['response']['stdout']);
+        $this->assertEmpty($result['response']['stdout'], 'Unexpected STDOUT: ' . $result['response']['stdout']);
         $this->assertContains('Exception: Unknown command', $result['response']['stderr']);
     }
 

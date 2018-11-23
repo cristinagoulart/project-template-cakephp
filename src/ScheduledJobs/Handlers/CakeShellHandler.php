@@ -17,11 +17,11 @@ class CakeShellHandler extends AbstractHandler
      *
      * Code is pretty much taken from CommandsShell of CakePHP core
      *
-     * @param array $options with configs passed if any
+     * @param mixed[] $options with configs passed if any
      *
-     * @return array $result with associated array of plugins and its commands.
+     * @return mixed[] $result with associated array of plugins and its commands.
      */
-    public function getList(array $options = [])
+    public function getList(array $options = []): array
     {
         $result = [];
 
@@ -31,7 +31,7 @@ class CakeShellHandler extends AbstractHandler
         $skipPlugins = !empty($config['skipPlugins']) ? $config['skipPlugins'] : [];
 
         $plugins = Plugin::loaded();
-        $plugins = array_diff($plugins, $skipPlugins);
+        $plugins = array_diff((array)$plugins, $skipPlugins);
 
         $shellList = array_fill_keys($plugins, null) + ['CORE' => null, 'app' => null];
 

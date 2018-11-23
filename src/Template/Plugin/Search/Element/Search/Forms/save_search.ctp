@@ -3,7 +3,11 @@ use RolesCapabilities\Access\AccessFactory;
 
 $accessFactory = new AccessFactory();
 
-$url = ['plugin' => $this->plugin, 'controller' => $this->name, 'action' => 'saveSearch'];
+$url = [
+    'plugin' => $this->request->getParam('plugin'),
+    'controller' => $this->request->getParam('controller'),
+    'action' => 'saveSearch'
+];
 
 if ($accessFactory->hasAccess($url, $user)) : ?>
     <?php
@@ -12,15 +16,15 @@ if ($accessFactory->hasAccess($url, $user)) : ?>
     echo $this->Form->create(null, [
         'class' => 'save-search-form',
         'url' => [
-            'plugin' => $this->request->plugin,
-            'controller' => $this->request->controller,
+            'plugin' => $this->request->getParam('plugin'),
+            'controller' => $this->request->getParam('controller'),
             'action' => ($isEditable ? 'edit': 'save') . '-search',
             $preSaveId,
             $isEditable ? $savedSearch->id : null
         ]
     ]); ?>
     <div class="input-group">
-        <?= $this->Form->input('name', [
+        <?= $this->Form->control('name', [
             'label' => false,
             'class' => 'form-control input-sm',
             'placeholder' => 'Save criteria name',

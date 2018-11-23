@@ -21,7 +21,7 @@ class AddActionListener extends BaseActionListener
     /**
      * {@inheritDoc}
      */
-    public function beforeSave(Event $event, Entity $entity)
+    public function beforeSave(Event $event, Entity $entity): void
     {
         //
     }
@@ -29,7 +29,7 @@ class AddActionListener extends BaseActionListener
     /**
      * {@inheritDoc}
      */
-    public function afterSave(Event $event, Entity $entity)
+    public function afterSave(Event $event, Entity $entity): void
     {
         //
     }

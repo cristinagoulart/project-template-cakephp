@@ -14,13 +14,15 @@ use stdClass;
 /**
  *  This class is responsible for migrating many-to-many relations to standalone Modules
  *  and getting rid of "manyToMany" section from the Module(s) config.json file.
+ *
+ * @property \CsvMigrations\Shell\Task\CsvMigrationTask $CsvMigration
  */
 class Upgrade20180226000000Task extends Shell
 {
     /**
      * Tasks to be loaded by this Task
      *
-     * @var array
+     * @var mixed[]
      */
     public $tasks = [
         'CsvMigrations.CsvMigration'
@@ -75,7 +77,9 @@ class Upgrade20180226000000Task extends Shell
      */
     private function toJSON($data): string
     {
-        return json_encode($data, JSON_PRETTY_PRINT);
+        $json = json_encode($data, JSON_PRETTY_PRINT);
+
+        return $json ?: '';
     }
 
     /**
@@ -86,6 +90,9 @@ class Upgrade20180226000000Task extends Shell
      */
     private function migrateModule(string $module): void
     {
+        /**
+         * @var \stdClass
+         */
         $data = (new ModuleConfig(ConfigType::MODULE(), $module, null, ['cacheSkip' => true]))->parse();
 
         $modules = $data->manyToMany->modules;
@@ -134,6 +141,9 @@ class Upgrade20180226000000Task extends Shell
 
         // bake CSV migration (sleeping for 1 second to avoid conflicts)
         sleep(1);
+        /**
+         * @var \CsvMigrations\Shell\Task\CsvMigrationTask $CsvMigration
+         */
         $this->CsvMigration->main($moduleName);
     }
 

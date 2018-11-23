@@ -21,9 +21,9 @@ class LogAuditTable extends Table
     {
         parent::initialize($config);
 
-        $this->table('log_audit');
-        $this->displayField('id');
-        $this->primaryKey('id');
+        $this->setTable('log_audit');
+        $this->setDisplayField('id');
+        $this->setPrimaryKey('id');
     }
 
     /**

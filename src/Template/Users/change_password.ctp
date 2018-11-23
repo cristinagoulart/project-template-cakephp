@@ -11,7 +11,7 @@ if (! $validatePassword) :
             <span class="input-group-addon">
                 <span class="fa fa-lock"></span>
             </span>
-            <?= $this->Form->input('Users.password', [
+            <?= $this->Form->control('Users.password', [
                 'type' => 'password',
                 'required' => true,
                 'label' => false,
@@ -24,7 +24,7 @@ if (! $validatePassword) :
             <span class="input-group-addon">
                 <span class="fa fa-lock"></span>
             </span>
-            <?= $this->Form->input('Users.password_confirm', [
+            <?= $this->Form->control('Users.password_confirm', [
                 'type' => 'password',
                 'required' => true,
                 'label' => false,
@@ -54,17 +54,17 @@ if ($validatePassword) : ?>
             <div class="box box-primary">
                 <?= $this->Form->create(); ?>
                 <div class="box-body">
-                    <?= $this->Form->input('Users.current_password', [
+                    <?= $this->Form->control('Users.current_password', [
                         'type' => 'password',
                         'required' => true,
                         'placeholder' => __('Current Password')
                     ]); ?>
-                    <?= $this->Form->input('Users.password', [
+                    <?= $this->Form->control('Users.password', [
                         'type' => 'password',
                         'required' => true,
                         'placeholder' => __('Password')
                     ]); ?>
-                    <?= $this->Form->input('Users.password_confirm', [
+                    <?= $this->Form->control('Users.password_confirm', [
                         'type' => 'password',
                         'required' => true,
                         'placeholder' => __('Password Confirm')

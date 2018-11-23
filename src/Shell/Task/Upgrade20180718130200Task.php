@@ -10,6 +10,7 @@ use Cake\Datasource\RepositoryInterface;
 use Cake\ORM\Association;
 use Cake\ORM\TableRegistry;
 use DirectoryIterator;
+use RuntimeException;
 
 class Upgrade20180718130200Task extends Shell
 {
@@ -52,6 +53,9 @@ class Upgrade20180718130200Task extends Shell
      */
     private function needToRun(): bool
     {
+        /**
+         * @var \Cake\Database\Connection $connection
+         */
         $connection = ConnectionManager::get($this->dbConnection);
         if (! $connection->getDriver() instanceof Mysql) {
             $this->warn('Skipping, not a MySQL database');
@@ -78,8 +82,16 @@ class Upgrade20180718130200Task extends Shell
     private function getTables(): array
     {
         $result = $this->getTablesFromPath(APP . 'Model' . DS . 'Table' . DS);
+        /**
+         * @var mixed[] $plugins
+         */
+        $plugins = Plugin::loaded();
 
-        foreach (Plugin::loaded() as $plugin) {
+        if (empty($plugins)) {
+            return $result;
+        }
+
+        foreach ($plugins as $plugin) {
             $result = array_merge($result, $this->getTablesFromPath(
                 Plugin::path($plugin) . 'src' . DS . 'Model' . DS . 'Table' . DS,
                 $plugin
@@ -147,7 +159,7 @@ class Upgrade20180718130200Task extends Shell
      * @param mixed[] $config Path configuration
      * @return \Cake\Datasource\RepositoryInterface|null
      */
-    private function getTableFromPath(array $config)
+    private function getTableFromPath(array $config): ?RepositoryInterface
     {
         $table = TableRegistry::getTableLocator()->get($config['short_name']);
 
@@ -169,11 +181,18 @@ class Upgrade20180718130200Task extends Shell
     private function getJoinTables(RepositoryInterface $table): array
     {
         $result = [];
+        /**
+         * @var \Cake\ORM\Table $table
+         */
+        $table = $table;
         foreach ($table->associations() as $association) {
             if ('manyToMany' !== $association->type()) {
                 continue;
             }
-
+            /**
+             * @var \Cake\ORM\Association\BelongsToMany $association
+             */
+            $association = $association;
             array_push($result, $association->junction());
         }
 
@@ -186,8 +205,12 @@ class Upgrade20180718130200Task extends Shell
      * @param \Cake\Datasource\RepositoryInterface $table Table instance
      * @return void
      */
-    private function processTable(RepositoryInterface $table)
+    private function processTable(RepositoryInterface $table): void
     {
+        /**
+         * @var \Cake\ORM\Table $table
+         */
+        $table = $table;
         foreach ($table->associations() as $association) {
             if (! $this->isValidAssociation($association)) {
                 continue;
@@ -260,6 +283,10 @@ class Upgrade20180718130200Task extends Shell
      */
     private function getForeignKeysByTable(RepositoryInterface $table): array
     {
+        /**
+         * @var \Cake\ORM\Table $table
+         */
+        $table = $table;
         $connection = ConnectionManager::get($this->dbConnection);
         $config = $connection->config();
 
@@ -284,6 +311,13 @@ class Upgrade20180718130200Task extends Shell
      */
     private function addForeignKey(RepositoryInterface $table, array $config): void
     {
+        /**
+         * @var \Cake\ORM\Table $table
+         */
+        $table = $table;
+        /**
+         * @var \Cake\Database\Connection $connection
+         */
         $connection = ConnectionManager::get($this->dbConnection);
         $command = sprintf(
             'ALTER TABLE `%s` ADD FOREIGN KEY (`%s`) REFERENCES `%s`(`%s`)',
@@ -299,6 +333,7 @@ class Upgrade20180718130200Task extends Shell
         } catch (\Exception $e) {
             $this->err(sprintf('Failed: %s', $command));
             $this->err(sprintf('Reason: %s', $e->getMessage()));
+            throw new RuntimeException("Adding foreign key failed", 0, $e);
         }
     }
 }

@@ -14,7 +14,7 @@ class ScheduledJobsControllerTest extends IntegrationTestCase
 {
 
     /**
-     * @var object
+     * @var \App\Model\Table\ScheduledJobsTable $table
      */
     private $table;
 
@@ -37,7 +37,11 @@ class ScheduledJobsControllerTest extends IntegrationTestCase
         $this->enableCsrfToken();
         $this->enableSecurityToken();
 
-        $this->table = TableRegistry::get('ScheduledJobs');
+        /**
+         * @var \App\Model\Table\ScheduledJobsTable $table
+         */
+        $table = TableRegistry::getTableLocator()->get('ScheduledJobs');
+        $this->table = $table;
 
         $userId = '00000000-0000-0000-0000-000000000001';
         $this->session([
@@ -67,10 +71,13 @@ class ScheduledJobsControllerTest extends IntegrationTestCase
 
         $this->post('/scheduled-jobs/add', $data);
 
+        /**
+         * @var \Cake\Datasource\EntityInterface
+         */
         $entity = $this->table->find()->where(['name' => $data['name']])->first();
         $this->assertRedirect(['action' => 'index']);
         $this->assertSession('Scheduled Job has been saved.', 'Flash.flash.0.message');
-        $this->assertEquals($this->table->getStartDate($data['start_date']), $entity->start_date);
+        $this->assertEquals($this->table->getStartDate($data['start_date']), $entity->get('start_date'));
 
         $time = Time::now();
 
@@ -80,8 +87,11 @@ class ScheduledJobsControllerTest extends IntegrationTestCase
         ];
 
         $this->post('/scheduled-jobs/add', $data);
+        /**
+         * @var \Cake\Datasource\EntityInterface
+         */
         $entity = $this->table->find()->where(['name' => $data['name']])->first();
-        $this->assertEquals($this->table->getStartDate($data['start_date']), $entity->start_date);
+        $this->assertEquals($this->table->getStartDate($data['start_date']), $entity->get('start_date'));
     }
 
     public function testEdit(): void
@@ -101,6 +111,9 @@ class ScheduledJobsControllerTest extends IntegrationTestCase
 
         $this->post('/scheduled-jobs/edit/' . $id, $data);
 
+        /**
+         * @var \Cake\Datasource\EntityInterface
+         */
         $entity = $this->table->find()->where(['name' => $id])->first();
 
         $this->assertRedirect(['action' => 'view', $id]);
@@ -108,6 +121,6 @@ class ScheduledJobsControllerTest extends IntegrationTestCase
 
         $entity = $this->table->get($id);
         $this->assertEquals($entity->get('name'), $data['name']);
-        $this->assertEquals($this->table->getStartDate($data['start_date']), $entity->start_date);
+        $this->assertEquals($this->table->getStartDate($data['start_date']), $entity->get('start_date'));
     }
 }
