@@ -189,7 +189,10 @@ class Upgrade20180718130200Task extends Shell
             if ('manyToMany' !== $association->type()) {
                 continue;
             }
-
+            /**
+             * @var \Cake\ORM\Association\BelongsToMany $association
+             */
+            $association = $association;
             array_push($result, $association->junction());
         }
 
@@ -312,6 +315,9 @@ class Upgrade20180718130200Task extends Shell
          * @var \Cake\ORM\Table $table
          */
         $table = $table;
+        /**
+         * @var \Cake\Database\Connection $connection
+         */
         $connection = ConnectionManager::get($this->dbConnection);
         $command = sprintf(
             'ALTER TABLE `%s` ADD FOREIGN KEY (`%s`) REFERENCES `%s`(`%s`)',

@@ -11,7 +11,7 @@ final class Service
     /**
      * @var \App\Avatar\AvatarInterface
      */
-    private $avatar;
+    protected $avatar;
 
     /**
      * Constructor method.
@@ -191,8 +191,11 @@ final class Service
      */
     public function getImageResource($data, bool $isBase64 = false)
     {
+        /**
+         * @var resource $source
+         */
         if ($isBase64) {
-            $source = imagecreatefromstring(file_get_contents($data));
+            $source = imagecreatefromstring((string)file_get_contents($data));
 
             return $source;
         }
@@ -200,6 +203,9 @@ final class Service
         $extension = strtolower(pathinfo($data['name'], PATHINFO_EXTENSION));
 
         if ('png' == $extension) {
+            /**
+             * @var resource $source
+             */
             $source = imagecreatefrompng($data['tmp_name']);
         }
 

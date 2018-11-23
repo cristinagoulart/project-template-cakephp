@@ -175,7 +175,9 @@ class LookupActionListener extends BaseActionListener
         if ($entities->isEmpty()) {
             return;
         }
-
+        /**
+         * @var \Cake\ORM\Table $table
+         */
         $table = $controller->loadModel();
 
         // Properly populate display values for the found entries.
@@ -335,10 +337,18 @@ class LookupActionListener extends BaseActionListener
         if (is_null($parentAssociation)) {
             return;
         }
+        /**
+         * @var string $parentForeignKey
+         */
+        $parentForeignKey = $parentAssociation->getForeignKey();
+        /**
+         * @var string $parentPrimaryKey
+         */
+        $parentPrimaryKey = $parentAssociation->getPrimaryKey();
 
-        $targetTable = $parentAssociation->target();
-        $primaryKey = $targetTable->aliasField($parentAssociation->getPrimaryKey());
-        $foreignKey = $table->aliasField($parentAssociation->getForeignKey());
+        $targetTable = $parentAssociation->getTarget();
+        $primaryKey = $targetTable->aliasField($parentPrimaryKey);
+        $foreignKey = $table->aliasField($parentForeignKey);
 
         // join parent table
         $query->join([
