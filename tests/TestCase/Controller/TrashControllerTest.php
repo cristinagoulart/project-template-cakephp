@@ -8,7 +8,7 @@ use Cake\TestSuite\IntegrationTestCase;
 /**
  * App\Controller\SoftDeleteController Test Case
  */
-class SoftDeleteControllerTest extends IntegrationTestCase
+class TrashControllerTest extends IntegrationTestCase
 {
 
     /**
@@ -46,9 +46,7 @@ class SoftDeleteControllerTest extends IntegrationTestCase
         $id = $toDel->id;
         TableRegistry::get('ScheduledJobs')->delete($toDel);
 
-        $data = ['table' => 'ScheduledJobs', 'id' => $id];
-
-        $this->post('/soft-delete/delete', $data);
+        $this->get('/trash/delete/ScheduledJobs/' . $id);
         TableRegistry::get('ScheduledJobs')->addBehavior('Muffin/Trash.Trash');
 
         $this->assertSession('The record is permanently delete', 'Flash.flash.0.message');
@@ -64,9 +62,7 @@ class SoftDeleteControllerTest extends IntegrationTestCase
 
         TableRegistry::get('ScheduledJobs')->delete($toRestore);
 
-        $data = ['table' => 'ScheduledJobs', 'id' => $id];
-
-        $this->post('/soft-delete/restore', $data);
+        $this->get('/trash/restore/ScheduledJobs/' . $id);
 
         $this->assertSession('The record is restored', 'Flash.flash.0.message');
 
