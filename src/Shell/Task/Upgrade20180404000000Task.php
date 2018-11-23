@@ -73,16 +73,17 @@ class Upgrade20180404000000Task extends Shell
      */
     private function isSearchable(string $module): bool
     {
-        $config = (new ModuleConfig(ConfigType::MIGRATION(), $module, null, ['cacheSkip' => true]))->parse();
-        $config = json_decode(json_encode($config), true);
+        $migrationConfig = new ModuleConfig(ConfigType::MIGRATION(), $module, null, ['cacheSkip' => true]);
+        $config = $migrationConfig->parseToArray();
 
         if (empty($config)) {
             return false;
         }
 
-        $config = (new ModuleConfig(ConfigType::MODULE(), $module, null, ['cacheSkip' => true]))->parse();
+        $moduleConfig = new ModuleConfig(ConfigType::MODULE(), $module, null, ['cacheSkip' => true]);
+        $config = $moduleConfig->parseToArray();
 
-        if ('module' !== $config->table->type) {
+        if ('module' !== $config['table']['type']) {
             return false;
         }
 

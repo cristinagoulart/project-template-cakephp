@@ -116,7 +116,7 @@ class ModuleMenuListener implements EventListenerInterface
     protected function getModuleMenuItems(string $module, string $menuName): array
     {
         $moduleConfig = new ModuleConfig(ConfigType::MENUS(), $module);
-        $config = json_decode(json_encode($moduleConfig->parse()), true);
+        $config = $moduleConfig->parseToArray();
 
         if (empty($config[$menuName])) {
             return [];
@@ -167,7 +167,7 @@ class ModuleMenuListener implements EventListenerInterface
     {
         // Table icon
         $moduleConfig = new ModuleConfig(ConfigType::MODULE(), $module);
-        $config = json_decode(json_encode($moduleConfig->parse()), true);
+        $config = $moduleConfig->parseToArray();
         if (!empty($config) && !empty($config['table']['icon'])) {
             return $config['table']['icon'];
         }

@@ -103,8 +103,7 @@ class ChildListItemsListener implements EventListenerInterface
             list ($module, $name) = explode('.', $listName);
 
             $moduleConfig = new ModuleConfig(ConfigType::MIGRATION(), $module);
-            $fields = $moduleConfig->parse();
-            $fields = json_decode(json_encode($fields), true);
+            $fields = $moduleConfig->parseToArray();
 
             $fieldInfo = $fields[$name];
             $type = $fieldInfo['type'];
@@ -112,9 +111,8 @@ class ChildListItemsListener implements EventListenerInterface
             $listName = !empty($match[1]) ? $match[1] : null;
         }
 
-        $moduleConfig = new ModuleConfig(ConfigType::LISTS(), null, $listName);
-        $listData = $moduleConfig->parse()->items;
-        $result = json_decode(json_encode($listData), true);
+        $moduleConfig = new ModuleConfig(ConfigType::LISTS(), '', $listName);
+        $result = $moduleConfig->parseToArray();
 
         $list = [];
         foreach ($result as $value => $item) {

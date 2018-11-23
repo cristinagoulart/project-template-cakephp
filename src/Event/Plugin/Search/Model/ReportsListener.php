@@ -44,7 +44,7 @@ class ReportsListener implements EventListenerInterface
         $result = [];
         foreach ($modules as $module) {
             $mc = new ModuleConfig(ConfigType::REPORTS(), $module);
-            $report = (array)json_decode(json_encode($mc->parse()), true);
+            $report = $mc->parseToArray();
 
             if (empty($report)) {
                 continue;
