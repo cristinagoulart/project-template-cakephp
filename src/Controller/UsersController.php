@@ -84,6 +84,7 @@ class UsersController extends AppController
         $this->request->allowMethod(['patch', 'post', 'put']);
 
         $user = $this->Users->get($id);
+
         $data = $this->request->getData('Users.image');
 
         if (! $data) {
@@ -93,7 +94,10 @@ class UsersController extends AppController
         }
 
         $avatarService = new AvatarService();
-
+        /**
+         * @var array $data
+         */
+        $data = $data;
         if (! $avatarService->isAllowedSize($data)) {
             $this->Flash->error((string)__('Image is too large. Max size 512kb.'));
 

@@ -122,7 +122,12 @@ class UsersShell extends BaseShell
     {
         $this->err(__d('CakeDC/Users', 'Errors while trying to add a superuser:'));
 
-        collection($user->errors())->each(function ($error, $field) {
+        /**
+         * @var array $errors
+         */
+        $errors = $user->getErrors();
+
+        collection($errors)->each(function ($error, $field) {
             $this->err(__d('CakeDC/Users', 'Field "{0}" error: {1}', $field, implode(',', $error)));
         });
     }
