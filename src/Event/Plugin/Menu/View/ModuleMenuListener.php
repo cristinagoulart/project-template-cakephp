@@ -85,7 +85,7 @@ class ModuleMenuListener implements EventListenerInterface
      * @return mixed[]
      * @throws \Exception
      */
-    protected function getModulesMenuItems(array $modules, $menuName): array
+    protected function getModulesMenuItems(array $modules, string $menuName): array
     {
         if (empty($modules)) {
             return [];

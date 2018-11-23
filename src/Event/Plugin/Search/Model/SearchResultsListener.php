@@ -39,6 +39,10 @@ class SearchResultsListener implements EventListenerInterface
         $fhf = new FieldHandlerFactory();
 
         foreach ($entities as $entity) {
+            /**
+             * @var \Cake\Datasource\EntityInterface $entity
+             */
+            $entity = $entity;
             $this->_renderValues($entity, $table, $fhf);
         }
 

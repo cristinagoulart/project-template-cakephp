@@ -35,12 +35,20 @@ class ScheduledJobLogsController extends BaseController
      */
     public function view(string $id)
     {
-        $entity = $this->loadModel()->find()
-            ->where([$this->loadModel()->getPrimaryKey() => $id])
+        /**
+         * @var \Cake\ORM\Table $table
+         */
+        $table = $this->loadModel();
+        /**
+         * @var string
+         */
+        $primaryKey = $table->getPrimaryKey();
+        $entity = $table->find()
+            ->where([$primaryKey => $id])
             ->first();
 
         if (empty($entity) && ! Validation::uuid($id)) {
-            $entity = $this->loadModel()->find()
+            $entity = $table->find()
                 ->applyOptions(['lookup' => true, 'value' => $id])
                 ->firstOrFail();
         }
@@ -48,7 +56,7 @@ class ScheduledJobLogsController extends BaseController
         if (empty($entity)) {
             throw new RecordNotFoundException(sprintf(
                 'Record not found in table "%s"',
-                $this->loadModel()->getTable()
+                $table->getTable()
             ));
         }
 
