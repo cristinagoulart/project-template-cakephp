@@ -625,11 +625,10 @@ class Annotation
      * of all visible columns to be used as sorting fields and generates
      * paths annotations on the fly.
      *
-     * @return mixed[]
+     * @return string
      */
-    protected function getPaths(): array
+    protected function getPaths() : string
     {
-        $result = [];
         $table = TableRegistry::getTableLocator()->get($this->className);
 
         $entity = $table->newEntity();
@@ -638,7 +637,7 @@ class Annotation
             $fields = array_diff($fields, $entity->getHidden());
             sort($fields);
         } catch (Exception $e) {
-            return $result;
+            return '';
         }
 
         $placeholders = [
@@ -649,12 +648,10 @@ class Annotation
             '{{sort_fields}}' => '"' . implode('", "', $fields) . '"'
         ];
 
-        $result = str_replace(
+        return str_replace(
             array_keys($placeholders),
             array_values($placeholders),
             $this->annotations['paths']
         );
-
-        return $result;
     }
 }

@@ -66,7 +66,7 @@ class ControllerApiTest extends JsonIntegrationTestCase
          */
         $primaryKey = $table->getPrimaryKey();
 
-        $this->get('/api/' . Inflector::dasherize($module) . '/view/' . $primaryKey);
+        $this->get('/api/' . Inflector::dasherize($module) . '/view/' . $entity->get($primaryKey));
         $this->assertJsonResponseOk();
 
         $response = $this->getParsedResponse();

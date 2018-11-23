@@ -299,18 +299,23 @@ class AppController extends Controller
                 return;
             }
 
+            $entity = $event->getSubject()->entity;
+            if (! empty($entity->getErrors())) {
+                return;
+            }
+
             /** @var \Cake\Datasource\RepositoryInterface&\Cake\ORM\Table */
             $table = $this->loadModel();
 
             // handle file uploads if found in the request data
             $fileUpload = new FileUpload($table);
             $fileUpload->link(
-                $event->getSubject()->entity->get($table->getPrimaryKey()),
+                $entity->get($table->getPrimaryKey()),
                 (array)$this->request->getData()
             );
 
             $ev = new Event((string)EventName::API_ADD_AFTER_SAVE(), $this, [
-                'entity' => $event->getSubject()->entity
+                'entity' => $entity
             ]);
             $this->getEventManager()->dispatch($ev);
         });
