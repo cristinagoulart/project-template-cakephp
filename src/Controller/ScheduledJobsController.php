@@ -29,15 +29,18 @@ class ScheduledJobsController extends BaseController
      */
     public function add()
     {
-        $model = $this->loadModel();
-        $entity = $model->newEntity();
+        /**
+         * @var \App\Model\Table\ScheduledJobsTable $table
+         */
+        $table = $this->loadModel();
+        $entity = $table->newEntity();
 
-        $commands = $model->getList();
+        $commands = $table->getList();
 
         if ($this->request->is(['post', 'put'])) {
-            $entity = $model->patchEntity($entity, $this->request->getData());
+            $entity = $table->patchEntity($entity, (array)$this->request->getData());
 
-            if ($model->save($entity)) {
+            if ($table->save($entity)) {
                 $this->Flash->success((string)__('Scheduled Job has been saved.'));
 
                 return $this->redirect(['action' => 'index']);
@@ -59,21 +62,24 @@ class ScheduledJobsController extends BaseController
      */
     public function edit(string $entityId)
     {
-        $model = $this->loadModel();
-        $entity = $model->get($entityId, [
+        /**
+         * @var \App\Model\Table\ScheduledJobsTable $table
+         */
+        $table = $this->loadModel();
+        $entity = $table->get($entityId, [
             'contain' => [],
         ]);
 
         $redirectUrl = ['action' => 'view', $entityId];
-        $commands = $model->getList();
+        $commands = $table->getList();
 
         if ($this->request->is(['patch', 'post', 'put'])) {
             if ($this->request->getData('btn_operation') == 'cancel') {
                 return $this->redirect($redirectUrl);
             }
 
-            $entity = $model->patchEntity($entity, $this->request->getData());
-            $saved = $model->save($entity);
+            $entity = $table->patchEntity($entity, (array)$this->request->getData());
+            $saved = $table->save($entity);
 
             if ($saved) {
                 $this->Flash->success((string)__('The record has been saved.'));
