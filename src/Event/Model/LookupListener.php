@@ -73,11 +73,9 @@ class LookupListener implements EventListenerInterface
         }
 
         foreach ($config->table->lookup_fields as $field) {
-            $query->where(function ($exp, $query) use ($table, $field, $options) {
-                $or = $exp->or_([$table->aliasField($field) => $options['value']]);
-
-                return $or;
-            });
+            $query->orWhere([
+                $event->getSubject()->aliasField($field) => $options['value']
+            ]);
         }
     }
 
@@ -252,12 +250,6 @@ class LookupListener implements EventListenerInterface
 
         foreach ($fields as $field) {
             $query->orWhere([$field => $data[$association->getForeignKey()]]);
-
-            $query->where(function ($exp, $query) use ($field, $data, $association) {
-                $or = $exp->or_([$field => $data[$association->getForeignKey()]]);
-
-                return $or;
-            });
         }
 
         return $query->first();
