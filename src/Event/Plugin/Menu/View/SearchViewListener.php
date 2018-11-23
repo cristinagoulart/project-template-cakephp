@@ -57,13 +57,13 @@ class SearchViewListener implements EventListenerInterface
 
         if ($entity->trashed) {
             $delete = MenuItemFactory::createMenuItem([
-                'url' => ['controller' => 'soft-delete', 'action' => 'delete', $entity->getSource(), $entity->id],
+                'url' => ['controller' => 'trash', 'action' => 'delete', $entity->getSource(), $entity->id],
                 'label' => __('Delete'),
                 'type' => 'link_button',
                 'icon' => 'trash',
             ]);
             $restore = MenuItemFactory::createMenuItem([
-                'url' => ['controller' => 'soft-delete', 'action' => 'restore', $entity->getSource(), $entity->id],
+                'url' => ['controller' => 'trash', 'action' => 'restore', $entity->getSource(), $entity->id],
                 'label' => __('Restore'),
                 'type' => 'link_button',
                 'icon' => 'recycle',
