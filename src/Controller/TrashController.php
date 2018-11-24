@@ -43,11 +43,9 @@ class TrashController extends AppController
      */
     public function restore()
     {
-        $this->request->allowMethod(['get']);
+        $this->request->allowMethod(['post']);
         $this->autoRender = false;
-
-        $table = $this->request->param('pass')[0];
-        $id = $this->request->param('pass')[1];
+        list($table, $id) = $this->request->param('pass');
 
         $toRestore = $this->checkData($table, $id);
         $restore = TableRegistry::get($table)->restoreTrash($toRestore);
@@ -69,11 +67,9 @@ class TrashController extends AppController
      */
     public function delete()
     {
-        $this->request->allowMethod(['get']);
+        $this->request->allowMethod(['post']);
         $this->autoRender = false;
-
-        $table = $this->request->param('pass')[0];
-        $id = $this->request->param('pass')[1];
+        list($table, $id) = $this->request->param('pass');
 
         $toDel = $this->checkData($table, $id);
         $delete = TableRegistry::get($table)->removeBehavior('Trash')->delete($toDel);
