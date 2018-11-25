@@ -3,6 +3,7 @@ namespace App\Test\External;
 
 use Cake\Core\Configure;
 use Cake\Http\Client;
+use Cake\Http\Client\Response;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\IntegrationTestCase;
 
@@ -31,8 +32,6 @@ class UsersExternalApiTest extends IntegrationTestCase
         $this->apiClient = new Client([
             'host' => 'localhost:8000',
             'scheme' => 'http',
-        ], [
-            'type' => 'json',
         ]);
     }
 
@@ -43,10 +42,16 @@ class UsersExternalApiTest extends IntegrationTestCase
 
     public function testExternalApiUsersCRUD(): void
     {
-        $response = $this->apiClient->post('/api/users/token.json', [
-            'username' => getenv('DEV_USER'),
-            'password' => getenv('DEV_USER'),
-        ]);
+        $response = $this->apiClient->post(
+            '/api/users/token.json',
+            [
+                'username' => getenv('DEV_USER'),
+                'password' => getenv('DEV_USER'),
+            ],
+            [
+                'type' => 'json'
+            ]
+        );
 
         $this->assertTrue($response->isOk(), "Couldn't fetch API token from default getenv(DEV_USER) user");
 
@@ -110,8 +115,10 @@ class UsersExternalApiTest extends IntegrationTestCase
      * @param string $url URL to send request to
      * @param mixed[] $data Data to send
      * @param mixed[] $headers Headers to set
+     *
+     * @return \Cake\Http\Client\Response
      */
-    protected function sendAuthPost(string $url = '', array $data = [], array $headers = [])
+    protected function sendAuthPost(string $url = '', array $data = [], array $headers = []): Response
     {
         $options = [
             'headers' => [

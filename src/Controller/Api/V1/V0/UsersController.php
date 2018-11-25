@@ -2,8 +2,8 @@
 namespace App\Controller\Api\V1\V0;
 
 use Cake\Core\Configure;
-use Cake\Network\Exception\ForbiddenException;
-use Cake\Network\Exception\UnauthorizedException;
+use Cake\Http\Exception\ForbiddenException;
+use Cake\Http\Exception\UnauthorizedException;
 use Cake\Utility\Security;
 use Firebase\JWT\JWT;
 
@@ -51,8 +51,8 @@ class UsersController extends AppController
         try {
             parent::initialize();
         } catch (ForbiddenException $e) {
-            if ('token' !== $this->request->action) {
-                throw new ForbiddenException($e->getMessage());
+            if ('token' !== $this->request->getParam('action')) {
+                throw new ForbiddenException($e->getMessage(), null, $e);
             }
         }
 
@@ -64,9 +64,9 @@ class UsersController extends AppController
     /**
      * Method responsible for generating JSON Web Token (WT), after it authenticates the user.
      *
-     * @throws \Cake\Network\Exception\UnauthorizedException
+     * @throws \Cake\Http\Exception\UnauthorizedException
      * @link   http://www.bravo-kernel.com/2015/04/how-to-add-jwt-authentication-to-a-cakephp-3-rest-api/
-     * @return void
+     * @return \Cake\Http\Response|void|null
      */
     public function token()
     {
@@ -83,7 +83,7 @@ class UsersController extends AppController
                         'sub' => $user['id'],
                         'exp' => time() + 604800
                     ],
-                    Security::salt()
+                    Security::getSalt()
                 )
             ],
             '_serialize' => ['success', 'data']

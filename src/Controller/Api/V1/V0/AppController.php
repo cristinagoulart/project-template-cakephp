@@ -7,8 +7,8 @@ use App\Swagger\Annotation;
 use Cake\Controller\Controller;
 use Cake\Core\Configure;
 use Cake\Event\Event;
-use Cake\Network\Exception\ForbiddenException;
-use Cake\Network\Exception\NotFoundException;
+use Cake\Http\Exception\ForbiddenException;
+use Cake\Http\Exception\NotFoundException;
 use Crud\Controller\ControllerTrait;
 use CsvMigrations\Controller\Traits\PanelsTrait;
 use CsvMigrations\Utility\FileUpload;
@@ -17,6 +17,10 @@ use Qobo\Utils\ModuleConfig\ModuleConfig;
 use Qobo\Utils\Utility\User;
 use RolesCapabilities\CapabilityTrait;
 
+/**
+ * @property \Cake\Http\ServerRequest $request
+ * @property \Crud\Controller\Component\CrudComponent $Crud
+ */
 class AppController extends Controller
 {
     use CapabilityTrait;
@@ -60,13 +64,13 @@ class AppController extends Controller
         'authenticate' => [
             // used for validating user credentials before the token is generated
             'Form' => [
-                'scope' => ['Users.active' => 1]
+                'finder' => 'auth'
             ],
             // used for token validation
             'ADmad/JwtAuth.Jwt' => [
                 'parameter' => 'token',
                 'userModel' => 'Users',
-                'scope' => ['Users.active' => 1],
+                'finder' => 'auth',
                 'fields' => [
                     'username' => 'id'
                 ],
@@ -76,8 +80,6 @@ class AppController extends Controller
         'unauthorizedRedirect' => false,
         'checkAuthIn' => 'Controller.initialize'
     ];
-
-    protected $fileUpload;
 
     /**
      * {@inheritDoc}
@@ -97,19 +99,18 @@ class AppController extends Controller
         if (Configure::read('API.auth')) {
             $this->enableAuthorization();
         }
-
-        $this->fileUpload = new FileUpload($this->{$this->name});
     }
 
     /**
      * Enable API authorization checks.
      *
-     * @throws \Cake\Network\Exception\ForbiddenException when user has no access
+     * @throws \Cake\Http\Exception\ForbiddenException when user has no access
      * @return void
      */
     protected function enableAuthorization(): void
     {
-        $hasAccess = $this->_checkAccess($this->request->params, $this->Auth->user());
+        $user = empty($this->Auth->user()) ? [] : $this->Auth->user();
+        $hasAccess = $this->_checkAccess($this->request->getAttribute('params'), $user);
 
         if (!$hasAccess) {
             throw new ForbiddenException();
@@ -122,12 +123,14 @@ class AppController extends Controller
      * @link http://www.bravo-kernel.com/2015/04/how-to-add-jwt-authentication-to-a-cakephp-3-rest-api/
      * @return void
      */
-    protected function _authentication()
+    protected function _authentication(): void
     {
         $this->loadComponent('Auth', $this->authConfig);
 
+        $authObject = $this->Auth->getAuthenticate('ADmad/JwtAuth.Jwt');
+
         // set auth user from token
-        $user = $this->Auth->getAuthenticate('ADmad/JwtAuth.Jwt')->getUser($this->request);
+        $user = null === $authObject ? [] : $authObject->getUser($this->request);
         $this->Auth->setUser($user);
 
         // set current user for access to all MVC layers
@@ -147,27 +150,35 @@ class AppController extends Controller
     /**
      * View CRUD action events handling logic.
      *
-     * @return \Cake\Network\Response
+     * @return \Cake\Http\Response|void|null
      */
     public function view()
     {
         $this->Crud->on('beforeFind', function (Event $event) {
+            if (! property_exists($event->getSubject(), 'query')) {
+                return;
+            }
+
             $event->getSubject()->query->applyOptions([
                 'lookup' => true,
                 'value' => $this->request->getParam('pass.0')
             ]);
 
             $ev = new Event((string)EventName::API_VIEW_BEFORE_FIND(), $this, [
-                'query' => $event->subject()->query
+                'query' => $event->getSubject()->query
             ]);
-            $this->eventManager()->dispatch($ev);
+            $this->getEventManager()->dispatch($ev);
         });
 
         $this->Crud->on('afterFind', function (Event $event) {
+            if (! property_exists($event->getSubject(), 'entity')) {
+                return;
+            }
+
             $ev = new Event((string)EventName::API_VIEW_AFTER_FIND(), $this, [
-                'entity' => $event->subject()->entity
+                'entity' => $event->getSubject()->entity
             ]);
-            $this->eventManager()->dispatch($ev);
+            $this->getEventManager()->dispatch($ev);
         });
 
         return $this->Crud->execute();
@@ -178,29 +189,41 @@ class AppController extends Controller
      *
      * @param string $id Record id
      * @param string $associationName Association name
-     * @return \Cake\Network\Response
+     * @return \Cake\Http\Response|void|null
      */
-    public function related($id, $associationName)
+    public function related(string $id, string $associationName)
     {
         $this->Crud->on('beforePaginate', function (Event $event) {
+            if (! property_exists($event->getSubject(), 'query')) {
+                return;
+            }
+
             $ev = new Event((string)EventName::API_RELATED_BEFORE_PAGINATE(), $this, [
-                'query' => $event->subject()->query
+                'query' => $event->getSubject()->query
             ]);
-            $this->eventManager()->dispatch($ev);
+            $this->getEventManager()->dispatch($ev);
         });
 
         $this->Crud->on('afterPaginate', function (Event $event) {
+            if (! property_exists($event->getSubject(), 'entities')) {
+                return;
+            }
+
             $ev = new Event((string)EventName::API_RELATED_AFTER_PAGINATE(), $this, [
-                'entities' => $event->subject()->entities
+                'entities' => $event->getSubject()->entities
             ]);
-            $this->eventManager()->dispatch($ev);
+            $this->getEventManager()->dispatch($ev);
         });
 
         $this->Crud->on('beforeRender', function (Event $event) {
+            if (! property_exists($event->getSubject(), 'entities')) {
+                return;
+            }
+
             $ev = new Event((string)EventName::API_RELATED_BEFORE_RENDER(), $this, [
-                'entities' => $event->subject()->entities
+                'entities' => $event->getSubject()->entities
             ]);
-            $this->eventManager()->dispatch($ev);
+            $this->getEventManager()->dispatch($ev);
         });
 
         return $this->Crud->execute();
@@ -209,29 +232,41 @@ class AppController extends Controller
     /**
      * Index CRUD action events handling logic.
      *
-     * @return \Cake\Network\Response
+     * @return \Cake\Http\Response|void|null
      */
     public function index()
     {
         $this->Crud->on('beforePaginate', function (Event $event) {
+            if (! property_exists($event->getSubject(), 'query')) {
+                return;
+            }
+
             $ev = new Event((string)EventName::API_INDEX_BEFORE_PAGINATE(), $this, [
-                'query' => $event->subject()->query
+                'query' => $event->getSubject()->query
             ]);
-            $this->eventManager()->dispatch($ev);
+            $this->getEventManager()->dispatch($ev);
         });
 
         $this->Crud->on('afterPaginate', function (Event $event) {
+            if (! property_exists($event->getSubject(), 'entities')) {
+                return;
+            }
+
             $ev = new Event((string)EventName::API_INDEX_AFTER_PAGINATE(), $this, [
-                'entities' => $event->subject()->entities
+                'entities' => $event->getSubject()->entities
             ]);
-            $this->eventManager()->dispatch($ev);
+            $this->getEventManager()->dispatch($ev);
         });
 
         $this->Crud->on('beforeRender', function (Event $event) {
+            if (! property_exists($event->getSubject(), 'entities')) {
+                return;
+            }
+
             $ev = new Event((string)EventName::API_INDEX_BEFORE_RENDER(), $this, [
-                'entities' => $event->subject()->entities
+                'entities' => $event->getSubject()->entities
             ]);
-            $this->eventManager()->dispatch($ev);
+            $this->getEventManager()->dispatch($ev);
         });
 
         return $this->Crud->execute();
@@ -240,27 +275,49 @@ class AppController extends Controller
     /**
      * Add CRUD action events handling logic.
      *
-     * @return \Cake\Network\Response
+     * @return \Cake\Http\Response|void|null
      */
     public function add()
     {
-        $this->Crud->action()->saveOptions(['lookup' => true]);
+        /** @var \Crud\Action\AddAction */
+        $action = $this->Crud->action();
+        $action->saveOptions(['lookup' => true]);
 
         $this->Crud->on('beforeSave', function (Event $event) {
+            if (! property_exists($event->getSubject(), 'entity')) {
+                return;
+            }
+
             $ev = new Event((string)EventName::API_ADD_BEFORE_SAVE(), $this, [
-                'entity' => $event->subject()->entity
+                'entity' => $event->getSubject()->entity
             ]);
-            $this->eventManager()->dispatch($ev);
+            $this->getEventManager()->dispatch($ev);
         });
 
         $this->Crud->on('afterSave', function (Event $event) {
+            if (! property_exists($event->getSubject(), 'entity')) {
+                return;
+            }
+
+            $entity = $event->getSubject()->entity;
+            if (! empty($entity->getErrors())) {
+                return;
+            }
+
+            /** @var \Cake\Datasource\RepositoryInterface&\Cake\ORM\Table */
+            $table = $this->loadModel();
+
             // handle file uploads if found in the request data
-            $linked = $this->fileUpload->linkFilesToEntity($event->subject()->entity, $this->{$this->name}, $this->request->data);
+            $fileUpload = new FileUpload($table);
+            $fileUpload->link(
+                $entity->get($table->getPrimaryKey()),
+                (array)$this->request->getData()
+            );
 
             $ev = new Event((string)EventName::API_ADD_AFTER_SAVE(), $this, [
-                'entity' => $event->subject()->entity
+                'entity' => $entity
             ]);
-            $this->eventManager()->dispatch($ev);
+            $this->getEventManager()->dispatch($ev);
         });
 
         return $this->Crud->execute();
@@ -269,41 +326,66 @@ class AppController extends Controller
     /**
      * Edit CRUD action events handling logic.
      *
-     * @return \Cake\Network\Response
+     * @return \Cake\Http\Response|void|null
      */
     public function edit()
     {
-        $this->Crud->action()->saveOptions(['lookup' => true]);
+        /** @var \Crud\Action\EditAction */
+        $action = $this->Crud->action();
+        $action->saveOptions(['lookup' => true]);
 
         $this->Crud->on('beforeFind', function (Event $event) {
+            if (! property_exists($event->getSubject(), 'query')) {
+                return;
+            }
+
             $event->getSubject()->query->applyOptions([
                 'lookup' => true,
                 'value' => $this->request->getParam('pass.0')
             ]);
 
             $ev = new Event((string)EventName::API_EDIT_BEFORE_FIND(), $this, [
-                'query' => $event->subject()->query
+                'query' => $event->getSubject()->query
             ]);
-            $this->eventManager()->dispatch($ev);
+            $this->getEventManager()->dispatch($ev);
         });
 
         $this->Crud->on('afterFind', function (Event $event) {
+            if (! property_exists($event->getSubject(), 'entity')) {
+                return;
+            }
+
             $ev = new Event((string)EventName::API_EDIT_AFTER_FIND(), $this, [
-                'entity' => $event->subject()->entity
+                'entity' => $event->getSubject()->entity
             ]);
-            $this->eventManager()->dispatch($ev);
+            $this->getEventManager()->dispatch($ev);
         });
 
         $this->Crud->on('beforeSave', function (Event $event) {
+            if (! property_exists($event->getSubject(), 'entity')) {
+                return;
+            }
+
             $ev = new Event((string)EventName::API_EDIT_BEFORE_SAVE(), $this, [
-                'entity' => $event->subject()->entity
+                'entity' => $event->getSubject()->entity
             ]);
-            $this->eventManager()->dispatch($ev);
+            $this->getEventManager()->dispatch($ev);
         });
 
         $this->Crud->on('afterSave', function (Event $event) {
+            if (! property_exists($event->getSubject(), 'entity')) {
+                return;
+            }
+
+            /** @var \Cake\Datasource\RepositoryInterface&\Cake\ORM\Table */
+            $table = $this->loadModel();
+
             // handle file uploads if found in the request data
-            $linked = $this->fileUpload->linkFilesToEntity($event->subject()->entity, $this->{$this->name}, $this->request->data);
+            $fileUpload = new FileUpload($table);
+            $fileUpload->link(
+                $event->getSubject()->entity->get($table->getPrimaryKey()),
+                (array)$this->request->getData()
+            );
         });
 
         return $this->Crud->execute();
@@ -312,7 +394,7 @@ class AppController extends Controller
     /**
      * Delete CRUD action events handling logic.
      *
-     * @return \Cake\Network\Response
+     * @return \Cake\Http\Response|void|null
      */
     public function delete()
     {
@@ -324,60 +406,56 @@ class AppController extends Controller
      *
      * @return void
      */
-    public function upload()
+    public function upload(): void
     {
         $this->request->allowMethod(['post']);
 
-        $this->autoRender = false;
+        $fileUpload = new FileUpload($this->loadModel());
 
-        $saved = null;
-        $response = [];
-
-        foreach ($this->request->data() as $model => $files) {
-            if (!is_array($files)) {
+        $result = [
+            'success' => true,
+            'data' => []
+        ];
+        foreach ((array)$this->request->getData($this->name) as $field => $files) {
+            if (! is_array($files)) {
                 continue;
             }
 
-            foreach ($files as $modelField => $fileInfo) {
-                $saved = $this->fileUpload->ajaxSave(
-                    $this->{$this->name},
-                    $modelField,
-                    $fileInfo,
-                    ['ajax' => true]
-                );
-            }
+            $result['data'] = $fileUpload->saveAll($field, $files);
         }
 
-        if ($saved) {
-            $response = $saved;
-        } else {
-            $this->response->statusCode(400);
-            $response['errors'] = "Couldn't save the File";
-        }
-
-        echo json_encode($response);
+        $this->set('result', $result);
+        $this->set('_serialize', 'result');
     }
 
     /**
      * Lookup CRUD action events handling logic.
      *
-     * @return \Cake\Network\Response
+     * @return \Cake\Http\Response|void|null
      */
     public function lookup()
     {
         $this->Crud->on('beforeLookup', function (Event $event) {
+            if (! property_exists($event->getSubject(), 'query')) {
+                return;
+            }
+
             $ev = new Event((string)EventName::API_LOOKUP_BEFORE_FIND(), $this, [
-                'query' => $event->subject()->query
+                'query' => $event->getSubject()->query
             ]);
-            $this->eventManager()->dispatch($ev);
+            $this->getEventManager()->dispatch($ev);
         });
 
         $this->Crud->on('afterLookup', function (Event $event) {
+            if (! property_exists($event->getSubject(), 'entities')) {
+                return;
+            }
+
             $ev = new Event((string)EventName::API_LOOKUP_AFTER_FIND(), $this, [
-                'entities' => $event->subject()->entities
+                'entities' => $event->getSubject()->entities
             ]);
-            $this->eventManager()->dispatch($ev);
-            $event->subject()->entities = $ev->result;
+            $this->getEventManager()->dispatch($ev);
+            $event->getSubject()->entities = $ev->result;
         });
 
         return $this->Crud->execute();
@@ -395,7 +473,7 @@ class AppController extends Controller
             'success' => false,
             'data' => [],
         ];
-        $data = $this->request->data;
+        $data = $this->request->getData();
         if (empty($data) || ! is_array($data)) {
             return $result;
         }
@@ -407,7 +485,7 @@ class AppController extends Controller
         }
 
         $panels = $this->getPanels(
-            json_decode(json_encode((new ModuleConfig(ConfigType::MODULE(), $this->name))->parse()), true),
+            (new ModuleConfig(ConfigType::MODULE(), $this->name))->parseToArray(),
             $data
         );
         if (! empty($panels)) {
@@ -438,7 +516,7 @@ class AppController extends Controller
             ->build();
 
         // if request method is OPTIONS just return the response with appropriate headers.
-        if ('OPTIONS' === $this->request->method()) {
+        if ('OPTIONS' === $this->request->getMethod()) {
             return $this->response;
         }
     }

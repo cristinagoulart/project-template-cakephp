@@ -9,11 +9,11 @@ abstract class AbstractAvatar implements AvatarInterface
      * Save Avatar Image Resource
      *
      * @param string $file path with filename
-     * @param object $resource of the scanned image
+     * @param resource $resource of the scanned image
      *
      * @return bool $processed if save was successful.
      */
-    public function processAvatarResource($file, $resource)
+    public function processAvatarResource(string $file, $resource): bool
     {
         $processed = false;
 
@@ -34,7 +34,7 @@ abstract class AbstractAvatar implements AvatarInterface
      *
      * @return bool on imagedestroy()
      */
-    public function removeAvatarResource($resource)
+    public function removeAvatarResource($resource): bool
     {
         return imagedestroy($resource);
     }
@@ -42,11 +42,11 @@ abstract class AbstractAvatar implements AvatarInterface
     /**
      * Return Avatar URL that will be used for img tag
      *
-     * @param array $options passed from the service
+     * @param mixed[] $options passed from the service
      *
      * @return string URL
      */
-    public function getAvatarUrl(array $options)
+    public function getAvatarUrl(array $options): string
     {
         $directory = Configure::read('Avatar.directory');
 

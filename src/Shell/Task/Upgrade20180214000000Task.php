@@ -138,7 +138,11 @@ class Upgrade20180214000000Task extends Shell
 
         foreach ($files as $file) {
             $file = new File($file);
-            $this->singleFileMigration($type, $module, $file->name());
+            /**
+             * @var string
+             */
+            $filename = $file->name();
+            $this->singleFileMigration($type, $module, $filename);
         }
     }
 
@@ -228,7 +232,7 @@ class Upgrade20180214000000Task extends Shell
      * @param string $configFile Optional config file name
      * @return \Qobo\Utils\ModuleConfig\ModuleConfig
      */
-    private function getConfig(ConfigType $type, string $module, string $configFile = '')
+    private function getConfig(ConfigType $type, string $module, string $configFile = ''): ModuleConfig
     {
         return new ModuleConfig($type, $module, $configFile, ['cacheSkip' => true]);
     }
@@ -241,7 +245,9 @@ class Upgrade20180214000000Task extends Shell
      */
     private function toJSON($data): string
     {
-        return json_encode($data, JSON_PRETTY_PRINT);
+        $json = json_encode($data, JSON_PRETTY_PRINT);
+
+        return $json ?: '';
     }
 
     /**
@@ -250,7 +256,7 @@ class Upgrade20180214000000Task extends Shell
      * @param \Qobo\Utils\ModuleConfig\ModuleConfig $config Module config instance
      * @return \Cake\Filesystem\File|null
      */
-    private function getFileByConfig(ModuleConfig $config)
+    private function getFileByConfig(ModuleConfig $config): ?File
     {
         try {
             return new File($config->find());
@@ -281,7 +287,7 @@ class Upgrade20180214000000Task extends Shell
      * @param \Cake\Filesystem\File $file File instance
      * @return void
      */
-    private function deleteNestedLists(File $file)
+    private function deleteNestedLists(File $file): void
     {
         $path = $file->Folder->path . DS . $file->info()['filename'];
 

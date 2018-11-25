@@ -15,6 +15,8 @@ final class DynamicAvatar extends AbstractAvatar
 
     /**
      * {@inheritDoc}
+     *
+     * @param mixed[] $options
      */
     public function __construct(array $options)
     {
@@ -24,9 +26,9 @@ final class DynamicAvatar extends AbstractAvatar
     /**
      * {@inheritDoc}
      */
-    public function get()
+    public function get(): string
     {
-        $result = false;
+        $result = '';
 
         $filename = $this->getAvatarUrl($this->options);
         $file = WWW_ROOT . $filename;
@@ -42,7 +44,7 @@ final class DynamicAvatar extends AbstractAvatar
             ->generate()
             ->stream('data-url');
 
-        $resource = imagecreatefromstring(file_get_contents($image->getContents()));
+        $resource = imagecreatefromstring((string)file_get_contents($image->getContents()));
         $saved = $this->processAvatarResource($file, $resource);
 
         if ($saved) {

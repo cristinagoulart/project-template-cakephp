@@ -52,8 +52,7 @@ class Analyser extends StaticAnalyser
             return true;
         }
 
-        $config = (new ModuleConfig(ConfigType::MIGRATION(), $module))->parse();
-        $config = json_decode(json_encode($config), true);
+        $config = (new ModuleConfig(ConfigType::MIGRATION(), $module))->parseToArray();
         if (empty($config)) {
             return false;
         }

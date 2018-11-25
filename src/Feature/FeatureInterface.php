@@ -15,26 +15,26 @@ interface FeatureInterface
      *
      * @return bool
      */
-    public function isActive();
+    public function isActive(): bool;
 
     /**
      * Feature status for whether the Swagger Doc should be generated
      *
      * @return bool
      */
-    public function isSwaggerActive();
+    public function isSwaggerActive(): bool;
+
+    /**
+     * Feature enable method.
+     *
+     * @return void
+     */
+    public function enable(): void;
 
     /**
      * Feature disable method.
      *
      * @return void
      */
-    public function enable();
-
-    /**
-     * Feature disable method.
-     *
-     * @return void
-     */
-    public function disable();
+    public function disable(): void;
 }

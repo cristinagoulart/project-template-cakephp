@@ -58,7 +58,7 @@ class LogAuditTableTest extends TestCase
      *
      * @return void
      */
-    public function testInitialize()
+    public function testInitialize(): void
     {
         $this->assertInstanceOf(LogAuditTable::class, $this->LogAudit);
     }
@@ -68,7 +68,7 @@ class LogAuditTableTest extends TestCase
      *
      * @return void
      */
-    public function testValidationDefault()
+    public function testValidationDefault(): void
     {
         $validator = new Validator();
         $result = $this->LogAudit->validationDefault($validator);
@@ -81,6 +81,6 @@ class LogAuditTableTest extends TestCase
             'source' => 'Foo'
         ]);
 
-        $this->assertEmpty($entity->errors());
+        $this->assertEmpty($entity->getErrors());
     }
 }
