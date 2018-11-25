@@ -105,7 +105,7 @@ echo $this->Html->script('AdminLTE./plugins/datepicker/bootstrap-datepicker', ['
                         ]); ?>
                         <div class="row">
                             <div class="col-xs-12 col-md-6">
-                            <?= $this->Form->input('Users.username', [
+                            <?= $this->Form->control('Users.username', [
                                 'placeholder' => __('Username'),
                                 'value' => !empty($user['username']) ? h($user['username']) : null
                             ]); ?>
@@ -113,13 +113,13 @@ echo $this->Html->script('AdminLTE./plugins/datepicker/bootstrap-datepicker', ['
                         </div>
                         <div class="row">
                             <div class="col-xs-12 col-md-6">
-                            <?= $this->Form->input('Users.first_name', [
+                            <?= $this->Form->control('Users.first_name', [
                                 'placeholder' => __('First Name'),
                                 'value' => !empty($user['first_name']) ? h($user['first_name']) : null
                             ]); ?>
                             </div>
                             <div class="col-xs-12 col-md-6">
-                            <?= $this->Form->input('Users.last_name', [
+                            <?= $this->Form->control('Users.last_name', [
                                 'placeholder' => __('Last Name'),
                                 'value' => !empty($user['last_name']) ? h($user['last_name']) : null
                             ]); ?>
@@ -138,7 +138,7 @@ echo $this->Html->script('AdminLTE./plugins/datepicker/bootstrap-datepicker', ['
                             ]); ?>
                             </div>
                             <div class="col-xs-12 col-md-6">
-                            <?= $this->Form->input('Users.initials', [
+                            <?= $this->Form->control('Users.initials', [
                                 'placeholder' => __('Initials'),
                                 'value' => !empty($user['initials']) ? h($user['initials']) : null
                             ]); ?>
@@ -157,7 +157,7 @@ echo $this->Html->script('AdminLTE./plugins/datepicker/bootstrap-datepicker', ['
                             ]); ?>
                             </div>
                             <div class="col-xs-12 col-md-6">
-                            <?= $this->Form->input('Users.birthdate', [
+                            <?= $this->Form->control('Users.birthdate', [
                                 'type' => 'text',
                                 'label' => 'Birthdate',
                                 'data-provide' => 'datepicker',
@@ -178,13 +178,13 @@ echo $this->Html->script('AdminLTE./plugins/datepicker/bootstrap-datepicker', ['
                         </div>
                         <div class="row">
                             <div class="col-xs-12 col-md-6">
-                            <?= $this->Form->input('Users.email', [
+                            <?= $this->Form->control('Users.email', [
                                 'placeholder' => __('Email'),
                                 'value' => !empty($user['email']) ? h($user['email']) : null
                             ]); ?>
                             </div>
                             <div class="col-xs-12 col-md-6">
-                            <?= $this->Form->input('Users.phone_office', [
+                            <?= $this->Form->control('Users.phone_office', [
                                 'placeholder' => __('Office Phone'),
                                 'value' => !empty($user['phone_office']) ? h($user['phone_office']) : null
                             ]); ?>
@@ -192,13 +192,13 @@ echo $this->Html->script('AdminLTE./plugins/datepicker/bootstrap-datepicker', ['
                         </div>
                         <div class="row">
                             <div class="col-xs-12 col-md-6">
-                            <?= $this->Form->input('Users.phone_home', [
+                            <?= $this->Form->control('Users.phone_home', [
                                 'placeholder' => __('Home Phone'),
                                 'value' => !empty($user['phone_home']) ? h($user['phone_home']) : null
                             ]); ?>
                             </div>
                             <div class="col-xs-12 col-md-6">
-                            <?= $this->Form->input('Users.phone_mobile', [
+                            <?= $this->Form->control('Users.phone_mobile', [
                                 'placeholder' => __('Mobile Phone'),
                                 'value' => !empty($user['phone_mobile']) ? h($user['phone_mobile']) : null
                             ]); ?>

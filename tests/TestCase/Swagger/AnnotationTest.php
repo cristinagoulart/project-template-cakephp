@@ -17,7 +17,7 @@ class AnnotationTest extends TestCase
     /**
      * @dataProvider propertyOptions
      */
-    public function testGetPropertyOptions($fieldType, $expectedType, $expectedFormat)
+    public function testGetPropertyOptions(string $fieldType, string $expectedType, string $expectedFormat): void
     {
         $field = new CsvField(['name' => 'fieldName', 'type' => $fieldType, 'limit' => 'listName']);
         $result = $this->invokeMethod(
@@ -29,7 +29,10 @@ class AnnotationTest extends TestCase
         $this->assertEquals($expectedFormat, $result['format']);
     }
 
-    public function propertyOptions()
+    /**
+     * @return mixed[]
+     */
+    public function propertyOptions(): array
     {
         // type (input), type (output), format (output)
         $propertyOptions = [
@@ -61,6 +64,7 @@ class AnnotationTest extends TestCase
 
     /**
      * Access protected and private method
+     *
      * @param  mixed $object Class to access
      * @param  string $methodName Method name
      * @param  mixed[] $parameters arguments of the methods

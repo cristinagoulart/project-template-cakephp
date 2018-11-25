@@ -24,7 +24,7 @@ class EditActionListener extends BaseActionListener
     /**
      * {@inheritDoc}
      */
-    public function beforeFind(Event $event, Query $query)
+    public function beforeFind(Event $event, Query $query): void
     {
         //
     }
@@ -32,7 +32,7 @@ class EditActionListener extends BaseActionListener
     /**
      * {@inheritDoc}
      */
-    public function afterFind(Event $event, Entity $entity)
+    public function afterFind(Event $event, Entity $entity): void
     {
         //
     }
@@ -40,7 +40,7 @@ class EditActionListener extends BaseActionListener
     /**
      * {@inheritDoc}
      */
-    public function beforeSave(Event $event, Entity $entity)
+    public function beforeSave(Event $event, Entity $entity): void
     {
         //
     }
@@ -48,7 +48,7 @@ class EditActionListener extends BaseActionListener
     /**
      * {@inheritDoc}
      */
-    public function afterSave(Event $event, Entity $entity)
+    public function afterSave(Event $event, Entity $entity): void
     {
         //
     }

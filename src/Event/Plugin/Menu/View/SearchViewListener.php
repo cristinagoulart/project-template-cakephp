@@ -32,13 +32,14 @@ class SearchViewListener implements EventListenerInterface
      *
      * @param Event $event Event object
      * @param string $name Menu name
-     * @param array $user Current user
+     * @param mixed[] $user Current user
      * @param bool $fullBaseUrl Flag for fullbase url on menu links
-     * @param array $modules Modules to fetch menu items for
-     * @param MenuInterface|null $menu Menu object to be updated
+     * @param mixed[] $modules Modules to fetch menu items for
+     * @param \Menu\MenuBuilder\MenuInterface|null $menu Menu object to be updated
+     *
      * @return void
      */
-    public function getMenuItems(Event $event, $name, array $user, $fullBaseUrl = false, array $modules = [], MenuInterface $menu = null)
+    public function getMenuItems(Event $event, string $name, array $user, bool $fullBaseUrl = false, array $modules = [], MenuInterface $menu = null): void
     {
         $listens = [MenuName::SEARCH_VIEW, MenuName::MODULE_INDEX_ROW];
         if (!in_array($name, $listens)) {
@@ -51,11 +52,18 @@ class SearchViewListener implements EventListenerInterface
             return;
         }
 
+        /**
+         * @var \Cake\Http\ServerRequest $request
+         */
         $request = Router::getRequest();
+        /**
+         * @var \Menu\MenuBuilder\MenuInterface $menu
+         */
+        $menu = $menu;
         $menu->addMenuItem($this->getViewMenuItem($entity, $request));
         $editMenuItem = $this->getEditMenuItem($entity, $request);
         $editMenuItem->disableIf(function () use ($request) {
-            return 'Logs' === $request->param('controller');
+            return 'Logs' === $request->getParam('controller');
         });
 
         $menu->addMenuItem($editMenuItem);
@@ -65,7 +73,7 @@ class SearchViewListener implements EventListenerInterface
         ]);
 
         $deleteMenuItem->disableIf(function () use ($request) {
-            return 'Logs' === $request->param('controller');
+            return 'Logs' === $request->getParam('controller');
         });
 
         $menu->addMenuItem($deleteMenuItem);

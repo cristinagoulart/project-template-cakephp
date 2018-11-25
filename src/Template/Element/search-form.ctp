@@ -4,8 +4,8 @@ use Cake\Utility\Inflector;
 $formOptions = [
     'class' => 'navbar-form navbar-left search-form-top-menu',
     'url' => [
-        'plugin' => $this->request->plugin,
-        'controller' => $this->request->controller,
+        'plugin' => $this->request->getParam('plugin'),
+        'controller' => $this->request->getParam('controller'),
         'action' => 'search'
     ]
 ];
@@ -29,7 +29,7 @@ $inputOptions = [
 ?>
 <?= $this->Form->create(null, $formOptions); ?>
 <div class="input-group">
-<?= $this->Form->input('criteria[query]', $inputOptions); ?>
+<?= $this->Form->control('criteria[query]', $inputOptions); ?>
     <span class="input-group-btn">
         <?= $this->Form->button('<i class="fa fa-search"></i>', ['class' => 'btn btn-sm']); ?>
     </span>

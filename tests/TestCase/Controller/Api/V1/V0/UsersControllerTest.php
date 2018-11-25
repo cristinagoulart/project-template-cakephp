@@ -10,7 +10,6 @@ use Cake\Datasource\ConnectionManager;
 use Cake\Event\EventList;
 use Cake\Event\EventManager;
 use Cake\Http\Client;
-use Cake\Network\Exception\UnauthorizedException;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\IntegrationTestCase;
 use Cake\Utility\Security;
@@ -18,11 +17,13 @@ use Firebase\JWT\JWT;
 
 /**
  * Users\Controller\UsersController Test Case
+ *
+ * @property \Cake\Http\Response $_response
  */
 class UsersControllerTest extends IntegrationTestCase
 {
     /**
-     * @var object $Users
+     * @var \App\Model\Table\UsersTable $Users
      */
     private $Users;
 
@@ -41,7 +42,11 @@ class UsersControllerTest extends IntegrationTestCase
     {
         parent::setUp();
 
-        $this->Users = TableRegistry::get('Users');
+        /**
+         * @var \App\Model\Table\UsersTable $table
+         */
+        $table = TableRegistry::get('Users');
+        $this->Users = $table;
 
         // set headers without auth token by default.
         $this->setHeaders();
@@ -49,8 +54,6 @@ class UsersControllerTest extends IntegrationTestCase
         $this->apiClient = new Client([
             'host' => 'localhost:8000',
             'scheme' => 'http',
-        ], [
-            'type' => 'json',
         ]);
 
         EventManager::instance()->on(new EditActionListener());
@@ -80,7 +83,7 @@ class UsersControllerTest extends IntegrationTestCase
     {
         $token = JWT::encode(
             ['sub' => $id, 'exp' => time() + 604800],
-            Security::salt()
+            Security::getSalt()
         );
 
         $this->configRequest([
@@ -99,7 +102,7 @@ class UsersControllerTest extends IntegrationTestCase
             'password' => '12345',
         ];
 
-        $this->post('/api/users/token.json', json_encode($data));
+        $this->post('/api/users/token.json', $data);
 
         $this->assertResponseOk();
         $this->assertResponseCode(200);
@@ -113,7 +116,7 @@ class UsersControllerTest extends IntegrationTestCase
             'password' => '12345',
         ];
 
-        $this->post('/api/users/token.json', json_encode($data));
+        $this->post('/api/users/token.json', $data);
 
         $this->assertResponseError();
         $this->assertResponseCode(401);
@@ -130,7 +133,7 @@ class UsersControllerTest extends IntegrationTestCase
             'active' => true
         ];
 
-        $this->post('/api/users/add.json', json_encode($data));
+        $this->post('/api/users/add.json', $data);
 
         $this->assertResponseError();
         $this->assertResponseCode(403);
@@ -139,7 +142,7 @@ class UsersControllerTest extends IntegrationTestCase
 
     public function testTokenInvalid(): void
     {
-        $this->post('/api/users/token.json', json_encode([]));
+        $this->post('/api/users/token.json', []);
 
         $this->assertResponseError();
         $this->assertResponseCode(401);
@@ -157,7 +160,11 @@ class UsersControllerTest extends IntegrationTestCase
         $this->assertResponseCode(200);
         $this->assertContentType('application/json');
 
-        $response = json_decode($this->_response->body());
+        /**
+         * @var \Cake\Http\Response $this->_response
+         */
+        $body = $this->_response->getBody();
+        $response = json_decode($body);
 
         $this->assertEquals($email, $response->data->email);
     }
@@ -181,12 +188,13 @@ class UsersControllerTest extends IntegrationTestCase
         $this->assertResponseOk();
 
         $this->setAuthHeaders('00000000-0000-0000-0000-000000000002');
-        $this->put('/api/users/edit/' . $username . '.json', json_encode($data));
+        $this->put('/api/users/edit/' . $username . '.json', $data);
 
         $this->assertResponseOk();
         $this->assertContentType('application/json');
 
-        $response = json_decode($this->_response->body());
+        $body = $this->_response->getBody();
+        $response = json_decode($body);
 
         $entity = $this->Users->get($id);
 

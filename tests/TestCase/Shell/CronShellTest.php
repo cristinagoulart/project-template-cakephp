@@ -18,13 +18,6 @@ class CronShellTest extends ConsoleIntegrationTestCase
     ];
 
     /**
-     * ConsoleIo mock
-     *
-     * @var \Cake\Console\ConsoleIo|\PHPUnit_Framework_MockObject_MockObject
-     */
-    public $io;
-
-    /**
      * Test subject
      *
      * @var \App\Shell\CronShell
@@ -39,8 +32,11 @@ class CronShellTest extends ConsoleIntegrationTestCase
     public function setUp()
     {
         parent::setUp();
-        $this->io = $this->getMockBuilder('Cake\Console\ConsoleIo')->getMock();
-        $this->CronShell = new CronShell($this->io);
+
+        /** @var \Cake\Console\ConsoleIo */
+        $io = $this->getMockBuilder('Cake\Console\ConsoleIo')->getMock();
+
+        $this->CronShell = new CronShell($io);
     }
 
     /**
@@ -60,7 +56,7 @@ class CronShellTest extends ConsoleIntegrationTestCase
      *
      * @return void
      */
-    public function testMain()
+    public function testMain(): void
     {
         $this->exec('cron');
         $this->assertExitCode(Shell::CODE_SUCCESS);
@@ -68,9 +64,12 @@ class CronShellTest extends ConsoleIntegrationTestCase
 
     /**
      * @dataProvider fileAndClassNamesProvider
+     * @param string $file File name
+     * @param mixed $class Class name
+     * @param string $normalized Normalized name
      * @return void
      */
-    public function testLock($file, $class, $normalized) : void
+    public function testLock(string $file, $class, string $normalized) : void
     {
         $this->exec(sprintf('cron lock %s %s', $file, $class));
 
@@ -78,6 +77,9 @@ class CronShellTest extends ConsoleIntegrationTestCase
         $this->assertTrue(file_exists($expected));
     }
 
+    /**
+     * @return mixed[]
+     */
     public function fileAndClassNamesProvider() : array
     {
         return [

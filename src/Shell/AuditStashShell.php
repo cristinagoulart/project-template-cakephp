@@ -34,11 +34,15 @@ class AuditStashShell extends Shell
      *
      * @return void
      */
-    public function addUserId()
+    public function addUserId(): void
     {
         $this->info('Populating Log Audit "user_id" column, this might take a while.');
 
-        $this->table = TableRegistry::get('LogAudit');
+        /**
+         * @var \App\Model\Table\LogAuditTable $table
+         */
+        $table = TableRegistry::get('LogAudit');
+        $this->table = $table;
 
         $count = $this->table->find()
             ->where($this->where)
@@ -62,7 +66,7 @@ class AuditStashShell extends Shell
      * @param int $offset Pagination offset
      * @return \Cake\ORM\ResultSet
      */
-    private function fetchRecords(int $offset)
+    private function fetchRecords(int $offset): ResultSet
     {
         return $this->table->find()
             ->select([$this->table->getPrimaryKey(), 'meta'])
@@ -78,8 +82,11 @@ class AuditStashShell extends Shell
      * @param \Cake\ORM\ResultSet $entities Entities list
      * @return void
      */
-    private function updateRecords(ResultSet $entities)
+    private function updateRecords(ResultSet $entities): void
     {
+        /**
+         * @var \Cake\Datasource\EntityInterface $entity
+         */
         foreach ($entities as $entity) {
             $entity->set('user_id', json_decode($entity->get('meta'))->user);
         }

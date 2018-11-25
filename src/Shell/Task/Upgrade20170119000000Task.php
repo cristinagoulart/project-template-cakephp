@@ -65,7 +65,7 @@ class Upgrade20170119000000Task extends Shell
      * @param string $src Path to source folder
      * @return void
      */
-    protected function validateSource(string $src)
+    protected function validateSource(string $src): void
     {
         if (!is_dir($src)) {
             throw new RuntimeException("Source path [$src] is not a directory");

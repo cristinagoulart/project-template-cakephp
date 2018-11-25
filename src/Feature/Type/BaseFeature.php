@@ -24,17 +24,21 @@ class BaseFeature implements FeatureInterface
     }
 
     /**
-     * {@inheritDoc}
+     * Feature status getter method.
+     *
+     * @return bool
      */
-    public function isActive()
+    public function isActive(): bool
     {
         return (bool)$this->config->get('active');
     }
 
     /**
-     * {@inheritDoc}
+     * Feature status for whether the Swagger Doc should be generated
+     *
+     * @return bool
      */
-    public function isSwaggerActive()
+    public function isSwaggerActive(): bool
     {
         if (!$this->isActive()) {
             return false;
@@ -44,18 +48,20 @@ class BaseFeature implements FeatureInterface
     }
 
     /**
-     * {@inheritDoc}
+     * Feature enable method.
+     *
+     * @return void
      */
-    public function enable()
+    public function enable(): void
     {
-        //
     }
 
     /**
-     * {@inheritDoc}
+     * Feature disable method.
+     *
+     * @return void
      */
-    public function disable()
+    public function disable(): void
     {
-        //
     }
 }
