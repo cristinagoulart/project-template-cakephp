@@ -63,7 +63,7 @@ class SearchViewListener implements EventListenerInterface
         $menu = $menu;
 
         if ($entity->trashed) {
-            list($delete, $restore) = $this->getTrashMenu();
+            list($delete, $restore) = $this->getTrashMenu($entity);
             $menu->addMenuItem($delete);
             $menu->addMenuItem($restore);
             $event->setResult($event);

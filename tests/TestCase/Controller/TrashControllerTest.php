@@ -46,7 +46,9 @@ class TrashControllerTest extends IntegrationTestCase
         $id = $toDel->id;
         TableRegistry::get('ScheduledJobs')->delete($toDel);
 
-        $this->get('/trash/delete/ScheduledJobs/' . $id);
+        $data = ['ScheduledJobs', $id];
+
+        $this->post('/trash/delete/ScheduledJobs/' . $id);
         TableRegistry::get('ScheduledJobs')->addBehavior('Muffin/Trash.Trash');
 
         $this->assertSession('The record is permanently delete', 'Flash.flash.0.message');
@@ -62,7 +64,8 @@ class TrashControllerTest extends IntegrationTestCase
 
         TableRegistry::get('ScheduledJobs')->delete($toRestore);
 
-        $this->get('/trash/restore/ScheduledJobs/' . $id);
+        $data = ['ScheduledJobs', $id];
+        $this->post('/trash/restore/ScheduledJobs/' . $id);
 
         $this->assertSession('The record is restored', 'Flash.flash.0.message');
 
