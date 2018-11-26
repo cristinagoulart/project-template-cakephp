@@ -5,6 +5,9 @@ use CakeDC\Users\Shell\UsersShell as BaseShell;
 use Cake\Datasource\EntityInterface;
 use Cake\ORM\Entity;
 
+/**
+ * @method \CakeDC\Users\Model\Behavior\SocialBehavior generateUniqueUsername($username)
+ */
 class UsersShell extends BaseShell
 {
     /**

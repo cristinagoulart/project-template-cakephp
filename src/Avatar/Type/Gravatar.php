@@ -2,6 +2,7 @@
 namespace App\Avatar\Type;
 
 use App\Avatar\AbstractAvatar;
+use Cake\Http\Client;
 
 final class Gravatar extends AbstractAvatar
 {
@@ -35,34 +36,34 @@ final class Gravatar extends AbstractAvatar
     public function get(): string
     {
         $result = '';
-
+        $saved = false;
         $filename = $this->getAvatarUrl($this->options);
         $file = WWW_ROOT . $filename;
+        $httpCode = 400;
 
         if (file_exists($file)) {
             return $filename;
         }
 
-        $imageUrl = sprintf(
-            'https://www.gravatar.com/avatar/%s?size=%d&default=%s&rating=%s',
-            $this->options['email'],
-            $this->options['size'],
-            $this->options['default'],
-            $this->options['rating']
-        );
+        $gravatarBaseUrl = 'https://www.gravatar.com/avatar/';
 
-        $curl = curl_init($imageUrl);
-        curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
-        curl_exec($curl);
+        $http = new Client();
 
-        $httpCode = curl_getinfo($curl, CURLINFO_HTTP_CODE);
+        $response = $http->get($gravatarBaseUrl . $this->options['email'], [
+            'size' => $this->options['size'],
+            'default' => $this->options['default'],
+            'rating' => $this->options['rating']
+        ]);
 
-        if (404 == $httpCode) {
+        if (404 == $response->getStatusCode()) {
             return $result;
         }
 
-        $resource = imagecreatefromstring((string)file_get_contents($imageUrl));
-        $saved = $this->processAvatarResource($file, $resource);
+        $resource = imagecreatefromstring($response->getBody());
+
+        if ($resource) {
+            $saved = $this->processAvatarResource($file, $resource);
+        }
 
         if ($saved) {
             $result = $filename;

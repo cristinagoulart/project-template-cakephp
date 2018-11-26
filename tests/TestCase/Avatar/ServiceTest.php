@@ -23,7 +23,7 @@ class ServiceTest extends TestCase
         unset($this->Service);
     }
 
-    public function testDefaultAvatarSource()
+    public function testDefaultAvatarSource(): void
     {
         $avatar = $this->Service->getAvatarSource();
         $default = Configure::read('Avatar.order.0');
@@ -34,12 +34,12 @@ class ServiceTest extends TestCase
     /**
      * @expectedException InvalidArgumentException
      */
-    public function testInvokeAvatarSourceWrongClass()
+    public function testInvokeAvatarSourceWrongClass(): void
     {
         $this->Service->invokeAvatarSource('\Foo\Bar\Baz');
     }
 
-    public function testGetImageName()
+    public function testGetImageName(): void
     {
         $result = $this->Service->getImageName(['id' => 'foobar']);
         $extension = Configure::read('Avatar.extension');
