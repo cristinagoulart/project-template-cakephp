@@ -2,20 +2,18 @@
 namespace App\Test\TestCase\Controller\Api\V1\V0;
 
 use App\Event\Controller\Api\IndexActionListener;
+use App\Test\TestCase\Controller\BaseIntegrationTestCase;
 use Cake\Core\Configure;
 use Cake\Event\EventList;
 use Cake\Event\EventManager;
 use Cake\ORM\TableRegistry;
-use Cake\TestSuite\IntegrationTestCase;
-use Cake\Utility\Security;
-use Firebase\JWT\JWT;
 
 /**
  * Translations\Controller\TranslationsController Test Case
  *
  * @property \Cake\Http\Response $_response
  */
-class TranslationsControllerTest extends IntegrationTestCase
+class TranslationsControllerTest extends BaseIntegrationTestCase
 {
     /**
      * @var object $Translations
