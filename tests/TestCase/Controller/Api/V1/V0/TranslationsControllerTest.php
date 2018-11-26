@@ -32,23 +32,12 @@ class TranslationsControllerTest extends IntegrationTestCase
     {
         parent::setUp();
 
-        $token = JWT::encode(
-            ['sub' => '00000000-0000-0000-0000-000000000002', 'exp' => time() + 604800],
-            Security::getSalt()
-        );
+        $this->setApiHeaders(['user_id' => '00000000-0000-0000-0000-000000000002']);
 
         $this->Translations = TableRegistry::get('Translations.Translations');
 
         // enable event tracking
         $this->Translations->getEventManager()->setEventList(new EventList());
-
-        $this->configRequest([
-            'headers' => [
-                'Accept' => 'application/json',
-                'Content-Type' => 'application/json',
-                'authorization' => 'Bearer ' . $token
-            ]
-        ]);
 
         // Load default plugin configuration
         Configure::load('Translations.translations');
