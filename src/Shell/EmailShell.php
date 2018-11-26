@@ -5,6 +5,8 @@ namespace App\Shell;
 use Cake\Console\Shell;
 use Cake\Core\Configure;
 use Cake\Mailer\Email;
+use Exception;
+use RuntimeException;
 
 class EmailShell extends Shell
 {
@@ -83,9 +85,8 @@ class EmailShell extends Shell
             $email->to($to);
             $email->subject($subject);
             $result = $email->send($message);
-        } catch (\Exception $e) {
-            $this->out("FAILED");
-            $this->abort($e->getMessage());
+        } catch (Exception $e) {
+            throw new RuntimeException("Couldn't send an email", 0, $e);
         }
 
         // Print out successful result

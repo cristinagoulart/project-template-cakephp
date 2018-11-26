@@ -20,8 +20,8 @@ if (!empty($this->passedArgs[0])) {
                 </div>
                 <?= $this->Form->create('User') ?>
                 <div class="box-body">
-                    <?= $this->Form->input('password'); ?>
-                    <?= $this->Form->input('password_confirm', ['type' => 'password', 'required' => true]); ?>
+                    <?= $this->Form->control('password'); ?>
+                    <?= $this->Form->control('password_confirm', ['type' => 'password', 'required' => true]); ?>
                     <?= $this->Form->button(__('Submit'), ['class' => 'btn btn-primary']) ?>
                 </div>
                 <?= $this->Form->end() ?>

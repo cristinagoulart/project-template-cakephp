@@ -19,6 +19,8 @@ final class Gravatar extends AbstractAvatar
 
     /**
      * {@inheritDoc}
+     *
+     * @param mixed[] $options
      */
     public function __construct(array $options)
     {
@@ -30,9 +32,9 @@ final class Gravatar extends AbstractAvatar
     /**
      * {@inheritDoc}
      */
-    public function get()
+    public function get(): string
     {
-        $result = false;
+        $result = '';
 
         $filename = $this->getAvatarUrl($this->options);
         $file = WWW_ROOT . $filename;
@@ -59,7 +61,7 @@ final class Gravatar extends AbstractAvatar
             return $result;
         }
 
-        $resource = imagecreatefromstring(file_get_contents($imageUrl));
+        $resource = imagecreatefromstring((string)file_get_contents($imageUrl));
         $saved = $this->processAvatarResource($file, $resource);
 
         if ($saved) {

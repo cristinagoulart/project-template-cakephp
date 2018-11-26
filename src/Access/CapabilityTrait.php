@@ -24,17 +24,14 @@ trait CapabilityTrait
      * Returns true only and only if the provided user has access to the provided URL.
      *
      * @param string|array $url URL to be checked
-     * @param array $user User information
+     * @param mixed[] $user User information
      * @return bool True if user has access to the provided URL
      */
-    protected function _checkAccess($url, $user)
+    protected function _checkAccess($url, array $user): bool
     {
-        $stringUrl = null;
-        if (is_array($url)) {
-            $stringUrl = Router::url($url);
-        } elseif (is_string($url)) {
-            $stringUrl = $url;
-        } else {
+        $stringUrl = is_array($url) ? Router::url($url) : $url;
+
+        if (! is_string($stringUrl)) {
             throw new InvalidArgumentException();
         }
 
@@ -51,9 +48,9 @@ trait CapabilityTrait
      * Parses menu item URL.
      *
      * @param array|string $url Menu item URL
-     * @return string
+     * @return mixed[]
      */
-    private function parseUrl($url)
+    private function parseUrl($url): array
     {
         if (!is_string($url)) {
             return $url;
@@ -66,6 +63,10 @@ trait CapabilityTrait
             $url = str_replace($fullBaseUrl, '', $url);
         }
 
-        return Router::parse($url);
+        if (0 !== strpos($url, '/')) {
+            $url = '/' . $url;
+        }
+
+        return Router::getRouteCollection()->parse($url);
     }
 }

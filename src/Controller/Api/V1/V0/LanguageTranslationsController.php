@@ -2,6 +2,7 @@
 namespace App\Controller\Api\V1\V0;
 
 use Cake\Event\Event;
+use Cake\Utility\Hash;
 
 class LanguageTranslationsController extends AppController
 {
@@ -11,23 +12,30 @@ class LanguageTranslationsController extends AppController
     public function index()
     {
         $this->Crud->on('beforePaginate', function (Event $event) {
-            $query = $event->subject()->query;
+            if (! property_exists($event->getSubject(), 'query')) {
+                return;
+            }
 
-            $params = $this->request->query;
+            $query = $event->getSubject()->query;
 
-            if ($this->request->query('object_model') && $this->request->query('object_foreign_key')) {
-                $table = $this->{$this->name};
+            $params = $this->request->getQueryParams();
+
+            if (Hash::get($params, 'object_model') && Hash::get($params, 'object_foreign_key')) {
+                /**
+                 * @var \App\Model\Table\LanguageTranslationsTable $table
+                 */
+                $table = $this->loadModel();
                 $conditions = [
-                    'object_model' => $this->request->query('object_model'),
-                    'object_foreign_key' => $this->request->query('object_foreign_key'),
+                    'object_model' => Hash::get($params, 'object_model'),
+                    'object_foreign_key' => Hash::get($params, 'object_foreign_key'),
                 ];
 
-                if ($this->request->query('object_field')) {
-                    $conditions['object_field'] = $this->request->query('object_field');
+                if (Hash::get($params, 'object_field')) {
+                    $conditions['object_field'] = Hash::get($params, 'object_field');
                 }
 
-                if ($this->request->query('language')) {
-                    $conditions['language_id'] = $table->getLanguageId($this->request->query('language'));
+                if (Hash::get($params, 'language')) {
+                    $conditions['language_id'] = $table->getLanguageId(Hash::get($params, 'language'));
                 }
 
                 $query->applyOptions(['conditions' => $conditions]);

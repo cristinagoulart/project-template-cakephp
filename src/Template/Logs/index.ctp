@@ -35,7 +35,7 @@ $age = Configure::read('DatabaseLog.maxLength');
                 );
             }
 
-            if ('localhost' === $this->request->env('SERVER_NAME')) {
+            if ('localhost' === $this->request->getEnv('SERVER_NAME')) {
                 echo $this->Form->postLink(
                     '<i class="fa fa-trash-o"></i> ' . __('Truncate all logs'),
                     ['plugin' => false, 'controller' => 'Logs', 'action' => 'reset'],

@@ -27,9 +27,10 @@ class SearchResultsListener implements EventListenerInterface
      * @param \Cake\Event\Event $event Event instance
      * @param \Cake\ORM\ResultSet $entities ResultSet
      * @param \Cake\ORM\Table $table Table instance
+     *
      * @return void
      */
-    public function afterFind(Event $event, ResultSet $entities, Table $table)
+    public function afterFind(Event $event, ResultSet $entities, Table $table): void
     {
         if ($entities->isEmpty()) {
             return;
@@ -38,6 +39,10 @@ class SearchResultsListener implements EventListenerInterface
         $fhf = new FieldHandlerFactory();
 
         foreach ($entities as $entity) {
+            /**
+             * @var \Cake\Datasource\EntityInterface $entity
+             */
+            $entity = $entity;
             $this->_renderValues($entity, $table, $fhf);
         }
 
@@ -50,14 +55,19 @@ class SearchResultsListener implements EventListenerInterface
      * @param \Cake\Datasource\EntityInterface $entity Entity object
      * @param \Cake\ORM\Table $table Table instance
      * @param \CsvMigrations\FieldHandlers\FieldHandlerFactory $fhf Field Handler Factory
+     *
      * @return void
      */
-    protected function _renderValues(EntityInterface $entity, Table $table, FieldHandlerFactory $fhf)
+    protected function _renderValues(EntityInterface $entity, Table $table, FieldHandlerFactory $fhf): void
     {
         foreach ($entity->visibleProperties() as $prop) {
             if ('_matchingData' === $prop) {
                 foreach ($entity->{$prop} as $associationName => $targetEntity) {
-                    $targetTable = $table->association($associationName)->getTarget();
+                    /**
+                     * @var \Cake\ORM\Association $association
+                     */
+                    $association = $table->association($associationName);
+                    $targetTable = $association->getTarget();
                     $this->_renderValues($targetEntity, $targetTable, $fhf);
                 }
             } else {

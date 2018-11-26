@@ -41,6 +41,9 @@ use Cake\Routing\Route\DashedRoute;
  * inconsistently cased URLs when used with `:plugin`, `:controller` and
  * `:action` markers.
  *
+ * Cache: Routes are cached to improve performance, check the RoutingMiddleware
+ * constructor in your `src/Application.php` file to change this behavior.
+ *
  */
 Router::defaultRouteClass(DashedRoute::class);
 
@@ -101,9 +104,3 @@ Router::addUrlFilter(function ($params, $request) {
 
     return $params;
 });
-
-/**
- * Load all plugin routes. See the Plugin documentation on
- * how to customize the loading of plugin routes.
- */
-Plugin::routes();

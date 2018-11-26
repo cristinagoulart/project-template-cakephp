@@ -10,8 +10,9 @@ use Cake\ORM\Entity;
  * @property string $scheduled_job_id
  * @property string $context
  * @property string $status
- * @property \Cake\I18n\Time $datetime
- * @property \Cake\I18n\Time $created
+ * @property string $extra
+ * @property \Cake\I18n\Time|string $datetime
+ * @property \Cake\I18n\Time|string $created
  *
  * @property \App\Model\Entity\ScheduledJob $scheduled_job
  */

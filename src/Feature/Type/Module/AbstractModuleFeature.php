@@ -7,9 +7,11 @@ use Cake\Core\Configure;
 abstract class AbstractModuleFeature extends BaseFeature
 {
     /**
-     * {@inheritDoc}
+     * Feature enable method.
+     *
+     * @return void
      */
-    public function enable()
+    public function enable(): void
     {
         $name = explode(DS, $this->config->get('name'));
         $name = end($name);
@@ -27,9 +29,11 @@ abstract class AbstractModuleFeature extends BaseFeature
     }
 
     /**
-     * {@inheritDoc}
+     * Feature disable method.
+     *
+     * @return void
      */
-    public function disable()
+    public function disable(): void
     {
         $name = explode(DS, $this->config->get('name'));
         $name = end($name);

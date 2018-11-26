@@ -51,7 +51,16 @@ class EncodedFileType extends Type
             throw new InvalidArgumentException('Encoded file "tmp_name" is not defined');
         }
 
-        return sprintf('data:%s;base64,%s', $value['type'], base64_encode(file_get_contents($value['tmp_name'])));
+        if (! is_file($value['tmp_name']) || ! is_readable($value['tmp_name'])) {
+            throw new InvalidArgumentException("Temporary file [" . $value['tmp_name'] . "] does not exist or is not readable");
+        }
+
+        $content = file_get_contents($value['tmp_name']);
+        if ($content === false) {
+            throw new InvalidArgumentException("Failed to read temporary file [" . $value['tmp_name'] . "]");
+        }
+
+        return sprintf('data:%s;base64,%s', $value['type'], base64_encode($content));
     }
 
     /**

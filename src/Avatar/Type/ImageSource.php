@@ -17,6 +17,8 @@ final class ImageSource extends AbstractAvatar
 
     /**
      * {@inheritDoc}
+     *
+     * @param mixed[] $options
      */
     public function __construct(array $options = [])
     {
@@ -26,7 +28,7 @@ final class ImageSource extends AbstractAvatar
     /**
      * {@inheritDoc}
      */
-    public function get()
+    public function get(): string
     {
         $directory = Configure::read('Avatar.directory');
         $filename = $this->getAvatarUrl($this->options);

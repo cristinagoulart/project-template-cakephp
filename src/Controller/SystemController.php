@@ -22,7 +22,7 @@ class SystemController extends AppController
      * installed plugins, composer libraries, PHP version,
      * PHP configurations, server environment, etc.
      *
-     * @return void
+     * @return \Cake\Http\Response|void|null
      */
     public function info()
     {
@@ -37,7 +37,7 @@ class SystemController extends AppController
      * in case the system throws an error on switched off
      * debug. Otherwise, it'll use native Cake Error pages.
      *
-     * @return void
+     * @return \Cake\Http\Response|void|null
      */
     public function error()
     {
@@ -46,7 +46,7 @@ class SystemController extends AppController
     /**
      * Action responsible for listing all system searches.
      *
-     * @return void
+     * @return \Cake\Http\Response|void|null
      */
     public function searches()
     {
@@ -71,7 +71,7 @@ class SystemController extends AppController
      * Then redirects user to the real home page.
      * Otherwise, it displays an error message explaining what went wrong
      *
-     * @return \Cake\Http\Response|null
+     * @return \Cake\Http\Response|void|null
      */
     public function home()
     {
@@ -97,7 +97,7 @@ class SystemController extends AppController
      * @param \Menu\MenuBuilder\MenuItemContainerInterface $container Menu container to be iterated
      * @return \Menu\MenuBuilder\MenuItemInterface|null
      */
-    public function getFirstMenuItem(MenuItemContainerInterface $container)
+    public function getFirstMenuItem(MenuItemContainerInterface $container): ?\Menu\MenuBuilder\MenuItemInterface
     {
         foreach ($container->getMenuItems() as $menuItem) {
             if (!$menuItem->isEnabled()) {
@@ -124,7 +124,7 @@ class SystemController extends AppController
      * @param array $user Current user, if any
      * @return bool
      */
-    protected function _checkAccess($url, $user)
+    protected function _checkAccess(array $url, array $user): bool
     {
         if (empty($user) && $url['action'] === 'home') {
             return false;

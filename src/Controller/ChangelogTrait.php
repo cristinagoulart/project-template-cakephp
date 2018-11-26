@@ -27,9 +27,9 @@ trait ChangelogTrait
      * Return log audit results for specific record.
      *
      * @param  string $id Record id
-     * @return void
+     * @return \Cake\Http\Response|void|null
      */
-    public function changelog($id)
+    public function changelog(string $id)
     {
         /*
         ideally we want to group by user and timestamp, but having user in the meta information makes this non-trivial
@@ -42,17 +42,17 @@ trait ChangelogTrait
             ->order(['timestamp' => 'DESC'])
             ->group('timestamp');
 
-        $modelAlias = $this->{$this->name}->alias();
+        $modelAlias = $this->loadModel()->getAlias();
         $methodName = 'moduleAlias';
-        if (method_exists($this->{$this->name}, $methodName) && is_callable([$this->{$this->name}, $methodName])) {
-            $modelAlias = $this->{$this->name}->{$methodName}();
+        if (method_exists($this->loadModel(), $methodName) && is_callable([$this->loadModel(), $methodName])) {
+            $modelAlias = $this->loadModel()->{$methodName}();
         }
 
-        $entity = $this->{$this->name}->findById($id)->firstOrFail();
+        $entity = $this->loadModel()->findById($id)->firstOrFail();
 
         $this->set('changelog', $this->paginate($query));
         $this->set('modelAlias', $modelAlias);
-        $this->set('displayField', $this->{$this->name}->displayField());
+        $this->set('displayField', $this->loadModel()->getDisplayField());
         $this->set('usersTable', TableRegistry::get(Configure::read('Users.table')));
         $this->set('entity', $entity);
 

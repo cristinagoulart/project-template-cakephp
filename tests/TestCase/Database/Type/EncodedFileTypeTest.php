@@ -7,14 +7,8 @@ use PDO;
 
 class EncodedFileTypeTest extends TestCase
 {
-    /**
-     * @var \App\Database\Type\EncodedFileType
-     */
     public $type;
 
-    /**
-     * @var \Cake\Database\Driver
-     */
     public $driver;
 
     /**
@@ -63,7 +57,7 @@ class EncodedFileTypeTest extends TestCase
             'error' => 0,
             'size' => filesize($testFile)
         ];
-        $expected = 'data:image/png;base64,' . base64_encode(file_get_contents($testFile));
+        $expected = 'data:image/png;base64,' . base64_encode((string)file_get_contents($testFile));
         $result = $this->type->toDatabase($testValue, $this->driver);
         $this->assertEquals($expected, $result, "toDatabase() returned an invalid result");
     }
@@ -75,6 +69,9 @@ class EncodedFileTypeTest extends TestCase
 
         $testFile = WWW_ROOT . DS . 'img' . DS . 'logo.png';
         $expected = file_get_contents($testFile);
+        /**
+         * @var resource $fh
+         */
         $fh = fopen($testFile, 'r');
         $this->assertEquals($expected, $this->type->toPHP($fh, $this->driver));
         fclose($fh);

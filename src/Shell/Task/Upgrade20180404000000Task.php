@@ -5,6 +5,7 @@ use App\Event\Plugin\Search\Model\SearchableFieldsListener;
 use Cake\Console\Shell;
 use Cake\Core\Configure;
 use Cake\Core\Plugin;
+use Cake\Datasource\EntityInterface;
 use Cake\Event\EventManager;
 use Cake\ORM\TableRegistry;
 use Cake\Utility\Inflector;
@@ -72,16 +73,17 @@ class Upgrade20180404000000Task extends Shell
      */
     private function isSearchable(string $module): bool
     {
-        $config = (new ModuleConfig(ConfigType::MIGRATION(), $module, null, ['cacheSkip' => true]))->parse();
-        $config = json_decode(json_encode($config), true);
+        $migrationConfig = new ModuleConfig(ConfigType::MIGRATION(), $module, null, ['cacheSkip' => true]);
+        $config = $migrationConfig->parseToArray();
 
         if (empty($config)) {
             return false;
         }
 
-        $config = (new ModuleConfig(ConfigType::MODULE(), $module, null, ['cacheSkip' => true]))->parse();
+        $moduleConfig = new ModuleConfig(ConfigType::MODULE(), $module, null, ['cacheSkip' => true]);
+        $config = $moduleConfig->parseToArray();
 
-        if ('module' !== $config->table->type) {
+        if ('module' !== $config['table']['type']) {
             return false;
         }
 
@@ -109,10 +111,12 @@ class Upgrade20180404000000Task extends Shell
      * Creates system search for provided module.
      *
      * @param string $module Module name
-     * @return \Search\Model\Entity\SavedSearch
+     *
      * @throws \RuntimeException when failed to create system search
+     *
+     * @return \Cake\Datasource\EntityInterface
      */
-    private function createSearch(string $module)
+    private function createSearch(string $module): EntityInterface
     {
         $table = TableRegistry::getTableLocator()->get('Search.SavedSearches');
 
@@ -140,9 +144,17 @@ class Upgrade20180404000000Task extends Shell
      */
     private function getUser(): array
     {
+        $result = [];
         $table = TableRegistry::getTableLocator()->get('CakeDC/Users.Users');
         $query = $table->find()->where(['is_superuser' => true]);
 
-        return $query->firstOrFail()->toArray();
+        /**
+         * @var \Cake\Datasource\EntityInterface
+         */
+        $entity = $query->firstOrFail();
+
+        $result = $entity->toArray();
+
+        return $result;
     }
 }
