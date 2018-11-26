@@ -40,10 +40,11 @@ class LookupListener implements EventListenerInterface
      */
     public function beforeFind(Event $event, QueryInterface $query, ArrayObject $options, bool $primary): void
     {
-        /**
-         * @var \Cake\ORM\Table $table
-         */
+        /** @var \Cake\ORM\Table $table */
         $table = $event->getSubject();
+
+        /** @var \Cake\Datasource\QueryInterface&\Cake\ORM\Query $query */
+        $query = $query;
 
         if (! $primary) {
             return;
@@ -74,7 +75,7 @@ class LookupListener implements EventListenerInterface
 
         foreach ($config->table->lookup_fields as $field) {
             $query->orWhere([
-                $event->getSubject()->aliasField($field) => $options['value']
+                $table->aliasField($field) => $options['value']
             ]);
         }
     }
@@ -164,7 +165,7 @@ class LookupListener implements EventListenerInterface
             return false;
         }
 
-        if (is_null($association->className())) {
+        if (empty($association->className())) {
             return false;
         }
 
@@ -246,12 +247,18 @@ class LookupListener implements EventListenerInterface
         $query = $association->getTarget()
             ->find('all')
             ->select($association->getTarget()->getPrimaryKey())
+            ->enableHydration(true)
             ->limit(1);
 
         foreach ($fields as $field) {
             $query->orWhere([$field => $data[$association->getForeignKey()]]);
         }
 
-        return $query->first();
+        /**
+         * @var \Cake\Datasource\EntityInterface|null $result
+         */
+        $result = $query->first();
+
+        return $result;
     }
 }

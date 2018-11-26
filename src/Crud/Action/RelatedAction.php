@@ -54,13 +54,17 @@ class RelatedAction extends BaseAction
      */
     protected function _handle(string $id, string $associationName)
     {
+        $items = [];
         $subject = $this->_subject([
             'success' => true,
             'query' => $this->getQuery($id, $associationName)
         ]);
 
         $this->_trigger('beforePaginate', $subject);
-        $items = $this->_controller()->paginate($subject->query);
+        if (property_exists($subject, 'query')) {
+            $items = $this->_controller()->paginate($subject->query);
+        }
+
         $subject->set(['entities' => $items]);
 
         $this->_trigger('afterPaginate', $subject);
@@ -147,7 +151,10 @@ class RelatedAction extends BaseAction
         }
 
         $query = $association->find('all')->innerJoinWith($related->getName(), function ($q) use ($related, $id) {
-            return $q->where([$related->aliasField($this->_table()->getPrimaryKey()) => $id]);
+            /** @var string $primaryKey */
+            $primaryKey = $this->_table()->getPrimaryKey();
+
+            return $q->where([$related->getTarget()->aliasField($primaryKey) => $id]);
         });
 
         return $query;
@@ -167,9 +174,11 @@ class RelatedAction extends BaseAction
         $association->setTarget($association->getTarget());
         $association->getTarget()->setAlias($this->_controller()->getName());
 
-        // $table = $association->getTarget();
+        /** @var string $foreignKey */
+        $foreignKey = $association->getForeignKey();
+
         $query = $association->find('all')->where([
-            $association->aliasField($association->getForeignKey()) => $id
+            $association->getTarget()->aliasField($foreignKey) => $id
         ]);
 
         return $query;

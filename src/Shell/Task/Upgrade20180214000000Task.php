@@ -109,7 +109,7 @@ class Upgrade20180214000000Task extends Shell
     private function singleFileMigration(ConfigType $type, string $module, string $filename = ''): void
     {
         if ($this->migrate($type, $this->getConfig($type, $module, $filename))) {
-            $this->success(sprintf('Migrated %s for %s module', $filename ? $filename : $type, $module));
+            $this->success(sprintf('Migrated %s for %s module', $filename ? $filename : (string)$type, $module));
 
             return;
         }
@@ -209,8 +209,8 @@ class Upgrade20180214000000Task extends Shell
         }
 
         $data = array_merge_recursive(
-            (array)json_decode($source->read(), true),
-            (array)json_decode($dest->read(), true)
+            (array)json_decode((string)$source->read(), true),
+            (array)json_decode((string)$dest->read(), true)
         );
 
         if (! $dest->write($this->toJSON($data))) {

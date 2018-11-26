@@ -10,11 +10,11 @@ class BaseIntegrationTestCase extends IntegrationTestCase
     /**
      * Set API Headers for Integration Case Request object
      *
-     * @param array $arguments that might contain user specific data
+     * @param mixed[] $arguments that might contain user specific data
      *
      * @return void
      */
-    protected function setApiHeaders($arguments = [])
+    protected function setApiHeaders(array $arguments = []): void
     {
         $options = [];
 
@@ -37,11 +37,11 @@ class BaseIntegrationTestCase extends IntegrationTestCase
      *
      * Prepopulates Requests Header with extra info like token
      *
-     * @param array $params with request configs
+     * @param mixed[] $params with request configs
      *
-     * @return array $data of the request headers/params.
+     * @return mixed[] $data of the request headers/params.
      */
-    private function _setConfigRequest($params = [])
+    private function _setConfigRequest(array $params = []): array
     {
         $data = [
             'headers' => [
