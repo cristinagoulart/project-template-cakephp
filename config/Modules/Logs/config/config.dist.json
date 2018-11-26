@@ -1,5 +1,7 @@
 {
     "table": {
+        "icon": "file-code-o",
+        "display_field": "type",
         "searchable": true
     }
 }

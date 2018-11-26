@@ -84,6 +84,7 @@ try {
     Configure::load('menu', 'default');
     Configure::load('roles_capabilities', 'default');
     Configure::load('scheduled_log', 'default');
+    Configure::load('trash', 'default');
 } catch (\Exception $e) {
     exit($e->getMessage() . "\n");
 }
