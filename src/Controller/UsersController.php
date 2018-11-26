@@ -113,7 +113,7 @@ class UsersController extends AppController
         $processed = false;
         $resource = $avatarService->getImageResource($data);
 
-        if (! is_null($resource)) {
+        if (false !== $resource) {
             $processed = $this->Users->saveCustomAvatar($user, $resource);
         }
 

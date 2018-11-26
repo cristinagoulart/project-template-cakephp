@@ -201,11 +201,11 @@ final class Service
      * @param mixed $data of the file origin (form, base64 data)
      * @param bool $isBase64 flag to check how to handle $data
      *
-     * @return resource|null $source of the image
+     * @return resource|false $source of the image
      */
     public function getImageResource($data, bool $isBase64 = false)
     {
-        $source = null;
+        $source = false;
 
         /**
          * @var resource $source

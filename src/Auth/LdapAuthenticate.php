@@ -30,7 +30,7 @@ class LdapAuthenticate extends BaseAuthenticate
     /**
      * LDAP Object.
      *
-     * @var object
+     * @var resource
      */
     protected $_connection;
 
@@ -101,18 +101,23 @@ class LdapAuthenticate extends BaseAuthenticate
             return false;
         }
 
+        /** @var string $username */
+        $username = $request->getData('username');
+        /** @var string $password */
+        $password = $request->getData('password');
+
         try {
             // phpcs:ignore Generic.PHP.NoSilencedErrors.Discouraged
-            $bind = @ldap_bind($this->_connection, $request->getData('username'), $request->getData('password'));
+            $bind = @ldap_bind($this->_connection, $username, $password);
             if ($bind) {
-                $filter = '(' . $this->_config['filter'] . '=' . $request->getData('username') . ')';
+                $filter = '(' . $this->_config['filter'] . '=' . $username . ')';
                 $attributes = $this->_config['attributes']();
                 $search = ldap_search($this->_connection, $this->_config['baseDn'], $filter, array_keys($attributes));
                 $entry = ldap_first_entry($this->_connection, $search);
 
                 return ldap_get_attributes($this->_connection, $entry);
             } else {
-                $this->log('LDAP server bind failed for [' . $request->getData('username') . '].', LogLevel::CRITICAL);
+                $this->log('LDAP server bind failed for [' . $username . '].', LogLevel::CRITICAL);
             }
         } catch (Exception $e) {
             $this->log($e->getMessage());
@@ -142,11 +147,13 @@ class LdapAuthenticate extends BaseAuthenticate
         // look for the user in the database
         $query = $table->find('all', [
             'conditions' => [$this->_config['fields']['username'] => $request->getData('username')]
-        ]);
+        ])->enableHydration(true);
+
+        /** @var \Cake\Datasource\EntityInterface|null $entity */
         $entity = $query->first();
 
         // user already exists, just return the existing entity
-        if ($entity) {
+        if (! is_null($entity)) {
             return $entity->toArray();
         }
 
@@ -174,7 +181,7 @@ class LdapAuthenticate extends BaseAuthenticate
      * Map LDAP fields to database fields.
      *
      * @param  mixed[] $data LDAP user info.
-     * @return array
+     * @return mixed[]
      */
     protected function _mapData(array $data = []): array
     {
@@ -212,7 +219,7 @@ class LdapAuthenticate extends BaseAuthenticate
      *
      * @return void
      */
-    protected function _disconnect()
+    protected function _disconnect(): void
     {
         // phpcs:ignore Generic.PHP.NoSilencedErrors.Discouraged
         @ldap_unbind($this->_connection);

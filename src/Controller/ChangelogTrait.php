@@ -58,7 +58,7 @@ trait ChangelogTrait
 
         $this->set('changelog', $this->paginate($query));
         $this->set('modelAlias', $modelAlias);
-        $this->set('displayField', $this->loadModel()->getDisplayField());
+        $this->set('displayField', $table->getDisplayField());
         $this->set('usersTable', TableRegistry::get(Configure::read('Users.table')));
         $this->set('entity', $entity);
 
