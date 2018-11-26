@@ -172,7 +172,7 @@ class AppController extends Controller
     public function index()
     {
         $entity = $this->getSystemSearch();
-        $searchData = json_decode($entity->get('content'), true);
+        $searchData = $entity->get('content');
 
         // return json response and skip any further processing.
         if ($this->request->is('ajax') && $this->request->accepts('application/json')) {

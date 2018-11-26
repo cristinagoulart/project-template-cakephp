@@ -242,7 +242,6 @@ class SearchableFieldsListener implements EventListenerInterface
         try {
             $mc = new ModuleConfig(ConfigType::MODULE(), $table->getRegistryAlias());
             $config = $mc->parseToArray();
-            // $config = json_decode(json_encode($config), true);
         } catch (InvalidArgumentException $e) {
             Log::error($e);
         }
@@ -277,9 +276,7 @@ class SearchableFieldsListener implements EventListenerInterface
          */
         $entity = $query->first();
 
-        $searchData = json_decode($entity->get('content'));
-
-        return (array)$searchData->saved->display_columns;
+        return (array)$entity->get('content')['saved']['display_columns'];
     }
 
     /**
