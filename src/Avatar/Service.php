@@ -4,6 +4,7 @@ namespace App\Avatar;
 use App\Avatar\AvatarInterface;
 use App\Avatar\Type\ImageSource;
 use Cake\Core\Configure;
+use Cake\Utility\Hash;
 use InvalidArgumentException;
 
 final class Service
@@ -17,14 +18,17 @@ final class Service
      * Constructor method.
      *
      * @param \App\Avatar\AvatarInterface $avatar Avatar instance
+     * @param mixed[] $defaults for Avatar Service
      */
-    public function __construct(AvatarInterface $avatar = null)
+    public function __construct(AvatarInterface $avatar = null, array $defaults = [])
     {
-        if (!$avatar) {
-            $avatar = new ImageSource();
+        if (! $avatar) {
+            $source = Hash::get(Configure::read('Avatar.order'), '0', 'App\Avatar\Type\ImageSource');
+            /** @var \App\Avatar\AvatarInterface $avatar */
+            $avatar = $this->invokeAvatarSource($source, $defaults);
         }
 
-        $this->avatar = $avatar;
+        $this->setAvatarSource($avatar);
     }
 
     /**
@@ -37,6 +41,16 @@ final class Service
     public function setAvatarSource(AvatarInterface $avatar): void
     {
         $this->avatar = $avatar;
+    }
+
+    /**
+     * Get Avatar Source instance
+     *
+     * @return \App\Avatar\AvatarInterface
+     */
+    public function getAvatarSource(): AvatarInterface
+    {
+        return $this->avatar;
     }
 
     /**
@@ -60,7 +74,7 @@ final class Service
             /**
              * @var \App\Avatar\AvatarInterface $source
              */
-            $source = $this->getAvatarSource($classType, $options);
+            $source = $this->invokeAvatarSource($classType, $options);
             $image = $source->get();
 
             if (!empty($image)) {
@@ -73,14 +87,14 @@ final class Service
         /**
          * @var \App\Avatar\AvatarInterface $imageSource
          */
-        $imageSource = $this->getAvatarSource('ImageSource', ['src' => $defaultAvatar]);
+        $imageSource = $this->invokeAvatarSource('ImageSource', ['src' => $defaultAvatar]);
         $this->setAvatarSource($imageSource);
 
         return $this->avatar->get();
     }
 
     /**
-     * Initiate class object base on its name
+     * Invoke class object base on its name
      *
      * @param string $class name
      * @param mixed[] $options if any required
@@ -89,7 +103,7 @@ final class Service
      *
      * @return \App\Avatar\AvatarInterface $instance of the class
      */
-    public function getAvatarSource(string $class, array $options = []): ?AvatarInterface
+    public function invokeAvatarSource(string $class, array $options = []): ?AvatarInterface
     {
         if (!class_exists($class)) {
             throw new InvalidArgumentException("Avatar Source [$class] wasn't found");
@@ -187,10 +201,12 @@ final class Service
      * @param mixed $data of the file origin (form, base64 data)
      * @param bool $isBase64 flag to check how to handle $data
      *
-     * @return resource $source of the image
+     * @return resource|null $source of the image
      */
     public function getImageResource($data, bool $isBase64 = false)
     {
+        $source = null;
+
         /**
          * @var resource $source
          */
