@@ -63,7 +63,7 @@ class UpgradeFileTask extends BakeTask
         $data = [
             'timestamp' => $timestamp,
         ];
-        dd($this->BakeTemplate);
+
         $this->BakeTemplate->set($data);
         $contents = $this->BakeTemplate->generate('Shell/Task/upgrade_task');
         $path = $this->getPath() . 'Shell' . DS . 'Task' . DS;
