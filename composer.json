@@ -35,6 +35,7 @@
         "brainmaestro/composer-git-hooks": "^2.4",
         "cakephp/cakephp": "^3.6",
         "cakephp/plugin-installer": "^1.1",
+        "composer/composer": "^1.7",
         "dereuromark/cakephp-databaselog": "^2.1",
         "dereuromark/cakephp-whoops": "^0.1.2",
         "lasserafn/php-initial-avatar-generator": "^2.3",
