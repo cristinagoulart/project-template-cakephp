@@ -1,7 +1,6 @@
 <?php
 namespace App\Test\TestCase\Shell;
 
-use App\Shell\UsersShell;
 use Cake\Console\ConsoleIo;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\Stub\ConsoleOutput;

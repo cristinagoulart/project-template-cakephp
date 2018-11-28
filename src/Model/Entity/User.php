@@ -5,7 +5,6 @@ use App\Avatar\Service as AvatarService;
 use CakeDC\Users\Model\Entity\User as BaseUser;
 use Cake\Core\Configure;
 use Cake\ORM\TableRegistry;
-use Exception;
 
 /**
  * @property string $id

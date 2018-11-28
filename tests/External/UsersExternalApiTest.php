@@ -1,10 +1,8 @@
 <?php
 namespace App\Test\External;
 
-use Cake\Core\Configure;
 use Cake\Http\Client;
 use Cake\Http\Client\Response;
-use Cake\ORM\TableRegistry;
 use Cake\TestSuite\IntegrationTestCase;
 
 /**

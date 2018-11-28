@@ -10,7 +10,6 @@ use Cake\Log\LogTrait;
 use Cake\Network\Exception\InternalErrorException;
 use Cake\ORM\TableRegistry;
 use Cake\Utility\Hash;
-use Exception;
 use Psr\Log\LogLevel;
 
 class LdapAuthenticate extends BaseAuthenticate
