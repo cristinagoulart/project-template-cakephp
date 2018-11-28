@@ -40,6 +40,10 @@ class ScheduledJobsTask extends Shell
             $data['start_date'] = Time::parse($data['start_date'])->second(0);
         }
 
+        if (empty($data['start_date'])) {
+            $data['start_date'] = Time::now();
+        }
+
         $entity = $table->newEntity(array_merge($data, [
             'name' => sprintf('System [%s] command', $job),
             'job' => $job,
