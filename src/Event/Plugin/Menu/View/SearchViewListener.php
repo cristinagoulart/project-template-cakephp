@@ -9,6 +9,7 @@ use Cake\Event\EventListenerInterface;
 use Cake\Routing\Router;
 use Menu\Event\EventName as MenuEventName;
 use Menu\MenuBuilder\MenuInterface;
+use Menu\MenuBuilder\MenuItemFactory;
 
 class SearchViewListener implements EventListenerInterface
 {
@@ -56,14 +57,25 @@ class SearchViewListener implements EventListenerInterface
          * @var \Cake\Http\ServerRequest $request
          */
         $request = Router::getRequest();
+
         /**
          * @var \Menu\MenuBuilder\MenuInterface $menu
          */
         $menu = $menu;
+
+        if ($entity->trashed) {
+            list($delete, $restore) = $this->getTrashMenu($entity);
+            $menu->addMenuItem($delete);
+            $menu->addMenuItem($restore);
+            $event->setResult($event);
+
+            return;
+        }
+
         $menu->addMenuItem($this->getViewMenuItem($entity, $request));
         $editMenuItem = $this->getEditMenuItem($entity, $request);
         $editMenuItem->disableIf(function () use ($request) {
-            return 'Logs' === $request->getParam('controller');
+            return 'Logs' === $request->param('controller');
         });
 
         $menu->addMenuItem($editMenuItem);
@@ -73,11 +85,47 @@ class SearchViewListener implements EventListenerInterface
         ]);
 
         $deleteMenuItem->disableIf(function () use ($request) {
-            return 'Logs' === $request->getParam('controller');
+            return 'Logs' === $request->param('controller');
         });
 
         $menu->addMenuItem($deleteMenuItem);
 
         $event->setResult($event);
+    }
+
+    /**
+     * Return array with button to add to trash menu
+     * @param  EntityInterface $entity the search entity
+     * @return array
+     */
+    public function getTrashMenu(EntityInterface $entity)
+    {
+        $menuTrash = [];
+        $menuTrash[] = MenuItemFactory::createMenuItem([
+            'url' => [
+                'prefix' => false,
+                'controller' => 'trash',
+                'action' => 'delete',
+                $entity->getSource(),
+                $entity->id,
+            ],
+            'label' => __('Delete'),
+            'type' => 'postlink_button',
+            'icon' => 'trash',
+        ]);
+        $menuTrash[] = MenuItemFactory::createMenuItem([
+            'url' => [
+                'prefix' => false,
+                'controller' => 'trash',
+                'action' => 'restore',
+                $entity->getSource(),
+                $entity->id,
+            ],
+            'label' => __('Restore'),
+            'type' => 'postlink_button',
+            'icon' => 'recycle',
+        ]);
+
+        return $menuTrash;
     }
 }
