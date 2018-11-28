@@ -5,9 +5,6 @@ use CakeDC\Users\Shell\UsersShell as BaseShell;
 use Cake\Datasource\EntityInterface;
 use Cake\ORM\Entity;
 
-/**
- * @method \CakeDC\Users\Model\Behavior\SocialBehavior generateUniqueUsername($username)
- */
 class UsersShell extends BaseShell
 {
     /**
@@ -59,7 +56,10 @@ class UsersShell extends BaseShell
             return $this->params['username'];
         }
 
-        return $this->Users->generateUniqueUsername('superadmin');
+        /** @var \CakeDC\Users\Model\Behavior\SocialBehavior */
+        $behavior = $this->Users->getBehavior('Social');
+
+        return $behavior->generateUniqueUsername('superadmin');
     }
 
     /**

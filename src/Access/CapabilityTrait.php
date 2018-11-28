@@ -1,6 +1,11 @@
 <?php
-
 namespace App\Access;
+
+trigger_error(
+    '"App\Access\CapabilityTrait" trait is deprecated. Trait\'s logic has been moved ' .
+    'to App\Event\Plugin\Menu\View\AccessMenuListener class',
+    E_USER_DEPRECATED
+);
 
 use Cake\Core\Configure;
 use Cake\Routing\Router;

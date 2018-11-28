@@ -1,7 +1,7 @@
 <?php
 namespace App\Model\Table;
 
-use App\ScheduledJobs\JobInterface;
+use App\ScheduledJobs\Jobs\JobInterface;
 use ArrayObject;
 use Cake\Datasource\EntityInterface;
 use Cake\Datasource\ResultSetInterface;
@@ -93,7 +93,7 @@ class ScheduledJobsTable extends AppTable
      * @param string|null $command from DB entity
      * @param string|null $type Job type
      *
-     * @return object|null $instance of the job.
+     * @return mixed $instance of the job.
      */
     public function getInstance(?string $command, ?string $type)
     {
