@@ -3,7 +3,6 @@ namespace App\Test\TestCase\Avatar;
 
 use App\Avatar\Service;
 use Cake\Core\Configure;
-use Cake\Utility\Hash;
 use PHPUnit\Framework\TestCase;
 
 class ServiceTest extends TestCase
