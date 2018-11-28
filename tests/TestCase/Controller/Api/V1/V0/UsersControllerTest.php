@@ -29,6 +29,8 @@ class UsersControllerTest extends IntegrationTestCase
 
     public $fixtures = [
         'plugin.CakeDC/Users.users',
+        'plugin.Groups.groups',
+        'plugin.Groups.groups_users',
     ];
 
     /**
