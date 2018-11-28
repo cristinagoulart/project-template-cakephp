@@ -1,8 +1,6 @@
 <?php
-
 namespace App\Event\Plugin\Menu\View;
 
-use App\Access\CapabilityTrait;
 use App\Menu\MenuName;
 use Cake\Event\Event;
 use Cake\Event\EventListenerInterface;
@@ -12,8 +10,6 @@ use Menu\MenuBuilder\MenuInterface;
 
 class ApplicationMenuListener implements EventListenerInterface
 {
-    use CapabilityTrait;
-
     /**
      * @inheritdoc
      *

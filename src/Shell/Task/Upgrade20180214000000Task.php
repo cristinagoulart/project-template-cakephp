@@ -261,10 +261,8 @@ class Upgrade20180214000000Task extends Shell
         try {
             return new File($config->find());
         } catch (InvalidArgumentException $e) {
-            //
+            return null;
         }
-
-        return null;
     }
 
     /**

@@ -4,6 +4,7 @@ namespace App\Swagger;
 use Cake\Core\App;
 use Cake\Database\Exception;
 use Cake\Database\Type;
+use Cake\Database\TypeInterface;
 use Cake\I18n\Time;
 use Cake\ORM\TableRegistry;
 use Cake\Routing\Router;
@@ -341,12 +342,12 @@ class Annotation
     {
         $factory = new FieldHandlerFactory();
         $table = TableRegistry::getTableLocator()->get($this->className);
-        $config = (new ModuleConfig(ConfigType::MIGRATION(), $this->className))->parse();
+        $config = (new ModuleConfig(ConfigType::MIGRATION(), $this->className))->parseToArray();
 
         $result = [];
         foreach ($config as $column) {
-            $csvField = new CsvField((array)$column);
-            foreach ($factory->fieldToDb(new CsvField((array)$column), $table) as $field) {
+            $csvField = new CsvField($column);
+            foreach ($factory->fieldToDb(new CsvField($column), $table) as $field) {
                 $result[] = ['field' => $csvField, 'db_field' => $field];
             }
         }
@@ -368,8 +369,12 @@ class Annotation
         $columns = array_diff($table->getSchema()->columns(), $table->newEntity()->getHidden());
         foreach ($columns as $column) {
             $type = $table->getSchema()->getColumnType($column);
+            /** @var string|\Cake\Database\TypeInterface|null */
+            $typeMap = Type::getMap($type);
+            $typeMap = $typeMap instanceof TypeInterface ? $typeMap->getName() : $typeMap;
+
             // handle custom database types
-            if (false === strpos(Type::getMap($type), 'Cake\\Database\\Type\\')) {
+            if (null === $typeMap || false === strpos($typeMap, 'Cake\\Database\\Type\\')) {
                 $type = 'string';
             }
             $column = [
@@ -565,8 +570,10 @@ class Annotation
      */
     private function getDatabaseList(string $listName): array
     {
-        $result = TableRegistry::get('CsvMigrations.Dblists')
-            ->getOptions($listName);
+        /** @var \CsvMigrations\Model\Table\DblistsTable */
+        $table = TableRegistry::get('CsvMigrations.Dblists');
+
+        $result = $table->getOptions($listName);
 
         return is_array($result) ? $result : $result->toArray();
     }
