@@ -9,6 +9,11 @@ parameters:
     earlyTerminatingMethodCalls:
         Cake\Console\Shell:
             - abort
+    ignoreErrors:
+        # This rule is ignored to avoid aborting early during scheduled jobs run.
+        - '#In method "App\\Shell\\CronShell::main", caught "Exception" must be rethrown.#'
+        # This rule is ignored to avoid aborting early during scheduled jobs run.
+        - '#In method "App\\ScheduledJobs\\Jobs\\CakeShellJob::run", caught "Exception" must be rethrown.#'
 includes:
     - vendor/thecodingmachine/phpstan-strict-rules/phpstan-strict-rules.neon
     - vendor/timeweb/phpstan-enum/extension.neon

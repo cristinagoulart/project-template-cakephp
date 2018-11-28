@@ -27,7 +27,6 @@ use Cake\Http\Exception\NotFoundException;
 use Cake\ORM\TableRegistry;
 use Cake\Utility\Inflector;
 use Cake\Utility\Security;
-use Exception;
 use Firebase\JWT\JWT;
 use Qobo\Utils\ModuleConfig\ConfigType;
 use Qobo\Utils\ModuleConfig\ModuleConfig;
@@ -126,8 +125,14 @@ class AppController extends Controller
     {
         $this->_allowedResetPassword();
 
+        /**
+         * @var \Cake\Controller\Controller $controller
+         */
+        $controller = $event->getSubject();
+        $request = $controller->getRequest();
+
         // if user not logged in, redirect him to login page
-        $url = $event->getSubject()->request->getAttribute('params');
+        $url = $request->getAttribute('params');
         try {
             $user = empty($this->Auth->user()) ? [] : $this->Auth->user();
             $result = $this->_checkAccess($url, $user);
@@ -145,7 +150,7 @@ class AppController extends Controller
                 if ($this->request->query('embedded')) {
                     return $this->response;
                 }
-                throw new ForbiddenException($e->getMessage());
+                throw new ForbiddenException($e->getMessage(), 0, $e);
             }
         }
 
@@ -231,11 +236,16 @@ class AppController extends Controller
     private function createSystemSearch(): EntityInterface
     {
         $table = TableRegistry::getTableLocator()->get('Search.SavedSearches');
-        $user = TableRegistry::getTableLocator()->get('CakeDC/Users.Users')
+        /**
+         * @var \Cake\Datasource\EntityInterface $query
+         */
+        $query = TableRegistry::getTableLocator()->get('CakeDC/Users.Users')
             ->find()
             ->where(['is_superuser' => true])
-            ->firstOrFail()
-            ->toArray();
+            ->enableHydration(true)
+            ->firstOrFail();
+
+        $user = $query->toArray();
 
         $id = (new Search($this->loadModel(), $user))->create(['system' => true]);
 
@@ -284,15 +294,9 @@ class AppController extends Controller
         $this->viewBuilder()->setLayout('adminlte');
 
         $title = Inflector::humanize(Inflector::underscore($this->name));
-        try {
-            $mc = new ModuleConfig(ConfigType::MODULE(), $this->name);
-            $config = $mc->parse();
-            if (!empty($config->table->alias)) {
-                $title = $config->table->alias;
-            }
-        } catch (Exception $e) {
-            // do nothing
-        }
+        $mc = new ModuleConfig(ConfigType::MODULE(), $this->name);
+        $config = $mc->parse();
+        $title = ! empty($config->table->alias) ? $config->table->alias : $title;
 
         // overwrite theme title before setting the theme
         // NOTE: we set controller specific title, to work around requestAction() calls.

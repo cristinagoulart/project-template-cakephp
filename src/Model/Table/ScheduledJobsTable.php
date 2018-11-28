@@ -1,19 +1,16 @@
 <?php
 namespace App\Model\Table;
 
-use App\ScheduledJobs\JobInterface;
 use ArrayObject;
 use Cake\Datasource\EntityInterface;
 use Cake\Datasource\ResultSetInterface;
 use Cake\Event\Event;
 use Cake\Filesystem\Folder;
 use Cake\I18n\Time;
-use Cake\Log\Log;
 use Cake\Utility\Inflector;
 use DateTime;
 use RRule\RfcParser;
 use RRule\RRule;
-use RuntimeException;
 
 class ScheduledJobsTable extends AppTable
 {
@@ -93,7 +90,7 @@ class ScheduledJobsTable extends AppTable
      * @param string|null $command from DB entity
      * @param string|null $type Job type
      *
-     * @return object|null $instance of the job.
+     * @return mixed $instance of the job.
      */
     public function getInstance(?string $command, ?string $type)
     {

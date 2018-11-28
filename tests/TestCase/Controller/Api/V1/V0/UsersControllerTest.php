@@ -5,9 +5,6 @@ use App\Event\Controller\Api\EditActionListener;
 use App\Event\Controller\Api\IndexActionListener;
 use App\Event\Controller\Api\ViewActionListener;
 use App\Event\Model\LookupListener;
-use Cake\Core\Configure;
-use Cake\Datasource\ConnectionManager;
-use Cake\Event\EventList;
 use Cake\Event\EventManager;
 use Cake\Http\Client;
 use Cake\ORM\TableRegistry;
@@ -29,6 +26,8 @@ class UsersControllerTest extends IntegrationTestCase
 
     public $fixtures = [
         'plugin.CakeDC/Users.users',
+        'plugin.Groups.groups',
+        'plugin.Groups.groups_users',
     ];
 
     /**

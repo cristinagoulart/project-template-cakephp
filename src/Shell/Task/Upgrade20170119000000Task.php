@@ -5,6 +5,7 @@ use Cake\Console\ConsoleOptionParser;
 use Cake\Console\Shell;
 use DirectoryIterator;
 use RuntimeException;
+use SplFileInfo;
 
 class Upgrade20170119000000Task extends Shell
 {
@@ -50,11 +51,7 @@ class Upgrade20170119000000Task extends Shell
         }
 
         $this->out("Upgrading file paths in [$src]");
-        try {
-            $this->upgrade($src);
-        } catch (\Exception $e) {
-            $this->abort($e->getMessage());
-        }
+        $this->upgrade($src);
         $this->out("All done");
     }
 
@@ -140,7 +137,7 @@ class Upgrade20170119000000Task extends Shell
         }
         foreach ($files as $file) {
             // Convert SplFileInfo objects to file names
-            if (is_object($file)) {
+            if ($file instanceof SplFileInfo) {
                 $file = $file->getFilename();
             }
             // Skip dot files

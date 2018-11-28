@@ -42,17 +42,23 @@ trait ChangelogTrait
             ->order(['timestamp' => 'DESC'])
             ->group('timestamp');
 
+        /** @var \Cake\Datasource\RepositoryInterface&\Cake\ORM\Table $table */
+        $table = $this->loadModel();
+
         $modelAlias = $this->loadModel()->getAlias();
         $methodName = 'moduleAlias';
         if (method_exists($this->loadModel(), $methodName) && is_callable([$this->loadModel(), $methodName])) {
             $modelAlias = $this->loadModel()->{$methodName}();
         }
 
-        $entity = $this->loadModel()->findById($id)->firstOrFail();
+        $entity = $table->find()
+            ->where(['id' => $id])
+            ->enableHydration(true)
+            ->firstOrFail();
 
         $this->set('changelog', $this->paginate($query));
         $this->set('modelAlias', $modelAlias);
-        $this->set('displayField', $this->loadModel()->getDisplayField());
+        $this->set('displayField', $table->getDisplayField());
         $this->set('usersTable', TableRegistry::get(Configure::read('Users.table')));
         $this->set('entity', $entity);
 

@@ -32,13 +32,13 @@ class PagesController extends AppController
     /**
      * Displays a view
      *
-     * @param array ...$path Path segments.
+     * @param string[] ...$path Path segments.
      * @return \Cake\Http\Response|null
      * @throws \Cake\Http\Exception\ForbiddenException When a directory traversal attempt.
      * @throws \Cake\Http\Exception\NotFoundException When the view file could not
      *   be found or \Cake\View\Exception\MissingTemplateException in debug mode.
      */
-    public function display(...$path): ?\Cake\Http\Response
+    public function display(string ...$path): ?\Cake\Http\Response
     {
         $count = count($path);
         if (!$count) {

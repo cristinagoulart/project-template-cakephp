@@ -13,7 +13,6 @@ use Cake\Http\Exception\UnauthorizedException;
 use Cake\ORM\TableRegistry;
 use Cake\Utility\Hash;
 use Cake\Validation\Validator;
-use Exception;
 
 /**
  * Users Controller
@@ -110,8 +109,12 @@ class UsersController extends AppController
             return $this->redirect($this->request->referer());
         }
 
+        $processed = false;
         $resource = $avatarService->getImageResource($data);
-        $processed = $this->Users->saveCustomAvatar($user, $resource);
+
+        if (false !== $resource) {
+            $processed = $this->Users->saveCustomAvatar($user, $resource);
+        }
 
         if ($processed) {
             $this->Flash->success((string)__('The image has been uploaded.'));

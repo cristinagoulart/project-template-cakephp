@@ -29,6 +29,7 @@ final class DynamicAvatar extends AbstractAvatar
     public function get(): string
     {
         $result = '';
+        $saved = false;
 
         $filename = $this->getAvatarUrl($this->options);
         $file = WWW_ROOT . $filename;
@@ -45,7 +46,9 @@ final class DynamicAvatar extends AbstractAvatar
             ->stream('data-url');
 
         $resource = imagecreatefromstring((string)file_get_contents($image->getContents()));
-        $saved = $this->processAvatarResource($file, $resource);
+        if ($resource) {
+            $saved = $this->processAvatarResource($file, $resource);
+        }
 
         if ($saved) {
             $result = $filename;

@@ -54,9 +54,13 @@ class Upgrade20180726084300Task extends Shell
         $avatarService = new AvatarService();
 
         foreach ($query->all() as $entity) {
+            $processed = false;
+
             $source = $avatarService->getImageResource($entity->get('image'), true);
 
-            $processed = $this->Users->saveCustomAvatar($entity, $source);
+            if (! empty($source)) {
+                $processed = $this->Users->saveCustomAvatar($entity, $source);
+            }
 
             if (!$processed) {
                 $this->warn("User [" . $entity->get('email') . "] avatar failed");

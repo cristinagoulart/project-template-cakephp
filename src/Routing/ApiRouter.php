@@ -50,7 +50,6 @@ class ApiRouter
             // It can handle `api/controller/index.json` as well
             // as `api/controller.json` calls.
             Router::prefix('api', function ($routes) use ($default) {
-
                 $routes->setExtensions(['json']);
                 $routes->connect('/:controller', ['prefix' => $default], ['routeClass' => DashedRoute::class]);
                 $routes->connect('/:controller/:action/*', ['prefix' => $default], ['routeClass' => DashedRoute::class]);

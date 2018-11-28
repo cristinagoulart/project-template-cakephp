@@ -2,7 +2,6 @@
 namespace App\Feature;
 
 use Cake\Core\Configure;
-use InvalidArgumentException;
 use RuntimeException;
 
 class Factory
