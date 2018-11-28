@@ -23,7 +23,7 @@ class Upgrade20181127140328Task extends Shell
     /**
      * main() method
      *
-     * @retun void
+     * @return void
      */
     public function main()
     {
