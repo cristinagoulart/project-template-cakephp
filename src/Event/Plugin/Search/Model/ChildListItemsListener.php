@@ -100,7 +100,7 @@ class ChildListItemsListener implements EventListenerInterface
     private function getFileListChildren(string $parentValue, string $listName): array
     {
         if (strpos($listName, '.') !== false) {
-            list ($module, $name) = explode('.', $listName);
+            list($module, $name) = explode('.', $listName);
 
             $moduleConfig = new ModuleConfig(ConfigType::MIGRATION(), $module);
             $fields = $moduleConfig->parseToArray();

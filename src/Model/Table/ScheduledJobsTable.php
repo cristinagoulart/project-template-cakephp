@@ -1,19 +1,16 @@
 <?php
 namespace App\Model\Table;
 
-use App\ScheduledJobs\Jobs\JobInterface;
 use ArrayObject;
 use Cake\Datasource\EntityInterface;
 use Cake\Datasource\ResultSetInterface;
 use Cake\Event\Event;
 use Cake\Filesystem\Folder;
 use Cake\I18n\Time;
-use Cake\Log\Log;
 use Cake\Utility\Inflector;
 use DateTime;
 use RRule\RfcParser;
 use RRule\RRule;
-use RuntimeException;
 
 class ScheduledJobsTable extends AppTable
 {

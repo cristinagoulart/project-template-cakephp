@@ -13,7 +13,6 @@ use Cake\Http\Exception\UnauthorizedException;
 use Cake\ORM\TableRegistry;
 use Cake\Utility\Hash;
 use Cake\Validation\Validator;
-use Exception;
 
 /**
  * Users Controller
