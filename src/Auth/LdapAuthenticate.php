@@ -10,7 +10,6 @@ use Cake\Log\LogTrait;
 use Cake\Network\Exception\InternalErrorException;
 use Cake\ORM\TableRegistry;
 use Cake\Utility\Hash;
-use Exception;
 use Psr\Log\LogLevel;
 
 class LdapAuthenticate extends BaseAuthenticate
@@ -30,9 +29,9 @@ class LdapAuthenticate extends BaseAuthenticate
     /**
      * LDAP Object.
      *
-     * @var object
+     * @var resource|null
      */
-    protected $_connection;
+    protected $_connection = null;
 
     /**
      * {@inheritDoc}
@@ -80,16 +79,21 @@ class LdapAuthenticate extends BaseAuthenticate
      */
     protected function _connect(): void
     {
-        try {
-            // phpcs:ignore Generic.PHP.NoSilencedErrors.Discouraged
-            $this->_connection = @ldap_connect($this->_config['host'], $this->_config['port']);
-            // set LDAP options
-            ldap_set_option($this->_connection, LDAP_OPT_PROTOCOL_VERSION, (int)$this->_config['version']);
-            ldap_set_option($this->_connection, LDAP_OPT_REFERRALS, 0);
-            ldap_set_option($this->_connection, LDAP_OPT_NETWORK_TIMEOUT, 5);
-        } catch (Exception $e) {
+        // phpcs:ignore Generic.PHP.NoSilencedErrors.Discouraged
+        $connection = @ldap_connect($this->_config['host'], $this->_config['port']);
+
+        if (false === $connection) {
             $this->log('Unable to connect to specified LDAP Server.', LogLevel::CRITICAL);
+
+            return;
         }
+
+        // set LDAP options
+        ldap_set_option($connection, LDAP_OPT_PROTOCOL_VERSION, (int)$this->_config['version']);
+        ldap_set_option($connection, LDAP_OPT_REFERRALS, 0);
+        ldap_set_option($connection, LDAP_OPT_NETWORK_TIMEOUT, 5);
+
+        $this->_connection = $connection;
     }
 
     /**
@@ -97,28 +101,44 @@ class LdapAuthenticate extends BaseAuthenticate
      */
     public function getUser(ServerRequest $request)
     {
+        if (null === $this->_connection) {
+            return false;
+        }
+
         if (! ($request->getData('username')) || ! ($request->getData('password'))) {
             return false;
         }
 
-        try {
-            // phpcs:ignore Generic.PHP.NoSilencedErrors.Discouraged
-            $bind = @ldap_bind($this->_connection, $request->getData('username'), $request->getData('password'));
-            if ($bind) {
-                $filter = '(' . $this->_config['filter'] . '=' . $request->getData('username') . ')';
-                $attributes = $this->_config['attributes']();
-                $search = ldap_search($this->_connection, $this->_config['baseDn'], $filter, array_keys($attributes));
-                $entry = ldap_first_entry($this->_connection, $search);
+        /** @var string $username */
+        $username = $request->getData('username');
+        /** @var string $password */
+        $password = $request->getData('password');
 
-                return ldap_get_attributes($this->_connection, $entry);
-            } else {
-                $this->log('LDAP server bind failed for [' . $request->getData('username') . '].', LogLevel::CRITICAL);
-            }
-        } catch (Exception $e) {
-            $this->log($e->getMessage());
+        // phpcs:ignore Generic.PHP.NoSilencedErrors.Discouraged
+        $bind = @ldap_bind($this->_connection, $username, $password);
+        if (false === $bind) {
+            $this->log(sprintf('LDAP server bind failed for user "%s".', $username), LogLevel::CRITICAL);
+
+            return false;
         }
 
-        return false;
+        $filter = '(' . $this->_config['filter'] . '=' . $username . ')';
+        $attributes = $this->_config['attributes']();
+        $search = ldap_search($this->_connection, $this->_config['baseDn'], $filter, array_keys($attributes));
+        if (false === $search) {
+            $this->log('Failed to retrieve search result.', LogLevel::CRITICAL);
+
+            return false;
+        }
+
+        $entry = ldap_first_entry($this->_connection, $search);
+        if (false === $entry) {
+            $this->log('Failed to retrieve result entry.', LogLevel::CRITICAL);
+
+            return false;
+        }
+
+        return ldap_get_attributes($this->_connection, $entry);
     }
 
     /**
@@ -142,11 +162,13 @@ class LdapAuthenticate extends BaseAuthenticate
         // look for the user in the database
         $query = $table->find('all', [
             'conditions' => [$this->_config['fields']['username'] => $request->getData('username')]
-        ]);
+        ])->enableHydration(true);
+
+        /** @var \Cake\Datasource\EntityInterface|null $entity */
         $entity = $query->first();
 
         // user already exists, just return the existing entity
-        if ($entity) {
+        if (! is_null($entity)) {
             return $entity->toArray();
         }
 
@@ -174,7 +196,7 @@ class LdapAuthenticate extends BaseAuthenticate
      * Map LDAP fields to database fields.
      *
      * @param  mixed[] $data LDAP user info.
-     * @return array
+     * @return mixed[]
      */
     protected function _mapData(array $data = []): array
     {
@@ -212,8 +234,12 @@ class LdapAuthenticate extends BaseAuthenticate
      *
      * @return void
      */
-    protected function _disconnect()
+    protected function _disconnect(): void
     {
+        if (null === $this->_connection) {
+            return;
+        }
+
         // phpcs:ignore Generic.PHP.NoSilencedErrors.Discouraged
         @ldap_unbind($this->_connection);
         // phpcs:ignore Generic.PHP.NoSilencedErrors.Discouraged

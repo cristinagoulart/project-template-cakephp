@@ -31,7 +31,7 @@ class BatchActionListener implements EventListenerInterface
      */
     public function batchAccessCheck(Event $event, array $batchIds, string $operation, array $user): void
     {
-        /** @var \Cake\ORM\Controller */
+        /** @var \Cake\Controller\Controller $controller */
         $controller = $event->getSubject();
 
         $result = [];

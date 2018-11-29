@@ -1,7 +1,7 @@
 {
     "table": {
         "icon": "file",
-        "display_field": "id",
+        "display_field": "filename",
         "searchable": true,
         "lookup_fields": [],
         "typeahead_fields": [],

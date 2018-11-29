@@ -1,22 +1,11 @@
-{#
-/**
- * Copyright (c) Qobo Ltd. (https://www.qobo.biz)
- *
- * Licensed under The MIT License
- * For full copyright and license information, please see the LICENSE
- * Redistributions of files must retain the above copyright notice.
- *
- * @copyright     Copyright (c) Qobo Ltd. (https://www.qobo.biz)
- * @license       https://opensource.org/licenses/mit-license.php MIT License
- */
-#}
 <?php
 namespace App\Shell\Task;
 
 use Cake\Console\ConsoleOptionParser;
 use Cake\Console\Shell;
+use Cake\I18n\Time;
 
-class Upgrade{{ timestamp }}Task extends Shell
+class Upgrade20181127140328Task extends Shell
 {
     /**
      * Manage the available sub-commands along with their arguments and help
@@ -38,6 +27,12 @@ class Upgrade{{ timestamp }}Task extends Shell
      */
     public function main()
     {
+        $task = $this->Tasks->load('ScheduledJobs');
 
+        $task->add('CakeShell::App:scheduled_log', [
+            'recurrence' => 'FREQ=DAILY;INTERVAL=1',
+            'start_date' => new Time('02:00'),
+            'options' => 'gc',
+        ]);
     }
 }

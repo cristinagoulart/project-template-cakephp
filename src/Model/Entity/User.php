@@ -5,7 +5,6 @@ use App\Avatar\Service as AvatarService;
 use CakeDC\Users\Model\Entity\User as BaseUser;
 use Cake\Core\Configure;
 use Cake\ORM\TableRegistry;
-use Exception;
 
 /**
  * @property string $id
@@ -75,16 +74,17 @@ class User extends BaseUser
             return true;
         }
 
-        try {
-            /** @var \RolesCapabilities\Model\Table\CapabilitiesTable $capabilities */
-            $capabilities = TableRegistry::get('RolesCapabilities.Capabilities');
-            $userGroups = $capabilities->getUserGroups($this->get('id'));
-            $userRoles = $capabilities->getGroupsRoles($userGroups);
-            $isAdmin = in_array(Configure::readOrFail('RolesCapabilities.Roles.Admin.name'), $userRoles);
-
-            return $isAdmin;
-        } catch (Exception $e) {
+        $roleName = Configure::read('RolesCapabilities.Roles.Admin.name');
+        if (! is_string($roleName)) {
             return false;
         }
+
+        /** @var \RolesCapabilities\Model\Table\CapabilitiesTable $capabilities */
+        $capabilities = TableRegistry::get('RolesCapabilities.Capabilities');
+        $userGroups = $capabilities->getUserGroups($this->get('id'));
+        $userRoles = $capabilities->getGroupsRoles($userGroups);
+        $isAdmin = in_array($roleName, $userRoles);
+
+        return $isAdmin;
     }
 }

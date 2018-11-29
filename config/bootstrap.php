@@ -119,6 +119,9 @@ if (Configure::read('debug')) {
     Configure::write('Cache._cake_core_.duration', '+2 minutes');
     // disable router cache during development
     Configure::write('Cache._cake_routes_.duration', '+2 seconds');
+
+    Configure::write('Cache._cake_swagger_.duration', '+2 seconds');
+    Configure::write('Cache.default.duration', '+2 seconds');
 }
 
 /*

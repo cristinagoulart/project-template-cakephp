@@ -2,13 +2,16 @@
 
 namespace App\Event\Plugin\Menu\View;
 
-use App\Access\CapabilityTrait;
+use Cake\Core\Configure;
 use Cake\Event\Event;
 use Cake\Event\EventListenerInterface;
+use Cake\Routing\Router;
+use InvalidArgumentException;
 use Menu\Event\EventName as MenuEventName;
 use Menu\MenuBuilder\MenuInterface;
 use Menu\MenuBuilder\MenuItemContainerInterface;
 use Menu\MenuBuilder\MenuItemInterface;
+use RolesCapabilities\CapabilityTrait;
 
 class AccessMenuListener implements EventListenerInterface
 {
@@ -67,10 +70,63 @@ class AccessMenuListener implements EventListenerInterface
         */
         foreach ($container->getMenuItems() as $item) {
             $item->disableIf(function (MenuItemInterface $item) use ($user) {
-                return !$this->_checkAccess($item->getUrl(), $user);
+                return !$this->checkAccess($item->getUrl(), $user);
             });
 
             $this->disableUnauthorisedItems($item, $user);
         }
+    }
+
+    /**
+     * Returns true only and only if the provided user has access to the provided URL.
+     *
+     * @param string|array $url URL to be checked
+     * @param mixed[] $user User information
+     * @return bool True if user has access to the provided URL
+     */
+    private function checkAccess($url, array $user): bool
+    {
+        $stringUrl = is_array($url) ? Router::url($url) : $url;
+
+        if (! is_string($stringUrl)) {
+            throw new InvalidArgumentException(sprintf(
+                'Failed to convert url into a string: %s',
+                json_encode($url, JSON_PRETTY_PRINT)
+            ));
+        }
+
+        foreach ((array)Configure::read('Menu.routes.blacklist') as $route) {
+            if (0 === strpos($stringUrl, $route)) {
+                return false;
+            }
+        }
+
+        return $this->_checkAccess($this->parseUrl($url), $user);
+    }
+
+    /**
+     * Parses menu item URL.
+     *
+     * @param array|string $url Menu item URL
+     * @return mixed[]
+     */
+    private function parseUrl($url): array
+    {
+        if (!is_string($url)) {
+            return $url;
+        }
+
+        $fullBaseUrl = Router::fullBaseUrl();
+
+        // strip out full base URL from menu item's URL.
+        if (false !== strpos($url, $fullBaseUrl)) {
+            $url = str_replace($fullBaseUrl, '', $url);
+        }
+
+        if (0 !== strpos($url, '/')) {
+            $url = '/' . $url;
+        }
+
+        return Router::getRouteCollection()->parse($url);
     }
 }

@@ -1,7 +1,6 @@
 <?php
 namespace App\Test\TestCase\Controller;
 
-use App\Controller\ScheduledJobsController;
 use App\Feature\Factory;
 use Cake\I18n\Time;
 use Cake\ORM\TableRegistry;

@@ -22,7 +22,6 @@ use RuntimeException;
  */
 class CronShell extends Shell
 {
-
     public $tasks = ['Lock'];
 
     protected $featureName = 'ScheduledJobs';

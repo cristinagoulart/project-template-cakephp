@@ -14,7 +14,6 @@
  */
 namespace App\Test\TestCase\Controller;
 
-use App\Controller\PagesController;
 use Cake\TestSuite\IntegrationTestCase;
 
 /**

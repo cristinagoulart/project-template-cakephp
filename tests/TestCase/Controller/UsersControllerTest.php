@@ -1,7 +1,6 @@
 <?php
 namespace App\Test\TestCase\Controller;
 
-use App\Controller\DblistsController;
 use Cake\Core\Configure;
 use Cake\Http\Exception\ForbiddenException;
 use Cake\ORM\TableRegistry;

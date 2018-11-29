@@ -62,8 +62,11 @@ class DashboardMenuListener implements EventListenerInterface
             $request = Router::getRequest();
             $entity = $event->getSubject() instanceof EntityInterface ? $event->getSubject() : null;
 
-            $menu->addMenuItem($this->getEditMenuItem($entity, $request));
-            $menu->addMenuItem($this->getDeleteMenuItem($entity, $request));
+            if (! is_null($entity)) {
+                $menu->addMenuItem($this->getEditMenuItem($entity, $request));
+                $menu->addMenuItem($this->getDeleteMenuItem($entity, $request));
+            }
+
             $event->setResult($menu);
 
             return;
@@ -110,10 +113,9 @@ class DashboardMenuListener implements EventListenerInterface
      */
     private function addDashboardItemsFromTable(MenuItemContainerInterface $container, array $user, int $startAt): void
     {
-        /**
-         * @var \Search\Model\Table\DashboardsTable $table
-         */
+        /** @var \Search\Model\Table\DashboardsTable $table */
         $table = TableRegistry::get('Search.Dashboards');
+        /** @var \Cake\Datasource\QueryInterface&\Cake\ORM\Query $query */
         $query = $table->getUserDashboards($user);
 
         /**
