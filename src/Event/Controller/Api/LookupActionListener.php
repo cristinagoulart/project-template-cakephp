@@ -359,8 +359,8 @@ class LookupActionListener extends BaseActionListener
         $query->join([
             'table' => $targetTable->table(),
             'alias' => $parentAssociation->name(),
-            'type' => 'INNER',
-            'conditions' => $foreignKey . ' = ' . $primaryKey . ' OR ' . $foreignKey . ' IS NULL'
+            'type' => 'LEFT',
+            'conditions' => [$foreignKey => $primaryKey]
         ]);
 
         $this->_joinParentTables($targetTable, $query);
