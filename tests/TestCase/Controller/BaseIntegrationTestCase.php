@@ -21,7 +21,7 @@ class BaseIntegrationTestCase extends IntegrationTestCase
         if (!empty($arguments['user_id'])) {
             $token = JWT::encode(
                 ['sub' => $arguments['user_id'], 'exp' => time() + 604800],
-                Security::salt()
+                Security::getSalt()
             );
 
             $options['token'] = $token;
