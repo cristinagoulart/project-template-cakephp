@@ -38,7 +38,7 @@ class LookupActionListenerTest extends TestCase
 
         $listener = new LookupActionListener();
         $listener->beforeLookup($event, $query);
-        $this->assertEquals(10, $query->count());
+        $this->assertFalse($query->isEmpty());
     }
 
     public function testBeforeLookupWithQuery(): void
