@@ -16,6 +16,8 @@ class LookupActionListenerTest extends TestCase
 
     public $fixtures = [
         'app.users',
+        'plugin.Groups.groups',
+        'plugin.Groups.groups_users',
     ];
 
     public function setUp()
