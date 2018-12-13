@@ -1,11 +1,27 @@
 <?php
 use Cake\Core\Configure;
+use Cake\Utility\Hash;
 use Cake\Utility\Inflector;
 use Qobo\Utils\ModuleConfig\ConfigType;
 use Qobo\Utils\ModuleConfig\ModuleConfig;
 
 $config = (new ModuleConfig(ConfigType::MODULE(), $this->name))->parse();
 $title = isset($config->table->alias) ? $config->table->alias : Inflector::humanize(Inflector::underscore($this->name));
+
+$displayFields = Hash::get($searchData, 'display_columns', []);
+$scripts = [];
+foreach ($searchableFields as $field => $options) {
+    if (! in_array($field, $displayFields)) {
+        continue;
+    }
+
+    if (empty($options['input']['post'])) {
+        continue;
+    }
+    array_push($scripts, ['post' => $options['input']['post']]);
+}
+
+echo $this->element('Search.widget_libraries', ['scripts' => $scripts]);
 ?>
 <section class="content-header">
     <div class="row">
