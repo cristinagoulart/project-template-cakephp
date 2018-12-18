@@ -76,6 +76,8 @@ echo $this->Html->script('AdminLTE./plugins/datepicker/bootstrap-datepicker', ['
                             <dd><?= !empty($user['phone_home']) ? h($user['phone_home']) : '&nbsp;' ?></dd>
                             <dt><?= __('Phone Mobile') ?></dt>
                             <dd><?= !empty($user['phone_mobile']) ? h($user['phone_mobile']) : '&nbsp;' ?></dd>
+                            <dt><?= __('Phone Extension') ?></dt>
+                            <dd><?= !empty($user['phone_extension']) ? h($user['phone_extension']) : '&nbsp;' ?></dd>
                         </dl>
                         <?= $this->Html->link(
                             '<i class="fa fa-lock"></i> ' . __d('Users', 'Change Password'),
@@ -190,6 +192,12 @@ echo $this->Html->script('AdminLTE./plugins/datepicker/bootstrap-datepicker', ['
                             <?= $this->Form->control('Users.phone_mobile', [
                                 'placeholder' => __('Mobile Phone'),
                                 'value' => !empty($user['phone_mobile']) ? h($user['phone_mobile']) : null
+                            ]); ?>
+                            </div>
+                            <div class="col-xs-12 col-md-6">
+                            <?= $this->Form->control('Users.phone_extension', [
+                                'placeholder' => __('Phone Extension'),
+                                'value' => !empty($user['phone_extension']) ? h($user['phone_extension']) : null
                             ]); ?>
                             </div>
                         </div>
