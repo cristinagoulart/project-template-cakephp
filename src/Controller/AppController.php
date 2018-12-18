@@ -30,6 +30,7 @@ use Cake\Utility\Security;
 use Firebase\JWT\JWT;
 use Qobo\Utils\ModuleConfig\ConfigType;
 use Qobo\Utils\ModuleConfig\ModuleConfig;
+use Qobo\Utils\Utility\User;
 use RolesCapabilities\CapabilityTrait;
 use RuntimeException;
 use Search\Controller\SearchTrait;
@@ -92,6 +93,8 @@ class AppController extends Controller
         if (!$feature->isActive()) {
             throw new NotFoundException();
         }
+
+        User::setCurrentUser((array)$this->Auth->user());
     }
 
     /**
