@@ -90,6 +90,9 @@ try {
 } catch (\Exception $e) {
     exit($e->getMessage() . "\n");
 }
+
+require_once __DIR__ . '/routes_filters.php';
+
 /*
  * Load an environment local configuration file.
  * You can use a file like app_local.php to provide local overrides to your
