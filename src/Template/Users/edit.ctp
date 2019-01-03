@@ -7,8 +7,8 @@ $fhf = new FieldHandlerFactory($this);
 echo $this->Html->css(
     [
         'AdminLTE./plugins/iCheck/all',
-        'AdminLTE./plugins/datepicker/datepicker3',
-        'AdminLTE./plugins/select2/select2.min',
+        'AdminLTE./bower_components/bootstrap-datepicker/dist/css/bootstrap-datepicker3.min',
+        'AdminLTE./bower_components/select2/dist/css/select2.min',
         'Qobo/Utils.select2-bootstrap.min'
     ],
     [
@@ -19,8 +19,8 @@ echo $this->Html->script(
     [
         'CsvMigrations.dom-observer',
         'AdminLTE./plugins/iCheck/icheck.min',
-        'AdminLTE./plugins/datepicker/bootstrap-datepicker',
-        'AdminLTE./plugins/select2/select2.full.min',
+        'AdminLTE./bower_components/bootstrap-datepicker/dist/js/bootstrap-datepicker.min',
+        'AdminLTE./bower_components/select2/dist/js/select2.full.min',
         'CsvMigrations.select2.init'
     ],
     [

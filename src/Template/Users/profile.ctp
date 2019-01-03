@@ -3,8 +3,8 @@ use CsvMigrations\FieldHandlers\FieldHandlerFactory;
 
 $fhf = new FieldHandlerFactory($this);
 
-echo $this->Html->css('AdminLTE./plugins/datepicker/datepicker3', ['block' => 'css']);
-echo $this->Html->script('AdminLTE./plugins/datepicker/bootstrap-datepicker', ['block' => 'scriptBottom']);
+echo $this->Html->css('AdminLTE./bower_components/bootstrap-datepicker/dist/css/bootstrap-datepicker3.min', ['block' => 'css']);
+echo $this->Html->script('AdminLTE./bower_components/bootstrap-datepicker/dist/js/bootstrap-datepicker.min', ['block' => 'scriptBottom']);
 ?>
 <section class="content-header">
     <h1>User Profile</h1>
