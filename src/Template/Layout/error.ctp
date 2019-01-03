@@ -81,12 +81,12 @@ $skinName = Configure::read('Theme.skin');
         <div class="control-sidebar-bg"></div>
     </div>
 
-    <?php echo $this->Html->script('AdminLTE./plugins/jQuery/jquery-2.2.3.min'); ?>
-    <?php echo $this->Html->script('AdminLTE./bootstrap/js/bootstrap.min'); ?>
-    <?php echo $this->Html->script('AdminLTE./plugins/slimScroll/jquery.slimscroll.min'); ?>
-    <?php echo $this->Html->script('AdminLTE./plugins/fastclick/fastclick.min'); ?>
+    <?php echo $this->Html->script('AdminLTE./bower_components/jquery/dist/jquery.min'); ?>
+    <?php echo $this->Html->script('AdminLTE./bower_components/bootstrap/dist/js/bootstrap.min'); ?>
+    <?php echo $this->Html->script('AdminLTE./bower_components/jquery-slimscroll/jquery.slimscroll.min'); ?>
+    <?php echo $this->Html->script('AdminLTE./bower_components/fastclick/lib/fastclick'); ?>
     <!-- AdminLTE App -->
-    <?php echo $this->Html->script('AdminLTE./js/app.min'); ?>
+    <?php echo $this->Html->script('AdminLTE./js/adminlte.min'); ?>
 
     <?php echo $this->fetch('script'); ?>
     <?php echo $this->fetch('scriptBottom'); ?>
