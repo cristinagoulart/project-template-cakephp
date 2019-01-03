@@ -29,7 +29,7 @@ $skinName = Configure::read('Theme.skin');
     <title><?php echo Configure::read('Theme.title.' . $this->name); ?></title>
     <!-- Tell the browser to be responsive to screen width -->
     <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
-    <?php echo $this->Html->css('AdminLTE./bootstrap/css/bootstrap.min'); ?>
+    <?php echo $this->Html->css('AdminLTE./bower_components/bootstrap/dist/css/bootstrap.min'); ?>
     <?php echo $this->Html->css('/plugins/font-awesome/css/font-awesome.min'); ?>
     <?php echo $this->Html->css('/plugins/ionicons/css/ionicons.min'); ?>
     <!-- Theme style -->

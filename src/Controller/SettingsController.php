@@ -14,6 +14,7 @@ use Cake\Utility\Hash;
  * @property \App\Model\Table\SettingsTable $Settings
  *
  * @method \App\Model\Entity\Setting[]|\Cake\Datasource\ResultSetInterface paginate($object = null, array $settings = [])
+ * @method \Cake\ORM\Table filterSettings(array $dataSettings, array $userScope)
  */
 class SettingsController extends AppController
 {
@@ -47,7 +48,7 @@ class SettingsController extends AppController
 
     /**
      * TableRegistry::get('Settings');
-     * @var App\Model\Table\SettingsTable
+     * @var \App\Model\Table\SettingsTable
      */
     private $query;
 
@@ -65,7 +66,11 @@ class SettingsController extends AppController
     {
         parent::initialize();
         $this->dataSettings = Configure::read('Settings');
-        $this->query = TableRegistry::get('Settings');
+        /**
+         * @var \App\Model\Table\SettingsTable $table
+         */
+        $table = TableRegistry::get('Settings');
+        $this->query = $table;
         $this->dataApp = $this->query->find('list', ['keyField' => 'key', 'valueField' => 'value'])
               ->where(['scope' => SettingsTable::SCOPE_APP, 'context' => SettingsTable::CONTEXT_APP])
               ->toArray();
@@ -76,7 +81,7 @@ class SettingsController extends AppController
      * @param string $context uuid of user
      * @return \Cake\Http\Response|void|null
      */
-    public function user($context)
+    public function user(string $context)
     {
         $this->scope = SettingsTable::SCOPE_USER;
         $this->context = $context;
@@ -143,7 +148,7 @@ class SettingsController extends AppController
     /**
      * Index method
      *
-     * @return \Cake\Http\Response|void
+     * @return \Cake\Http\Response|void|null
      */
     private function settings()
     {
@@ -155,7 +160,6 @@ class SettingsController extends AppController
 
         if ($this->request->is('put')) {
             $dataPut = Hash::flatten($this->request->data('Settings'));
-            $this->query = TableRegistry::get('Settings');
             $type = Hash::combine($dataFiltered, '{s}.{s}.{s}.{s}.alias', '{s}.{s}.{s}.{s}.type');
             $scope = Hash::combine($dataFiltered, '{s}.{s}.{s}.{s}.alias', '{s}.{s}.{s}.{s}.scope');
             $links = Hash::filter(Hash::combine($dataFiltered, '{s}.{s}.{s}.{s}.alias', '{s}.{s}.{s}.{s}.links'));
@@ -180,17 +184,21 @@ class SettingsController extends AppController
             }
 
             if (empty($set)) {
-                $this->Flash->success(__('Nothing to update'));
+                $this->Flash->success('Nothing to update');
 
-                return $this->redirect($this->here);
+                return $this->redirect($this->request->referer());
             }
 
-            if ($this->query->saveMany($set)) {
-                $this->Flash->success(__('Settings successfully updated'));
+            /**
+             * @var \Cake\ORM\ResultSet&iterable<\Cake\Datasource\EntityInterface> $entities
+             */
+            $entities = $set;
+            if ($this->query->saveMany($entities)) {
+                $this->Flash->success('Settings successfully updated');
 
-                return $this->redirect($this->here);
+                return $this->redirect($this->request->referer());
             } else {
-                $this->Flash->error(__('Failed to update settings, please try again.'));
+                $this->Flash->error('Failed to update settings, please try again.');
             }
         }
     }
@@ -199,7 +207,7 @@ class SettingsController extends AppController
      * ONLY for developers
      * Pass data to generator page
      * Avaiable only for developers in localhost
-     * @return \Cake\Http\Response|void|arra
+     * @return \Cake\Http\Response|void
      * @throws UnauthorizedException check if is localhost
      */
     public function generator()
@@ -231,7 +239,7 @@ class SettingsController extends AppController
      * Check if the webserver is on localhost
      * @return bool true if is localhost
      */
-    private function isLocalhost()
+    private function isLocalhost(): bool
     {
         $localhost = [
             '127.0.0.1',

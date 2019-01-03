@@ -12,7 +12,7 @@ $skinName = Configure::read('Theme.skin');
         <title><?php echo Configure::read('Theme.title.' . $this->name); ?></title>
         <!-- Tell the browser to be responsive to screen width -->
         <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
-        <?php echo $this->Html->css('AdminLTE./bootstrap/css/bootstrap.min'); ?>
+        <?php echo $this->Html->css('AdminLTE./bower_components/bootstrap/dist/css/bootstrap.min'); ?>
         <?php echo $this->Html->css('/plugins/font-awesome/css/font-awesome.min'); ?>
         <?php echo $this->Html->css('/plugins/ionicons/css/ionicons.min'); ?>
         <!-- Theme style -->
@@ -70,12 +70,12 @@ $skinName = Configure::read('Theme.skin');
         </div>
         <!-- ./wrapper -->
 
-        <?php echo $this->Html->script('AdminLTE./plugins/jQuery/jquery-2.2.3.min'); ?>
-        <?php echo $this->Html->script('AdminLTE./bootstrap/js/bootstrap.min'); ?>
-        <?php echo $this->Html->script('AdminLTE./plugins/slimScroll/jquery.slimscroll.min'); ?>
-        <?php echo $this->Html->script('AdminLTE./plugins/fastclick/fastclick.min'); ?>
+        <?php echo $this->Html->script('AdminLTE./bower_components/jquery/dist/jquery.min'); ?>
+        <?php echo $this->Html->script('AdminLTE./bower_components/bootstrap/dist/js/bootstrap.min'); ?>
+        <?php echo $this->Html->script('AdminLTE./bower_components/jquery-slimscroll/jquery.slimscroll.min'); ?>
+        <?php echo $this->Html->script('AdminLTE./bower_components/fastclick/lib/fastclick'); ?>
         <!-- AdminLTE App -->
-        <?php echo $this->Html->script('AdminLTE./js/app.min'); ?>
+        <?php echo $this->Html->script('AdminLTE./js/adminlte.min'); ?>
 
         <?php echo $this->fetch('script'); ?>
         <?php echo $this->fetch('scriptBottom'); ?>

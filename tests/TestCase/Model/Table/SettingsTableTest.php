@@ -16,11 +16,9 @@ class SettingsTableTest extends TestCase
     /**
      * Test subject
      *
-     * @var \App\Model\Table\SettingsTable
+     * @var \App\Model\Table\SettingsTable $Settings
      */
     public $Settings;
-
-    public $configSettings;
 
     /**
      * Fixtures
@@ -40,7 +38,11 @@ class SettingsTableTest extends TestCase
     {
         parent::setUp();
         $config = TableRegistry::exists('Settings') ? [] : ['className' => SettingsTable::class];
-        $this->Settings = TableRegistry::get('Settings', $config);
+        /**
+         * @var \App\Model\Table\SettingsTable $table
+         */
+        $table = TableRegistry::get('Settings', $config);
+        $this->Settings = $table;
     }
 
     /**
@@ -55,19 +57,34 @@ class SettingsTableTest extends TestCase
         parent::tearDown();
     }
 
-    public function testCreateEntityNoKey()
+    /**
+     * testCreateEntityNoKey Test Create a new entity with invalid key
+     * @return void
+     */
+    public function testCreateEntityNoKey(): void
     {
         $this->expectException('Cake\Datasource\Exception\RecordNotFoundException');
         $en = $this->Settings->createEntity('invalid.key', '1234', 'integer', 'app', 'app');
     }
 
-    public function testCreateEntityExistRecord()
+    /**
+     * testCreateEntityExistRecord Test the creation a duplicate entity
+     * @return void
+     */
+    public function testCreateEntityExistRecord(): void
     {
+        /**
+         * @var \Cake\ORM\Entity $existEntity
+         */
         $existEntity = $this->Settings->createEntity('FileStorage.defaultImageSize', '1234', 'integer', 'app', 'app');
         $this->assertEquals(false, $existEntity->isNew());
     }
 
-    public function testCreateEntityNew()
+    /**
+     * testCreateEntityNew Test the creation of a new valid entity
+     * @return void
+     */
+    public function testCreateEntityNew(): void
     {
         $params = [
             'key' => 'FileStorage.defaultImageSize',
@@ -83,7 +100,11 @@ class SettingsTableTest extends TestCase
         $this->assertEquals($entity, $myEntity);
     }
 
-    public function testCreateEntityPatch()
+    /**
+     * testCreateEntityPatch Test patch entity
+     * @return void
+     */
+    public function testCreateEntityPatch(): void
     {
         $params = [
             'key' => 'ScheduledLog.stats.age',
@@ -92,7 +113,9 @@ class SettingsTableTest extends TestCase
             'context' => 'bb697cd7-c869-491d-8696-805b1af8c08f',
             'type' => 'integer'
         ];
-
+        /**
+         * @var \Cake\Datasource\EntityInterface $oldEntity
+         */
         $oldEntity = $this->Settings->find('all')->where(['key' => 'ScheduledLog.stats.age'])->first();
         $patchEntity = $this->Settings->patchEntity($oldEntity, $params);
         $myEntity = $this->Settings->createEntity('ScheduledLog.stats.age', 'my NEW value', 'integer', 'user', 'bb697cd7-c869-491d-8696-805b1af8c08f');
@@ -100,7 +123,11 @@ class SettingsTableTest extends TestCase
         $this->assertEquals($patchEntity, $myEntity);
     }
 
-    public function testFilterSettings()
+    /**
+     * testFilterSettings Test FilterSettings method
+     * @return void
+     */
+    public function testFilterSettings(): void
     {
         $userRoles = ['settings'];
 
@@ -141,7 +168,11 @@ class SettingsTableTest extends TestCase
         $this->assertEquals($configSettingsFilter, $filterData);
     }
 
-    public function testFilterDataException()
+    /**
+     * testFilterDataException Test wrong configuration
+     * @return void
+     */
+    public function testFilterDataException(): void
     {
         $userRoles = ['settings'];
         // Wrong configuration
@@ -161,10 +192,17 @@ class SettingsTableTest extends TestCase
         $filterData = $this->Settings->filterSettings($configSettings, $userRoles);
     }
 
-    public function testUpdateValidationNoErrors()
+    /**
+     * testUpdateValidationNoErrors Test valid configuration
+     * @return void
+     */
+    public function testUpdateValidationNoErrors(): void
     {
         $key = 'FileStorage.defaultImageSize';
-        $entity = TableRegistry::get('Settings')->findByKey($key)->first();
+        $entity = $this->Settings->find('all')->where(['key' => $key])->firstOrFail();
+        if (is_array($entity)) {
+            return;
+        }
         $params = [
             'key' => $key,
             'value' => '300',
@@ -174,20 +212,31 @@ class SettingsTableTest extends TestCase
         $this->assertEmpty($newEntity->getErrors());
     }
 
-    public function testUpdateValidationWithErrors()
+    /**
+     * testUpdateValidationWithErrors Test wrong validation
+     * @return void
+     */
+    public function testUpdateValidationWithErrors(): void
     {
         $key = 'FileStorage.defaultImageSize';
-        $entity = TableRegistry::get('Settings')->findByKey($key)->first();
+        $entity = TableRegistry::get('Settings')->find('all')->where(['key' => $key])->first();
         $params = [
             'key' => $key,
             'value' => 'wrong value',
             'type' => 'integer' // dynamic field to pass type to the validator
         ];
+        if (is_array($entity) || is_null($entity)) {
+            return;
+        }
         $newEntity = $this->Settings->patchEntity($entity, $params);
         $this->assertEquals('The provided value is invalid', $newEntity->getErrors()['value']['custom']);
     }
 
-    public function testGetAlias()
+    /**
+     * testGetAlias Test getAliasDiff method
+     * @return void
+     */
+    public function testGetAlias(): void
     {
         $configSettings = [
          'N Tab' => [
@@ -202,11 +251,15 @@ class SettingsTableTest extends TestCase
          ],
         ];
 
-        $alias = Hash::extract($configSettings, '{s}.{s}.{s}.{s}.alias');
+        $alias = (array)Hash::extract($configSettings, '{s}.{s}.{s}.{s}.alias');
         $this->assertEmpty($this->Settings->getAliasDiff($alias));
     }
 
-    public function testGetNewRecord()
+    /**
+     * testGetNewRecord getAliasDiff method
+     * @return void
+     */
+    public function testGetNewRecord(): void
     {
         $configSettings = [
          'N Tab' => [
@@ -231,14 +284,18 @@ class SettingsTableTest extends TestCase
           ]
         ];
 
-        $alias = Hash::extract($configSettings, '{s}.{s}.{s}.{s}.alias');
+        $alias = (array)Hash::extract($configSettings, '{s}.{s}.{s}.{s}.alias');
         $this->assertEquals(['Avatar.defaultImage'], $this->Settings->getAliasDiff($alias));
     }
 
-    public function testGetException()
+    /**
+     * testGetException Test exception
+     * @return void
+     */
+    public function testGetException(): void
     {
         $configSettings = [
-         'N Tab' => [
+         'N Tab 1' => [
            'Another Column' => [
              'This section 1' => [
                'name2' => [
@@ -260,15 +317,19 @@ class SettingsTableTest extends TestCase
           ],
         ];
 
-        $alias = Hash::extract($configSettings, '{s}.{s}.{s}.{s}.alias');
-        $this->expectException('\Exception');
+        $alias = (array)Hash::extract($configSettings, '{s}.{s}.{s}.{s}.alias');
+        $this->expectException('RuntimeException');
         $this->Settings->getAliasDiff($alias);
     }
 
-    public function testContextValidationValidUser()
+    /**
+     * testContextValidationValidUser Test valid user
+     * @return void
+     */
+    public function testContextValidationValidUser(): void
     {
         $key = 'FileStorage.defaultImageSize';
-        $entity = TableRegistry::get('Settings')->findByKey($key)->first();
+        $entity = TableRegistry::get('Settings')->find('all')->where(['key' => $key])->first();
         $params = [
             'key' => 'FileStorage.defaultImageSize',
             'value' => '1234',
@@ -276,15 +337,21 @@ class SettingsTableTest extends TestCase
             'context' => 'bb697cd7-c869-491d-8696-805b1af8c08f',
             'type' => 'integer'
         ];
-
+        if (is_array($entity) || is_null($entity)) {
+            return;
+        }
         $newEntity = $this->Settings->patchEntity($entity, $params);
         $this->assertEquals([], $newEntity->getErrors());
     }
 
-    public function testContextValidationErrorUser()
+    /**
+     * testContextValidationErrorUser Test unvalid user
+     * @return void
+     */
+    public function testContextValidationErrorUser(): void
     {
         $key = 'FileStorage.defaultImageSize';
-        $entity = TableRegistry::get('Settings')->findByKey($key)->first();
+        $entity = TableRegistry::get('Settings')->find('all')->where(['key' => $key])->first();
         $params = [
             'key' => 'FileStorage.defaultImageSize',
             'value' => '1234',
@@ -292,15 +359,21 @@ class SettingsTableTest extends TestCase
             'context' => 'not a UUID !',
             'type' => 'integer'
         ];
-
+        if (is_array($entity) || is_null($entity)) {
+            return;
+        }
         $newEntity = $this->Settings->patchEntity($entity, $params);
         $this->assertEquals('The provided value is invalid', $newEntity->getErrors()['context']['custom']);
     }
 
-    public function testContextValidationValidApp()
+    /**
+     * testContextValidationValidApp
+     * @return void
+     */
+    public function testContextValidationValidApp(): void
     {
         $key = 'FileStorage.defaultImageSize';
-        $entity = TableRegistry::get('Settings')->findByKey($key)->first();
+        $entity = TableRegistry::get('Settings')->find('all')->where(['key' => $key])->first();
         $params = [
             'key' => 'FileStorage.defaultImageSize',
             'value' => '1234',
@@ -308,15 +381,21 @@ class SettingsTableTest extends TestCase
             'context' => 'app',
             'type' => 'integer'
         ];
-
+        if (is_array($entity) || is_null($entity)) {
+            return;
+        }
         $newEntity = $this->Settings->patchEntity($entity, $params);
         $this->assertEquals([], $newEntity->getErrors());
     }
 
-    public function testContextValidationErrorApp()
+    /**
+     * testContextValidationErrorApp
+     * @return void
+     */
+    public function testContextValidationErrorApp(): void
     {
         $key = 'FileStorage.defaultImageSize';
-        $entity = TableRegistry::get('Settings')->findByKey($key)->first();
+        $entity = TableRegistry::get('Settings')->find('all')->where(['key' => $key])->first();
         $params = [
             'key' => 'FileStorage.defaultImageSize',
             'value' => '1234',
@@ -324,7 +403,9 @@ class SettingsTableTest extends TestCase
             'context' => 'not app string',
             'type' => 'integer'
         ];
-
+        if (is_array($entity) || is_null($entity)) {
+            return;
+        }
         $newEntity = $this->Settings->patchEntity($entity, $params);
         $this->assertEquals('The provided value is invalid', $newEntity->getErrors()['context']['custom']);
     }

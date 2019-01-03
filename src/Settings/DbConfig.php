@@ -4,7 +4,7 @@ namespace App\Settings;
 use Cake\Core\Configure\ConfigEngineInterface;
 use Cake\ORM\TableRegistry;
 use Cake\Utility\Hash;
-use Exception;
+use RuntimeException;
 
 class DbConfig implements ConfigEngineInterface
 {
@@ -17,7 +17,7 @@ class DbConfig implements ConfigEngineInterface
      * @param string $scope   User, App, (Os, Env ...)
      * @param string $context depent on the scope, the context can be uuid, string, integer, etc.
      */
-    public function __construct($scope = 'user', $context = '')
+    public function __construct(string $scope = 'user', string $context = '')
     {
         $this->scope = $scope;
         $this->context = $context;
@@ -53,6 +53,6 @@ class DbConfig implements ConfigEngineInterface
      */
     public function dump($key, array $data)
     {
-        throw new Exception('Not implemented');
+        throw new RuntimeException('Not implemented');
     }
 }
