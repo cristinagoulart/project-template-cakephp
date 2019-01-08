@@ -153,15 +153,16 @@ class SettingsTable extends Table
         if (is_array($entity)) {
             return;
         }
-        // will storage only the modified settings
+
+        // It will storage only the modified settings
         if (!is_null($entity) && $entity['value'] === $value) {
-            // if the user setting match the app setting, the entity will be deleted
-            $dataApp = $this->find('list', ['keyField' => 'key', 'valueField' => 'value'])
-              ->where(['scope' => self::SCOPE_APP, 'context' => self::CONTEXT_APP])
-              ->toArray();
-            if ($scope === self::SCOPE_USER && $value === $dataApp[$key]) {
-                $this->delete($entity);
-            }
+            return;
+        }
+
+        // If the user setting match the app setting, the entity will be deleted or not saved
+        $dataApp = $this->find('all')->where(['key' => $key, 'scope' => self::SCOPE_APP, 'context' => self::CONTEXT_APP])->first();
+        if ($scope === self::SCOPE_USER && $value === $dataApp['value']) {
+            !is_null($entity) ? $this->delete($entity) : '';
 
             return;
         }
@@ -175,7 +176,7 @@ class SettingsTable extends Table
             'type' => $type
         ];
 
-        // Check if the user has already a record with the key. if true will update instead of create a new one
+        // Check if the user has already a record with the key. If true will update instead of create a new one
         $newEntity = is_null($entity) ? $this->newEntity($params) : $this->patchEntity($entity, $params);
 
         return $newEntity;

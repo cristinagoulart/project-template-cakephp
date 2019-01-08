@@ -35,6 +35,8 @@ class SettingsListener implements EventListenerInterface
             return;
         }
 
+        $userId = $controller->Auth->user('id');
+
         if (empty($userId)) {
             return;
         }
