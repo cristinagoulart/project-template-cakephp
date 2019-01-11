@@ -81,7 +81,7 @@ class User extends BaseUser
 
         /** @var \RolesCapabilities\Model\Table\CapabilitiesTable $capabilities */
         $capabilities = TableRegistry::get('RolesCapabilities.Capabilities');
-        $userGroups = $capabilities->getUserGroups($this->get('id'));
+        $userGroups = $capabilities->getUserGroups((string)$this->get('id'));
         $userRoles = $capabilities->getGroupsRoles($userGroups);
         $isAdmin = in_array($roleName, $userRoles);
 
