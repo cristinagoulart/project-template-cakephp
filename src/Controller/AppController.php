@@ -14,6 +14,7 @@
  */
 namespace App\Controller;
 
+use App\Controller\SearchTrait;
 use App\Event\Plugin\Search\Model\SearchableFieldsListener;
 use App\Feature\Factory as FeatureFactory;
 use AuditStash\Meta\RequestMetadata;
@@ -33,7 +34,6 @@ use Qobo\Utils\ModuleConfig\ModuleConfig;
 use Qobo\Utils\Utility\User;
 use RolesCapabilities\CapabilityTrait;
 use RuntimeException;
-use Search\Controller\SearchTrait;
 use Search\Model\Entity\SavedSearch;
 use Search\Utility as SearchUtility;
 use Search\Utility\Search;
