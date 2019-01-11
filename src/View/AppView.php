@@ -13,6 +13,7 @@
  */
 namespace App\View;
 
+use Cake\ORM\TableRegistry;
 use Cake\View\View;
 
 /**
@@ -44,6 +45,10 @@ class AppView extends View
         $this->loadHelper('Menu.Menu');
         $this->loadHelper('Form', ['className' => 'AdminLTE.Form']);
         $this->loadHelper('HtmlEmail');
+        $this->loadHelper('Search', [
+            'table' => TableRegistry::get($this->request->getParam('controller')),
+            'id' => $this->request->getParam('pass.0')
+        ]);
         $this->loadHelper('SystemInfo');
         $this->loadHelper('CakeDC/Users.User');
     }
