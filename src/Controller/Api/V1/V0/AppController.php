@@ -497,6 +497,35 @@ class AppController extends Controller
         $this->set('_serialize', 'result');
     }
 
+    public function search()
+    {
+        $this->request->allowMethod(['ajax', 'post']);
+
+        $table = $this->loadModel();
+        dd([$this->getRequest()->getData(), $this->getRequest()->getQueryParams()]);
+        $queryParams = $this->request->getQueryParams();
+
+        $manager = new \App\Controller\SearchManager($table, $this->Auth->user());
+        $options = $manager->getOptionsFromRequest($searchData, $queryParams);
+
+        $query = $table->find('search', $options);
+
+        $resultSet = $this->paginate($query);
+
+        $this->set('result', [
+            'success' => true,
+            'data' => \App\Controller\SearchManager::resultSetFormatter(
+                $resultSet,
+                $table,
+                $this->Auth->user(),
+                Hash::get($searchData, 'group_by')
+            ),
+            'pagination' => ['count' => $resultSet->count()],
+            '_serialize' => ['success', 'data', 'pagination']
+        ]);
+        $this->set('_serialize', 'result');
+    }
+
     /**
      * Before filter handler.
      *
