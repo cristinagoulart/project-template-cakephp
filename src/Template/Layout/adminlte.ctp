@@ -31,7 +31,7 @@ $skinName = Configure::read('Theme.skin');
     </head>
     <body class="hold-transition skin-<?php echo Configure::read('Theme.skin'); ?> sidebar-mini">
         <!-- Site wrapper -->
-        <div class="wrapper">
+        <div class="wrapper" id="app">
             <header class="main-header">
                 <!-- Logo -->
                 <a href="<?php echo $this->Url->build('/'); ?>" class="logo">
