@@ -85,24 +85,32 @@ class ModuleIndexListener implements EventListenerInterface
             return !Configure::read('CsvMigrations.batch.active');
         });
 
+        $csrfToken = empty($request->getParam('_csrfToken')) ? $request->getCookie('csrfToken') : $request->getParam('_csrfToken');
+
         $batchItem->addMenuItem(MenuItemFactory::createMenuItem([
+            'type' => 'link',
             'icon' => 'pencil',
             'label' => __('Edit'),
+            'url' => ['plugin' => $plugin, 'controller' => $controller, 'action' => 'batch', 'edit'],
             'order' => 1,
             'attributes' => [
                 'data-batch' => true,
                 'data-batch-url' => Router::url(['plugin' => $plugin, 'controller' => $controller, 'action' => 'batch', 'edit']),
+                'data-csrf-token' => $csrfToken
             ],
         ]));
 
         $batchItem->addMenuItem(MenuItemFactory::createMenuItem([
+            'type' => 'link',
             'icon' => 'trash',
             'label' => __('Delete'),
             'order' => 10,
+            'url' => ['plugin' => $plugin, 'controller' => $controller, 'action' => 'batch', 'delete'],
             'attributes' => [
                 'data-batch' => true,
                 'data-batch-url' => Router::url(['plugin' => $plugin, 'controller' => $controller, 'action' => 'batch', 'delete']),
                 'data-batch-confirm' => __('Are you sure you want to delete the selected records?'),
+                'data-csrf-token' => $csrfToken,
             ]
         ]));
 
