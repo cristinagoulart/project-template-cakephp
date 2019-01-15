@@ -7,6 +7,7 @@ use Cake\Datasource\RepositoryInterface;
 use Cake\Event\EventListenerInterface;
 use Cake\ORM\Table;
 use Cake\Utility\Hash;
+use Cake\Utility\Inflector;
 use Cake\View\View;
 use CsvMigrations\FieldHandlers\FieldHandlerFactory;
 use CsvMigrations\Utility\FileUpload;
@@ -218,6 +219,8 @@ abstract class BaseActionListener implements EventListenerInterface
                 }
             }
 
+            // Fix alias set by pagination hask
+            $table->setAlias(Inflector::camelize($table->getTable()));
             $entity->set($field, $factory->renderValue($table, $field, $entity->get($field), ['entity' => $entity]));
         }
     }
