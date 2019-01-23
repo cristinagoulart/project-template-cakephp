@@ -7,6 +7,9 @@
 </template>
 
 <script>
+import 'icheck/skins/square/square.css'
+import * as $ from 'jquery'
+import icheck from 'icheck'
 
 export default {
 
@@ -29,6 +32,24 @@ export default {
 
             this.$emit('value-changed', this.field)
         }
+    },
+
+    mounted: function () {
+        const self = this
+        const $input = $(this.$el).find('input')
+
+        $input.iCheck({
+            checkboxClass: 'icheckbox_square',
+            radioClass: 'iradio_square'
+        })
+
+        $input.on('ifChecked', function (e) {
+            self.value = true
+        })
+
+        $input.on('ifUnchecked', function (e) {
+            self.value = false
+        })
     }
 
 }

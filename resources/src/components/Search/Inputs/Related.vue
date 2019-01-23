@@ -1,0 +1,123 @@
+<template>
+    <div>
+        <div class="form-group">
+            <v-select
+                v-model="value"
+                placeholder="-- Please choose --"
+                :options="options.list"
+                :multiple="true"
+                :filterable="false"
+                @search="onSearch">
+                <template slot="no-options">type to search..</template>
+                <template slot="option" slot-scope="option">
+                    <div class="d-center">{{ option.label }}</div>
+                </template>
+                <template slot="selected-option" scope="option">
+                    <div class="selected d-center">{{ option.label }}</div>
+                </template>
+            </v-select>
+        </div>
+    </div>
+</template>
+
+<script>
+import axios from 'axios'
+import lodash from 'lodash'
+import vSelect from 'vue-select'
+
+export default {
+
+    components: {
+        vSelect
+    },
+
+    props: {
+        field: {
+            type: Object,
+            required: true
+        },
+        token: {
+            type: String,
+            required: true
+        }
+    },
+
+    data: function () {
+        return {
+            value: this.field.value,
+            options: { list: [], full: {} }
+        }
+    },
+
+    watch: {
+        value () {
+            this.field.value = []
+
+            for (const key of Object.keys(this.options.full)) {
+                if (-1 < this.value.indexOf(this.options.full[key])) {
+                    this.field.value.push(key)
+                }
+            }
+
+            this.$emit('value-changed', this.field)
+        }
+    },
+
+    methods: {
+        onSearch(search, loading, page = 1) {
+            loading(true)
+            this.options.list = []
+            this.search(search, loading, page, this)
+        },
+        search: _.debounce((search, loading, page, vm) => {
+            axios({
+                method: 'get',
+                url: vm.field.url + '?query=' + encodeURI(search) + '&page=' + page,
+                headers: {
+                    'Authorization': 'Bearer ' + vm.token,
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json',
+                    'X-Requested-With': 'XMLHttpRequest'
+                }
+            }).then(response => {
+                const pagination = response.data.pagination
+
+                if ('Users' === vm.field.source && 1 === pagination.current_page) {
+                    vm.options.list.push('<< me >>')
+                    vm.options.full['%%me%%'] = '<< me >>'
+                }
+
+                if (pagination.current_page < pagination.page_count) {
+                    vm.search(search, loading, pagination.current_page + 1, vm)
+                }
+
+                for (const key of Object.keys(response.data.data)) {
+                    vm.options.list.push(response.data.data[key])
+                    vm.options.full[key] = response.data.data[key]
+                }
+
+                loading(false)
+            })
+        }, 1000)
+    }
+
+}
+</script>
+<style>
+.v-select .dropdown-toggle {
+     border-radius: 0 !important;
+     padding: 0 !important;
+}
+
+.v-select .selected-tag {
+    font-size: 12px !important;
+    margin: 3px 2px !important;
+}
+
+.v-select input[type=search] {
+    font-size: 12px !important;
+    margin: 0 !important;
+    padding: 5px 10px !important;
+    height: 28px !important;
+}
+</style>

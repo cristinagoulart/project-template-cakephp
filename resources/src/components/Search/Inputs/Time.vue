@@ -1,7 +1,7 @@
 <template>
     <div>
         <div class="form-group">
-            <div class="input-group bootstrap-timepicker timepicker">
+            <div class="input-group input-group-sm bootstrap-timepicker timepicker">
                 <div class="input-group-addon">
                     <i class="fa fa-clock-o"></i>
                 </div>
@@ -12,6 +12,7 @@
 </template>
 
 <script>
+import 'bootstrap-timepicker/css/bootstrap-timepicker.min.css'
 import * as $ from 'jquery'
 import timepicker from 'bootstrap-timepicker'
 
@@ -52,4 +53,9 @@ export default {
 
 }
 </script>
-<style src='bootstrap-timepicker/css/bootstrap-timepicker.min.css'></style>
+<style>
+    .bootstrap-timepicker .input-group-addon i {
+        width: auto !important;
+        height: auto !important;
+    }
+</style>
