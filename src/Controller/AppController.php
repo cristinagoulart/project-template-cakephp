@@ -214,7 +214,7 @@ class AppController extends Controller
      *
      * @return \Cake\Datasource\EntityInterface
      */
-    private function getSystemSearch(): EntityInterface
+    protected function getSystemSearch(): EntityInterface
     {
         $table = TableRegistry::getTableLocator()->get('Search.SavedSearches');
 
@@ -236,7 +236,7 @@ class AppController extends Controller
      *
      * @return \Cake\Datasource\EntityInterface
      */
-    private function createSystemSearch(): EntityInterface
+    protected function createSystemSearch(): EntityInterface
     {
         $table = TableRegistry::getTableLocator()->get('Search.SavedSearches');
         /**

@@ -129,34 +129,6 @@ abstract class BaseActionListener implements EventListenerInterface
     protected function resourceToString(EntityInterface $entity) : void
     {
         foreach (array_keys($entity->toArray()) as $field) {
-            /**
-             * handle belongsTo associated data
-             *
-             * @deprecated since qobo/cakephp-csv-migrations v12.1.0 - We currently do not support inclusion of
-             * associated data on API responses. The only exception being associated files, but this is handled
-             * within the field-handler factory call below.
-             */
-            if ($entity->get($field) instanceof EntityInterface) {
-                trigger_error(sprintf('Associated data in API responses are not supported.'), E_USER_DEPRECATED);
-                $this->resourceToString($entity->{$field});
-            }
-
-            /**
-             * handle hasMany associated data
-             *
-             * @deprecated since qobo/cakephp-csv-migrations v12.1.0 - We currently do not support inclusion of
-             * associated data on API responses. The only exception being associated files, but this is handled
-             * within the field-handler factory call below.
-             */
-            if (is_array($entity->get($field)) && ! empty($entity->get($field))) {
-                trigger_error(sprintf('Associated data in API responses are not supported.'), E_USER_DEPRECATED);
-                foreach ($entity->get($field) as $associatedEntity) {
-                    if ($associatedEntity instanceof EntityInterface) {
-                        $this->resourceToString($associatedEntity);
-                    }
-                }
-            }
-
             if (is_resource($entity->get($field))) {
                 $entity->set($field, stream_get_contents($entity->get($field)));
             }
@@ -184,41 +156,6 @@ abstract class BaseActionListener implements EventListenerInterface
         $factory = $this->getFieldHandlerFactory();
 
         foreach ($fields as $field) {
-            /**
-             * handle belongsTo associated data
-             *
-             * @deprecated since qobo/cakephp-csv-migrations v12.1.0 - We currently do not support inclusion of
-             * associated data on API responses. The only exception being associated files, but this is handled
-             * within the field-handler factory call below.
-             */
-            if ($entity->get($field) instanceof EntityInterface) {
-                trigger_error(sprintf('Associated data in API responses are not supported.'), E_USER_DEPRECATED);
-
-                $tableName = $table->getAssociation($entity->get($field)->getSource())->getTarget();
-                $this->prettify($entity->{$field}, $tableName);
-            }
-
-            /**
-             * handle hasMany associated data
-             *
-             * @deprecated since qobo/cakephp-csv-migrations v12.1.0 - We currently do not support inclusion of
-             * associated data on API responses. The only exception being associated files, but this is handled
-             * within the field-handler factory call below.
-             */
-            if (is_array($entity->get($field)) && ! empty($entity->get($field))) {
-                trigger_error(sprintf('Associated data in API responses are not supported.'), E_USER_DEPRECATED);
-
-                foreach ($entity->get($field) as $associatedEntity) {
-                    if (! $associatedEntity instanceof EntityInterface) {
-                        continue;
-                    }
-
-                    list(, $associationName) = pluginSplit($associatedEntity->getSource());
-                    $tableName = $table->getAssociation($associationName)->getTarget();
-                    $this->prettify($associatedEntity, $tableName);
-                }
-            }
-
             // Fix alias set by pagination hask
             $table->setAlias(Inflector::camelize($table->getTable()));
             $entity->set($field, $factory->renderValue($table, $field, $entity->get($field), ['entity' => $entity]));
