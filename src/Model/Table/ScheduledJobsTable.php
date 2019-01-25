@@ -51,18 +51,6 @@ class ScheduledJobsTable extends AppTable
     }
 
     /**
-     * Get Activated Job records
-     *
-     * @deprecated v39.10 Please use getJobs() method instead
-     *
-     * @return \Cake\Datasource\ResultSetInterface $result containing record entities.
-     */
-    public function getActiveJobs(): ResultSetInterface
-    {
-        return $this->getJobs(self::JOB_ACTIVE);
-    }
-
-    /**
      * Find Scheduled Jobs base on its `active` state
      *
      * @param int $state of the instance
