@@ -47,7 +47,7 @@ class AppView extends View
         $this->loadHelper('HtmlEmail');
         $this->loadHelper('Search', [
             'table' => TableRegistry::get($this->request->getParam('controller')),
-            'id' => $this->request->getParam('pass.0')
+            'id' => $this->request->getParam('pass.0', '')
         ]);
         $this->loadHelper('SystemInfo');
         $this->loadHelper('CakeDC/Users.User');
