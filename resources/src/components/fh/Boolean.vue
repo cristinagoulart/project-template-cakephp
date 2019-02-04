@@ -1,7 +1,7 @@
 <template>
     <div>
         <div class="form-group">
-            <input type="checkbox" v-model="value" class="square">
+            <input type="checkbox" v-model="val" class="square">
         </div>
     </div>
 </template>
@@ -15,26 +15,32 @@ export default {
 
     props: {
         field: {
-            type: Object,
+            type: String,
+            required: true
+        },
+        guid: {
+            type: String,
+            required: true
+        },
+        value: {
+            type: [String, Boolean],
             required: true
         }
     },
 
     data: function () {
         return {
-            value: !!+this.field.value
+            val: !!+this.value
         }
     },
 
     watch: {
-        value () {
-            this.field.value = this.value
-
-            this.$emit('value-changed', this.field)
+        val () {
+            this.$emit('value-changed', this.field, this.guid, this.val)
         }
     },
 
-    mounted: function () {
+    mounted () {
         const self = this
         const $input = $(this.$el).find('input')
 
@@ -44,11 +50,11 @@ export default {
         })
 
         $input.on('ifChecked', function (e) {
-            self.value = true
+            self.val = true
         })
 
         $input.on('ifUnchecked', function (e) {
-            self.value = false
+            self.val = false
         })
     }
 

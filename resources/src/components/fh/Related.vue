@@ -2,7 +2,7 @@
     <div>
         <div class="form-group">
             <v-select
-                v-model="value"
+                v-model="val"
                 placeholder="-- Please choose --"
                 :options="options.list"
                 :multiple="true"
@@ -33,33 +33,44 @@ export default {
 
     props: {
         field: {
-            type: Object,
+            type: String,
             required: true
         },
-        token: {
+        guid: {
             type: String,
+            required: true
+        },
+        source: {
+            type: String,
+            required: true
+        },
+        url: {
+            type: String,
+            required: true
+        },
+        value: {
+            type: [String, Array],
             required: true
         }
     },
 
     data: function () {
         return {
-            value: this.field.value,
-            options: { list: [], full: {} }
+            options: { list: [], full: {} },
+            val: this.value
         }
     },
 
     watch: {
-        value () {
-            this.field.value = []
-
+        val () {
+            let value = []
             for (const key of Object.keys(this.options.full)) {
-                if (-1 < this.value.indexOf(this.options.full[key])) {
-                    this.field.value.push(key)
+                if (-1 < this.val.indexOf(this.options.full[key])) {
+                    value.push(key)
                 }
             }
 
-            this.$emit('value-changed', this.field)
+            this.$emit('value-changed', this.field, this.guid, value)
         }
     },
 
@@ -72,9 +83,9 @@ export default {
         search: _.debounce((search, loading, page, vm) => {
             axios({
                 method: 'get',
-                url: vm.field.url + '?query=' + encodeURI(search) + '&page=' + page,
+                url: vm.url + '?query=' + encodeURI(search) + '&page=' + page,
                 headers: {
-                    'Authorization': 'Bearer ' + vm.token,
+                    'Authorization': 'Bearer ' + vm.$store.state.search.token,
                     'Accept': 'application/json',
                     'Content-Type': 'application/json',
                     'X-Requested-With': 'XMLHttpRequest'
@@ -82,7 +93,7 @@ export default {
             }).then(response => {
                 const pagination = response.data.pagination
 
-                if ('Users' === vm.field.source && 1 === pagination.current_page) {
+                if ('Users' === vm.source && 1 === pagination.current_page) {
                     vm.options.list.push('<< me >>')
                     vm.options.full['%%me%%'] = '<< me >>'
                 }

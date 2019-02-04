@@ -5,7 +5,7 @@
                 <div class="input-group-addon">
                     <i class="fa fa-clock-o"></i>
                 </div>
-                <input type="text" v-model="value" autocomplete="off" class="form-control" />
+                <input type="text" v-model="val" autocomplete="off" class="form-control" />
             </div>
         </div>
     </div>
@@ -20,22 +20,28 @@ export default {
 
     props: {
         field: {
-            type: Object,
+            type: String,
+            required: true
+        },
+        guid: {
+            type: String,
+            required: true
+        },
+        value: {
+            type: String,
             required: true
         }
     },
 
     data: function () {
         return {
-            value: this.field.value
+            val: this.value
         }
     },
 
     watch: {
-        value () {
-            this.field.value = this.value
-
-            this.$emit('value-changed', this.field)
+        val () {
+            this.$emit('value-changed', this.field, this.guid, this.val)
         }
     },
 
@@ -46,8 +52,8 @@ export default {
             showMeridian: false,
             minuteStep: 5,
             defaultTime: false
-        }).on('changeTime.timepicker', function(e) {
-            self.value = e.time.value
+        }).on('changeTime.timepicker', function (e) {
+            self.val = e.time.value
         })
     }
 

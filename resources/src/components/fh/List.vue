@@ -1,7 +1,7 @@
 <template>
     <div>
         <div class="form-group">
-            <v-select v-model="value" placeholder="-- Please choose --" :options="options" :multiple="true">
+            <v-select v-model="val" placeholder="-- Please choose --" :options="labels" :multiple="true">
                 <template slot="option" slot-scope="option">
                     <div v-html="option.label"></div>
                 </template>
@@ -25,35 +25,42 @@ export default {
 
     props: {
         field: {
+            type: String,
+            required: true
+        },
+        guid: {
+            type: String,
+            required: true
+        },
+        options: {
             type: Object,
+            required: true
+        },
+        value: {
+            type: [String, Array],
             required: true
         }
     },
 
     data: function () {
-        let data = {
-            value: this.field.value,
-            options: []
+        let result = {
+            val: 'string' === typeof this.value ? (this.value ? [this.value] : []) : this.value,
+            labels: Object.values(this.options)
         }
 
-        for (const key of Object.keys(this.field.options)) {
-            data.options.push(this.field.options[key])
-        }
-
-        return data
+        return result
     },
 
     watch: {
-        value () {
-            this.field.value = []
-
-            for (const key of Object.keys(this.field.options)) {
-                if (-1 < this.value.indexOf(this.field.options[key])) {
-                    this.field.value.push(key)
+        val () {
+            let value = []
+            for (const key of Object.keys(this.options)) {
+                if (-1 < this.val.indexOf(this.options[key])) {
+                    value.push(key)
                 }
             }
 
-            this.$emit('value-changed', this.field)
+            this.$emit('value-changed', this.field, this.guid, value)
         }
     }
 

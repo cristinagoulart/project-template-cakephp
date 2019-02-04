@@ -20,22 +20,28 @@ export default {
 
     props: {
         field: {
-            type: Object,
+            type: String,
+            required: true
+        },
+        guid: {
+            type: String,
+            required: true
+        },
+        value: {
+            type: String,
             required: true
         }
     },
 
     data: function () {
         return {
-            value: this.field.value
+            val: this.value
         }
     },
 
     watch: {
-        value () {
-            this.field.value = this.value
-
-            this.$emit('value-changed', this.field)
+        val () {
+            this.$emit('value-changed', this.field, this.guid, this.val)
         }
     },
 
@@ -58,16 +64,23 @@ export default {
             },
             showDropdowns: true,
             singleDatePicker: true,
+            startDate: moment('2019-01-30 00:00'),
             timePicker: true,
             timePicker24Hour: true,
             timePickerIncrement: 5
         }
 
+
+        if (this.val) {
+            options.startDate = this.val
+        }
+        console.log(options)
+
         $input.daterangepicker(options)
 
         Object.keys(options.ranges).forEach(function (item) {
             // convert magic value to label, for example "%%today%%" becomes "Today"
-            if (self.value === '%%' + item.toLowerCase() + '%%') {
+            if (self.val === '%%' + item.toLowerCase() + '%%') {
                 $input.val(item)
             }
         })
@@ -77,14 +90,14 @@ export default {
                 picker.startDate.format(picker.locale.format) :
                 picker.chosenLabel
             )
-            self.field.value = 'Custom Range' === picker.chosenLabel ?
+            self.val = 'Custom Range' === picker.chosenLabel ?
                 picker.startDate.format(picker.locale.format) :
                 '%%' + picker.chosenLabel.toLowerCase() + '%%'
         })
 
         $input.on('cancel.daterangepicker', function (e, picker) {
             $(this).val('')
-            self.field.value = ''
+            self.val = ''
         })
     }
 
