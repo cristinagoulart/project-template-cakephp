@@ -14,14 +14,17 @@ export default {
 
     props: {
         field: {
-            type: Object,
+            type: String,
+            required: true
+        },
+        guid: {
+            type: String,
             required: true
         }
     },
 
     data: function () {
         return {
-            operator: '',
             options: [
                 { value: 'contains', text: 'contains' },
                 { value: 'not_contains', text: 'does not contain' },
@@ -31,16 +34,19 @@ export default {
         }
     },
 
-    watch: {
-        operator () {
-            this.field.operator = this.operator
-
-            this.$emit('operator-changed', this.field)
+    computed: {
+        operator: {
+            get () {
+                return this.$store.state.search.savedSearch.content.saved.criteria[this.field][this.guid].operator
+            },
+            set (value) {
+                this.$store.commit('search/criteriaOperator', {
+                    field: this.field,
+                    guid: this.guid,
+                    value: value
+                })
+            }
         }
-    },
-
-    mounted() {
-        this.operator = this.field.operator || this.options[0].value
     }
 
 }
