@@ -11,35 +11,30 @@
  */
 namespace App\Search;
 
-use Cake\Datasource\EntityInterface;
-use Cake\Datasource\RepositoryInterface;
-use Cake\Datasource\ResultSetInterface;
 use Cake\Utility\Hash;
-use Cake\View\View;
-use CsvMigrations\FieldHandlers\FieldHandlerFactory;
+use Search\Filter\Contains;
+use Search\Filter\EndsWith;
+use Search\Filter\Equal;
+use Search\Filter\Greater;
+use Search\Filter\Less;
+use Search\Filter\NotContains;
+use Search\Filter\NotEqual;
+use Search\Filter\StartsWith;
 
 final class Manager
 {
     private const FILTER_MAP = [
-        'is' => \Search\Filter\Equal::class,
-        'is_not' => \Search\Filter\NotEqual::class,
+        'is' => Equal::class,
+        'is_not' => NotEqual::class,
+        'greater' => Greater::class,
+        'less' => Less::class,
+        'contains' => Contains::class,
+        'not_contains' => NotContains::class,
+        'starts_with' => StartsWith::class,
+        'ends_with' => EndsWith::class
     ];
 
-    private $table;
-    private $user;
-
-    public function __construct(RepositoryInterface $table, array $user)
-    {
-        $this->table = $table;
-        $this->user = $user;
-    }
-
-    public function getFields() : array
-    {
-
-    }
-
-    public function getOptionsFromRequest(array $data, array $params)
+    public static function getOptionsFromRequest(array $data, array $params)
     {
         $result = [];
 
@@ -57,12 +52,15 @@ final class Manager
             }
         }
 
-        if (Hash::get($data, 'display_columns')) {
-            $result['fields'] = array_merge((array)$this->table->getPrimaryKey(), Hash::get($data, 'display_columns'));
+        if (Hash::get($data, 'fields')) {
+            $result['fields'] = Hash::get($data, 'fields');
         }
 
-        if (Hash::get($params, 'sort')) {
-            $result['order'] = [Hash::get($params, 'sort') => Hash::get($params, 'direction', 'desc')];
+        // if (Hash::get($params, 'sort')) {
+        //    $result['order'] = [Hash::get($params, 'sort') => Hash::get($params, 'direction', 'asc')];
+        // }
+        if (Hash::get($data, 'sort')) {
+            $result['order'] = [Hash::get($data, 'sort') => Hash::get($data, 'direction', 'asc')];
         }
 
         if (Hash::get($data, 'group_by')) {
@@ -93,66 +91,5 @@ final class Manager
         }
 
         return $value;
-    }
-
-    /**
-     * Method that formats search result-set.
-     *
-     * @param \Cake\Datasource\ResultSetInterface $resultSet Result-set instance
-     * @param \Cake\Datasource\RepositoryInterface $table Table instance
-     * @param mixed[] $user Current user info
-     * @param bool $group Group flag
-     * @return mixed[]
-     */
-    public static function resultSetFormatter(ResultSetInterface $resultSet, RepositoryInterface $table, array $user, $group = false) : array
-    {
-        $result = [];
-        $view = new View();
-        $factory = new FieldHandlerFactory();
-        foreach ($resultSet as $entity) {
-            $row = self::formatEntity($entity, $table, $factory);
-
-            if (! $group) {
-                $row['actions_column'] = $view->element('/Search/search-view-actions', [
-                    'entity' => $entity,
-                    'model' => $table->getRegistryAlias(),
-                    'user' => $user
-                ]);
-            }
-
-            $result[] = $row;
-        }
-
-        return $result;
-    }
-
-    /**
-     * Method that formats search result-set entity.
-     *
-     * @param \Cake\Datasource\EntityInterface $entity Entity instance
-     * @param \Cake\Datasource\RepositoryInterface|string $table Table instance
-     * @param \CsvMigrations\FieldHandlers\FieldHandlerFactory $factory FieldHandlerFactory instance
-     * @return mixed[]
-     */
-    private static function formatEntity(EntityInterface $entity, RepositoryInterface $table, FieldHandlerFactory $factory) : array
-    {
-        $result = [];
-        foreach (array_diff($entity->visibleProperties(), $entity->getVirtual()) as $field) {
-            // current table field
-            if ('_matchingData' !== $field) {
-                $result[$table->aliasField($field)] = $factory->renderValue($table, $field, $entity->get($field));
-                continue;
-            }
-
-            foreach ($entity->get('_matchingData') as $associationName => $relatedEntity) {
-                $result = array_merge($result, self::formatEntity(
-                    $relatedEntity,
-                    $table->getAssociation($associationName)->getTarget(),
-                    $factory
-                ));
-            }
-        }
-
-        return $result;
     }
 }
