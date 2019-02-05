@@ -23,14 +23,14 @@ export default {
             required: true
         },
         value: {
-            type: [String, Boolean],
+            type: [String, Number],
             required: true
         }
     },
 
     data: function () {
         return {
-            val: !!+this.value
+            val: +this.value
         }
     },
 
@@ -50,11 +50,11 @@ export default {
         })
 
         $input.on('ifChecked', function (e) {
-            self.val = true
+            self.val = 1
         })
 
         $input.on('ifUnchecked', function (e) {
-            self.val = false
+            self.val = 0
         })
     }
 
