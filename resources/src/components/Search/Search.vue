@@ -92,26 +92,6 @@
                                     <div class="row">
                                         <div class="col-md-4 col-lg-12">
                                             <div class="form-group">
-                                                <label for="sort-field">Sort Field</label>
-                                                <select v-model="sortByField" class="form-control input-sm">
-                                                    <template v-for="(group_filters, group) in filtersGroup">
-                                                        <optgroup :label="group">
-                                                            <option v-for="filter in group_filters" :value="filter.field">{{ filter.label }}</option>
-                                                        </optgroup>
-                                                    </template>
-                                                </select>
-                                            </div>
-                                        </div>
-                                        <div class="col-md-4 col-lg-12">
-                                            <div class="form-group">
-                                                <label for="sort-order">Sort Order</label>
-                                                <select v-model="sortByOrder" class="form-control input-sm">
-                                                    <option v-for="order in sortByOrders" :value="order.value">{{ order.text }}</option>
-                                                </select>
-                                            </div>
-                                        </div>
-                                        <div class="col-md-4 col-lg-12">
-                                            <div class="form-group">
                                                 <label for="group-by">Group By</label>
                                                 <select v-model="groupBy" class="form-control input-sm">
                                                     <option value="">-- Please choose --</option>
@@ -165,14 +145,14 @@
                 <h3 class="box-title"><a href="#">{{ model }}</a></h3>
             </div>
             <div class="box-body">
-                <search-table v-if="loadResult" :ajax="tableAjax" :order="[displayColumns.indexOf(sortByField), sortByOrder]" :batch="tableBatch" :with-actions="!(!!+groupBy)" :headers="tableHeaders"></search-table>
+                <search-table v-if="loadResult" :url="'/api/' + $store.state.search.savedSearch.model + '/search'" :token="this.token" request-type="POST" :data="{ criteria: criteria }" :order-field="sortByField" :order-direction="sortByOrder" :model="$store.state.search.savedSearch.model" :batch="{ enabled: batch, field: primaryKey }" :with-actions="!(!!+groupBy)" :headers="tableHeaders" @sort-field-updated="sortFieldUpdated" @sort-order-updated="sortOrderUpdated"></search-table>
             </div>
         </div>
     </div>
 </template>
 
 <script>
-import searchTable from '@/components/ui/Table.vue'
+import searchTable from '@/components/ui/TableAjax.vue'
 import inputs from '@/components/fh'
 import operators from '@/components/Search/Operators'
 import axios from 'axios'
@@ -183,8 +163,8 @@ export default {
 
     props: {
         batch: {
-            type: String,
-            required: true
+            type: Boolean,
+            default: false
         },
         filters: {
             type: String,
@@ -195,6 +175,10 @@ export default {
             required: true
         },
         id: {
+            type: String,
+            default: ''
+        },
+        primaryKey: {
             type: String,
             default: ''
         },
@@ -213,6 +197,7 @@ export default {
     },
 
     data: function () {
+
         return {
             aggregators: [
                 { text: 'Match all filters', value: 'AND' },
@@ -220,66 +205,55 @@ export default {
             ],
             filter: '',
             loadResult: false,
-            savedSearchSelected: this.$store.state.search.savedSearch.id,
             selectedColumns: {
                 available: [],
                 display: []
-            },
-            sortByOrders: [
-                { text: 'Ascending', value: 'asc' },
-                { text: 'Descending', value: 'desc' }
-            ],
-            tableBatch: Object.assign(JSON.parse(this.batch), {
-                urls: {
-                    delete: '/' + this.$store.state.search.savedSearch.model + '/batch/delete',
-                    edit: '/' + this.$store.state.search.savedSearch.model + '/batch/edit'
-                }
-            })
+            }
         }
     },
 
     computed: {
         aggregator: {
-            get () {
+            get() {
                 return this.$store.state.search.savedSearch.content.saved.aggregator
             },
-            set (value) {
+            set(value) {
                 this.$store.commit('search/aggregator', value)
             }
         },
-        criteria () {
+        criteria() {
             return this.$store.state.search.savedSearch.content.saved.criteria
         },
         displayColumns: {
-            get () {
+            get() {
                 return this.$store.state.search.savedSearch.content.saved.display_columns
             },
-            set (value) {
+            set(value) {
                 this.$store.commit('search/displayColumns', value)
             }
         },
-        filtersGroup () {
+        filtersGroup() {
             return this.$store.getters['search/filtersGroup']
         },
-        filtersFlat () {
+        filtersFlat() {
             return this.$store.getters['search/filtersFlat']
         },
-        filtersList () {
+        filtersList() {
             return this.$store.state.search.filters
         },
         groupBy: {
-            get () {
+            get() {
                 return this.$store.state.search.savedSearch.content.saved.group_by
             },
-            set (value) {
+            set(value) {
                 this.$store.commit('search/groupBy', value)
             }
         },
         name: {
-            get () {
+            get() {
                 return this.$store.state.search.savedSearch.name
             },
-            set (value) {
+            set(value) {
                 this.$store.commit('search/name', value)
             }
         },
@@ -291,8 +265,11 @@ export default {
 
         //     return id ? id : (0 < this.savedSearches.length ? this.savedSearches[0].id : '')
         // },
-        savedSearches () {
+        savedSearches() {
             return this.$store.state.search.savedSearches
+        },
+        savedSearchSelected() {
+            return this.$store.state.search.savedSearch.id
         },
         // savedSearchId () {
         //     get () {
@@ -307,21 +284,11 @@ export default {
         // searchResult () {
             // return this.$store.state.search.result
         // },
-        sortByField: {
-            get () {
-                return this.$store.state.search.savedSearch.content.saved.sort_by_field
-            },
-            set (value) {
-                this.$store.commit('search/sortByField', value)
-            }
+        sortByField() {
+            return this.$store.state.search.savedSearch.content.saved.sort_by_field
         },
-        sortByOrder: {
-            get () {
-                return this.$store.state.search.savedSearch.content.saved.sort_by_order
-            },
-            set (value) {
-                this.$store.commit('search/sortByOrder', value)
-            }
+        sortByOrder() {
+            return this.$store.state.search.savedSearch.content.saved.sort_by_order
         },
         tableAjax() {
             return {
@@ -343,6 +310,8 @@ export default {
                 result.push({ value: column, text: self.filtersFlat[column].label })
             })
 
+            this.search()
+
             return result
         }
     },
@@ -353,57 +322,67 @@ export default {
 
         if ('' !== this.id) {
             this.$store.commit('search/savedSearchId', this.id)
+            this.$store.dispatch('search/getSavedSearch', this.id).then(() => {
+                this.$store.dispatch('search/getSavedSearches')
+                this.loadResult = true
+            })
         }
 
         if ('' === this.id) {
             this.$store.commit('search/savedSearchModel', this.model)
             this.$store.commit('search/savedSearchUserId', this.userId)
+            this.$store.dispatch('search/getSavedSearches')
         }
-
-        if ('' !== this.id) {
-            this.$store.dispatch('search/getSavedSearch', this.id).then(() => {
-                this.loadResult = true
-            })
-        }
-
-        this.$store.dispatch('search/getSavedSearches')
     },
 
     methods: {
-        criteriaCreate () {
+        criteriaCreate() {
             if ('' !== this.filter) {
                 this.$store.commit('search/criteriaCreate', this.filter)
             }
 
             this.filter = ''
         },
-        criteriaCopy (guid) {
+        criteriaCopy(guid) {
             this.$store.commit('search/criteriaCopy', guid)
         },
-        criteriaRemove (guid) {
+        criteriaRemove(guid) {
             this.$store.commit('search/criteriaRemove', guid)
         },
         // criteriaUpdated (data) {
         //     this.criteria = data
         // },
-        displayColumnsUpdated (action) {
+        displayColumnsUpdated(action) {
             const payload = Object.assign({}, this.selectedColumns, { action: action })
 
             this.$store.commit('search/displayColumns', payload)
         },
-        displayColumnsSorted (direction) {
+        displayColumnsSorted(direction) {
             const payload = Object.assign({}, { columns: this.selectedColumns.display }, { direction: direction })
 
             this.$store.commit('search/displayColumnsSort', payload)
         },
-        savedSearchGet () {
+        savedSearchGet() {
             this.$store.dispatch('search/getSavedSearch', this.savedSearchSelected).then(() => {
                 this.loadResult = true
             })
         },
-        // search: function () {
-            // this.$store.dispatch('search/search')
-        // },
+        search() {
+            this.loadResult = false
+            this.$nextTick(() => {
+                this.loadResult = true
+                console.log('re-render start')
+                this.$nextTick(() => {
+                    console.log('re-render end')
+                })
+            })
+        },
+        sortFieldUpdated(value) {
+            this.$store.commit('search/sortByField', value)
+        },
+        sortOrderUpdated(value) {
+            this.$store.commit('search/sortByOrder', value)
+        },
         valueChanged (field, guid, value) {
             this.$store.commit('search/criteriaValue', { field: field, guid: guid, value: value })
         }
