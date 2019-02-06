@@ -50,7 +50,7 @@ export default {
         },
         value: {
             type: [String, Array],
-            required: true
+            default: ''
         }
     },
 
