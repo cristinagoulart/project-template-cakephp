@@ -27,12 +27,12 @@
                                 <template v-for="(fields, fieldName) in criteria">
                                     <div v-for="(field, guid) in fields" class="form-group">
                                         <div class="row">
-                                            <div class="col-xs-12 col-md-3 col-lg-2"><label>{{ filtersFlat[fieldName].label }} {{ guid }}</label></div>
+                                            <div class="col-xs-12 col-md-3 col-lg-2"><label>{{ filtersFlat[fieldName].label }}</label></div>
                                             <div class="col-xs-4 col-md-2 col-lg-3">
                                                 <component :is="field.type + 'Operator'" :guid="guid" :field="fieldName" />
                                             </div>
                                             <div class="col-xs-6 col-md-5 col-lg-4">
-                                                <component :is="field.type + 'Input'" :guid="guid" :field="fieldName" :value="field.value" :options="filtersFlat[fieldName].options" :source="filtersFlat[fieldName].source" :url="filtersFlat[fieldName].url" @value-changed="valueChanged" />
+                                                <component :is="field.type + 'Input'" :guid="guid" :field="fieldName" :value="field.value" :options="filtersFlat[fieldName].options" :source="filtersFlat[fieldName].source" :url="filtersFlat[fieldName].url" :multiple="true" @input-value-updated="criteriaUpdated" />
                                             </div>
                                             <div class="col-xs-2">
                                                 <div class="input-sm">
@@ -109,6 +109,7 @@
                                 <label class="control-label" for="saved-searches">Saved Searches</label>
                                 <div class="input-group">
                                     <select v-model="savedSearchSelected" class="form-control input-sm">
+                                        <option value="">-- Please choose --</option>
                                         <option v-for="savedSearch in savedSearches" :value="savedSearch.id">{{ savedSearch.name }}</option>
                                     </select>
                                     <span class="input-group-btn">
@@ -166,6 +167,9 @@ export default {
             type: Boolean,
             default: false
         },
+        displayFields: {
+            type: String
+        },
         filters: {
             type: String,
             required: true
@@ -196,8 +200,7 @@ export default {
         }
     },
 
-    data: function () {
-
+    data() {
         return {
             aggregators: [
                 { text: 'Match all filters', value: 'AND' },
@@ -205,10 +208,12 @@ export default {
             ],
             filter: '',
             loadResult: false,
+            savedSearchSelected: '',
             selectedColumns: {
                 available: [],
                 display: []
-            }
+            },
+            tableHeaders: []
         }
     },
 
@@ -257,33 +262,9 @@ export default {
                 this.$store.commit('search/name', value)
             }
         },
-        // model () {
-        //     return this.$store.state.search.savedSearch.model
-        // },
-        // savedSearch () {
-        //     const id = this.$store.state.search.savedSearch.id
-
-        //     return id ? id : (0 < this.savedSearches.length ? this.savedSearches[0].id : '')
-        // },
         savedSearches() {
             return this.$store.state.search.savedSearches
         },
-        savedSearchSelected() {
-            return this.$store.state.search.savedSearch.id
-        },
-        // savedSearchId () {
-        //     get () {
-        //         const id = this.$store.state.search.savedSearch.id
-
-        //         return id ? id : (0 < this.savedSearches.length ? this.savedSearches[0].id : '')
-        //     }//,
-        //     // set (value) {
-        //     //     this.$store.commit('search/savedSearchId', value)
-        //     // }
-        // },
-        // searchResult () {
-            // return this.$store.state.search.result
-        // },
         sortByField() {
             return this.$store.state.search.savedSearch.content.saved.sort_by_field
         },
@@ -301,36 +282,26 @@ export default {
                     'Authorization': 'Bearer ' + this.token
                 }
             }
-        },
-        tableHeaders () {
-            const self = this
-
-            const result = []
-            this.displayColumns.forEach(function (column) {
-                result.push({ value: column, text: self.filtersFlat[column].label })
-            })
-
-            this.search()
-
-            return result
         }
     },
 
-    created: function () {
+    created() {
         this.$store.commit('search/filters', JSON.parse(this.filters))
+        this.$store.commit('search/displayColumns',  {action: 'add', available: JSON.parse(this.displayFields) })
         this.$store.commit('search/token', this.token)
 
         if ('' !== this.id) {
             this.$store.commit('search/savedSearchId', this.id)
             this.$store.dispatch('search/getSavedSearch', this.id).then(() => {
                 this.$store.dispatch('search/getSavedSearches')
-                this.loadResult = true
+                this.search()
             })
         }
 
         if ('' === this.id) {
             this.$store.commit('search/savedSearchModel', this.model)
             this.$store.commit('search/savedSearchUserId', this.userId)
+            this.search()
             this.$store.dispatch('search/getSavedSearches')
         }
     },
@@ -349,9 +320,9 @@ export default {
         criteriaRemove(guid) {
             this.$store.commit('search/criteriaRemove', guid)
         },
-        // criteriaUpdated (data) {
-        //     this.criteria = data
-        // },
+        criteriaUpdated(field, guid, value) {
+            this.$store.commit('search/criteriaValue', { field: field, guid: guid, value: value })
+        },
         displayColumnsUpdated(action) {
             const payload = Object.assign({}, this.selectedColumns, { action: action })
 
@@ -364,17 +335,21 @@ export default {
         },
         savedSearchGet() {
             this.$store.dispatch('search/getSavedSearch', this.savedSearchSelected).then(() => {
-                this.loadResult = true
+                this.search()
             })
         },
         search() {
             this.loadResult = false
+
+            const self = this
+            this.tableHeaders = []
+            this.displayColumns.forEach(function (column) {
+                self.tableHeaders.push({ value: column, text: self.filtersFlat[column].label })
+            })
+
+            // https://github.com/vuejs/Discussion/issues/356#issuecomment-312529480
             this.$nextTick(() => {
                 this.loadResult = true
-                console.log('re-render start')
-                this.$nextTick(() => {
-                    console.log('re-render end')
-                })
             })
         },
         sortFieldUpdated(value) {
@@ -382,9 +357,6 @@ export default {
         },
         sortOrderUpdated(value) {
             this.$store.commit('search/sortByOrder', value)
-        },
-        valueChanged (field, guid, value) {
-            this.$store.commit('search/criteriaValue', { field: field, guid: guid, value: value })
         }
     }
 

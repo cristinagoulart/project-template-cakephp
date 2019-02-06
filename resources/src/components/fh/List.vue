@@ -1,7 +1,7 @@
 <template>
     <div>
         <div class="form-group">
-            <v-select v-model="val" placeholder="-- Please choose --" :options="labels" :multiple="true">
+            <v-select v-model="val" placeholder="-- Please choose --" :options="labels" :multiple="multiple">
                 <template slot="option" slot-scope="option">
                     <div v-html="option.label"></div>
                 </template>
@@ -32,6 +32,10 @@ export default {
             type: String,
             required: true
         },
+        multiple: {
+            type: Boolean,
+            default: false
+        },
         options: {
             type: Object,
             required: true
@@ -44,7 +48,9 @@ export default {
 
     data: function () {
         let result = {
-            val: 'string' === typeof this.value ? (this.value ? [this.value] : []) : this.value,
+            val: this.multiple ?
+                ('string' === typeof this.value ? (this.value ? [this.value] : []) : this.value) :
+                ('array' === typeof this.value ? this.value[0] : this.value),
             labels: Object.values(this.options)
         }
 
@@ -60,7 +66,7 @@ export default {
                 }
             }
 
-            this.$emit('value-changed', this.field, this.guid, value)
+            this.$emit('input-value-updated', this.field, this.guid, value)
         }
     }
 

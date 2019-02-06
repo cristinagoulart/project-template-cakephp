@@ -95,7 +95,6 @@ export default {
     },
 
     mounted() {
-        // this.table.ajax.reload()
         this.initialize()
     },
 

@@ -41,7 +41,7 @@ export default {
 
     watch: {
         val () {
-            this.$emit('value-changed', this.field, this.guid, this.val)
+            this.$emit('input-value-updated', this.field, this.guid, this.val)
         }
     },
 

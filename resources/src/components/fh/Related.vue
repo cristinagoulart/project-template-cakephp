@@ -5,7 +5,7 @@
                 v-model="val"
                 placeholder="-- Please choose --"
                 :options="options.list"
-                :multiple="true"
+                :multiple="multiple"
                 :filterable="false"
                 @search="onSearch">
                 <template slot="no-options">type to search..</template>
@@ -40,6 +40,10 @@ export default {
             type: String,
             required: true
         },
+        multiple: {
+            type: Boolean,
+            default: false
+        },
         source: {
             type: String,
             required: true
@@ -70,7 +74,7 @@ export default {
                 }
             }
 
-            this.$emit('value-changed', this.field, this.guid, value)
+            this.$emit('input-value-updated', this.field, this.guid, value)
         }
     },
 
