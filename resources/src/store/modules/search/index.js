@@ -63,8 +63,7 @@ export default {
                 }
             }
         },
-        savedSearches: [],
-        token: ''
+        savedSearches: []
     },
 
     getters: {

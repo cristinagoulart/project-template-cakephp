@@ -285,25 +285,12 @@ export default {
         },
         sortByOrder() {
             return this.$store.state.search.savedSearch.content.saved.sort_by_order
-        },
-        tableAjax() {
-            return {
-                url: '/api/' + this.$store.state.search.savedSearch.model + '/search',
-                type: 'POST',
-                extras: {
-                    criteria: this.criteria
-                },
-                headers: {
-                    'Authorization': 'Bearer ' + this.token
-                }
-            }
         }
     },
 
     created() {
         this.$store.commit('search/filters', JSON.parse(this.filters))
         this.$store.commit('search/displayColumns',  {action: 'add', available: JSON.parse(this.displayFields) })
-        this.$store.commit('search/token', this.token)
 
         if ('' !== this.id) {
             this.$store.commit('search/savedSearchId', this.id)
