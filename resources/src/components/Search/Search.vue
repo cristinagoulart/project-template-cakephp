@@ -6,7 +6,7 @@
                     <div class="row">
                         <div class="col-lg-3 col-lg-push-9">
                             <div class="form-group">
-                                <select v-model="filter" class="form-control input-sm" v-on:change="criteriaCreate()">>
+                                <select v-model="filter" class="form-control input-sm" v-on:change="criteriaCreate()">
                                     <option value="">-- Add filter --</option>
                                     <template v-for="(group_filters, group) in filtersGroup">
                                         <optgroup :label="group">
@@ -24,12 +24,16 @@
                         <hr class="visible-xs visible-sm visible-md" />
                         <div class="col-lg-9 col-lg-pull-3">
                             <fieldset>
-                                <template v-for="(fields, fieldName) in criteria">
+                                <template v-for="(fields, field_name) in criteria">
                                     <div v-for="(field, guid) in fields" class="form-group">
                                         <div class="row">
-                                            <div class="col-xs-12 col-md-3 col-lg-2"><label>{{ filtersFlat[fieldName].label }}</label></div>
+                                            <div class="col-xs-12 col-md-3 col-lg-2"><label>{{ filtersFlat[field_name].label }}</label></div>
                                             <div class="col-xs-4 col-md-2 col-lg-3">
-                                                <component :is="field.type + 'Operator'" :guid="guid" :field="fieldName" />
+                                                <select v-model="operator[guid]" class="form-control input-sm" v-on:change="operatorUpdated(field_name, guid, operator[guid])">
+                                                    <option v-for="option in $store.state.search.operators.types[$store.state.search.operators.map[filtersFlat[field_name].type]]" v-bind:value="option.value">
+                                                        {{ option.text }}
+                                                    </option>
+                                                </select>
                                             </div>
                                             <div class="col-xs-6 col-md-5 col-lg-4">
                                                 <component :is="field.type + 'Input'" :guid="guid" :field="fieldName" :value="field.value" :options="filtersFlat[fieldName].options" :source="filtersFlat[fieldName].source" :url="filtersFlat[fieldName].url" :multiple="true" @input-value-updated="criteriaUpdated" />
@@ -155,12 +159,11 @@
 <script>
 import searchTable from '@/components/ui/TableAjax.vue'
 import inputs from '@/components/fh'
-import operators from '@/components/Search/Operators'
 import axios from 'axios'
 
 export default {
 
-    components: Object.assign({ searchTable }, inputs, operators),
+    components: Object.assign({ searchTable }, inputs),
 
     props: {
         batch: {
@@ -262,6 +265,18 @@ export default {
                 this.$store.commit('search/name', value)
             }
         },
+        operator() {
+            const criteria = this.$store.state.search.savedSearch.content.saved.criteria
+
+            let result = {}
+            for (const field in criteria) {
+                for (const guid in criteria[field]) {
+                    result[guid] = criteria[field][guid].operator
+                }
+            }
+
+            return result
+        },
         savedSearches() {
             return this.$store.state.search.savedSearches
         },
@@ -332,6 +347,9 @@ export default {
             const payload = Object.assign({}, { columns: this.selectedColumns.display }, { direction: direction })
 
             this.$store.commit('search/displayColumnsSort', payload)
+        },
+        operatorUpdated(field, guid, value) {
+            this.$store.commit('search/criteriaOperator', { field: field, guid: guid, value: value })
         },
         savedSearchGet() {
             this.$store.dispatch('search/getSavedSearch', this.savedSearchSelected).then(() => {

@@ -6,12 +6,46 @@ export default {
     namespaced: true,
 
     state: {
-        filter: '',
         filters: [],
-        groupBy: '',
-        result: {
-            data: [],
-            pagination: {}
+        operators: {
+            map: {
+                blob: 'text',
+                boolean: 'boolean',
+                country: 'boolean',
+                currency: 'boolean',
+                datetime: 'number',
+                dblist: 'boolean',
+                decimal: 'number',
+                email: 'text',
+                integer: 'number',
+                list: 'boolean',
+                phone: 'text',
+                related: 'boolean',
+                reminder: 'number',
+                string: 'text',
+                sublist: 'boolean',
+                text: 'text',
+                time: 'number',
+                url: 'text'
+            },
+            types: {
+                boolean: [
+                    { value: 'is', text: 'is' },
+                    { value: 'is_not', text: 'is not' }
+                ],
+                number: [
+                    { value: 'is', text: 'is' },
+                    { value: 'is_not', text: 'is not' },
+                    { value: 'greater', text: 'greater' },
+                    { value: 'less', text: 'less' }
+                ],
+                text: [
+                    { value: 'contains', text: 'contains' },
+                    { value: 'not_contains', text: 'does not contain' },
+                    { value: 'starts_with', text: 'starts with' },
+                    { value: 'ends_with', text: 'ends with' }
+                ]
+            }
         },
         savedSearch: {
             id: '',
@@ -63,10 +97,7 @@ export default {
             state.savedSearch.content.saved.aggregator = value
         },
         criteriaCreate(state, value) {
-            const filter = state.filters.filter(filter => {
-
-                return filter.field === value
-            })
+            const filter = state.filters.filter(filter => filter.field === value)
 
             var s4 = function () {
                 return Math.floor((1 + Math.random()) * 0x10000).toString(16).substring(1)
@@ -82,8 +113,8 @@ export default {
 
             Vue.set(criteria[filter[0].field], guid, {
                 type: filter[0].type,
-                operator: filter[0].operator,
-                value: filter[0].value
+                operator: state.operators.types[state.operators.map[filter[0].type]][0].text,
+                value: 'boolean' === filter[0].type ? 0 : ''
             })
         },
         criteriaCopy(state, value) {
