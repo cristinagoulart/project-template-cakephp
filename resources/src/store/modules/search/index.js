@@ -155,10 +155,10 @@ export default {
             }
         },
         criteriaOperator(state, payload) {
-            state.savedSearch.content.saved.criteria[payload.field][payload.guid].operator = payload.value
+            Vue.set(state.savedSearch.content.saved.criteria[payload.field][payload.guid], 'operator', payload.value)
         },
         criteriaValue(state, payload) {
-            state.savedSearch.content.saved.criteria[payload.field][payload.guid].value = payload.value
+            Vue.set(state.savedSearch.content.saved.criteria[payload.field][payload.guid], 'value', payload.value)
         },
         displayColumns(state, payload) {
             if (-1 === ['add', 'remove'].indexOf(payload.action)) {
@@ -219,7 +219,7 @@ export default {
             state.result = value
         },
         savedSearch(state, value) {
-            state.savedSearch = value
+            Vue.set(state, 'savedSearch', value)
         },
         savedSearches(state, value) {
             state.savedSearches = value

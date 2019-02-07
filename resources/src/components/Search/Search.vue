@@ -36,7 +36,7 @@
                                                 </select>
                                             </div>
                                             <div class="col-xs-6 col-md-5 col-lg-4">
-                                                <component :is="field.type + 'Input'" :guid="guid" :field="fieldName" :value="field.value" :options="filtersFlat[fieldName].options" :source="filtersFlat[fieldName].source" :url="filtersFlat[fieldName].url" :multiple="true" @input-value-updated="criteriaUpdated" />
+                                                <component :is="field.type + 'Input'" :guid="guid" :field="field_name" :key="guid + field.value" :value="field.value" :options="filtersFlat[field_name].options" :source="filtersFlat[field_name].source" :url="filtersFlat[field_name].url" :multiple="true" @input-value-updated="criteriaUpdated" />
                                             </div>
                                             <div class="col-xs-2">
                                                 <div class="input-sm">
