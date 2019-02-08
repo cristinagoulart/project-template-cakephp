@@ -74,7 +74,9 @@ class SearchAction extends BaseAction
         $result = [];
         foreach ($items as $entity) {
             $row = $this->formatEntity($entity, $this->_table());
-            $row['_permissions'] = $this->getPermissions($entity->get($this->_table()->getPrimaryKey()));
+            if (! array_key_exists('group', $options)) {
+                $row['_permissions'] = $this->getPermissions($entity->get($this->_table()->getPrimaryKey()));
+            }
             $result[] = $row;
         }
 
@@ -128,21 +130,12 @@ class SearchAction extends BaseAction
 
         $url = ['prefix' => false, 'plugin' => $plugin, 'controller' => $controller, 'action' => 'view', $id];
         $result['view'] = (new AccessFactory())->hasAccess($url, User::getCurrentUser());
-        // if ((new AccessFactory())->hasAccess($url, User::getCurrentUser())) {
-        //     $result['view'] = Router::url($url, true);
-        // }
 
         $url = ['prefix' => false, 'plugin' => $plugin, 'controller' => $controller, 'action' => 'edit', $id];
         $result['edit'] = (new AccessFactory())->hasAccess($url, User::getCurrentUser());
-        // if ((new AccessFactory())->hasAccess($url, User::getCurrentUser())) {
-        //     $result['edit'] = Router::url($url, true);
-        // }
 
         $url = ['plugin' => $plugin, 'controller' => $controller, 'action' => 'delete', $id];
         $result['delete'] = (new AccessFactory())->hasAccess($url, User::getCurrentUser());
-        // if ((new AccessFactory())->hasAccess($url, User::getCurrentUser())) {
-        //     $result['delete'] = Router::url($url, true);
-        // }
 
         return $result;
     }
