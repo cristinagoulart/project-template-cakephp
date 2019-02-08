@@ -6,6 +6,7 @@ export default {
     namespaced: true,
 
     state: {
+        csrfToken: document.cookie.match(new RegExp('csrfToken=([^;]+)'))[1],
         filters: [],
         operators: {
             map: {
@@ -237,13 +238,66 @@ export default {
         },
         sortByOrder(state, value) {
             state.savedSearch.content.saved.sort_by_order = value
-        },
-        token(state, value) {
-            state.token = value
         }
     },
 
     actions: {
+        copySavedSearch({ commit, state, dispatch }, payload) {
+
+            return axios({
+                method: 'get',
+                url: '/search/saved-searches/view/' + payload.id,
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json',
+                    'X-Requested-With': 'XMLHttpRequest'
+                }
+            }).then(response => {
+                if (true !== response.data.success) {
+                    return
+                }
+
+                const data = response.data.data
+
+                delete data.id
+                data.user_id = payload.user_id
+
+                axios({
+                    method: 'post',
+                    url: '/search/saved-searches/add',
+                    data: data,
+                    headers: {
+                        'Accept': 'application/json',
+                        'Content-Type': 'application/json',
+                        'X-Requested-With': 'XMLHttpRequest',
+                        'X-CSRF-Token': state.csrfToken
+                    }
+                }).then(response => {
+                    if (true === response.data.success) {
+                        dispatch('getSavedSearches')
+                    }
+                }).catch(error => console.log(error))
+
+
+            }).catch(error => console.log(error))
+        },
+        deleteSavedSearch({ commit, state, dispatch }, id) {
+
+            return axios({
+                method: 'delete',
+                url: '/search/saved-searches/delete/' + id,
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json',
+                    'X-Requested-With': 'XMLHttpRequest',
+                    'X-CSRF-Token': state.csrfToken
+                }
+            }).then(response => {
+                if (true === response.data.success) {
+                    dispatch('getSavedSearches')
+                }
+            }).catch(error => console.log(error))
+        },
         getSavedSearch({ commit, state }, id) {
 
             return axios({
@@ -281,46 +335,28 @@ export default {
                 }
             }).catch(error => console.log(error))
         },
-        saveSearch() {
-            if ('' === this.saveSearchName) {
+        saveSearch({ commit, state, dispatch }) {
+            if ('' === state.savedSearch.name) {
                 return
             }
 
-            axios({
-                method: 'post',
-                url: '/search/saved-searches/add',
-                headers: {
-                    'Accept': 'application/json',
-                    'Content-Type': 'application/json',
-                    'X-Requested-With': 'XMLHttpRequest'
-                }
-            }).then(response => {
-                let data = response.data.success ? response.data.data : null
-                console.log(data)
-                if (null === data) {
-                    return
-                }
-            }).catch(error => console.log(error))
-        },
+            const method = '' === state.savedSearch.id ? 'post' : 'put'
+            const action = '' === state.savedSearch.id ? 'add' : 'edit/' + state.savedSearch.id
 
-        search: function ({ commit, state }) {
-            return axios({
-                method: 'post',
-                url: '/api/' + state.savedSearch.model + '/search',
-                params: {
-                    sort: state.savedSearch.content.saved.sort_by_field,
-                    direction: state.savedSearch.content.saved.sort_by_order
-                },
-                data: state.savedSearch.content.saved,
+            axios({
+                method: method,
+                url: '/search/saved-searches/' + action,
+                data: state.savedSearch,
                 headers: {
-                    'Authorization': 'Bearer ' + state.token,
                     'Accept': 'application/json',
                     'Content-Type': 'application/json',
-                    'X-Requested-With': 'XMLHttpRequest'
+                    'X-Requested-With': 'XMLHttpRequest',
+                    'X-CSRF-Token': state.csrfToken
                 }
             }).then(response => {
                 if (true === response.data.success) {
-                    commit('result', { data: response.data.data, pagination: response.data.pagination })
+                    dispatch('getSavedSearch', 'post' === method ? response.data.data.id : state.savedSearch.id)
+                    dispatch('getSavedSearches')
                 }
             }).catch(error => console.log(error))
         }

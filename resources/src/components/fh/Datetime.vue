@@ -64,17 +64,14 @@ export default {
             },
             showDropdowns: true,
             singleDatePicker: true,
-            startDate: moment('2019-01-30 00:00'),
             timePicker: true,
             timePicker24Hour: true,
             timePickerIncrement: 5
         }
 
-
         if (this.val) {
-            options.startDate = this.val
+            $input.val(this.val)
         }
-        console.log(options)
 
         $input.daterangepicker(options)
 

@@ -120,10 +120,10 @@
                                         <button type="button" @click="savedSearchGet()" :disabled="'' === savedSearchSelected" class="btn btn-default btn-sm">
                                             <i class="fa fa-eye"></i>
                                         </button>
-                                        <button type="button" :disabled="'' === savedSearchSelected" class="btn btn-default btn-sm">
+                                        <button type="button" @click="savedSearchCopy()" :disabled="'' === savedSearchSelected" class="btn btn-default btn-sm">
                                             <i class="fa fa-clone"></i>
                                         </button>
-                                        <button type="button" :disabled="'' === savedSearchSelected" class="btn btn-danger btn-sm">
+                                        <button type="button" @click="savedSearchDelete()" :disabled="'' === savedSearchSelected || savedSearchSelected === $store.state.search.savedSearch.id" class="btn btn-danger btn-sm">
                                             <i class="fa fa-trash"></i>
                                         </button>
                                     </span>
@@ -338,10 +338,31 @@ export default {
         operatorUpdated(field, guid, value) {
             this.$store.commit('search/criteriaOperator', { field: field, guid: guid, value: value })
         },
+        savedSearchCopy() {
+            this.$store.dispatch('search/copySavedSearch', { id: this.savedSearchSelected, user_id: this.userId }).then(() => {
+                // this.search()
+            })
+        },
+        savedSearchDelete() {
+            if (this.savedSearchSelected === this.$store.state.search.savedSearch.id) {
+                return
+            }
+
+            if (! confirm('Are you sure you want to delete this saved search?')) {
+                return
+            }
+
+            this.$store.dispatch('search/deleteSavedSearch', this.savedSearchSelected).then(() => {
+                this.savedSearchSelected = ''
+            })
+        },
         savedSearchGet() {
             this.$store.dispatch('search/getSavedSearch', this.savedSearchSelected).then(() => {
                 this.search()
             })
+        },
+        saveSearch() {
+            this.$store.dispatch('search/saveSearch')
         },
         search() {
             this.loadResult = false
