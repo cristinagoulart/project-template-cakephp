@@ -136,7 +136,7 @@
                                         <input type="text" v-model="name" class="form-control input-sm" placeholder="Saved search name" required="required">
                                     </div>
                                     <span class="input-group-btn">
-                                        <button type="button" @click="saveSearch()" class="btn btn-sm btn-primary"><i class="fa fa-floppy-o" aria-hidden="true"></i></button>
+                                        <button type="button" @click="savedSearchCreate()" class="btn btn-sm btn-primary"><i class="fa fa-floppy-o" aria-hidden="true"></i></button>
                                     </span>
                                 </div>
                             </div>
@@ -294,8 +294,8 @@ export default {
 
         if ('' !== this.id) {
             this.$store.commit('search/savedSearchId', this.id)
-            this.$store.dispatch('search/getSavedSearch', this.id).then(() => {
-                this.$store.dispatch('search/getSavedSearches')
+            this.$store.dispatch('search/savedSearchGet', this.id).then(() => {
+                this.$store.dispatch('search/savedSearchesGet')
                 this.search()
             })
         }
@@ -304,7 +304,7 @@ export default {
             this.$store.commit('search/savedSearchModel', this.model)
             this.$store.commit('search/savedSearchUserId', this.userId)
             this.search()
-            this.$store.dispatch('search/getSavedSearches')
+            this.$store.dispatch('search/savedSearchesGet')
         }
     },
 
@@ -339,9 +339,10 @@ export default {
             this.$store.commit('search/criteriaOperator', { field: field, guid: guid, value: value })
         },
         savedSearchCopy() {
-            this.$store.dispatch('search/copySavedSearch', { id: this.savedSearchSelected, user_id: this.userId }).then(() => {
-                // this.search()
-            })
+            this.$store.dispatch('search/savedSearchCopy', { id: this.savedSearchSelected, user_id: this.userId })
+        },
+        savedSearchCreate() {
+            this.$store.dispatch('search/savedSearchCreate')
         },
         savedSearchDelete() {
             if (this.savedSearchSelected === this.$store.state.search.savedSearch.id) {

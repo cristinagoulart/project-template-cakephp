@@ -242,7 +242,7 @@ export default {
     },
 
     actions: {
-        copySavedSearch({ commit, state, dispatch }, payload) {
+        savedSearchCopy({ commit, state, dispatch }, payload) {
 
             return axios({
                 method: 'get',
@@ -274,68 +274,14 @@ export default {
                     }
                 }).then(response => {
                     if (true === response.data.success) {
-                        dispatch('getSavedSearches')
+                        dispatch('savedSearchesGet')
                     }
                 }).catch(error => console.log(error))
 
 
             }).catch(error => console.log(error))
         },
-        deleteSavedSearch({ commit, state, dispatch }, id) {
-
-            return axios({
-                method: 'delete',
-                url: '/search/saved-searches/delete/' + id,
-                headers: {
-                    'Accept': 'application/json',
-                    'Content-Type': 'application/json',
-                    'X-Requested-With': 'XMLHttpRequest',
-                    'X-CSRF-Token': state.csrfToken
-                }
-            }).then(response => {
-                if (true === response.data.success) {
-                    dispatch('getSavedSearches')
-                }
-            }).catch(error => console.log(error))
-        },
-        getSavedSearch({ commit, state }, id) {
-
-            return axios({
-                method: 'get',
-                url: '/search/saved-searches/view/' + id,
-                headers: {
-                    'Accept': 'application/json',
-                    'Content-Type': 'application/json',
-                    'X-Requested-With': 'XMLHttpRequest'
-                }
-            }).then(response => {
-                if (true === response.data.success) {
-                    commit('savedSearch', response.data.data)
-                }
-            }).catch(error => console.log(error))
-        },
-        getSavedSearches({ commit, state }) {
-
-            return axios({
-                method: 'get',
-                url: '/search/saved-searches/index',
-                params: {
-                    model: state.savedSearch.model,
-                    system: 0,
-                    user_id: state.savedSearch.user_id
-                },
-                headers: {
-                    'Accept': 'application/json',
-                    'Content-Type': 'application/json',
-                    'X-Requested-With': 'XMLHttpRequest'
-                }
-            }).then(response => {
-                if (true === response.data.success) {
-                    commit('savedSearches', response.data.data)
-                }
-            }).catch(error => console.log(error))
-        },
-        saveSearch({ commit, state, dispatch }) {
+        savedSearchCreate({ commit, state, dispatch }) {
             if ('' === state.savedSearch.name) {
                 return
             }
@@ -355,8 +301,62 @@ export default {
                 }
             }).then(response => {
                 if (true === response.data.success) {
-                    dispatch('getSavedSearch', 'post' === method ? response.data.data.id : state.savedSearch.id)
-                    dispatch('getSavedSearches')
+                    dispatch('savedSearchGet', 'post' === method ? response.data.data.id : state.savedSearch.id)
+                    dispatch('savedSearchesGet')
+                }
+            }).catch(error => console.log(error))
+        },
+        savedSearchDelete({ commit, state, dispatch }, id) {
+
+            return axios({
+                method: 'delete',
+                url: '/search/saved-searches/delete/' + id,
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json',
+                    'X-Requested-With': 'XMLHttpRequest',
+                    'X-CSRF-Token': state.csrfToken
+                }
+            }).then(response => {
+                if (true === response.data.success) {
+                    dispatch('savedSearchesGet')
+                }
+            }).catch(error => console.log(error))
+        },
+        savedSearchGet({ commit, state }, id) {
+
+            return axios({
+                method: 'get',
+                url: '/search/saved-searches/view/' + id,
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json',
+                    'X-Requested-With': 'XMLHttpRequest'
+                }
+            }).then(response => {
+                if (true === response.data.success) {
+                    commit('savedSearch', response.data.data)
+                }
+            }).catch(error => console.log(error))
+        },
+        savedSearchesGet({ commit, state }) {
+
+            return axios({
+                method: 'get',
+                url: '/search/saved-searches/index',
+                params: {
+                    model: state.savedSearch.model,
+                    system: 0,
+                    user_id: state.savedSearch.user_id
+                },
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json',
+                    'X-Requested-With': 'XMLHttpRequest'
+                }
+            }).then(response => {
+                if (true === response.data.success) {
+                    commit('savedSearches', response.data.data)
                 }
             }).catch(error => console.log(error))
         }
