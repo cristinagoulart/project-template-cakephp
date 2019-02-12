@@ -11,7 +11,7 @@
             <table class="table table-hover table-condensed table-vertical-align" width="100%">
                 <thead>
                     <tr>
-                        <th v-if="batch.enabled" class="dt-select-column"></th>
+                        <th v-if="batch" class="dt-select-column"></th>
                         <th v-for="header in headers">{{ header.text }}</th>
                         <th v-if="withActions">Actions</th>
                     </tr>
@@ -35,18 +35,8 @@ export default {
 
     props: {
         batch: {
-            type: Object,
-            default: {
-                enabled: false,
-                field: ''
-            },
-            validator: function (value) {
-                if (value.enabled) {
-                    return '' !== value.field
-                }
-
-                return true
-            }
+            type: Boolean,
+            default: false
         },
         data: {
             type: Object
@@ -66,6 +56,10 @@ export default {
         orderField: {
             type: String,
             default: ''
+        },
+        primaryKey: {
+            type: String,
+            required: true
         },
         requestType: {
             type: String,
@@ -105,7 +99,7 @@ export default {
             let orderColumn = Array.from(this.headers, header => header.value).indexOf(this.orderField)
             // handle out-of-bounds
             orderColumn = -1 === orderColumn ? 0 : orderColumn
-            if (self.batch.enabled) {
+            if (self.batch) {
                 orderColumn += 1
             }
 
@@ -115,6 +109,7 @@ export default {
                 pageLength: 10,
                 language: { processing: '<i class="fa fa-refresh fa-spin fa-fw"></i> Processing...' },
                 order: [[orderColumn, this.orderDirection]],
+                columnDefs: [{ targets: [-1], orderable: false }],
                 // ajax settings
                 processing: true,
                 serverSide: true,
@@ -122,11 +117,15 @@ export default {
                 ajax: {
                     url: this.url,
                     type: this.requestType,
-                    headers: { Authorization: 'Bearer ' + this.token },
+                    headers: {
+                        Accept: 'application/json',
+                        'Content-Type': 'application/json',
+                        Authorization: 'Bearer ' + this.token
+                    },
                     data: function (d) {
                         let fields = Array.from(self.headers, header => header.value)
-                        if (self.batch.enabled) {
-                            fields.unshift(self.batch.field)
+                        if (self.batch) {
+                            fields.unshift(self.primaryKey)
                         }
 
                         let sort = fields[d.order[0].column]
@@ -141,7 +140,7 @@ export default {
 
                         Object.assign(data, self.data)
 
-                        return data
+                        return JSON.stringify(data)
                     },
                     dataFilter: function (d) {
                         d = $.parseJSON(d)
@@ -155,13 +154,9 @@ export default {
                 }
             }
 
-            if (this.withActions) {
-                Object.assign(settings, { columnDefs: [{ targets: [-1], orderable: false }] })
-            }
-
 
             // batch specific options
-            if (this.batch.enabled) {
+            if (this.batch) {
                 Object.assign(settings, {
                     createdRow: function ( row, data, index ) {
                         $(row).attr('data-id', data[0])
@@ -184,7 +179,7 @@ export default {
 
             this.table = $(this.$el.querySelector('table')).DataTable(settings)
 
-            if (this.batch.enabled) {
+            if (this.batch) {
                 this.table.on('select', function () {
                     self.batchButton.disabled = false
                 })
@@ -199,7 +194,7 @@ export default {
             this.table.on('order.dt', function () {
                 const order = self.table.order()
 
-                self.$emit('sort-field-updated', self.batch.enabled ?
+                self.$emit('sort-field-updated', self.batch ?
                     self.headers[order[0][0] - 1].value :
                     self.headers[order[0][0]].value
                 )
@@ -236,8 +231,8 @@ export default {
             const combinedColumns = []
             //this.options.ajax.hasOwnProperty('combinedColumns') ? this.options.ajax.combinedColumns : []
             const headers = Array.from(this.headers, header => header.value)
-            if (this.batch.enabled) {
-                headers.unshift(this.batch.field)
+            if (this.batch) {
+                headers.unshift(this.primaryKey)
             }
 
             const length = headers.length
@@ -278,15 +273,15 @@ export default {
                     let html = ''
 
                     if (data[index]._permissions.view) {
-                        html += '<a href="/' + this.model + '/view/' + data[index][this.batch.field] + '" class="btn btn-default" title="View"><i class="menu-icon fa fa-eye"></i></a>'
+                        html += '<a href="/' + this.model + '/view/' + data[index][this.primaryKey] + '" class="btn btn-default" title="View"><i class="menu-icon fa fa-eye"></i></a>'
                     }
 
                     if (data[index]._permissions.edit) {
-                        html += '<a href="/' + this.model + '/edit/' + data[index][this.batch.field] + '" class="btn btn-default" title="Edit"><i class="menu-icon fa fa-pencil"></i></a>'
+                        html += '<a href="/' + this.model + '/edit/' + data[index][this.primaryKey] + '" class="btn btn-default" title="Edit"><i class="menu-icon fa fa-pencil"></i></a>'
                     }
 
                     if (data[index]._permissions.delete) {
-                        html += '<a href="/api/' + this.model + '/delete/' + data[index][this.batch.field] + '.json" data-delete="1" class="btn btn-default" title="Delete"><i class="menu-icon fa fa-trash"></i></a>'
+                        html += '<a href="/api/' + this.model + '/delete/' + data[index][this.primaryKey] + '.json" data-delete="1" class="btn btn-default" title="Delete"><i class="menu-icon fa fa-trash"></i></a>'
                     }
 
                     html = '<div class="btn-group btn-group-xs">' + html + '</div>'
@@ -303,7 +298,7 @@ export default {
          * @return {undefined}
          */
         batchEdit() {
-            if (this.batch.enabled) {
+            if (! this.batch) {
                 return
             }
 
@@ -320,11 +315,18 @@ export default {
                 form.appendChild(input)
             })
 
+            let input = document.createElement('input')
+            input.type = 'hidden'
+            input.name = '_csrfToken'
+            input.value = document.cookie.match(new RegExp('csrfToken=([^;]+)'))[1]
+
+            form.appendChild(input)
+
             form.submit()
         },
 
         batchDelete() {
-            if (this.batch.enabled) {
+            if (! this.batch) {
                 return
             }
 
@@ -344,6 +346,13 @@ export default {
                 input.value = row.getAttribute('data-id')
                 form.appendChild(input)
             })
+
+            let input = document.createElement('input')
+            input.type = 'hidden'
+            input.name = '_csrfToken'
+            input.value = document.cookie.match(new RegExp('csrfToken=([^;]+)'))[1]
+
+            form.appendChild(input)
 
             form.submit()
         }
