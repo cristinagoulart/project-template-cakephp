@@ -3,10 +3,11 @@ namespace App\View\Helper;
 
 use App\Model\Table\UsersTable;
 use Cake\Core\App;
+use Cake\Core\Configure;
 use Cake\Datasource\EntityInterface;
 use Cake\Datasource\RepositoryInterface;
 use Cake\ORM\TableRegistry;
-use Cake\Utility\Hash;
+use Cake\Routing\Router;
 use Cake\Utility\Inflector;
 use Cake\View\Helper;
 use CsvMigrations\FieldHandlers\FieldHandlerFactory;
@@ -20,162 +21,192 @@ final class SearchHelper extends Helper
 {
     private const ASSOCIATION_TYPES = ['manyToOne'];
 
-    private $table;
-    private $entity = null;
+    /**
+     * Group by count field
+     */
+    const GROUP_BY_FIELD = 'total';
 
+    public $helpers = ['Url'];
+
+    private $table = null;
+    private $factory = null;
+
+    private $fields = [];
     private $filters = [];
     private $associationLabels = [];
 
-    private $displayColumns = [];
-    private $availableColumns = [];
-    private $getGroupColumns = [];
-    private $factory = null;
-    private $fields = [];
-    private $savedSearches = [];
-    private $preSaveId = '';
+    /**
+     * Charts list.
+     *
+     * @var array
+     */
+    private $charts = [
+        ['type' => 'funnelChart', 'icon' => 'filter'],
+        ['type' => 'donutChart', 'icon' => 'pie-chart'],
+        ['type' => 'barChart', 'icon' => 'bar-chart']
+    ];
 
-    public function initialize(array $config) : void
+    /**
+     * Search filters getter.
+     *
+     * @return mixed[]
+     */
+    public function getFilters(string $table) : array
     {
-        if (! isset($config['table']) || ! $config['table'] instanceof RepositoryInterface) {
-            throw new \InvalidArgumentException('Table instance is required.');
+        $this->setTable($table);
+
+        $key = $this->table->getAlias();
+        if (! empty($this->filters[$key])) {
+            return $this->filters[$key];
         }
 
-        $this->table = $config['table'];
-        $this->entity = TableRegistry::get('Search.SavedSearches')
-            ->find('all')
+        $result = $this->getSearchableFields($this->table);
+
+        $labels = $this->getAssociationLabels();
+        foreach ($result as $index => $options) {
+            unset($result[$index]['input']);
+            unset($result[$index]['operators']);
+
+            $group = substr($options['field'], 0, strpos($options['field'], '.'));
+            $group = array_key_exists($group, $labels) ? $labels[$group] : $group;
+
+            $result[$index]['group'] = $group;
+        }
+
+        usort($result, function ($x, $y) {
+            return strcasecmp($x['field'], $y['field']);
+        });
+
+        $this->filters[$this->table->getAlias()] = $result;
+
+        return $result;
+    }
+
+    /**
+     * Method that retrieves target table search display fields.
+     *
+     * @return array
+     */
+    public function getDisplayFields(string $table) : array
+    {
+        $this->setTable($table);
+
+        $result = $this->getBasicSearchFieldsFromSystemSearch();
+
+        if (empty($result)) {
+            $result = $this->getBasicSearchFieldsFromView();
+        }
+
+        foreach ($result as $key => $value) {
+            $result[$key] = $this->table->aliasField($value);
+        }
+
+        return $result;
+    }
+
+    /**
+     * Chart options getter.
+     *
+     * @return mixed[]
+     */
+    public function getChartOptions(EntityInterface $entity, string $tableId) : array
+    {
+        $this->setTable($entity->get('model'));
+
+        list($plugin, $controller) = pluginSplit($entity->get('model'));
+        $content = $entity->get('content')['saved'];
+        list($prefix, $fieldName) = pluginSplit($content['group_by']);
+
+        $result = [];
+        foreach ($this->charts as $chart) {
+            $result[] = [
+                'chart' => $chart['type'],
+                'icon' => $chart['icon'],
+                'ajax' => [
+                    'url' => Router::url([
+                        'prefix' => 'api',
+                        'plugin' => $plugin,
+                        'controller' => $controller,
+                        'action' => 'search'
+                    ]),
+                    'token' => Configure::read('API.token'),
+                    'data' => [
+                        'direction' => $content['sort_by_order'],
+                        'fields' => [$content['group_by'], $prefix . '.' . self::GROUP_BY_FIELD],
+                        'sort' => $content['sort_by_field'],
+                        'group_by' => $content['group_by']
+                    ],
+                    'format' => 'pretty'
+                ],
+                'options' => [
+                    'element' => Inflector::delimit($chart['type']) . '_' . $tableId,
+                    'resize' => true,
+                    'hideHover' => true,
+                    'data' => [],
+                    'barColors' => ['#0874c7', '#04645e', '#5661f8', '#8298c1', '#c6ba08', '#07ada3'],
+                    'lineColors' => ['#0874c7', '#04645e', '#5661f8', '#8298c1', '#c6ba08', '#07ada3'],
+                    'labels' => [Inflector::humanize(self::GROUP_BY_FIELD), Inflector::humanize($fieldName)],
+                    'xkey' => [$content['group_by']],
+                    'ykeys' => [$prefix . '.' . self::GROUP_BY_FIELD]
+                ]
+            ];
+        }
+
+        return $result;
+    }
+
+    /**
+     * Table instance setter.
+     *
+     * @param string $table Table name
+     * @return void
+     */
+    private function setTable(string $table) : void
+    {
+        $this->table = TableRegistry::get($table);
+    }
+
+    /**
+     * Returns basic search fields from provided Table's system search.
+     *
+     * @return string[]
+     */
+    private function getBasicSearchFieldsFromSystemSearch() : array
+    {
+        $table = TableRegistry::getTableLocator()->get('Search.SavedSearches');
+
+        $entity = $table->find('all')
+            ->where(['SavedSearches.model' => $this->table->getAlias(), 'SavedSearches.system' => true])
             ->enableHydration(true)
-            ->where(['id' => $config['id']])
             ->first();
+
+        if (null === $entity) {
+            return [];
+        }
+
+        return (array)$entity->get('content')['saved']['display_columns'];
     }
 
-    public function getSavedSearch() : ?EntityInterface
+    /**
+     * Returns basic search fields from provided Table's index View csv fields.
+     *
+     * @return string[]
+     */
+    private function getBasicSearchFieldsFromView() : array
     {
-        return $this->entity;
-    }
-
-    public function getSavedSearches() : array
-    {
-        if (! empty($this->savedSearches)) {
-            return $this->savedSearches;
+        $config = [];
+        try {
+            list($plugin, $module) = pluginSplit($this->table->getRegistryAlias());
+            $mc = new ModuleConfig(ConfigType::VIEW(), $module, 'index');
+            $config = $mc->parseToArray();
+            $config = ! empty($config['items']) ? $config['items'] : [];
+        } catch (\InvalidArgumentException $e) {
+            Log::error($e);
         }
 
-        $this->savedSearches = TableRegistry::get('Search.SavedSearches')->find('all')
-            ->where([
-                'SavedSearches.name IS NOT' => null,
-                'SavedSearches.system' => false,
-                'SavedSearches.user_id' => Hash::get(User::getCurrentUser(), 'id'),
-                'SavedSearches.model' => $this->table->getAlias()
-            ])
-            ->toArray();
-
-        return $this->savedSearches;
-    }
-
-    public function getSearchData() : array
-    {
-        return Hash::get($this->entity->get('content'), 'latest', []);
-    }
-
-    public function getPreSaveId() : string
-    {
-        if ('' !== $this->preSaveId) {
-            return $this->preSaveId;
-        }
-
-        $table = TableRegistry::get('Search.SavedSearches');
-        $entity = $table->newEntity();
-    }
-
-    public function reset(): void
-    {
-        $table = TableRegistry::get('Search.SavedSearches');
-
-        $entity = $this->entity;
-        $content = $entity->get('content');
-        $content['latest'] = $content['saved'];
-        $table->patchEntity($entity, ['content' => $content]);
-
-        $table->save($entity);
-    }
-
-    public function getFilters() : array
-    {
-        if (! empty($this->filters)) {
-            return $this->filters;
-        }
-
-        foreach ($this->getFields() as $field => $options) {
-            $this->filters[$field] = $options['label'];
-        }
-
-        ksort($this->filters);
-
-        $this->filters = $this->groupFilters($this->filters);
-
-        return $this->filters;
-    }
-
-    public function getDisplayColumns() : array
-    {
-        if (! empty($this->displayColumns)) {
-            debug('here');
-
-            return $this->displayColumns;
-        }
-
-        $setColumns = Hash::get($this->entity->get('content'), 'latest.display_columns', []);
-
-        foreach ($this->getFields() as $field => $options) {
-            if (in_array($field, $setColumns)) {
-                $this->displayColumns[$field] = $options['label'] . $this->getColumnSuffix($field);
-            }
-        }
-
-        // sort display columns based on saved search display_columns order
-        $this->displayColumns = array_merge(array_flip($setColumns), $this->displayColumns);
-
-        return $this->displayColumns;
-    }
-
-    public function getAvailableColumns() : array
-    {
-        if (! empty($this->availableColumns)) {
-            debug('here');
-
-            return $this->availableColumns;
-        }
-
-        $setColumns = Hash::get($this->entity->get('content'), 'latest.display_columns', []);
-
-        foreach ($this->getFields() as $field => $options) {
-            if (! in_array($field, $setColumns)) {
-                $this->availableColumns[$field] = $options['label'] . $this->getColumnSuffix($field);
-            }
-        }
-
-        asort($this->availableColumns);
-
-        return $this->availableColumns;
-    }
-
-    public function getGroupColumns() : array
-    {
-        if (! empty($this->getGroupColumns)) {
-            return $this->getGroupColumns;
-        }
-
-        $setColumns = Hash::get($this->entity->get('content'), 'latest.display_columns', []);
-
-        foreach ($this->getFields() as $field => $options) {
-            $tableName = substr($field, 0, strpos($field, '.'));
-            if ($this->entity->get('model') === $tableName) {
-                $this->getGroupColumns[$field] = $options['label'] . $this->getColumnSuffix($field);
-            }
-        }
-
-        asort($this->getGroupColumns);
-
-        return $this->getGroupColumns;
+        return array_map(function ($value) {
+            return $value[0];
+        }, $config);
     }
 
     /**
@@ -183,10 +214,10 @@ final class SearchHelper extends Helper
      *
      * @return mixed[]
      */
-    public function getAssociationLabels() : array
+    private function getAssociationLabels() : array
     {
-        if (! empty($this->associationLabels)) {
-            return $this->associationLabels;
+        if (! empty($this->associationLabels[$this->table->getAlias()])) {
+            return $this->associationLabels[$this->table->getAlias()];
         }
 
         $result = [];
@@ -198,67 +229,7 @@ final class SearchHelper extends Helper
             $result[$association->getName()] = Inflector::humanize(implode(', ', (array)$association->getForeignKey()));
         }
 
-        $this->associationLabels = $result;
-
-        return $this->associationLabels;
-    }
-
-    /**
-     * Method that retrieves target table searchable fields.
-     *
-     * @return mixed[]
-     */
-    public function getFields(bool $withAssociated = true) : array
-    {
-        return $this->getSearchableFields($this->table, $withAssociated);
-    }
-
-    /**
-     * Column suffix generator.
-     *
-     * Generates suffixes for associated columns, used mostly for display purposes.
-     *
-     * Sample suffix: ' (Author Id)'
-     *
-     * @param string $field Aliased field name
-     * @return string
-     */
-    private function getColumnSuffix(string $field) : string
-    {
-        $labels = $this->getAssociationLabels();
-
-        $tableName = substr($field, 0, strpos($field, '.'));
-        $tableName = array_key_exists($tableName, $labels) ? $labels[$tableName] : $tableName;
-
-        return $this->entity->get('model') !== $tableName ? sprintf(' (%s)', $tableName) : '';
-    }
-
-    private function groupFilters(array $filters) : array
-    {
-        $labels = $this->getAssociationLabels();
-
-        $result = [];
-        foreach ($filters as $field => $label) {
-            $group = substr($field, 0, strpos($field, '.'));
-            $group = array_key_exists($group, $labels) ? $labels[$group] : $group;
-
-            $result[$group][$field] = $label;
-        }
-
-        foreach ($result as $model => $modelFilters) {
-            asort($modelFilters);
-            $result[$model] = $modelFilters;
-        }
-        ksort($result);
-        // dd($result);
-
-        // push current model fields to the top of the filters list
-        // foreach ($result as $model => $modelFilters) {
-        //     if ($this->table->getAlias() === $model) {
-        //         $result = array_merge($modelFilters, $result);
-        //         unset($result[$model]);
-        //     }
-        // }
+        $this->associationLabels[$this->table->getAlias()] = $result;
 
         return $result;
     }
@@ -266,11 +237,13 @@ final class SearchHelper extends Helper
     /**
      * Method that retrieves target table searchable fields.
      *
+     * @param \Cake\Datasource\RepositoryInterface $table Table instance
+     * @param bool $withAssociated flag for including associations fields
      * @return mixed[]
      */
     private function getSearchableFields(RepositoryInterface $table, bool $withAssociated = true) : array
     {
-        list($plugin, $controller) = pluginSplit(App::shortName(get_class($this->table), 'Model/Table', 'Table'));
+        list($plugin, $controller) = pluginSplit(App::shortName(get_class($table), 'Model/Table', 'Table'));
         $url = ['plugin' => $plugin, 'controller' => $controller, 'action' => 'search'];
 
         if (! (new AccessFactory())->hasAccess($url, User::getCurrentUser())) {
@@ -281,20 +254,20 @@ final class SearchHelper extends Helper
             return $this->fields[$table->getAlias()];
         }
 
-        $this->fields[$table->getAlias()] = $this->getSearchableFieldsByTable($table);
+        $result = $this->getSearchableFieldsByTable($table);
         if ($withAssociated) {
-            $this->fields[$table->getAlias()] = array_merge(
-                $this->fields[$table->getAlias()],
-                $this->includeAssociated($table)
-            );
+            $result = array_merge($result, $this->includeAssociated($table));
         }
 
-        return $this->fields[$table->getAlias()];
+        $this->fields[$table->getAlias()] = $result;
+
+        return $result;
     }
 
     /**
      * Searchable fields getter by Table instance.
      *
+     * @param \Cake\Datasource\RepositoryInterface $table Table instance
      * @return mixed[]
      */
     private function getSearchableFieldsByTable(RepositoryInterface $table) : array
@@ -315,11 +288,10 @@ final class SearchHelper extends Helper
                 continue;
             }
 
-            $options = [];
-            foreach ($searchOptions as $k => $v) {
-                $options[$table->aliasField($k)] = $v;
+            foreach ($searchOptions as $searchFieldName => $searchFieldOptions) {
+                $searchFieldOptions['field'] = $table->aliasField($searchFieldName);
+                $result[$table->aliasField($searchFieldName)] = $searchFieldOptions;
             }
-            $result = array_merge($result, $options);
         }
 
         return $result;
@@ -328,7 +300,7 @@ final class SearchHelper extends Helper
     /**
      * Returns the fields definitions for the provided table.
      *
-     * @param \Cake\Datasource\RepositoryInterface $table Table to retrieve fields for
+     * @param \Cake\Datasource\RepositoryInterface $table Table instance
      * @return mixed[]
      */
     private function getFieldsDefinitionsByTable(RepositoryInterface $table) : array
@@ -351,6 +323,7 @@ final class SearchHelper extends Helper
     /**
      * Get associated tables searchable fields.
      *
+     * @param \Cake\Datasource\RepositoryInterface $table Table instance
      * @return mixed[]
      */
     private function includeAssociated(RepositoryInterface $table) : array
@@ -372,7 +345,8 @@ final class SearchHelper extends Helper
 
             $result = array_merge(
                 $result,
-                $this->getSearchableFields($targetTable, false) // fetch associated model searchable fields
+                // fetch associated model searchable fields
+                $this->getSearchableFields($targetTable, false)
             );
         }
 
