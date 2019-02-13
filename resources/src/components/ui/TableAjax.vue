@@ -65,10 +65,6 @@ export default {
             type: String,
             default: 'GET'
         },
-        token: {
-            type: String,
-            required: true
-        },
         url: {
             type: String,
             required: true
@@ -117,11 +113,7 @@ export default {
                 ajax: {
                     url: this.url,
                     type: this.requestType,
-                    headers: {
-                        Accept: 'application/json',
-                        'Content-Type': 'application/json',
-                        Authorization: 'Bearer ' + this.token
-                    },
+                    headers: axios.defaults.headers.common,
                     data: function (d) {
                         let fields = Array.from(self.headers, header => header.value)
                         if (self.batch) {
@@ -211,12 +203,6 @@ export default {
                 axios({
                     method: 'delete',
                     url: $(this).attr('href'),
-                    headers: {
-                        'Accept': 'application/json',
-                        'Content-Type': 'application/json',
-                        'X-Requested-With': 'XMLHttpRequest',
-                        'Authorization': 'Bearer ' + self.token
-                    }
                 }).then(response => {
                     if (true === response.data.success) {
                         self.table.ajax.reload()
@@ -318,7 +304,7 @@ export default {
             let input = document.createElement('input')
             input.type = 'hidden'
             input.name = '_csrfToken'
-            input.value = document.cookie.match(new RegExp('csrfToken=([^;]+)'))[1]
+            input.value = axios.defaults.headers.common['X-CSRF-Token']
 
             form.appendChild(input)
 
@@ -350,7 +336,7 @@ export default {
             let input = document.createElement('input')
             input.type = 'hidden'
             input.name = '_csrfToken'
-            input.value = document.cookie.match(new RegExp('csrfToken=([^;]+)'))[1]
+            input.value = axios.defaults.headers.common['X-CSRF-Token']
 
             form.appendChild(input)
 

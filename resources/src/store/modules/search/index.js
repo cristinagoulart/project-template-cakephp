@@ -6,7 +6,6 @@ export default {
     namespaced: true,
 
     state: {
-        csrfToken: document.cookie.match(new RegExp('csrfToken=([^;]+)'))[1],
         filters: [],
         operators: {
             map: {
@@ -222,6 +221,7 @@ export default {
             Vue.set(state, 'savedSearch', value)
         },
         savedSearches(state, value) {
+            value.sort((a, b) => (a.name > b.name) ? -1 : 1)
             state.savedSearches = value
         },
         savedSearchId(state, value) {
@@ -247,11 +247,6 @@ export default {
             return axios({
                 method: 'get',
                 url: '/search/saved-searches/view/' + payload.id,
-                headers: {
-                    'Accept': 'application/json',
-                    'Content-Type': 'application/json',
-                    'X-Requested-With': 'XMLHttpRequest'
-                }
             }).then(response => {
                 if (true !== response.data.success) {
                     return
@@ -266,12 +261,6 @@ export default {
                     method: 'post',
                     url: '/search/saved-searches/add',
                     data: data,
-                    headers: {
-                        'Accept': 'application/json',
-                        'Content-Type': 'application/json',
-                        'X-Requested-With': 'XMLHttpRequest',
-                        'X-CSRF-Token': state.csrfToken
-                    }
                 }).then(response => {
                     if (true === response.data.success) {
                         dispatch('savedSearchesGet')
@@ -289,16 +278,10 @@ export default {
             const method = '' === state.savedSearch.id ? 'post' : 'put'
             const action = '' === state.savedSearch.id ? 'add' : 'edit/' + state.savedSearch.id
 
-            axios({
+            return axios({
                 method: method,
                 url: '/search/saved-searches/' + action,
                 data: state.savedSearch,
-                headers: {
-                    'Accept': 'application/json',
-                    'Content-Type': 'application/json',
-                    'X-Requested-With': 'XMLHttpRequest',
-                    'X-CSRF-Token': state.csrfToken
-                }
             }).then(response => {
                 if (true === response.data.success) {
                     dispatch('savedSearchGet', 'post' === method ? response.data.data.id : state.savedSearch.id)
@@ -311,12 +294,6 @@ export default {
             return axios({
                 method: 'delete',
                 url: '/search/saved-searches/delete/' + id,
-                headers: {
-                    'Accept': 'application/json',
-                    'Content-Type': 'application/json',
-                    'X-Requested-With': 'XMLHttpRequest',
-                    'X-CSRF-Token': state.csrfToken
-                }
             }).then(response => {
                 if (true === response.data.success) {
                     dispatch('savedSearchesGet')
@@ -328,11 +305,6 @@ export default {
             return axios({
                 method: 'get',
                 url: '/search/saved-searches/view/' + id,
-                headers: {
-                    'Accept': 'application/json',
-                    'Content-Type': 'application/json',
-                    'X-Requested-With': 'XMLHttpRequest'
-                }
             }).then(response => {
                 if (true === response.data.success) {
                     commit('savedSearch', response.data.data)
@@ -349,11 +321,6 @@ export default {
                     system: 0,
                     user_id: state.savedSearch.user_id
                 },
-                headers: {
-                    'Accept': 'application/json',
-                    'Content-Type': 'application/json',
-                    'X-Requested-With': 'XMLHttpRequest'
-                }
             }).then(response => {
                 if (true === response.data.success) {
                     commit('savedSearches', response.data.data)
