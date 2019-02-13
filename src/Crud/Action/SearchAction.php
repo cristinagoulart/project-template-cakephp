@@ -53,7 +53,7 @@ class SearchAction extends BaseAction
      */
     protected function _post() : void
     {
-        list($finder) = $this->_extractFinder();
+        list($finder, ) = $this->_extractFinder();
         $options = SearchManager::getOptionsFromRequest(
             $this->_request()->getData(),
             $this->_request()->getQueryParams()
