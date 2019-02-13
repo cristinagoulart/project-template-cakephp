@@ -1,27 +1,19 @@
 <?php
 use Cake\Core\Configure;
-use Cake\Utility\Hash;
+use Cake\ORM\TableRegistry;
 use Cake\Utility\Inflector;
 use Qobo\Utils\ModuleConfig\ConfigType;
 use Qobo\Utils\ModuleConfig\ModuleConfig;
+use Qobo\Utils\Utility\User;
+
+$this->Html->script(['/dist/vendor', '/dist/app'], ['block' => 'scriptBottom']);
+$this->Html->css('/dist/style', ['block' => 'css']);
 
 $config = (new ModuleConfig(ConfigType::MODULE(), $this->name))->parse();
 $title = isset($config->table->alias) ? $config->table->alias : Inflector::humanize(Inflector::underscore($this->name));
-
-$displayFields = Hash::get($searchData, 'display_columns', []);
-$scripts = [];
-foreach ($searchableFields as $field => $options) {
-    if (! in_array($field, $displayFields)) {
-        continue;
-    }
-
-    if (empty($options['input']['post'])) {
-        continue;
-    }
-    array_push($scripts, ['post' => $options['input']['post']]);
-}
-
-echo $this->element('Search.widget_libraries', ['scripts' => $scripts]);
+$tableName = $this->name . ($this->plugin ? '.' . $this->plugin : '');
+$table = TableRegistry::get($tableName);
+$primaryKey = $table->aliasField($table->getPrimaryKey());
 ?>
 <section class="content-header">
     <div class="row">
@@ -36,22 +28,13 @@ echo $this->element('Search.widget_libraries', ['scripts' => $scripts]);
     </div>
 </section>
 <section class="content">
-<?php
-$args = [
-    [
-        'entity' => $entity,
-        'searchData' => $searchData,
-        'searchableFields' => $searchableFields,
-        'associationLabels' => $associationLabels,
-        'batch' => (bool)Configure::read('Search.batch.active'),
-        'preSaveId' => $preSaveId,
-        'action' => 'index'
-    ],
-    $this
-];
-
-$cell = $this->cell('Search.Result', $args);
-
-echo $cell;
-?>
+    <search
+        :display-fields='<?= json_encode($this->Search->getDisplayFields($tableName)) ?>'
+        filters='<?= json_encode($this->Search->getFilters($tableName)) ?>'
+        id="<?= $searchId ?>"
+        model="<?= $this->name ?>"
+        primary-key="<?= $primaryKey ?>"
+        user-id="<?= User::getCurrentUser()['id'] ?>"
+        :with-form='false'
+    ></search>
 </section>
