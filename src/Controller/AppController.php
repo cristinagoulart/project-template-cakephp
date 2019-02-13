@@ -34,7 +34,6 @@ use Qobo\Utils\ModuleConfig\ModuleConfig;
 use Qobo\Utils\Utility\User;
 use RolesCapabilities\CapabilityTrait;
 use RuntimeException;
-use Search\Model\Entity\SavedSearch;
 use Search\Utility as SearchUtility;
 use Search\Utility\Search;
 
@@ -180,31 +179,7 @@ class AppController extends Controller
     public function index()
     {
         $entity = $this->getSystemSearch();
-        $searchData = $entity->get('content');
-
-        // return json response and skip any further processing.
-        if ($this->request->is('ajax') && $this->request->accepts('application/json')) {
-            $this->viewBuilder()->setClassName('Json');
-            $response = $this->getAjaxViewVars(
-                $searchData['latest'],
-                $this->loadModel(),
-                new Search($this->loadModel(), $this->Auth->user())
-            );
-            $this->set($response);
-
-            return;
-        }
-
-        $this->set([
-            'entity' => $entity,
-            'searchData' => $searchData['latest'],
-            'preSaveId' => (new Search($this->loadModel(), $this->Auth->user()))->create($searchData['latest']),
-            'searchableFields' => SearchableFieldsListener::getSearchableFieldsByTable(
-                $this->loadModel(),
-                $this->Auth->user()
-            ),
-            'associationLabels' => SearchUtility::instance()->getAssociationLabels($this->loadModel())
-        ]);
+        $this->set(['searchId' => $entity->get('id')]);
 
         $this->render('/Module/index');
     }
@@ -222,7 +197,7 @@ class AppController extends Controller
             ->where(['SavedSearches.model' => $this->name, 'SavedSearches.system' => true])
             ->first();
 
-        if ($entity instanceof SavedSearch) {
+        if (null !== $entity) {
             return $entity;
         }
 
