@@ -12,6 +12,7 @@
 namespace App\Search;
 
 use Cake\Utility\Hash;
+use Qobo\Utils\Utility\User;
 use Search\Filter\Contains;
 use Search\Filter\EndsWith;
 use Search\Filter\Equal;
@@ -47,7 +48,7 @@ final class Manager
                 $result['data'][] = [
                     'field' => $field,
                     'operator' => self::FILTER_MAP[$criteria['operator']],
-                    'value' => $criteria['value']
+                    'value' => self::applyMagicValue($criteria['value'])
                 ];
             }
         }
@@ -76,16 +77,16 @@ final class Manager
      * @param mixed $value Field value
      * @return mixed
      */
-    public static function applyMagicValue($value)
+    private static function applyMagicValue($value)
     {
         switch (gettype($value)) {
             case 'string':
-                $value = (new MagicValue($value, $this->user))->get();
+                $value = (new MagicValue($value, User::getCurrentUser()))->get();
                 break;
 
             case 'array':
                 foreach ($value as $key => $val) {
-                    $value[$key] = (new MagicValue($val, $this->user))->get();
+                    $value[$key] = (new MagicValue($val, User::getCurrentUser()))->get();
                 }
                 break;
         }
