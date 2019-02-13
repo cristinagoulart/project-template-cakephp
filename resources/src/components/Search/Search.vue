@@ -1,6 +1,6 @@
 <template>
     <div>
-        <div class="box box-primary">
+        <div class="box box-primary" v-if="withForm">
             <div class="box-body">
                 <form class="search-form" novalidate="novalidate" v-on:submit.prevent="search">
                     <div class="row">
@@ -58,7 +58,7 @@
                                         <select v-model="selectedColumns.available" class="form-control input-sm" multiple size="8">
                                             <option v-for="filter in filtersList" v-if="-1 === displayColumns.indexOf(filter.field)" :value="filter.field">
                                                 {{ filter.label }}
-                                                <template v-if="filter.group !== model">({{ filter.group }})</template>
+                                                <template v-if="filter.group !== modelName">({{ filter.group }})</template>
                                             </option>
                                         </select>
                                     </div>
@@ -76,7 +76,7 @@
                                         <select v-model="selectedColumns.display" class="form-control input-sm" multiple size="8">
                                             <option v-for="column in displayColumns" :value="filtersFlat[column].field">
                                                 {{ filtersFlat[column].label }}
-                                                <template v-if="filtersFlat[column].group !== model">({{ filtersFlat[column].group }})</template>
+                                                <template v-if="filtersFlat[column].group !== modelName">({{ filtersFlat[column].group }})</template>
                                             </option>
                                         </select>
                                         <div class="row">
@@ -99,7 +99,7 @@
                                                 <label for="group-by">Group By</label>
                                                 <select v-model="groupBy" class="form-control input-sm">
                                                     <option value="">-- Please choose --</option>
-                                                    <option v-for="filter in filtersList" :value="filter.field" v-if="filter.group === model">{{ filter.label }}</option>
+                                                    <option v-for="filter in filtersList" :value="filter.field" v-if="filter.group === modelName">{{ filter.label }}</option>
                                                 </select>
                                             </div>
                                         </div>
@@ -147,31 +147,28 @@
         </div>
         <div class="box box-primary">
             <div class="box-header">
-                <h3 class="box-title"><a href="#">{{ model }}</a></h3>
+                <h3 class="box-title"><a href="#">{{ modelName }}</a></h3>
             </div>
             <div class="box-body">
-                <search-table v-if="loadResult" :url="'/api/' + $store.state.search.savedSearch.model + '/search'" :token="this.token" request-type="POST" :data="{ criteria: criteria }" :order-field="sortByField" :order-direction="sortByOrder" :model="$store.state.search.savedSearch.model" :batch="{ enabled: batch, field: primaryKey }" :with-actions="!(!!+groupBy)" :headers="tableHeaders" @sort-field-updated="sortFieldUpdated" @sort-order-updated="sortOrderUpdated"></search-table>
+                <table-ajax v-if="loadResult" :url="'/api/' + modelName + '/search'" request-type="POST" :data="{ criteria: criteria, group_by: groupBy }" :order-field="sortByField" :order-direction="sortByOrder" :model="modelName" :primary-key="primaryKey" :batch="batch" :with-actions="! groupBy" :headers="tableHeaders" @sort-field-updated="sortFieldUpdated" @sort-order-updated="sortOrderUpdated"></table-ajax>
             </div>
         </div>
     </div>
 </template>
 
 <script>
-import searchTable from '@/components/ui/TableAjax.vue'
+import tableAjax from '@/components/ui/TableAjax.vue'
 import inputs from '@/components/fh'
 import axios from 'axios'
 
 export default {
 
-    components: Object.assign({ searchTable }, inputs),
+    components: Object.assign({ tableAjax }, inputs),
 
     props: {
-        batch: {
-            type: Boolean,
-            default: false
-        },
         displayFields: {
-            type: String
+            type: Array,
+            default: []
         },
         filters: {
             type: String,
@@ -186,10 +183,6 @@ export default {
             default: ''
         },
         primaryKey: {
-            type: String,
-            default: ''
-        },
-        token: {
             type: String,
             required: true
         },
@@ -229,6 +222,9 @@ export default {
                 this.$store.commit('search/aggregator', value)
             }
         },
+        batch() {
+            return ! this.groupBy
+        },
         criteria() {
             return this.$store.state.search.savedSearch.content.saved.criteria
         },
@@ -256,6 +252,9 @@ export default {
             set(value) {
                 this.$store.commit('search/groupBy', value)
             }
+        },
+        modelName() {
+            return this.$store.state.search.savedSearch.model
         },
         name: {
             get() {
@@ -290,7 +289,7 @@ export default {
 
     created() {
         this.$store.commit('search/filters', JSON.parse(this.filters))
-        this.$store.commit('search/displayColumns',  {action: 'add', available: JSON.parse(this.displayFields) })
+        this.$store.commit('search/displayColumns',  {action: 'add', available: this.displayFields })
 
         if ('' !== this.id) {
             this.$store.commit('search/savedSearchId', this.id)
@@ -353,26 +352,34 @@ export default {
                 return
             }
 
-            this.$store.dispatch('search/deleteSavedSearch', this.savedSearchSelected).then(() => {
+            this.$store.dispatch('search/savedSearchDelete', this.savedSearchSelected).then(() => {
                 this.savedSearchSelected = ''
             })
         },
         savedSearchGet() {
-            this.$store.dispatch('search/getSavedSearch', this.savedSearchSelected).then(() => {
+            this.$store.dispatch('search/savedSearchGet', this.savedSearchSelected).then(() => {
                 this.search()
             })
         },
-        saveSearch() {
-            this.$store.dispatch('search/saveSearch')
-        },
         search() {
+            const self = this
+
             this.loadResult = false
 
-            const self = this
             this.tableHeaders = []
-            this.displayColumns.forEach(function (column) {
-                self.tableHeaders.push({ value: column, text: self.filtersFlat[column].label })
-            })
+
+
+            if (this.groupBy) {
+                this.tableHeaders.push({ value: this.groupBy, text: self.filtersFlat[this.groupBy].label })
+                this.tableHeaders.push({ value: this.modelName + '.total', text: 'Total' })
+            }
+
+
+            if (! this.groupBy) {
+                this.displayColumns.forEach(function (column) {
+                    self.tableHeaders.push({ value: column, text: self.filtersFlat[column].label })
+                })
+            }
 
             // https://github.com/vuejs/Discussion/issues/356#issuecomment-312529480
             this.$nextTick(() => {
