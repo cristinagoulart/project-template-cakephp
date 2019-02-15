@@ -141,7 +141,7 @@ class RelatedAction extends BaseAction
         $association->setTarget($association->getTarget());
         $association->getTarget()->setAlias($this->_controller()->getName());
 
-        $related = $this->getManyToManyAssociation($association->getTarget());
+        $related = $this->getManyToManyAssociation($association->getTarget(), $association->getName());
         if (is_null($related)) {
             throw new InvalidArgumentException(sprintf(
                 '%s is not associated with %s',
@@ -189,9 +189,10 @@ class RelatedAction extends BaseAction
      * its class name with the current Controller's table class.
      *
      * @param \Cake\Datasource\RepositoryInterface $table Association's table
+     * @param string $associationName Association name
      * @return \Cake\ORM\Association|null
      */
-    private function getManyToManyAssociation(RepositoryInterface $table): ?\Cake\ORM\Association
+    private function getManyToManyAssociation(RepositoryInterface $table, string $associationName): ?Association
     {
         /**
          * @var \Cake\ORM\Table $table
@@ -203,6 +204,11 @@ class RelatedAction extends BaseAction
             }
 
             if ($association->className() !== $this->_table()->getAlias()) {
+                continue;
+            }
+
+            // skip same association, fixes issue with self-associated tables
+            if ($association->getName() === $associationName) {
                 continue;
             }
 
