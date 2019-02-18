@@ -12,6 +12,7 @@
 </template>
 
 <script>
+import 'daterangepicker/daterangepicker.css'
 import * as $ from 'jquery'
 import daterangepicker from 'daterangepicker'
 import moment from 'moment'
@@ -100,4 +101,3 @@ export default {
 
 }
 </script>
-<style src='daterangepicker/daterangepicker.css'></style>
