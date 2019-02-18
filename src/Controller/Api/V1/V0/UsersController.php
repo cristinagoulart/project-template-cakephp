@@ -81,7 +81,7 @@ class UsersController extends AppController
                 'token' => JWT::encode(
                     [
                         'sub' => $user['id'],
-                        'exp' => time() + (int)Configure::read('Api.expireTime'),
+                        'exp' => time() + (int)Configure::read('API.expireTime'),
                     ],
                     Security::getSalt()
                 )
