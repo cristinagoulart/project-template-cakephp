@@ -2,6 +2,7 @@ import blobInput from './Text'
 import booleanInput from './Boolean'
 import countryInput from './List'
 import currencyInput from './List'
+import dateInput from './Date'
 import datetimeInput from './Datetime'
 import decimalInput from './Decimal'
 import dblistInput from './List'
@@ -22,6 +23,7 @@ export default {
     booleanInput,
     countryInput,
     currencyInput,
+    dateInput,
     datetimeInput,
     decimalInput,
     dblistInput,
