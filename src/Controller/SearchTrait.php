@@ -19,6 +19,6 @@ trait SearchTrait
             throw new BadRequestException(sprintf('Search is not available for %s', $table->getAlias()));
         }
 
-        $this->render('/Module/search-new');
+        $this->render('/Module/search');
     }
 }
