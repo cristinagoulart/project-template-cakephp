@@ -2,6 +2,7 @@
 namespace App\Crud\Action;
 
 use Cake\Core\App;
+use Cake\Datasource\QueryInterface;
 use Cake\Datasource\RepositoryInterface;
 use Cake\ORM\Association;
 use Cake\ORM\TableRegistry;
@@ -75,10 +76,10 @@ class RelatedAction extends BaseAction
      *
      * @param string $id Record id
      * @param string $associationName Association name
-     * @return \Cake\Datasource\QueryInterface|null
+     * @return \Cake\Datasource\QueryInterface
      * @throws \InvalidArgumentException When reversed many-to-many association is not found
      */
-    private function getQuery(string $id, string $associationName): ?\Cake\Datasource\QueryInterface
+    private function getQuery(string $id, string $associationName): QueryInterface
     {
         $association = $this->getAssociation($associationName);
 
@@ -106,9 +107,9 @@ class RelatedAction extends BaseAction
      *
      * @param string $associationName associations name
      *
-     * @return \Cake\ORM\Association|null $result object
+     * @return \Cake\ORM\Association|null
      */
-    private function getAssociation(string $associationName): ?\Cake\ORM\Association
+    private function getAssociation(string $associationName): ?Association
     {
         foreach ($this->_table()->associations() as $association) {
             if ($association->getName() !== $associationName) {
@@ -126,10 +127,10 @@ class RelatedAction extends BaseAction
      *
      * @param \Cake\ORM\Association $association Association object
      * @param string $id Record id
-     * @return \Cake\Datasource\QueryInterface|null
+     * @return \Cake\Datasource\QueryInterface
      * @throws \InvalidArgumentException When reversed many-to-many association is not found
      */
-    private function manyToManyQuery(Association $association, string $id): ?\Cake\Datasource\QueryInterface
+    private function manyToManyQuery(Association $association, string $id): QueryInterface
     {
         /**
          * @var string $tableName
@@ -141,7 +142,7 @@ class RelatedAction extends BaseAction
         $association->setTarget($association->getTarget());
         $association->getTarget()->setAlias($this->_controller()->getName());
 
-        $related = $this->getManyToManyAssociation($association->getTarget());
+        $related = $this->getManyToManyAssociation($association->getTarget(), $association->getName());
         if (is_null($related)) {
             throw new InvalidArgumentException(sprintf(
                 '%s is not associated with %s',
@@ -165,10 +166,9 @@ class RelatedAction extends BaseAction
      *
      * @param \Cake\ORM\Association $association Association object
      * @param string $id Record id
-     *
-     * @return \Cake\Datasource\QueryInterface|null
+     * @return \Cake\Datasource\QueryInterface
      */
-    private function oneToManyQuery(Association $association, string $id): ?\Cake\Datasource\QueryInterface
+    private function oneToManyQuery(Association $association, string $id): QueryInterface
     {
         // pagination hack to modify alias
         $association->setTarget($association->getTarget());
@@ -189,9 +189,10 @@ class RelatedAction extends BaseAction
      * its class name with the current Controller's table class.
      *
      * @param \Cake\Datasource\RepositoryInterface $table Association's table
+     * @param string $associationName Association name
      * @return \Cake\ORM\Association|null
      */
-    private function getManyToManyAssociation(RepositoryInterface $table): ?\Cake\ORM\Association
+    private function getManyToManyAssociation(RepositoryInterface $table, string $associationName): ?Association
     {
         /**
          * @var \Cake\ORM\Table $table
@@ -203,6 +204,11 @@ class RelatedAction extends BaseAction
             }
 
             if ($association->className() !== $this->_table()->getAlias()) {
+                continue;
+            }
+
+            // skip same association, fixes issue with self-associated tables
+            if ($association->getName() === $associationName) {
                 continue;
             }
 

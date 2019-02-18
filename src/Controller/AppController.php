@@ -318,7 +318,7 @@ class AppController extends Controller
         Configure::write('API.token', JWT::encode(
             [
                 'sub' => $this->Auth->user('id'),
-                'exp' => time() + 604800
+                'exp' => time() + (int)Configure::read('API.expireTime'),
             ],
             Security::getSalt()
         ));
