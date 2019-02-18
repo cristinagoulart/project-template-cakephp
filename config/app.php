@@ -46,6 +46,7 @@ return [
      */
     'API' => [
         'auth' => (bool)env('API_AUTHENTICATION', true),
+        'expireTime' => 604800,
     ],
 
     /**
