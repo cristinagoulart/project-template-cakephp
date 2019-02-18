@@ -11,6 +11,7 @@ use Cake\ORM\TableRegistry;
 use CsvMigrations\FieldHandlers\FieldHandlerFactory;
 use DatabaseLog\Model\Table\DatabaseLogsTable;
 use InvalidArgumentException;
+use Qobo\Utils\ModuleConfig\Cache\Cache;
 use Qobo\Utils\ModuleConfig\ConfigType;
 use Qobo\Utils\ModuleConfig\ModuleConfig;
 use RolesCapabilities\Access\AccessFactory;
@@ -66,6 +67,15 @@ class SearchableFieldsListener implements EventListenerInterface
      */
     public static function getSearchableFieldsByTable(RepositoryInterface $table, array $user, bool $withAssociated = true): array
     {
+        // Cached response
+        $cache = new Cache(__FUNCTION__, []);
+        $cacheKey = $cache->getKey([$table->getAlias(), $user['id'], $withAssociated]);
+
+        $result = $cache->readFrom($cacheKey);
+        if ($result !== false) {
+            return $result;
+        }
+
         $factory = new FieldHandlerFactory();
         /**
          * @var \Cake\ORM\Table $table
@@ -92,6 +102,10 @@ class SearchableFieldsListener implements EventListenerInterface
 
         if ($withAssociated) {
             $result = array_merge($result, static::byAssociations($table, $user));
+        }
+
+        if ($cache instanceof Cache && !empty($cacheKey)) {
+            $cache->writeTo($cacheKey, $result);
         }
 
         return $result;
