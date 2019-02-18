@@ -150,7 +150,7 @@
                 <h3 class="box-title"><a href="#">{{ modelName }}</a></h3>
             </div>
             <div class="box-body">
-                <table-ajax v-if="loadResult" :url="'/api/' + modelName + '/search'" request-type="POST" :data="{ criteria: criteria, group_by: groupBy }" :order-field="sortByField" :order-direction="sortByOrder" :model="modelName" :primary-key="primaryKey" :batch="batch" :with-actions="! groupBy" :headers="tableHeaders" @sort-field-updated="sortFieldUpdated" @sort-order-updated="sortOrderUpdated"></table-ajax>
+                <table-ajax v-if="loadResult" :url="'/api/' + modelName + '/search'" request-type="POST" :data="tableData" :order-field="sortByField" :order-direction="sortByOrder" :model="modelName" :primary-key="primaryKey" :headers="tableHeaders" @sort-field-updated="sortFieldUpdated" @sort-order-updated="sortOrderUpdated"></table-ajax>
             </div>
         </div>
     </div>
@@ -209,7 +209,8 @@ export default {
                 available: [],
                 display: []
             },
-            tableHeaders: []
+            tableHeaders: [],
+            tableData: {}
         }
     },
 
@@ -221,9 +222,6 @@ export default {
             set(value) {
                 this.$store.commit('search/aggregator', value)
             }
-        },
-        batch() {
-            return ! this.groupBy
         },
         criteria() {
             return this.$store.state.search.savedSearch.content.saved.criteria
@@ -367,7 +365,7 @@ export default {
             this.loadResult = false
 
             this.tableHeaders = []
-
+            this.tableData = { criteria: this.criteria, group_by: this.groupBy }
 
             if (this.groupBy) {
                 this.tableHeaders.push({ value: this.groupBy, text: self.filtersFlat[this.groupBy].label })

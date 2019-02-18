@@ -1,19 +1,23 @@
 <template>
     <div>
-        <div class="btn-group">
-        <button v-if="batch.enabled" type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" :disabled="batchButton.disabled" aria-expanded="false"><i class="fa fa-bars"></i> Batch</button>
-        <ul class="dropdown-menu">
-            <li><a href="#" @click.prevent="batchEdit()"><i class="fa fa-pencil"></i> Edit</a></li>
-            <li><a href="#" @click.prevent="batchDelete()"><i class="fa fa-trash"></i> Delete</a></li>
-        </ul>
+        <div class="row">
+            <div class="col-xs-12 text-right">
+                <div class="btn-group btn-group-sm">
+                <button v-if="! data.group_by" type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" :disabled="batchButton.disabled" aria-expanded="false"><i class="fa fa-bars"></i> Batch <span class="caret"></span></button>
+                <ul class="dropdown-menu">
+                    <li><a href="#" @click.prevent="batchEdit()"><i class="fa fa-pencil"></i> Edit</a></li>
+                    <li><a href="#" @click.prevent="batchDelete()"><i class="fa fa-trash"></i> Delete</a></li>
+                </ul>
+                </div>
+            </div>
         </div>
         <div class="table-responsive">
             <table class="table table-hover table-condensed table-vertical-align" width="100%">
                 <thead>
                     <tr>
-                        <th v-if="batch" class="dt-select-column"></th>
+                        <th v-if="! data.group_by" class="dt-select-column"></th>
                         <th v-for="header in headers">{{ header.text }}</th>
-                        <th v-if="withActions">Actions</th>
+                        <th v-if="! data.group_by">Actions</th>
                     </tr>
                 </thead>
             </table>
@@ -34,10 +38,6 @@ import datatablesSelect from 'datatables-select'
 export default {
 
     props: {
-        batch: {
-            type: Boolean,
-            default: false
-        },
         data: {
             type: Object
         },
@@ -68,10 +68,6 @@ export default {
         url: {
             type: String,
             required: true
-        },
-        withActions: {
-            type: Boolean,
-            default: false
         }
     },
 
@@ -95,7 +91,7 @@ export default {
             let orderColumn = Array.from(this.headers, header => header.value).indexOf(this.orderField)
             // handle out-of-bounds
             orderColumn = -1 === orderColumn ? 0 : orderColumn
-            if (self.batch) {
+            if (! this.data.group_by) {
                 orderColumn += 1
             }
 
@@ -116,7 +112,7 @@ export default {
                     headers: axios.defaults.headers.common,
                     data: function (d) {
                         let fields = Array.from(self.headers, header => header.value)
-                        if (self.batch) {
+                        if (! self.data.group_by) {
                             fields.unshift(self.primaryKey)
                         }
 
@@ -148,7 +144,7 @@ export default {
 
 
             // batch specific options
-            if (this.batch) {
+            if (! this.data.group_by) {
                 Object.assign(settings, {
                     createdRow: function ( row, data, index ) {
                         $(row).attr('data-id', data[0])
@@ -171,7 +167,7 @@ export default {
 
             this.table = $(this.$el.querySelector('table')).DataTable(settings)
 
-            if (this.batch) {
+            if (! this.data.group_by) {
                 this.table.on('select', function () {
                     self.batchButton.disabled = false
                 })
@@ -186,9 +182,9 @@ export default {
             this.table.on('order.dt', function () {
                 const order = self.table.order()
 
-                self.$emit('sort-field-updated', self.batch ?
-                    self.headers[order[0][0] - 1].value :
-                    self.headers[order[0][0]].value
+                self.$emit('sort-field-updated', self.data.group_by ?
+                    self.headers[order[0][0]].value :
+                    self.headers[order[0][0] - 1].value
                 )
                 self.$emit('sort-order-updated', order[0][1])
             })
@@ -217,7 +213,7 @@ export default {
             const combinedColumns = []
             //this.options.ajax.hasOwnProperty('combinedColumns') ? this.options.ajax.combinedColumns : []
             const headers = Array.from(this.headers, header => header.value)
-            if (this.batch) {
+            if (! this.data.group_by) {
                 headers.unshift(this.primaryKey)
             }
 
@@ -250,7 +246,7 @@ export default {
                 }
             }
 
-            if (this.withActions) {
+            if (! this.data.group_by) {
                 for (const index in data) {
                     if (! data[index].hasOwnProperty('_permissions')) {
                         return
@@ -284,7 +280,7 @@ export default {
          * @return {undefined}
          */
         batchEdit() {
-            if (! this.batch) {
+            if (this.data.group_by) {
                 return
             }
 
@@ -312,7 +308,7 @@ export default {
         },
 
         batchDelete() {
-            if (! this.batch) {
+            if (this.data.group_by) {
                 return
             }
 
