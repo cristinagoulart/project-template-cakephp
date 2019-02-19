@@ -2,8 +2,14 @@
 namespace App\Controller;
 
 use Cake\Core\Configure;
+use Cake\Http\Exception\BadRequestException;
 use Cake\I18n\Time;
+use Cake\ORM\TableRegistry;
 use DatabaseLog\Controller\Admin\LogsController as BaseController;
+use Search\Utility;
+use Search\Utility\Options as SearchOptions;
+use Search\Utility\Search;
+use Search\Utility\Validator as SearchValidator;
 
 class LogsController extends BaseController
 {
@@ -61,5 +67,105 @@ class LogsController extends BaseController
         $this->Flash->success('Removed ' . number_format($count) . ' log records older than ' . ltrim($age, '-') . '.');
 
         return $this->redirect(['action' => 'index']);
+    }
+
+    /**
+     * Search action
+     *
+     * @param  string $id Saved search id
+     * @return \Cake\Http\Response|void|null
+     */
+    public function search(string $id = '')
+    {
+        $model = $this->modelClass;
+
+        /** @var \Search\Model\Table\SavedSearchesTable */
+        $searchTable = TableRegistry::get($this->tableName);
+        $table = $this->loadModel();
+        $search = new Search($table, $this->Auth->user());
+
+        if (!$searchTable->isSearchable($model) && !$this->Auth->user('is_admin')) {
+            throw new BadRequestException('You cannot search in ' . implode(' - ', pluginSplit($model)) . '.');
+        }
+
+        if ($this->request->is('post')) {
+            $searchData = $search->prepareData($this->request);
+            if ('' !== $id) {
+                $search->update($searchData, $id);
+            }
+
+            if ('' === $id) {
+                $id = $search->create($searchData);
+            }
+
+            list($plugin, $controller) = pluginSplit($model);
+
+            return $this->redirect(['plugin' => $plugin, 'controller' => $controller, 'action' => __FUNCTION__, $id]);
+        }
+
+        $entity = $search->get($id);
+
+        $searchData = json_decode($entity->get('content'), true);
+        if ($this->request->is('ajax')) {
+            $this->viewBuilder()->layout('ajax');
+            $queryData = $this->getSearchFieldsFromArray((array)$this->request->getQuery());
+            $response = $this->getAjaxViewVars($queryData, $table, $search);
+            $this->set('types', $this->DatabaseLogs->getTypes());
+            $this->set('data', $response);
+            $this->set('module', $this->loadModel()->getAlias());
+
+            $this->render('advance_search_result');
+
+            return;
+        }
+
+        $searchData = SearchValidator::validateData($table, $searchData['latest'], $this->Auth->user());
+
+        // reset should only be applied to current search id (url parameter)
+        // and NOT on newly pre-saved searches and that's we do the ajax
+        // request check above, to prevent resetting the pre-saved search.
+        $search->reset($entity);
+
+        $this->set('searchableFields', Utility::instance()->getSearchableFields($table, $this->Auth->user()));
+        $this->set('savedSearches', $searchTable->getSavedSearches([$this->Auth->user('id')], [$model]));
+        $this->set('model', $model);
+        $this->set('modelAlias', $this->loadModel()->getAlias());
+        $this->set('searchData', $searchData);
+        $this->set('savedSearch', $entity);
+        $this->set('preSaveId', $search->create($searchData));
+        // INFO: this is valid when a saved search was modified and the form was re-submitted
+        $this->set('isEditable', $searchTable->isEditable($entity));
+        $this->set('searchOptions', SearchOptions::get());
+        $this->set('associationLabels', Utility::instance()->getAssociationLabels($table));
+
+        $this->render($this->searchElement);
+    }
+
+    /**
+     * Remove unnecessary data from array
+     *
+     * @param mixed[] $data List of data
+     * @return mixed[]
+     */
+    protected function getSearchFieldsFromArray(array $data): array
+    {
+        $searchFieldNamesAllowed = [
+            'criteria',
+            'fields',
+            'aggregator',
+            'display_columns',
+            'sort_by_field',
+            'sort_by_order',
+            'group_by'
+        ];
+
+        $newData = [];
+        foreach ($searchFieldNamesAllowed as $fieldName) {
+            if (array_key_exists($fieldName, $data)) {
+                $newData[$fieldName] = $data[$fieldName];
+            }
+        }
+
+        return $newData;
     }
 }
