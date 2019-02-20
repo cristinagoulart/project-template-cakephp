@@ -249,17 +249,12 @@ Plugin::load('AuditStash');
 Plugin::load('DatabaseLog', ['routes' => true]);
 Plugin::load('Search', ['bootstrap' => true, 'routes' => true]);
 Plugin::load('Burzum/FileStorage');
-if (Configure::read('Swagger.crawl') && Configure::read('API.auth')) {
+if (Configure::read('Swagger.crawl')) {
     Plugin::load('Alt3/Swagger', ['bootstrap' => true, 'routes' => true]);
 }
 Plugin::load('AdminLTE', ['bootstrap' => true, 'routes' => true]);
 
-/*
- * Only load JwtAuth plugin if API authentication is enabled
- */
-if (Configure::read('API.auth')) {
-    Plugin::load('ADmad/JwtAuth');
-}
+Plugin::load('ADmad/JwtAuth');
 
 /*
  * @todo seems like if CakeDC/Users plugin is loaded

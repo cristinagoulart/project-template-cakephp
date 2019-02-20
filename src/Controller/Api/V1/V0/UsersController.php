@@ -56,9 +56,7 @@ class UsersController extends AppController
             }
         }
 
-        if (Configure::read('API.auth')) {
-            $this->Auth->allow(['token']);
-        }
+        $this->Auth->allow(['token']);
     }
 
     /**
