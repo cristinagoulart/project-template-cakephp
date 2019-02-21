@@ -5,9 +5,6 @@ use Cake\Core\Configure;
 return [
     'CsvMigrations' => [
         'tableValidation' => false,
-        'api' => [
-            'auth' => Configure::read('API.auth')
-        ],
         // Configuration options for the ValidateShell
         'ValidateShell' => [
             // Module-specific configuration options
