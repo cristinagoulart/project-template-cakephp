@@ -323,7 +323,7 @@ Configure::load('admin_lte', 'default');
  */
 Configure::load('system_info', 'default');
 
-if ((bool)env('API_AUTHENTICATION') === false) {
+if (!is_null(env('API_AUTHENTICATION')) && (bool)env('API_AUTHENTICATION') === false) {
     Log::write('critical', "Non-authenticated API requests are deprecated");
 }
 
