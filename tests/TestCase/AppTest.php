@@ -46,9 +46,9 @@ class AppTest extends TestCase
     public function pluginProvider(): array
     {
         return [
-            ['ADmad/JwtAuth', 'API.auth'],
+            ['ADmad/JwtAuth', null],
             ['AdminLTE', null],
-            ['Alt3/Swagger', ['API.auth', 'Swagger.crawl']],
+            ['Alt3/Swagger', 'Swagger.crawl'],
             ['AuditStash', null],
             ['Burzum/FileStorage', null],
             ['CakeDC/Users', null],
