@@ -13,6 +13,7 @@ export default {
                 boolean: 'boolean',
                 country: 'boolean',
                 currency: 'boolean',
+                date: 'number',
                 datetime: 'number',
                 dblist: 'boolean',
                 decimal: 'number',
