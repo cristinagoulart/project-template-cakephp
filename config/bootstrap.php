@@ -323,6 +323,10 @@ Configure::load('admin_lte', 'default');
  */
 Configure::load('system_info', 'default');
 
+if (Configure::read('API.auth') === false) {
+    Log::write('critical', "Non-authenticated API requests are deprecated");
+}
+
 /*
  * Feature Factory initialization
  * IMPORTANT: this line should be placed at the end of the bootstrap file.
