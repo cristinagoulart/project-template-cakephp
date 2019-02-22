@@ -37,8 +37,7 @@ class AppController extends Controller
                 'Crud.Edit',
                 'Crud.Delete',
                 'Crud.Lookup',
-                'related' => ['className' => '\App\Crud\Action\RelatedAction'],
-                'schema' => ['className' => '\App\Crud\Action\SchemaAction']
+                'related' => ['className' => '\App\Crud\Action\RelatedAction']
             ],
             'listeners' => [
                 'Crud.Api',
@@ -97,10 +96,7 @@ class AppController extends Controller
             throw new NotFoundException();
         }
 
-        // NB for debugging I disable the auth
-        // if (Configure::read('API.auth')) {
-            //$this->enableAuthorization();
-        // }
+        $this->enableAuthorization();
     }
 
     /**
@@ -137,20 +133,10 @@ class AppController extends Controller
 
         // set current user for access to all MVC layers
         User::setCurrentUser((array)$this->Auth->user());
-
-        // If API authentication is disabled, allow access to all actions. This is useful when using some
-        // other kind of access control check.
-        // @todo currently, even if API authentication is disabled, we are always generating an API token
-        // within the Application for internal system use. That way we populate the Auth->user() information
-        // which allows other access control systems to work as expected. This logic can be removed if API
-        // authentication is always forced.
-        // if (!Configure::read('API.auth')) {
-            $this->Auth->allow();
-        // }
     }
 
     /**
-     * whitout that I can't see anything from the get request
+     * Custum schema action : return the schema of the request module
      * @return \Cake\Http\Response|void|null
      */
     public function schema()

@@ -3,7 +3,13 @@ namespace App\Crud\Action;
 
 use Cake\ORM\TableRegistry;
 use Crud\Action\BaseAction;
+use Qobo\Utils\ModuleConfig\ConfigType;
+use Qobo\Utils\ModuleConfig\ModuleConfig;
 
+/**
+ * Handles 'Schema' Crud actions
+ *
+ */
 class SchemaAction extends BaseAction
 {
     /**
@@ -13,11 +19,6 @@ class SchemaAction extends BaseAction
      */
     protected $_defaultConfig = [
         'enabled' => true,
-        'scope' => 'table',
-        'findMethod' => 'all',
-        'view' => null,
-        'viewVar' => null,
-        'serialize' => [],
         'api' => [
             'success' => [
                 'code' => 200
@@ -35,14 +36,13 @@ class SchemaAction extends BaseAction
      */
     protected function _get() : void
     {
-        //make a random query
-        $query = $this->_table()->find('all');
-        $items = $this->_controller()->paginate($query);
+        $controller = $this->_controller()->getName();
+        $mc = new ModuleConfig(ConfigType::MIGRATION(), $controller);
+        $data = $mc->parse();
 
-        $subject = $this->_subject();
-        $subject->set(['success' => true, 'entities' => $items]);
+        $subject = $this->_subject(['success' => true]);
 
-        // whitout that it looks for the view.ctp
+        $this->_controller()->set('data', $data);
         $this->_trigger('beforeRender', $subject);
     }
 }
