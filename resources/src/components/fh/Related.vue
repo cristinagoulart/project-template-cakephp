@@ -4,7 +4,7 @@
             <v-select
                 v-model="val"
                 placeholder="-- Please choose --"
-                :options="options.list"
+                :options="options"
                 :multiple="multiple"
                 :filterable="false"
                 @search="onSearch">
@@ -59,59 +59,55 @@ export default {
     },
 
     data: function () {
+        console.log(this.value)
         return {
-            options: { list: [], full: {} },
+            options: [],
             val: this.value
         }
     },
 
     watch: {
         val () {
+            console.log(this.val)
+
             let value = []
-            for (const key of Object.keys(this.options.full)) {
-                if (-1 < this.val.indexOf(this.options.full[key])) {
-                    value.push(key)
-                }
+            for (const key of Object.keys(this.val)) {
+                value.push(this.val[key].value)
             }
+
+            console.log(value)
 
             this.$emit('input-value-updated', this.field, this.guid, value)
         }
     },
 
     methods: {
-        onSearch(search, loading, page = 1) {
+        onSearch(search, loading) {
             loading(true)
-            this.options.list = []
-            this.search(search, loading, page, this)
+            this.options = []
+            this.search(search, loading, this)
         },
-        search: _.debounce((search, loading, page, vm) => {
+        search: _.debounce((search, loading, vm, page = 1) => {
             axios({
                 method: 'get',
-                url: vm.url + '?query=' + encodeURI(search) + '&page=' + page,
-                headers: {
-                    'Authorization': 'Bearer ' + vm.$store.state.search.token,
-                    'Accept': 'application/json',
-                    'Content-Type': 'application/json',
-                    'X-Requested-With': 'XMLHttpRequest'
-                }
+                url: vm.url + '?query=' + encodeURI(search) + '&limit=100&page=' + page,
             }).then(response => {
                 const pagination = response.data.pagination
 
                 if ('Users' === vm.source && 1 === pagination.current_page) {
-                    vm.options.list.push('<< me >>')
-                    vm.options.full['%%me%%'] = '<< me >>'
-                }
-
-                if (pagination.current_page < pagination.page_count) {
-                    vm.search(search, loading, pagination.current_page + 1, vm)
+                    vm.options.push({ value: '%%me%%', label: '<< me >>'})
                 }
 
                 for (const key of Object.keys(response.data.data)) {
-                    vm.options.list.push(response.data.data[key])
-                    vm.options.full[key] = response.data.data[key]
+                    vm.options.push({ value: key, label: response.data.data[key]})
                 }
 
-                loading(false)
+                if (pagination.current_page < pagination.page_count) {
+                    vm.search(search, loading, vm, pagination.current_page + 1)
+                } else {
+                    console.log(vm.options)
+                    loading(false)
+                }
             })
         }, 1000)
     }
