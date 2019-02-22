@@ -92,9 +92,7 @@ class LogsController extends BaseController
             $searchData = $search->prepareData($this->request);
             if ('' !== $id) {
                 $search->update($searchData, $id);
-            }
-
-            if ('' === $id) {
+            } else {
                 $id = $search->create($searchData);
             }
 
@@ -150,22 +148,15 @@ class LogsController extends BaseController
     protected function getSearchFieldsFromArray(array $data): array
     {
         $searchFieldNamesAllowed = [
-            'criteria',
-            'fields',
-            'aggregator',
-            'display_columns',
-            'sort_by_field',
-            'sort_by_order',
-            'group_by'
+            'criteria' => null,
+            'fields' => null,
+            'aggregator' => null,
+            'display_columns' => null,
+            'sort_by_field' => null,
+            'sort_by_order' => null,
+            'group_by' => null,
         ];
 
-        $newData = [];
-        foreach ($searchFieldNamesAllowed as $fieldName) {
-            if (array_key_exists($fieldName, $data)) {
-                $newData[$fieldName] = $data[$fieldName];
-            }
-        }
-
-        return $newData;
+        return array_intersect_key($data, $searchFieldNamesAllowed);
     }
 }
