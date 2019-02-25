@@ -2,7 +2,10 @@
 namespace App\Controller;
 
 use Cake\Core\Configure;
+use Cake\Datasource\RepositoryInterface;
+use Cake\ORM\Table;
 use Cake\ORM\TableRegistry;
+use Webmozart\Assert\Assert;
 
 /**
  * Controller Trait responsible for changelog functionality.
@@ -42,10 +45,10 @@ trait ChangelogTrait
             ->order(['timestamp' => 'DESC'])
             ->group('timestamp');
 
-        /** @var \Cake\Datasource\RepositoryInterface&\Cake\ORM\Table $table */
         $table = $this->loadModel();
+        Assert::isInstanceOf($table, Table::class);
 
-        $modelAlias = $this->loadModel()->getAlias();
+        $modelAlias = $table->getAlias();
         $methodName = 'moduleAlias';
         if (method_exists($this->loadModel(), $methodName) && is_callable([$this->loadModel(), $methodName])) {
             $modelAlias = $this->loadModel()->{$methodName}();

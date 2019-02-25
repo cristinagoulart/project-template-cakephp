@@ -1,10 +1,12 @@
 <?php
 namespace App\Event\Plugin\CsvMigrations\Controller;
 
+use Cake\Controller\Controller;
 use Cake\Event\Event;
 use Cake\Event\EventListenerInterface;
 use CsvMigrations\Event\EventName;
 use RolesCapabilities\CapabilityTrait;
+use Webmozart\Assert\Assert;
 
 class BatchActionListener implements EventListenerInterface
 {
@@ -31,8 +33,8 @@ class BatchActionListener implements EventListenerInterface
      */
     public function batchAccessCheck(Event $event, array $batchIds, string $operation, array $user): void
     {
-        /** @var \Cake\Controller\Controller $controller */
         $controller = $event->getSubject();
+        Assert::isInstanceOf($controller, Controller::class);
 
         $result = [];
         foreach ($batchIds as $batchId) {

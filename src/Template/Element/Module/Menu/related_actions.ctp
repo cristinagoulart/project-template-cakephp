@@ -80,7 +80,6 @@ $event = new Event((string)EventName::GET_MENU_ITEMS(), $entity, [
 ]);
 $this->getEventManager()->dispatch($event);
 
-/** @var \Menu\MenuBuilder\Menu $menu */
 $menu = $event->getResult();
 if (!($menu instanceof MenuInterface)) {
     return;

@@ -9,7 +9,9 @@ use Cake\Utility\Inflector;
 
 class CakeShellHandler extends AbstractHandler
 {
-    /** @var string $prefix for differentiating jobs */
+    /**
+     * @var string $prefix for differentiating jobs
+     */
     protected $prefix = 'CakeShell';
 
     /**

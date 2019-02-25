@@ -7,8 +7,11 @@ use Cake\Datasource\QueryInterface;
 use Cake\Event\Event;
 use Cake\Event\EventListenerInterface;
 use Cake\ORM\Association;
+use Cake\ORM\Query;
+use Cake\ORM\Table;
 use Qobo\Utils\ModuleConfig\ConfigType;
 use Qobo\Utils\ModuleConfig\ModuleConfig;
+use Webmozart\Assert\Assert;
 
 /**
  * This class is responsible for adding Module's lookup fields into the query's
@@ -33,18 +36,15 @@ class LookupListener implements EventListenerInterface
      * Apply lookup fields to Query's where clause.
      *
      * @param \Cake\Event\Event $event Event object
-     * @param \Cake\Datasource\QueryInterface $query Query object
+     * @param \Cake\ORM\Query $query Query object
      * @param \ArrayObject $options Query options
      * @param bool $primary Primary Standalone Query flag
      * @return void
      */
-    public function beforeFind(Event $event, QueryInterface $query, ArrayObject $options, bool $primary): void
+    public function beforeFind(Event $event, Query $query, ArrayObject $options, bool $primary): void
     {
-        /** @var \Cake\ORM\Table $table */
         $table = $event->getSubject();
-
-        /** @var \Cake\Datasource\QueryInterface&\Cake\ORM\Query $query */
-        $query = $query;
+        Assert::isInstanceOf($table, Table::class);
 
         if (! $primary) {
             return;

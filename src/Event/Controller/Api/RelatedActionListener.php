@@ -2,10 +2,13 @@
 namespace App\Event\Controller\Api;
 
 use App\Event\EventName;
+use Cake\Controller\Controller;
 use Cake\Core\App;
 use Cake\Datasource\QueryInterface;
 use Cake\Datasource\ResultSetInterface;
 use Cake\Event\Event;
+use Cake\ORM\Table;
+use Webmozart\Assert\Assert;
 
 class RelatedActionListener extends BaseActionListener
 {
@@ -28,14 +31,13 @@ class RelatedActionListener extends BaseActionListener
      */
     public function beforePaginate(Event $event, QueryInterface $query) : void
     {
-        /** @var \Cake\Controller\Controller */
         $controller = $event->getSubject();
+        Assert::isInstanceOf($controller, Controller::class);
 
-        /** @var \Psr\Http\Message\ServerRequestInterface&\Cake\Http\ServerRequest */
         $request = $controller->getRequest();
 
-        /** @var \Cake\Datasource\RepositoryInterface&\Cake\ORM\Table */
         $table = $controller->loadModel();
+        Assert::isInstanceOf($table, Table::class);
 
         $query->order($this->getOrderClause($request, $table));
     }
@@ -57,14 +59,13 @@ class RelatedActionListener extends BaseActionListener
             return;
         }
 
-        /** @var \Cake\Controller\Controller */
         $controller = $event->getSubject();
+        Assert::isInstanceOf($controller, Controller::class);
 
-        /** @var \Psr\Http\Message\ServerRequestInterface&\Cake\Http\ServerRequest */
         $request = $controller->getRequest();
 
-        /** @var \Cake\Datasource\RepositoryInterface&\Cake\ORM\Table */
         $table = $controller->loadModel();
+        Assert::isInstanceOf($table, Table::class);
 
         // Associated table instance.
         $target = $table->getAssociation($request->getParam('pass.1'))->getTarget();
