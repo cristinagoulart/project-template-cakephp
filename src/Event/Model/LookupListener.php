@@ -3,7 +3,6 @@ namespace App\Event\Model;
 
 use ArrayObject;
 use Cake\Datasource\EntityInterface;
-use Cake\Datasource\QueryInterface;
 use Cake\Event\Event;
 use Cake\Event\EventListenerInterface;
 use Cake\ORM\Association;

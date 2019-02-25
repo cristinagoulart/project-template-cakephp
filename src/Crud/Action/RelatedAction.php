@@ -13,7 +13,6 @@ use Crud\Traits\SerializeTrait;
 use Crud\Traits\ViewTrait;
 use Crud\Traits\ViewVarTrait;
 use InvalidArgumentException;
-use Webmozart\Assert\Assert;
 
 /**
  * Handles 'Related' Crud actions

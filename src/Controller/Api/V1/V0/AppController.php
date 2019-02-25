@@ -6,7 +6,6 @@ use App\Feature\Factory as FeatureFactory;
 use App\Swagger\Annotation;
 use Cake\Controller\Controller;
 use Cake\Core\Configure;
-use Cake\Datasource\RepositoryInterface;
 use Cake\Event\Event;
 use Cake\Http\Exception\ForbiddenException;
 use Cake\Http\Exception\NotFoundException;

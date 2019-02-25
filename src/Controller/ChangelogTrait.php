@@ -2,7 +2,6 @@
 namespace App\Controller;
 
 use Cake\Core\Configure;
-use Cake\Datasource\RepositoryInterface;
 use Cake\ORM\Table;
 use Cake\ORM\TableRegistry;
 use Webmozart\Assert\Assert;
