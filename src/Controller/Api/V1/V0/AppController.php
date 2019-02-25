@@ -137,15 +137,6 @@ class AppController extends Controller
     }
 
     /**
-     * Custum schema action : return the schema of the request module
-     * @return \Cake\Http\Response|void|null
-     */
-    public function schema()
-    {
-        return $this->Crud->execute();
-    }
-
-    /**
      * View CRUD action events handling logic.
      *
      * @return \Cake\Http\Response|void|null
