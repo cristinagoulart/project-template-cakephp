@@ -13,6 +13,7 @@ use CsvMigrations\FieldHandlers\FieldHandlerFactory;
 use CsvMigrations\Utility\FileUpload;
 use Psr\Http\Message\ServerRequestInterface;
 use RuntimeException;
+use Webmozart\Assert\Assert;
 
 abstract class BaseActionListener implements EventListenerInterface
 {
@@ -263,6 +264,8 @@ abstract class BaseActionListener implements EventListenerInterface
     private function getFileUpload(RepositoryInterface $table) : FileUpload
     {
         if (null === $this->fileUpload) {
+            Assert::isInstanceOf($table, Table::class);
+
             $this->fileUpload = new FileUpload($table);
         }
 
