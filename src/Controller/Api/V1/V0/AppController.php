@@ -402,7 +402,10 @@ class AppController extends Controller
     {
         $this->request->allowMethod(['post']);
 
-        $fileUpload = new FileUpload($this->loadModel());
+        $table = $this->loadModel();
+        Assert::isInstanceOf($table, Table::class);
+
+        $fileUpload = new FileUpload($table);
 
         $result = [
             'success' => true,
