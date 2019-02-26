@@ -4,6 +4,7 @@ namespace App\Auth;
 use Cake\Auth\BaseAuthenticate;
 use Cake\Controller\ComponentRegistry;
 use Cake\Core\Configure;
+use Cake\Datasource\EntityInterface;
 use Cake\Http\Exception\InternalErrorException;
 use Cake\Http\Response;
 use Cake\Http\ServerRequest;
@@ -109,9 +110,13 @@ class LdapAuthenticate extends BaseAuthenticate
             return false;
         }
 
-        /** @var string $username */
+        /**
+         * @var string $username
+         */
         $username = $request->getData('username');
-        /** @var string $password */
+        /**
+         * @var string $password
+         */
         $password = $request->getData('password');
 
         // phpcs:ignore Generic.PHP.NoSilencedErrors.Discouraged
@@ -164,11 +169,10 @@ class LdapAuthenticate extends BaseAuthenticate
             'conditions' => [$this->_config['fields']['username'] => $request->getData('username')]
         ])->enableHydration(true);
 
-        /** @var \Cake\Datasource\EntityInterface|null $entity */
         $entity = $query->first();
 
         // user already exists, just return the existing entity
-        if (! is_null($entity)) {
+        if ($entity instanceof EntityInterface) {
             return $entity->toArray();
         }
 

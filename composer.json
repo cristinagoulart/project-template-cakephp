@@ -41,7 +41,7 @@
         "lasserafn/php-initial-avatar-generator": "^2.3",
         "pelago/emogrifier": "^1.2",
         "pyrech/composer-changelogs": "^1.4",
-        "qobo/cakephp-csv-migrations": "^34.0",
+        "qobo/cakephp-csv-migrations": "^35.0",
         "qobo/cakephp-groups": "^11.0",
         "qobo/cakephp-menu": "^16.0",
         "qobo/cakephp-roles-capabilities": "^18.0",

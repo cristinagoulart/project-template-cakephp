@@ -2,9 +2,12 @@
 namespace App\Event\Controller\Api;
 
 use App\Event\EventName;
+use Cake\Controller\Controller;
 use Cake\Datasource\EntityInterface;
 use Cake\Datasource\QueryInterface;
 use Cake\Event\Event;
+use Cake\ORM\Table;
+use Webmozart\Assert\Assert;
 
 class ViewActionListener extends BaseActionListener
 {
@@ -47,14 +50,13 @@ class ViewActionListener extends BaseActionListener
      */
     public function afterFind(Event $event, EntityInterface $entity) : void
     {
-        /** @var \Cake\Controller\Controller */
         $controller = $event->getSubject();
+        Assert::isInstanceOf($controller, Controller::class);
 
-        /** @var \Psr\Http\Message\ServerRequestInterface&\Cake\Http\ServerRequest */
         $request = $controller->getRequest();
 
-        /** @var \Cake\Datasource\RepositoryInterface&\Cake\ORM\Table */
         $table = $controller->loadModel();
+        Assert::isInstanceOf($table, Table::class);
 
         $this->resourceToString($entity);
 

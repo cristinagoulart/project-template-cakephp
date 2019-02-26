@@ -14,9 +14,11 @@ use CsvMigrations\FieldHandlers\Config\ListConfig;
 use CsvMigrations\FieldHandlers\CsvField;
 use CsvMigrations\FieldHandlers\FieldHandlerFactory;
 use CsvMigrations\FieldHandlers\Provider\SelectOptions\ListSelectOptions;
+use CsvMigrations\Model\Table\DblistsTable;
 use Qobo\Utils\ModuleConfig\ConfigType;
 use Qobo\Utils\ModuleConfig\ModuleConfig;
 use Qobo\Utils\Utility;
+use Webmozart\Assert\Assert;
 
 class Annotation
 {
@@ -570,8 +572,8 @@ class Annotation
      */
     private function getDatabaseList(string $listName): array
     {
-        /** @var \CsvMigrations\Model\Table\DblistsTable */
         $table = TableRegistry::get('CsvMigrations.Dblists');
+        Assert::isInstanceOf($table, DblistsTable::class);
 
         $result = $table->getOptions($listName);
 

@@ -2,10 +2,13 @@
 namespace App\Event\Controller\Api;
 
 use App\Event\EventName;
+use Cake\Controller\Controller;
 use Cake\Datasource\QueryInterface;
 use Cake\Datasource\ResultSetInterface;
 use Cake\Event\Event;
+use Cake\ORM\Table;
 use Cake\Utility\Hash;
+use Webmozart\Assert\Assert;
 
 class IndexActionListener extends BaseActionListener
 {
@@ -28,14 +31,13 @@ class IndexActionListener extends BaseActionListener
      */
     public function beforePaginate(Event $event, QueryInterface $query) : void
     {
-        /** @var \Cake\Controller\Controller */
         $controller = $event->getSubject();
+        Assert::isInstanceOf($controller, Controller::class);
 
-        /** @var \Psr\Http\Message\ServerRequestInterface&\Cake\Http\ServerRequest */
         $request = $controller->getRequest();
 
-        /** @var \Cake\Datasource\RepositoryInterface&\Cake\ORM\Table */
         $table = $controller->loadModel();
+        Assert::isInstanceOf($table, Table::class);
 
         $this->filterByConditions($query, $event);
 
@@ -59,14 +61,13 @@ class IndexActionListener extends BaseActionListener
             return;
         }
 
-        /** @var \Cake\Controller\Controller */
         $controller = $event->getSubject();
+        Assert::isInstanceOf($controller, Controller::class);
 
-        /** @var \Psr\Http\Message\ServerRequestInterface&\Cake\Http\ServerRequest */
         $request = $controller->getRequest();
 
-        /** @var \Cake\Datasource\RepositoryInterface&\Cake\ORM\Table */
         $table = $controller->loadModel();
+        Assert::isInstanceOf($table, Table::class);
 
         foreach ($resultSet as $entity) {
             $this->resourceToString($entity);
@@ -90,14 +91,13 @@ class IndexActionListener extends BaseActionListener
      */
     private function filterByConditions(QueryInterface $query, Event $event) : void
     {
-        /** @var \Cake\Controller\Controller */
         $controller = $event->getSubject();
+        Assert::isInstanceOf($controller, Controller::class);
 
-        /** @var \Psr\Http\Message\ServerRequestInterface&\Cake\Http\ServerRequest */
         $request = $controller->getRequest();
 
-        /** @var \Cake\Datasource\RepositoryInterface&\Cake\ORM\Table */
         $table = $controller->loadModel();
+        Assert::isInstanceOf($table, Table::class);
 
         $queryParam = Hash::get($request->getQueryParams(), 'conditions', []);
         if (empty($queryParam)) {
@@ -110,7 +110,6 @@ class IndexActionListener extends BaseActionListener
             if (is_array($value)) {
                 $key .= ' IN';
             }
-
             $conditions[$key] = $value;
         };
 
