@@ -9,6 +9,9 @@ use Cake\Core\Configure;
 use Cake\Event\Event;
 use Cake\Http\Exception\ForbiddenException;
 use Cake\Http\Exception\NotFoundException;
+use Cake\ORM\Table;
+use Crud\Action\AddAction;
+use Crud\Action\EditAction;
 use Crud\Controller\ControllerTrait;
 use CsvMigrations\Controller\Traits\PanelsTrait;
 use CsvMigrations\Utility\FileUpload;
@@ -16,6 +19,7 @@ use Qobo\Utils\ModuleConfig\ConfigType;
 use Qobo\Utils\ModuleConfig\ModuleConfig;
 use Qobo\Utils\Utility\User;
 use RolesCapabilities\CapabilityTrait;
+use Webmozart\Assert\Assert;
 
 /**
  * @property \Cake\Http\ServerRequest $request
@@ -267,8 +271,8 @@ class AppController extends Controller
      */
     public function add()
     {
-        /** @var \Crud\Action\AddAction */
         $action = $this->Crud->action();
+        Assert::isInstanceOf($action, AddAction::class);
         $action->saveOptions(['lookup' => true]);
 
         $this->Crud->on('beforeSave', function (Event $event) {
@@ -292,8 +296,8 @@ class AppController extends Controller
                 return;
             }
 
-            /** @var \Cake\Datasource\RepositoryInterface&\Cake\ORM\Table */
             $table = $this->loadModel();
+            Assert::isInstanceOf($table, Table::class);
 
             // handle file uploads if found in the request data
             $fileUpload = new FileUpload($table);
@@ -318,8 +322,8 @@ class AppController extends Controller
      */
     public function edit()
     {
-        /** @var \Crud\Action\EditAction */
         $action = $this->Crud->action();
+        Assert::isInstanceOf($action, EditAction::class);
         $action->saveOptions(['lookup' => true]);
 
         $this->Crud->on('beforeFind', function (Event $event) {
@@ -365,8 +369,8 @@ class AppController extends Controller
                 return;
             }
 
-            /** @var \Cake\Datasource\RepositoryInterface&\Cake\ORM\Table */
             $table = $this->loadModel();
+            Assert::isInstanceOf($table, Table::class);
 
             // handle file uploads if found in the request data
             $fileUpload = new FileUpload($table);

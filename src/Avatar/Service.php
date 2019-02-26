@@ -5,6 +5,7 @@ use App\Avatar\Type\ImageSource;
 use Cake\Core\Configure;
 use Cake\Utility\Hash;
 use InvalidArgumentException;
+use Webmozart\Assert\Assert;
 
 final class Service
 {
@@ -21,12 +22,12 @@ final class Service
      */
     public function __construct(AvatarInterface $avatar = null, array $defaults = [])
     {
-        if (! $avatar) {
+        if (empty($avatar)) {
             $source = Hash::get(Configure::read('Avatar.order'), '0', 'App\Avatar\Type\ImageSource');
-            /** @var \App\Avatar\AvatarInterface $avatar */
             $avatar = $this->invokeAvatarSource($source, $defaults);
         }
 
+        Assert::isInstanceOf($avatar, AvatarInterface::class);
         $this->setAvatarSource($avatar);
     }
 

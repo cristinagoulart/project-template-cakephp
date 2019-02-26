@@ -7,6 +7,8 @@ use Cake\Datasource\RepositoryInterface;
 use Cake\Datasource\ResultSetDecorator;
 use Cake\Event\Event;
 use Cake\Http\ServerRequest;
+use Cake\ORM\Query;
+use Cake\ORM\Table;
 use Cake\ORM\TableRegistry;
 use Cake\Utility\Hash;
 use CsvMigrations\FieldHandlers\CsvField;
@@ -15,6 +17,7 @@ use CsvMigrations\FieldHandlers\RelatedFieldTrait;
 use CsvMigrations\FieldHandlers\Setting;
 use Qobo\Utils\ModuleConfig\ConfigType;
 use Qobo\Utils\ModuleConfig\ModuleConfig;
+use Webmozart\Assert\Assert;
 
 class LookupActionListener extends BaseActionListener
 {
@@ -35,10 +38,10 @@ class LookupActionListener extends BaseActionListener
      * Add conditions to Lookup Query.
      *
      * @param \Cake\Event\Event $event Event instance
-     * @param \Cake\Datasource\QueryInterface $query ORM Query
+     * @param \Cake\ORM\Query $query ORM Query
      * @return void
      */
-    public function beforeLookup(Event $event, QueryInterface $query): void
+    public function beforeLookup(Event $event, Query $query): void
     {
         /**
          * @var \Cake\Controller\Controller $controller
@@ -47,6 +50,7 @@ class LookupActionListener extends BaseActionListener
         $request = $controller->getRequest();
 
         $table = $controller->loadModel();
+        Assert::isInstanceOf($table, Table::class);
         $this->_alterQuery($table, $query, $request);
     }
 
@@ -62,16 +66,14 @@ class LookupActionListener extends BaseActionListener
      *
      * NOTE: There are recursive calls between this method and _getRelatedModuleValues().
      *
-     * @param \Cake\Datasource\RepositoryInterface $table Table instance
-     * @param \Cake\Datasource\QueryInterface $query Query object
+     * @param \Cake\ORM\Table $table Table instance
+     * @param \Cake\ORM\Query $query Query object
      * @param \Cake\Http\ServerRequest $request Request object
      * @return void
      */
-    protected function _alterQuery(RepositoryInterface $table, QueryInterface $query, ServerRequest $request): void
+    protected function _alterQuery(Table $table, Query $query, ServerRequest $request): void
     {
         $fields = $this->_getTypeaheadFields($table);
-        /** @var \Cake\ORM\Query $query */
-        $query = $query;
         $query->order($this->_getOrderByFields($table, $query, $fields));
 
         $this->_joinParentTables($table, $query);
@@ -95,8 +97,8 @@ class LookupActionListener extends BaseActionListener
             } else {
                 // always type-cast fields to string for LIKE clause to work.
                 // otherwise for cases where type is integer LIKE value '%123%' will be converted to '0'
-                /** @var array $typeMap */
                 $typeMap = array_combine($fields, array_pad([], count($fields), 'string'));
+                Assert::isArray($typeMap);
                 $query->setTypeMap($typeMap);
                 $query->orWhere([$field . ' LIKE' => '%' . $value . '%']);
             }
@@ -247,14 +249,12 @@ class LookupActionListener extends BaseActionListener
     /**
      * Get module's type-ahead fields.
      *
-     * @param \Cake\Datasource\RepositoryInterface $table Table instance
+     * @param \Cake\ORM\Table $table Table instance
      * @return mixed[]
      */
-    protected function _getTypeaheadFields(RepositoryInterface $table): array
+    protected function _getTypeaheadFields(Table $table): array
     {
         $config = (new ModuleConfig(ConfigType::MODULE(), $table->getRegistryAlias()))->parse();
-        /** @var \Cake\ORM\Table $table */
-        $table = $table;
 
         $fields = ! empty($config->table->typeahead_fields) ?
             $config->table->typeahead_fields :
@@ -314,11 +314,11 @@ class LookupActionListener extends BaseActionListener
     /**
      * Join parent modules.
      *
-     * @param \Cake\Datasource\RepositoryInterface $table Table instance
-     * @param \Cake\Datasource\QueryInterface $query ORM Query
+     * @param \Cake\ORM\Table $table Table instance
+     * @param \Cake\ORM\Query $query ORM Query
      * @return void
      */
-    protected function _joinParentTables(RepositoryInterface $table, QueryInterface $query): void
+    protected function _joinParentTables(Table $table, Query $query): void
     {
         $parentModule = $this->_getParentModule($table);
         if ('' === $parentModule) {
@@ -326,10 +326,6 @@ class LookupActionListener extends BaseActionListener
         }
 
         $parentAssociation = null;
-        /**
-         * @var \Cake\ORM\Table $table
-         */
-        $table = $table;
         foreach ($table->associations() as $association) {
             if ($association->className() !== $parentModule) {
                 continue;
@@ -354,8 +350,6 @@ class LookupActionListener extends BaseActionListener
         $primaryKey = $targetTable->aliasField($parentPrimaryKey);
         $foreignKey = $table->aliasField($parentForeignKey);
 
-        /** @var \Cake\ORM\Query $query */
-        $query = $query;
         $query->join([
             'table' => $targetTable->table(),
             'alias' => $parentAssociation->name(),
