@@ -106,7 +106,11 @@ class IndexActionListener extends BaseActionListener
 
         $conditions = [];
         foreach ($queryParam as $field => $value) {
-            $conditions[$table->aliasField($field)] = $value;
+            $key = $table->aliasField($field);
+            if (is_array($value)) {
+                $key .= ' IN';
+            }
+            $conditions[$key] = $value;
         };
 
         $query->applyOptions(['conditions' => $conditions]);
