@@ -30,7 +30,14 @@ $setLabels = [];
         }
 
         if (in_array($label, $setLabels)) {
-            $label .= ' (' . $association->getForeignKey() . ')';
+            $mcFields = new ModuleConfig(ConfigType::FIELDS(), $tableName);
+            $configFields = $mcFields->parseToArray();
+
+            if (array_key_exists($association->getForeignKey(),$configFields) && array_key_exists('label',$configFields[$association->getForeignKey()]) ) {
+                $label .= ' (' . $configFields[$association->getForeignKey()]['label'] . ')';
+            }else{
+                $label .= ' (' . Inflector::humanize(Inflector::delimit($association->getForeignKey())) . ')';
+            }
         }
 
         $setLabels[] = $label;
