@@ -5,6 +5,8 @@ use App\Avatar\Service as AvatarService;
 use CakeDC\Users\Model\Entity\User as BaseUser;
 use Cake\Core\Configure;
 use Cake\ORM\TableRegistry;
+use RolesCapabilities\Model\Table\CapabilitiesTable;
+use Webmozart\Assert\Assert;
 
 /**
  * @property string $id
@@ -79,8 +81,8 @@ class User extends BaseUser
             return false;
         }
 
-        /** @var \RolesCapabilities\Model\Table\CapabilitiesTable $capabilities */
         $capabilities = TableRegistry::get('RolesCapabilities.Capabilities');
+        Assert::isInstanceOf($capabilities, CapabilitiesTable::class);
         $userGroups = $capabilities->getUserGroups($this->get('id'));
         $userRoles = $capabilities->getGroupsRoles($userGroups);
         $isAdmin = in_array($roleName, $userRoles);

@@ -21,7 +21,9 @@ use Qobo\Utils\Utility;
  */
 class ApiRouter
 {
-    /** @var array $_versions */
+    /**
+     * @var array $_versions
+     */
     protected $_versions = [];
 
     /**
