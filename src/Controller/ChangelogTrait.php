@@ -4,6 +4,7 @@ namespace App\Controller;
 use Cake\Core\Configure;
 use Cake\ORM\Table;
 use Cake\ORM\TableRegistry;
+use Cake\Utility\Inflector;
 use Webmozart\Assert\Assert;
 
 /**
@@ -39,7 +40,7 @@ trait ChangelogTrait
         very unlikely.
          */
         $query = TableRegistry::get($this->_tableLog)->find('all')
-            ->where(['primary_key' => $id, 'source' => $this->name])
+            ->where(['primary_key' => $id, 'source' => Inflector::underscore($this->name)])
             ->select(['timestamp', 'user_id', 'original', 'changed'])
             ->order(['timestamp' => 'DESC'])
             ->group('timestamp');
