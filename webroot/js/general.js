@@ -20,7 +20,7 @@
             return;
         }
 
-        storage.write(prefix + navId, $(e.target).closest('li').index());
+        storage.write(prefix + navId, $(e.target).attr('href'));
     });
 
     // load active tab for each navtab
@@ -35,7 +35,7 @@
             return;
         }
 
-        $('#' + navId + ' li:eq(' + storage.read(prefix + navId) + ') a').tab('show');
+        $('#' + navId + ' li a[href="' + storage.read(prefix + navId) + '"]').trigger('click');
     });
 
     /**
@@ -138,6 +138,9 @@
                 }
                 //Move the item under the dropdown list
                 parentUl.find('.dropdown-menu').prepend($(this).addClass('dropdown-li'));
+                if ($(this).hasClass('active')) {
+                    parentUl.find('.dropdown').addClass('active')
+                }
 
                 liTotalWidth = liTotalWidth - liWidth;
             } else {
