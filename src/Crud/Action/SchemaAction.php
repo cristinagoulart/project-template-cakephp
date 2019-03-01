@@ -1,9 +1,10 @@
 <?php
 namespace App\Crud\Action;
 
+use ArrayIterator;
 use Cake\Core\App;
-use Cake\ORM\TableRegistry;
 use Crud\Action\BaseAction;
+use CsvMigrations\FieldHandlers\CsvField;
 use CsvMigrations\Model\AssociationsAwareTrait;
 use Qobo\Utils\ModuleConfig\ConfigType;
 use Qobo\Utils\ModuleConfig\ModuleConfig;
@@ -38,63 +39,12 @@ class SchemaAction extends BaseAction
      */
     protected function _get() : void
     {
-        $controller = $this->_controller()->getName();
-        $moduleConfig = new ModuleConfig(ConfigType::MIGRATION(), $controller);
-        $fields = $moduleConfig->parseToArray();
-        $db_fields_type = TableRegistry::getTableLocator()->get($controller)->getSchema()->typeMap();
-
         $data_fields = [];
-        foreach ($fields as $field => $value) {
-            if (preg_match('/^related\(/', $value['type'])) {
-                preg_match('#\((.*?)\)#', $value['type'], $my_relation);
-                $value['association'] = AssociationsAwareTrait::generateAssociationName($controller, $my_relation[1]);
-                $value['type'] = 'related';
-            }
+        $data_association = $this->getAssociations($this->_table()->associations()->getIterator());
 
-            if (preg_match('/^list\(/', $value['type'])) {
-                preg_match('#\((.*?)\)#', $value['type'], $my_list);
-                $list = new ModuleConfig(ConfigType::LISTS(), $controller, $my_list[1]);
-                $value['options'] = $this->removeKeys($list->parseToArray()['items']);
-            }
-
-            if (preg_match('/^money\(/', $value['type'])) {
-                $amount = $value;
-                $amount['name'] = $amount['name'] . '_amount';
-                $amount['db_type'] = 'decimal';
-
-                $value['name'] = $value['name'] . '_currency';
-                $value['db_type'] = 'string';
-
-                $data_fields[] = $value;
-                $data_fields[] = $amount;
-                continue;
-            }
-
-            if (preg_match('/^metric\(/', $value['type'])) {
-                $amount = $value;
-                $amount['name'] = $amount['name'] . '_amount';
-                $amount['db_type'] = 'decimal';
-
-                $value['name'] = $value['name'] . '_unit';
-                $value['db_type'] = 'string';
-
-                $data_fields[] = $value;
-                $data_fields[] = $amount;
-                continue;
-            }
-
-            $data_fields[] = $value;
-        }
-
-        $data_association = [];
-        foreach ($this->_table()->associations() as $association) {
-            $data_association[] = [
-                'name' => $association->getName(),
-                'model' => App::shortName(get_class($association->getTarget()), 'Model/Table', 'Table'),
-                'type' => $association->type(),
-                'primary_key' => $association->getBindingKey(),
-                'foreign_key' => $association->getForeignKey()
-            ];
+        $method = 'getFieldsDefinitions';
+        if (method_exists($this->_table(), $method) && is_callable([$this->_table(), $method])) {
+            $data_fields = $this->getFields($this->_table()->getFieldsDefinitions(), $data_association);
         }
 
         $subject = $this->_subject(['success' => true]);
@@ -104,17 +54,140 @@ class SchemaAction extends BaseAction
     }
 
     /**
-     * Remove keys from array and nested array.
+     * Models fields
+     *
+     * @param  mixed[] $fields Fields definition
+     * @param  mixed[] $associations Table associations
+     * @return mixed[] custum data
+     */
+    private function getFields(array $fields, array $associations) : array
+    {
+        $model = $this->_controller()->loadModel();
+        $fieldJson = new ModuleConfig(ConfigType::FIELDS(), $this->_controller()->getName());
+        $fieldJson = $fieldJson->parseToArray();
+        $db_fields_type = $this->_table()->getSchema()->typeMap();
+
+        $data_fields = [];
+        foreach ($fields as $field) {
+            $csvField = new CsvField($field);
+            $data = [
+                'name' => $csvField->getName(),
+                'type' => $csvField->getType()
+            ];
+
+            !empty($fieldJson[$csvField->getName()]['label']) ? $data['label'] = $fieldJson[$csvField->getName()]['label'] : '';
+            $csvField->getRequired() ? $data['required'] = true : '';
+            $csvField->getNonSearchable() ? $data['non_searchable'] = true : '';
+            $csvField->getUnique() ? $data['unique'] = true : '';
+
+            switch ($csvField->getType()) {
+                case "metric":
+                    $amount = $data;
+                    $amount['name'] = $amount['name'] . '_amount';
+                    $amount['db_type'] = 'decimal';
+                    $data_fields[] = $amount;
+                    $data['name'] = $data['name'] . '_unit';
+                    $data['db_type'] = 'string';
+                    break;
+                case "money":
+                    $amount = $data;
+                    $amount['name'] = $amount['name'] . '_amount';
+                    $amount['db_type'] = 'decimal';
+                    $data_fields[] = $amount;
+                    $data['name'] = $data['name'] . '_currency';
+                    $data['db_type'] = 'string';
+                    break;
+                case "list":
+                    $list = new ModuleConfig(ConfigType::LISTS(), $this->_controller()->getName(), (string)$csvField->getLimit());
+                    $data['options'] = $this->getOptionList($list->parseToArray()['items']);
+                    break;
+                case "related":
+                    $data['association'] = $this->findAssociation($associations, $csvField->getName());
+                    break;
+                default:
+                    $data['db_type'] = $db_fields_type[$csvField->getName()];
+            }
+            $data_fields[] = $data;
+        }
+
+        return $data_fields;
+    }
+
+    /**
+     * Link the association name to the related field
+     *
+     * @param  mixed[]  $associations Custum array with associations data
+     * @param  string $foreign_key Filed name
+     * @return string|null Association name
+     */
+    private function findAssociation(array $associations, string $foreign_key) : ?string
+    {
+        foreach ($associations as $key => $value) {
+            if ($value['foreign_key'] === $foreign_key) {
+                return $value['name'];
+            }
+        }
+
+        return null;
+    }
+
+    /**
+     * Table associations
+     *
+     * @param  ArrayIterator $associations table associations
+     * @return mixed[] custum data array
+     */
+    private function getAssociations(ArrayIterator $associations) : array
+    {
+        $data_association = [];
+
+        foreach ($associations as $association) {
+            $data_association[] = [
+                'name' => $association->getName(),
+                'model' => App::shortName(get_class($association->getTarget()), 'Model/Table', 'Table'),
+                'type' => $association->type(),
+                'primary_key' => $association->getBindingKey(),
+                'foreign_key' => $association->getForeignKey()
+            ];
+        }
+
+        return $data_association;
+    }
+
+    /**
+     * Option list
+     * e.i. :
+     * "options": [{
+     *         "label": "Label 1",
+     *         "value": "value_1"
+     *         "children": [{
+     *                 "label": "Label chindren 1",
+     *                 "value": "value_chindren_1"
+     *             }
+     *         ],
+     *     },
+     *     {
+     *         "label": "Label 2",
+     *         "value": "value_2"
+     *     }
+     * ]
+     *
      * @param  mixed[] $data input data
      * @return mixed[] array with no keys.
      */
-    private function removeKeys(array $data) : array
+    private function getOptionList(array $data) : array
     {
         $result = [];
         foreach ($data as $key => $value) {
             if (!empty($value['children'])) {
-                $value['children'] = $this->removeKeys($value['children']);
+                $value['children'] = $this->getOptionList($value['children']);
             }
+
+            if (empty($value['inactive'])) {
+                unset($value['inactive']);
+            }
+
+            $value['value'] = $key;
             $result[] = $value;
         }
 
