@@ -9,7 +9,7 @@ $config = $mc->parse();
 $labels = (array)$config->associationLabels;
 $setLabels = [];
 ?>
-<ul id="relatedTabs" class="nav nav-tabs" role="tablist">
+<ul id="relatedTabs" class="nav nav-tabs responsive-tabs" role="tablist">
     <?php $active = 'active'; ?>
     <?php foreach ($associations as $association) : ?>
         <?php
