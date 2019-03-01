@@ -75,7 +75,7 @@
         });
     }
 
-    $(window).resize(function() {
+    $(window).resize(function () {
         responsiveTabs()
     });
 
@@ -85,8 +85,9 @@
      * Get any responsive-tabs and check for overflow list-items in order to
      * a new dropdown menu with the ones that are overflowing the list
      */
-    function responsiveTabs(){
-        $('.responsive-tabs').each(function(){
+    function responsiveTabs()
+    {
+        $('.responsive-tabs').each(function () {
             var parentUl = $(this)
             var ulWidth = parentUl.width() - 45;
             var hideTabs = false;
@@ -94,12 +95,12 @@
             var liTotalWidth = totalLiWidth(parentUl);
 
             //Get the list items in reverse order
-            $(parentUl.find('li:not(.dropdown-li):not(.dropdown)').get().reverse()).each(function(){
+            $(parentUl.find('li:not(.dropdown-li):not(.dropdown)').get().reverse()).each(function () {
                 //Get the margins size
                 var marginLeft = parseInt($(this).css("margin-left"))
                 var marginRight = parseInt($(this).css("margin-right"))
                 //list item width including the margins size
-                var liWidth = $(this).width()+marginLeft+marginRight;
+                var liWidth = $(this).width() + marginLeft + marginRight;
 
                 //Checks if the list item total width is larger than the ul width
                 if (liTotalWidth > ulWidth) {
@@ -108,7 +109,7 @@
                     if (!parentUl.find('.dropdown').length) {
                         var dropdownString = '<li class="dropdown pull-right" style="width:45px">' +
                                 '<a class="dropdown-toggle" data-toggle="dropdown" href="#" aria-expanded="true">' +
-                                    '<i class="fa fa-bars"></i>'+
+                                    '<i class="fa fa-bars"></i>' +
                                 '</a>' +
                                 '<ul class="dropdown-menu pull-right"></ul>' +
                             '</li>';
@@ -117,8 +118,8 @@
                     //Move the item under the dropdown list
                     parentUl.find('.dropdown-menu').prepend($(this).addClass('dropdown-li'));
 
-                    liTotalWidth = liTotalWidth-liWidth;
-                }else{
+                    liTotalWidth = liTotalWidth - liWidth;
+                } else {
                     return false;
                 }
             });
@@ -129,18 +130,18 @@
                 var liTotalWidth = totalLiWidth(parentUl);
 
                 //Get all the list items from the dropdown
-                parentUl.find('.dropdown-menu li').each(function(){
-                    liTotalWidth = liTotalWidth+realListItemWidth($(this));
-                    if(liTotalWidth < ulWidth){
+                parentUl.find('.dropdown-menu li').each(function () {
+                    liTotalWidth = liTotalWidth + realListItemWidth($(this));
+                    if (liTotalWidth < ulWidth) {
                         parentUl.find('.dropdown').before($(this).removeClass('dropdown-li'))
-                    }else{
+                    } else {
                         return false;
                     }
                 });
             }
 
             // Check if the dropdown-menu has items else delete it
-            if (!parentUl.find('.dropdown-menu li').length ){
+            if (!parentUl.find('.dropdown-menu li').length) {
                 parentUl.find('.dropdown').remove();
             }
         })
@@ -152,13 +153,14 @@
      * @param {object} parentUl The parent ul
      * @return {float} Return the total width
      */
-    function totalLiWidth(parentUl){
+    function totalLiWidth(parentUl)
+    {
         // var liTotalWidth = 80;
         var liTotalWidth = 0;
-        parentUl.find('li:not(.dropdown-li)').each(function(){
+        parentUl.find('li:not(.dropdown-li)').each(function () {
             var marginLeft = parseInt($(this).css("margin-left"))
             var marginRight = parseInt($(this).css("margin-right"))
-            liTotalWidth = liTotalWidth+$(this).width()+marginLeft+marginRight;
+            liTotalWidth = liTotalWidth + $(this).width() + marginLeft + marginRight;
         })
 
         return liTotalWidth;
@@ -171,7 +173,8 @@
      * @param {object} obj The object
      * @return {float} Return the width of the list item
      */
-    function realListItemWidth(obj){
+    function realListItemWidth(obj)
+    {
         //Check if the hidden nav ul already exist
         if (!$('#hidden-nav-ul').length) {
             var ulString = $('<ul id="hidden-nav-ul" class="nav nav-tabs" role="tablist" stule="visibility:hidden"><ul>');
@@ -183,6 +186,7 @@
         $('#hidden-nav-ul').append(clone);
         var width = clone.outerWidth();
         clone.remove();
+
         return width;
     }
 })(jQuery);
