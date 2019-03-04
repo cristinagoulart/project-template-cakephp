@@ -5,6 +5,7 @@ use ArrayIterator;
 use Cake\Core\App;
 use Crud\Action\BaseAction;
 use CsvMigrations\FieldHandlers\CsvField;
+use CsvMigrations\HasFieldsInterface;
 use CsvMigrations\Model\AssociationsAwareTrait;
 use Qobo\Utils\ModuleConfig\ConfigType;
 use Qobo\Utils\ModuleConfig\ModuleConfig;
@@ -42,8 +43,7 @@ class SchemaAction extends BaseAction
         $data_fields = [];
         $data_association = $this->getAssociations($this->_table()->associations()->getIterator());
 
-        $method = 'getFieldsDefinitions';
-        if (method_exists($this->_table(), $method) && is_callable([$this->_table(), $method])) {
+        if ($this->_table() instanceof HasFieldsInterface) {
             $data_fields = $this->getFields($this->_table()->getFieldsDefinitions(), $data_association);
         }
 
@@ -74,7 +74,7 @@ class SchemaAction extends BaseAction
                 'name' => $csvField->getName(),
                 'type' => $csvField->getType()
             ];
-
+            // Check if exist a label, or required, non_searchable, unique are set as true.
             !empty($fieldJson[$csvField->getName()]['label']) ? $data['label'] = $fieldJson[$csvField->getName()]['label'] : '';
             $csvField->getRequired() ? $data['required'] = true : '';
             $csvField->getNonSearchable() ? $data['non_searchable'] = true : '';
