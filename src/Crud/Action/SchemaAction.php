@@ -178,10 +178,11 @@ class SchemaAction extends BaseAction
                 $value['children'] = $this->getOptionList($value['children']);
             }
 
-            if (empty($value['inactive'])) {
-                unset($value['inactive']);
+            if (!empty($value['inactive']) && $value['inactive']) {
+                continue;
             }
 
+            unset($value['inactive']);
             $value['value'] = $key;
             $result[] = $value;
         }

@@ -24,6 +24,12 @@
             "label": "second",
             "inactive": false,
             "children": []
+        },
+        {
+            "value": "third",
+            "label": "third",
+            "inactive": true,
+            "children": []
         }
     ]
 }
