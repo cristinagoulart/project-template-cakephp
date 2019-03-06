@@ -99,13 +99,13 @@ class CrudSchemaActionTest extends IntegrationTestCase
     /**
      * Call protected/private method of a class.
      *
-     * @param object $object    Instantiated object that we will run method on.
+     * @param SchemaAction $object    Instantiated object that we will run method on.
      * @param string $methodName Method name to call
      * @param mixed[]  $parameters Array of parameters to pass into method.
      *
      * @return mixed Method return.
      */
-    public function invokeMethod(object &$object, string $methodName, array $parameters = [])
+    public function invokeMethod(SchemaAction &$object, string $methodName, array $parameters = [])
     {
         $reflection = new ReflectionClass(get_class($object));
         $method = $reflection->getMethod($methodName);
