@@ -1,4 +1,6 @@
 <?php
+deprecationWarning('"App.Search/Forms/save_search" element is deprecated.');
+
 use RolesCapabilities\Access\AccessFactory;
 
 $accessFactory = new AccessFactory();
