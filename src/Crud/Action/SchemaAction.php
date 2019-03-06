@@ -5,7 +5,6 @@ use ArrayIterator;
 use Cake\Core\App;
 use Crud\Action\BaseAction;
 use CsvMigrations\FieldHandlers\CsvField;
-use CsvMigrations\HasFieldsInterface;
 use CsvMigrations\Model\AssociationsAwareTrait;
 use Qobo\Utils\ModuleConfig\ConfigType;
 use Qobo\Utils\ModuleConfig\ModuleConfig;
@@ -43,10 +42,7 @@ class SchemaAction extends BaseAction
         $data_fields = [];
         $data_association = $this->getAssociations($this->_table()->associations()->getIterator());
 
-        if ($this->_table() instanceof HasFieldsInterface) {
-            $data_fields = $this->getFields($this->_table()->getFieldsDefinitions(), $data_association);
-        }
-
+        $data_fields = $this->getFields($data_association);
         $subject = $this->_subject(['success' => true]);
 
         $this->_controller()->set('data', ['fields' => $data_fields, 'associations' => $data_association]);
@@ -56,19 +52,18 @@ class SchemaAction extends BaseAction
     /**
      * Models fields
      *
-     * @param  mixed[] $fields Fields definition
      * @param  mixed[] $associations Table associations
      * @return mixed[] custum data
      */
-    private function getFields(array $fields, array $associations) : array
+    protected function getFields(array $associations) : array
     {
-        $model = $this->_controller()->loadModel();
+        $migrationJson = new ModuleConfig(ConfigType::MIGRATION(), $this->_controller()->getName());
         $fieldJson = new ModuleConfig(ConfigType::FIELDS(), $this->_controller()->getName());
         $fieldJson = $fieldJson->parseToArray();
         $db_fields_type = $this->_table()->getSchema()->typeMap();
 
         $data_fields = [];
-        foreach ($fields as $field) {
+        foreach ($migrationJson->parseToArray() as $field) {
             $csvField = new CsvField($field);
             $data = [
                 'name' => $csvField->getName(),
