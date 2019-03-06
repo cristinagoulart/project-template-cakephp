@@ -12,7 +12,6 @@
 namespace App\Search;
 
 use Cake\I18n\Time;
-use InvalidArgumentException;
 
 /**
  * Class responsible for generating Magic values.
@@ -48,7 +47,7 @@ final class MagicValue
     public function __construct(string $value, array $user)
     {
         if (empty($user)) {
-            throw new InvalidArgumentException('User info are required.');
+            throw new \InvalidArgumentException('User info are required.');
         }
 
         $this->user = $user;
@@ -84,29 +83,29 @@ final class MagicValue
     /**
      * Today's date magic value getter.
      *
-     * @return \Cake\I18n\Time
+     * @return string
      */
-    private function today(): Time
+    private function today(): string
     {
-        return new Time('today');
+        return (new Time('today'))->format('Y-m-d H:i:s');
     }
 
     /**
      * Yesterday's date magic value getter.
      *
-     * @return \Cake\I18n\Time
+     * @return string
      */
-    private function yesterday(): Time
+    private function yesterday(): string
     {
-        return new Time('yesterday');
+        return (new Time('yesterday'))->format('Y-m-d H:i:s');
     }
     /**
      * Tomorrow's date magic value getter.
      *
-     * @return \Cake\I18n\Time
+     * @return string
      */
-    private function tomorrow(): Time
+    private function tomorrow(): string
     {
-        return new Time('tomorrow');
+        return (new Time('tomorrow'))->format('Y-m-d H:i:s');
     }
 }
