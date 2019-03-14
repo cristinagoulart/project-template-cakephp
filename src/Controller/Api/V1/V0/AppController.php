@@ -42,6 +42,7 @@ class AppController extends Controller
                 'Crud.Delete',
                 'Crud.Lookup',
                 'related' => ['className' => '\App\Crud\Action\RelatedAction'],
+                'schema' => ['className' => '\App\Crud\Action\SchemaAction'],
                 'search' => ['className' => '\App\Crud\Action\SearchAction']
             ],
             'listeners' => [
