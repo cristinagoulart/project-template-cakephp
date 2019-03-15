@@ -292,7 +292,11 @@ class SearchableFieldsListener implements EventListenerInterface
 
         $searchData = $entity->get('content');
 
-        return (array)$searchData->saved->display_columns;
+        if (! isset($searchData['saved']['display_columns'])) {
+            return [];
+        }
+
+        return (array)$searchData['saved']['display_columns'];
     }
 
     /**
