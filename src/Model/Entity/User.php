@@ -83,7 +83,7 @@ class User extends BaseUser
 
         $capabilities = TableRegistry::get('RolesCapabilities.Capabilities');
         Assert::isInstanceOf($capabilities, CapabilitiesTable::class);
-        $userGroups = $capabilities->getUserGroups($this->get('id'));
+        $userGroups = $capabilities->getUserGroups((string)$this->get('id'));
         $userRoles = $capabilities->getGroupsRoles($userGroups);
         $isAdmin = in_array($roleName, $userRoles);
 
