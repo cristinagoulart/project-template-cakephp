@@ -103,7 +103,7 @@ class LogsController extends BaseController
 
         $entity = $search->get($id);
 
-        $searchData = json_decode($entity->get('content'), true);
+        $searchData = $entity->get('content');
         if ($this->request->is('ajax')) {
             $this->viewBuilder()->layout('ajax');
             $queryData = $this->getSearchFieldsFromArray((array)$this->request->getQuery());
@@ -124,15 +124,23 @@ class LogsController extends BaseController
         // request check above, to prevent resetting the pre-saved search.
         $search->reset($entity);
 
+        $savedSearches = $searchTable->find('all')
+            ->where([
+                'SavedSearches.name IS NOT' => null,
+                'SavedSearches.system' => false,
+                'SavedSearches.user_id' => $this->Auth->user('id'),
+                'SavedSearches.model' => $model
+            ])
+            ->toArray();
+
         $this->set('searchableFields', Utility::instance()->getSearchableFields($table, $this->Auth->user()));
-        $this->set('savedSearches', $searchTable->getSavedSearches([$this->Auth->user('id')], [$model]));
+        $this->set('savedSearches', $savedSearches);
         $this->set('model', $model);
         $this->set('modelAlias', $this->loadModel()->getAlias());
         $this->set('searchData', $searchData);
         $this->set('savedSearch', $entity);
         $this->set('preSaveId', $search->create($searchData));
         // INFO: this is valid when a saved search was modified and the form was re-submitted
-        $this->set('isEditable', $searchTable->isEditable($entity));
         $this->set('searchOptions', SearchOptions::get());
         $this->set('associationLabels', Utility::instance()->getAssociationLabels($table));
 

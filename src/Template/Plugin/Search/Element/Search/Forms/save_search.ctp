@@ -20,9 +20,9 @@ if ($accessFactory->hasAccess($url, $user)) : ?>
         'url' => [
             'plugin' => $this->request->getParam('plugin'),
             'controller' => $this->request->getParam('controller'),
-            'action' => ($isEditable ? 'edit': 'save') . '-search',
+            'action' => ($savedSearch->get('is_editable') ? 'edit': 'save') . '-search',
             $preSaveId,
-            $isEditable ? $savedSearch->id : null
+            $savedSearch->get('is_editable') ? $savedSearch->id : null
         ]
     ]); ?>
     <div class="input-group">
@@ -31,7 +31,7 @@ if ($accessFactory->hasAccess($url, $user)) : ?>
             'class' => 'form-control input-sm',
             'placeholder' => 'Save criteria name',
             'required' => true,
-            'value' => $isEditable ? $savedSearch->name : ''
+            'value' => $savedSearch->get('is_editable') ? $savedSearch->name : ''
         ]); ?>
         <span class="input-group-btn">
             <?= $this->Form->button(
