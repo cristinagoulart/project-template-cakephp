@@ -5,6 +5,7 @@
                 v-model="val"
                 placeholder="-- Please choose --"
                 :options="options"
+                label="label"
                 :multiple="multiple"
                 :filterable="false"
                 @search="onSearch">
@@ -32,6 +33,10 @@ export default {
     },
 
     props: {
+        displayField: {
+            type: String,
+            required: true
+        },
         field: {
             type: String,
             required: true
@@ -48,10 +53,6 @@ export default {
             type: String,
             required: true
         },
-        url: {
-            type: String,
-            required: true
-        },
         value: {
             type: [String, Array],
             default: ''
@@ -59,23 +60,48 @@ export default {
     },
 
     data: function () {
-        console.log(this.value)
         return {
+            magicValue: { value: '%%me%%', label: '<< me >>' },
             options: [],
-            val: this.value
+            val: []
         }
+    },
+
+    created: function () {
+        if ('' === this.value || [] === this.value) {
+            return
+        }
+
+        const self = this
+
+        this.value = 'string' === typeof this.value ? [this.value] : this.value
+
+        let hasMagicValue = false
+        let promises = []
+        this.value.forEach(function (id) {
+            if ('%%me%%' === id) {
+                hasMagicValue = true
+                return
+            }
+
+            promises.push(self.getDisplayValue(id))
+        })
+
+        Promise.all(promises).then(function(values) {
+            if (hasMagicValue) {
+                values.push(self.magicValue)
+            }
+            self.options = values
+            self.val = values
+        })
     },
 
     watch: {
         val () {
-            console.log(this.val)
-
             let value = []
             for (const key of Object.keys(this.val)) {
                 value.push(this.val[key].value)
             }
-
-            console.log(value)
 
             this.$emit('input-value-updated', this.field, this.guid, value)
         }
@@ -90,26 +116,38 @@ export default {
         search: _.debounce((search, loading, vm, page = 1) => {
             axios({
                 method: 'get',
-                url: vm.url + '?query=' + encodeURI(search) + '&limit=100&page=' + page,
+                url: '/api/' + vm.source + '/lookup?query=' + encodeURI(search) + '&limit=100&page=' + page,
             }).then(response => {
                 const pagination = response.data.pagination
 
-                if ('Users' === vm.source && 1 === pagination.current_page) {
-                    vm.options.push({ value: '%%me%%', label: '<< me >>'})
+                if ('users' === vm.source && 1 === pagination.current_page) {
+                    vm.options.push(vm.magicValue)
                 }
 
                 for (const key of Object.keys(response.data.data)) {
-                    vm.options.push({ value: key, label: response.data.data[key]})
+                    vm.options.push({ value: key, label: response.data.data[key] })
                 }
 
                 if (pagination.current_page < pagination.page_count) {
                     vm.search(search, loading, vm, pagination.current_page + 1)
                 } else {
-                    console.log(vm.options)
                     loading(false)
                 }
             })
-        }, 1000)
+        }, 1000),
+        getDisplayValue(id) {
+            return axios({
+                method: 'get',
+                async: false,
+                url: '/api/' + this.source + '/view/' + id,
+            }).then(response => {
+                let label = true === response.data.success && response.data.data.hasOwnProperty(this.displayField) ?
+                    label = response.data.data[this.displayField] :
+                    id
+
+                return { value: id, label: label }
+            }).catch(error => console.log(error))
+        }
     }
 
 }
