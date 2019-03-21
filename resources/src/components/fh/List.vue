@@ -53,18 +53,11 @@ export default {
     },
 
     created: function () {
-        let value = this.value
-
-        if ('' === value || [] === value) {
+        if ('' === this.value || [] === this.value) {
             return
         }
 
-        if ('string' === typeof value) {
-            value = [value]
-        }
-
-        const self = this
-
+        const value = 'string' === typeof this.value ? [this.value] : this.value
         const values = this.options.filter(item => -1 < value.indexOf(item.value))
 
         this.val = this.multiple ? values : values[0]
