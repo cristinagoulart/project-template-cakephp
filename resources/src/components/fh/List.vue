@@ -1,7 +1,7 @@
 <template>
     <div>
         <div class="form-group">
-            <v-select v-model="val" placeholder="-- Please choose --" :options="labels" :multiple="multiple">
+            <v-select v-model="val" placeholder="-- Please choose --" :options="options" label="label" :multiple="multiple">
                 <template slot="option" slot-scope="option">
                     <div v-html="option.label"></div>
                 </template>
@@ -37,7 +37,7 @@ export default {
             default: false
         },
         options: {
-            type: Object,
+            type: Array,
             required: true
         },
         value: {
@@ -47,26 +47,34 @@ export default {
     },
 
     data: function () {
-        let result = {
-            val: this.multiple ?
-                ('string' === typeof this.value ? (this.value ? [this.value] : []) : this.value) :
-                ('array' === typeof this.value ? this.value[0] : this.value),
-            labels: Object.values(this.options)
+        return {
+            val: this.multiple ? [] : ''
+        }
+    },
+
+    created: function () {
+        let value = this.value
+
+        if ('' === value || [] === value) {
+            return
         }
 
-        return result
+        if ('string' === typeof value) {
+            value = [value]
+        }
+
+        const self = this
+
+        const values = this.options.filter(item => -1 < value.indexOf(item.value))
+
+        this.val = this.multiple ? values : values[0]
     },
 
     watch: {
         val () {
-            let value = []
-            for (const key of Object.keys(this.options)) {
-                if (-1 < this.val.indexOf(this.options[key])) {
-                    value.push(key)
-                }
-            }
+            const selected = this.multiple ? this.val.map(item => item.value) : this.val.value
 
-            this.$emit('input-value-updated', this.field, this.guid, value)
+            this.$emit('input-value-updated', this.field, this.guid, selected)
         }
     }
 
