@@ -150,7 +150,7 @@
                 <h3 class="box-title"><a href="#">{{ modelName }}</a></h3>
             </div>
             <div class="box-body">
-                <table-ajax v-if="loadResult" :url="'/api/' + modelName + '/search'" request-type="POST" :data="tableData" :order-field="sortByField" :order-direction="sortByOrder" :model="modelName" :primary-key="primaryKey" :headers="tableHeaders" @sort-field-updated="sortFieldUpdated" @sort-order-updated="sortOrderUpdated"></table-ajax>
+                <table-ajax v-if="loadResult" :url="'/api/' + modelUrl + '/search'" request-type="POST" :data="tableData" :order-field="sortByField" :order-direction="sortByOrder" :model="modelUrl" :primary-key="primaryKey" :headers="tableHeaders" @sort-field-updated="sortFieldUpdated" @sort-order-updated="sortOrderUpdated"></table-ajax>
             </div>
         </div>
     </div>
@@ -253,6 +253,18 @@ export default {
         },
         modelName() {
             return this.$store.state.search.savedSearch.model
+        },
+        modelUrl() {
+            /**
+             * @link https://coderwall.com/p/hpq7sq/undescorize-dasherize-capitalize-string-prototype
+             */
+            const dasherize = function (string) {
+                return string.replace(/[A-Z]/g, function(char, index) {
+                    return (index !== 0 ? '-' : '') + char.toLowerCase()
+                })
+            }
+
+            return dasherize(this.modelName)
         },
         name: {
             get() {
