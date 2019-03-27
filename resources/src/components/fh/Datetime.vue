@@ -74,14 +74,15 @@ export default {
             $input.val(this.val)
         }
 
-        $input.daterangepicker(options)
-
         Object.keys(options.ranges).forEach(function (item) {
             // convert magic value to label, for example "%%today%%" becomes "Today"
             if (self.val === '%%' + item.toLowerCase() + '%%') {
                 $input.val(item)
+                options.startDate = options.ranges[item][0].format(options.locale.format)
             }
         })
+
+        $input.daterangepicker(options)
 
         $input.on('apply.daterangepicker', function (e, picker) {
             $(this).val('Custom Range' === picker.chosenLabel ?
