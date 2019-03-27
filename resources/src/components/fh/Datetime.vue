@@ -84,6 +84,10 @@ export default {
 
         $input.daterangepicker(options)
 
+        // force display of custom ranges
+        // @link https://github.com/dangrossman/daterangepicker/blob/v2.1.27/daterangepicker.js#L385
+        $($($input).data('daterangepicker').container).find('.ranges ul').show()
+
         $input.on('apply.daterangepicker', function (e, picker) {
             $(this).val('Custom Range' === picker.chosenLabel ?
                 picker.startDate.format(picker.locale.format) :
