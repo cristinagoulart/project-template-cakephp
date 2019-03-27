@@ -6,6 +6,7 @@ export default {
     namespaced: true,
 
     state: {
+        exportId: '',
         filters: [],
         operators: {
             map: {
@@ -206,6 +207,9 @@ export default {
                 displayColumns.splice(start, 0, displayColumns.splice(index, 1)[0])
             })
         },
+        exportId(state, value) {
+            state.exportId = value
+        },
         filters(state, value) {
             state.filters = value
         },
@@ -298,6 +302,21 @@ export default {
             }).then(response => {
                 if (true === response.data.success) {
                     dispatch('savedSearchesGet')
+                }
+            }).catch(error => console.log(error))
+        },
+        savedSearchExport({ commit, state }) {
+            let data = state.savedSearch
+            // this is treated as temporary saved search
+            data.name = ''
+
+            return axios({
+                method: 'post',
+                url: '/search/saved-searches/add',
+                data: data,
+            }).then(response => {
+                if (true === response.data.success) {
+                    commit('exportId', response.data.data.id)
                 }
             }).catch(error => console.log(error))
         },

@@ -108,6 +108,7 @@
                             </div>
                             <button class="btn btn-primary btn-sm" type="submit"><i class="fa fa-search"></i> Search</button>
                             <button type="button" @click="searchReset()" class="btn btn-default btn-sm"><i class="fa fa-undo"></i> Reset</button>
+                            <button type="button" @click="searchExport()" class="btn btn-default btn-sm"><i class="fa fa-download"></i> Export</button>
                         </div>
                         <div class="col-md-4 col-lg-3">
                             <div class="form-group">
@@ -398,6 +399,35 @@ export default {
             // https://github.com/vuejs/Discussion/issues/356#issuecomment-312529480
             this.$nextTick(() => {
                 this.loadResult = true
+            })
+        },
+        searchExport() {
+            this.$store.dispatch('search/savedSearchExport').then(() => {
+                const id = this.$store.state.search.exportId
+
+                if ('' === id) {
+                    return
+                }
+
+                let name = this.$store.state.search.savedSearch.name
+                name = '' === name ? this.modelName : name
+
+                const date = new Date()
+
+                const addZero = function (value) {
+                    return value < 10 ? '0' + value : value
+                }
+
+                const datetime = [
+                    date.getFullYear(),
+                    addZero(date.getMonth() + 1),
+                    addZero(date.getDate()),
+                    addZero(date.getHours()),
+                    addZero(date.getMinutes()),
+                    addZero(date.getSeconds())
+                ]
+
+                window.location.href = encodeURI('/' + this.modelUrl + '/export-search/' + id + '/' + name + ' ' + datetime.join(''))
             })
         },
         searchReset() {
