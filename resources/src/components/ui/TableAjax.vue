@@ -27,13 +27,13 @@
 
 <script>
 import 'datatables.net-bs/css/dataTables.bootstrap.min.css'
-// import 'datatables.net-bs/js/dataTables.bootstrap.min.js'
-import 'datatables-select/dist/css/select.bootstrap.min.css'
+import 'datatables.net-select-bs/css/select.bootstrap.min.css'
 import * as $ from 'jquery'
 import axios from 'axios'
 import dataTables from 'datatables.net'
-import datatablesBootstrap from 'datatables.net-bs'
-import datatablesSelect from 'datatables-select'
+import dataTablesBootstrap from 'datatables.net-bs'
+import dataTablesSelect from 'datatables.net-select'
+import dataTablesSelectBootstrap from 'datatables.net-select-bs'
 
 export default {
 
