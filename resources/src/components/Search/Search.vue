@@ -138,7 +138,7 @@
                                         <input type="text" v-model="name" class="form-control input-sm" placeholder="Saved search name" required="required">
                                     </div>
                                     <span class="input-group-btn">
-                                        <button type="button" @click="savedSearchCreate()" class="btn btn-sm btn-primary"><i class="fa fa-floppy-o" aria-hidden="true"></i></button>
+                                        <button type="button" @click="savedSearchSave()" :disabled="'' === name" class="btn btn-sm btn-primary"><i class="fa fa-floppy-o" aria-hidden="true"></i></button>
                                     </span>
                                 </div>
                             </div>
@@ -355,9 +355,6 @@ export default {
         savedSearchCopy() {
             this.$store.dispatch('search/savedSearchCopy', { id: this.savedSearchSelected, user_id: this.userId })
         },
-        savedSearchCreate() {
-            this.$store.dispatch('search/savedSearchCreate')
-        },
         savedSearchDelete() {
             if (this.savedSearchSelected === this.$store.state.search.savedSearch.id) {
                 return
@@ -375,6 +372,9 @@ export default {
             this.$store.dispatch('search/savedSearchGet', this.savedSearchSelected).then(() => {
                 this.search()
             })
+        },
+        savedSearchSave() {
+            this.$store.dispatch('search/savedSearchSave')
         },
         search() {
             const self = this

@@ -275,25 +275,6 @@ export default {
 
             }).catch(error => console.log(error))
         },
-        savedSearchCreate({ commit, state, dispatch }) {
-            if ('' === state.savedSearch.name) {
-                return
-            }
-
-            const method = '' === state.savedSearch.id ? 'post' : 'put'
-            const action = '' === state.savedSearch.id ? 'add' : 'edit/' + state.savedSearch.id
-
-            return axios({
-                method: method,
-                url: '/search/saved-searches/' + action,
-                data: state.savedSearch,
-            }).then(response => {
-                if (true === response.data.success) {
-                    dispatch('savedSearchGet', 'post' === method ? response.data.data.id : state.savedSearch.id)
-                    dispatch('savedSearchesGet')
-                }
-            }).catch(error => console.log(error))
-        },
         savedSearchDelete({ commit, state, dispatch }, id) {
 
             return axios({
@@ -328,6 +309,22 @@ export default {
             }).then(response => {
                 if (true === response.data.success) {
                     commit('savedSearch', response.data.data)
+                }
+            }).catch(error => console.log(error))
+        },
+        savedSearchSave({ commit, state, dispatch }) {
+            const create = '' === state.savedSearch.id
+
+            return axios({
+                method: create ? 'post' : 'put',
+                url: '/search/saved-searches/' + (create ? 'add' : 'edit/' + state.savedSearch.id),
+                data: state.savedSearch,
+            }).then(response => {
+                if (true === response.data.success) {
+                    if (create) {
+                        commit('savedSearchId', response.data.data.id)
+                    }
+                    dispatch('savedSearchesGet')
                 }
             }).catch(error => console.log(error))
         },
