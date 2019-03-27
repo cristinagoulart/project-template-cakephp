@@ -11,9 +11,7 @@ $table = TableRegistry::get($tableName);
 $primaryKey = $table->aliasField($table->getPrimaryKey());
 $searchId = $this->request->getParam('pass.0', '');
 ?>
-<section class="content-header">
-    <h4><?= __('Search') ?></h4>
-</section>
+<section class="content-header"></section>
 <section class="content">
     <search
         :display-fields='<?= json_encode('' === $searchId ? $this->Search->getDisplayFields($tableName) : []) ?>'
