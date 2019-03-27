@@ -107,6 +107,7 @@
                                 </div>
                             </div>
                             <button class="btn btn-primary btn-sm" type="submit"><i class="fa fa-search"></i> Search</button>
+                            <button type="button" @click="searchReset()" class="btn btn-default btn-sm"><i class="fa fa-undo"></i> Reset</button>
                         </div>
                         <div class="col-md-4 col-lg-3">
                             <div class="form-group">
@@ -398,6 +399,32 @@ export default {
             this.$nextTick(() => {
                 this.loadResult = true
             })
+        },
+        searchReset() {
+            const id = this.$store.state.search.savedSearch.id
+
+            if ('' !== id) {
+                this.$store.dispatch('search/savedSearchGet', id).then(() => {
+                    this.search()
+                })
+            }
+
+            if ('' === id) {
+                this.$store.commit('search/aggregator', 'AND')
+                this.$store.commit('search/groupBy', '')
+                this.$store.commit('search/name', '')
+                this.$store.commit('search/sortByField', '')
+                this.$store.commit('search/sortByOrder', 'asc')
+
+                Object.keys(this.criteria).map(
+                    (key) => Object.keys(this.criteria[key]).map(
+                        (guid) => this.$store.commit('search/criteriaRemove', guid)
+                    )
+                )
+
+                this.$store.commit('search/displayColumns',  {action: 'remove', display: this.displayColumns })
+                this.$store.commit('search/displayColumns',  {action: 'add', available: this.displayFields })
+            }
         },
         sortFieldUpdated(value) {
             this.$store.commit('search/sortByField', value)
