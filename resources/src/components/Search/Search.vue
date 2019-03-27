@@ -304,7 +304,6 @@ export default {
         this.$store.commit('search/displayColumns',  {action: 'add', available: this.displayFields })
 
         if ('' !== this.id) {
-            this.$store.commit('search/savedSearchId', this.id)
             this.$store.dispatch('search/savedSearchGet', this.id).then(() => {
                 this.$store.dispatch('search/savedSearchesGet')
                 this.search()
