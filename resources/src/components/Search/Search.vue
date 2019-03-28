@@ -301,7 +301,6 @@ export default {
 
     created() {
         this.$store.commit('search/filters', JSON.parse(this.filters))
-        this.$store.commit('search/displayColumns',  {action: 'add', available: this.displayFields })
 
         if ('' !== this.id) {
             this.$store.dispatch('search/savedSearchGet', this.id).then(() => {
@@ -311,6 +310,7 @@ export default {
         }
 
         if ('' === this.id) {
+            this.$store.commit('search/displayColumns',  {action: 'add', available: this.displayFields })
             this.$store.commit('search/savedSearchModel', this.model)
             this.$store.commit('search/savedSearchUserId', this.userId)
             this.search()
