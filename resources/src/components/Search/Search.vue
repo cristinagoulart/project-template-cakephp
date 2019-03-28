@@ -1,6 +1,6 @@
 <template>
     <div>
-        <div class="box box-primary" v-if="withForm">
+        <div class="box box-solid" v-if="withForm">
             <div class="box-body">
                 <form class="search-form" novalidate="novalidate" v-on:submit.prevent="search">
                     <div class="row">
@@ -147,10 +147,7 @@
                 </form>
             </div>
         </div>
-        <div class="box box-primary">
-            <div class="box-header">
-                <h3 class="box-title"><a href="#">{{ modelName }}</a></h3>
-            </div>
+        <div class="box box-solid">
             <div class="box-body">
                 <table-ajax v-if="loadResult" :url="'/api/' + modelUrl + '/search'" request-type="POST" :data="tableData" :order-field="sortByField" :order-direction="sortByOrder" :model="modelUrl" :primary-key="primaryKey" :headers="tableHeaders" @sort-field-updated="sortFieldUpdated" @sort-order-updated="sortOrderUpdated"></table-ajax>
             </div>
