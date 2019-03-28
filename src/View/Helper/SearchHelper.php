@@ -93,6 +93,7 @@ final class SearchHelper extends Helper
     /**
      * Search filters getter.
      *
+     * @param string $table Table name
      * @return mixed[]
      */
     public function getFilters(string $table) : array
@@ -129,6 +130,7 @@ final class SearchHelper extends Helper
     /**
      * Method that retrieves target table search display fields.
      *
+     * @param string $table Table name
      * @return array
      */
     public function getDisplayFields(string $table) : array
