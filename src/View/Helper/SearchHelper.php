@@ -10,6 +10,7 @@ use Cake\ORM\TableRegistry;
 use Cake\Routing\Router;
 use Cake\Utility\Inflector;
 use Cake\View\Helper;
+use Cake\View\View;
 use CsvMigrations\FieldHandlers\FieldHandlerFactory;
 use DatabaseLog\Model\Table\DatabaseLogsTable;
 use Qobo\Utils\ModuleConfig\ConfigType;
@@ -22,17 +23,50 @@ final class SearchHelper extends Helper
     private const ASSOCIATION_TYPES = ['manyToOne'];
 
     /**
-     * Group by count field
+     * Group by count field.
      */
     const GROUP_BY_FIELD = 'total';
 
+    /**
+     * Additional helpers.
+     *
+     * @var array
+     */
     public $helpers = ['Url'];
 
+    /**
+     * Table instance.
+     *
+     * @var \Cake\ORM\Table|null
+     */
     private $table = null;
-    private $factory = null;
 
+    /**
+     * Field handler factory instance.
+     *
+     * @var \CsvMigrations\FieldHandlers\FieldHandlerFactory
+     */
+    private $factory;
+
+    /**
+     * Searchable fields.
+     *
+     * @var array
+     */
     private $fields = [];
+
+    /**
+     * Search filters.
+     *
+     * @var array
+     */
     private $filters = [];
+
+    /**
+     * Association labels.
+     *
+     * @var array
+     */
     private $associationLabels = [];
 
     /**
@@ -45,6 +79,16 @@ final class SearchHelper extends Helper
         ['type' => 'donutChart', 'icon' => 'pie-chart'],
         ['type' => 'barChart', 'icon' => 'bar-chart']
     ];
+
+    /**
+     * {@inheritDoc}
+     */
+    public function __construct(View $View, array $config = [])
+    {
+        parent::__construct($View, $config);
+
+        $this->factory = new FieldHandlerFactory();
+    }
 
     /**
      * Search filters getter.
@@ -275,10 +319,6 @@ final class SearchHelper extends Helper
         $fields = static::getFieldsDefinitionsByTable($table);
         if (empty($fields)) {
             return [];
-        }
-
-        if (null === $this->factory) {
-            $this->factory = new FieldHandlerFactory();
         }
 
         $result = [];
