@@ -169,7 +169,7 @@ export default {
             const displayColumns = state.savedSearch.content.saved.display_columns
 
             if ('add' === payload.action) {
-                payload.available.forEach(function (column) {
+                payload.available.map(function (column) {
                     if (-1 === displayColumns.indexOf(column)) {
                         displayColumns.push(column)
                     }
@@ -177,7 +177,7 @@ export default {
             }
 
             if ('remove' === payload.action) {
-                payload.display.forEach(function (column) {
+                payload.display.map(function (column) {
                     const index = displayColumns.indexOf(column)
                     if (-1 < index) {
                         displayColumns.splice(index, 1)

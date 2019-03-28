@@ -230,7 +230,7 @@ export default {
         },
         displayColumns: {
             get() {
-                return this.$store.state.search.savedSearch.content.saved.display_columns
+                return this.$store.state.search.savedSearch.content.saved.display_columns.slice(0)
             },
             set(value) {
                 this.$store.commit('search/displayColumns', value)
@@ -430,30 +430,23 @@ export default {
             })
         },
         searchReset() {
-            const id = this.$store.state.search.savedSearch.id
+            this.$store.commit('search/aggregator', 'AND')
+            this.$store.commit('search/groupBy', '')
+            this.$store.commit('search/name', '')
+            this.$store.commit('search/savedSearchId', '')
+            this.$store.commit('search/sortByField', '')
+            this.$store.commit('search/sortByOrder', 'asc')
 
-            if ('' !== id) {
-                this.$store.dispatch('search/savedSearchGet', id).then(() => {
-                    this.search()
-                })
-            }
-
-            if ('' === id) {
-                this.$store.commit('search/aggregator', 'AND')
-                this.$store.commit('search/groupBy', '')
-                this.$store.commit('search/name', '')
-                this.$store.commit('search/sortByField', '')
-                this.$store.commit('search/sortByOrder', 'asc')
-
-                Object.keys(this.criteria).map(
-                    (key) => Object.keys(this.criteria[key]).map(
-                        (guid) => this.$store.commit('search/criteriaRemove', guid)
-                    )
+            Object.keys(this.criteria).map(
+                (key) => Object.keys(this.criteria[key]).map(
+                    (guid) => this.$store.commit('search/criteriaRemove', guid)
                 )
+            )
 
-                this.$store.commit('search/displayColumns',  {action: 'remove', display: this.displayColumns })
-                this.$store.commit('search/displayColumns',  {action: 'add', available: this.displayFields })
-            }
+            this.$store.commit('search/displayColumns', { action: 'remove', display: this.displayColumns })
+            this.$store.commit('search/displayColumns', { action: 'add', available: this.displayFields })
+
+            this.search()
         },
         sortFieldUpdated(value) {
             this.$store.commit('search/sortByField', value)
