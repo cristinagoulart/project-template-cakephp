@@ -14,7 +14,7 @@ $searchId = $this->request->getParam('pass.0', '');
 <section class="content-header"></section>
 <section class="content">
     <search
-        :display-fields='<?= json_encode('' === $searchId ? $this->Search->getDisplayFields($tableName) : []) ?>'
+        :display-fields='<?= json_encode($this->Search->getDisplayFields($tableName)) ?>'
         filters='<?= json_encode($this->Search->getFilters($tableName)) ?>'
         id="<?= $searchId ?>"
         model="<?= $this->name ?>"
