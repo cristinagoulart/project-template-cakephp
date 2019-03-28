@@ -2,12 +2,13 @@
 namespace App\View\Helper;
 
 use App\Model\Table\UsersTable;
+use App\Search\Manager as SearchManager;
 use Cake\Core\App;
 use Cake\Core\Configure;
-use Cake\Datasource\EntityInterface;
 use Cake\Datasource\RepositoryInterface;
 use Cake\ORM\TableRegistry;
 use Cake\Routing\Router;
+use Cake\Utility\Hash;
 use Cake\Utility\Inflector;
 use Cake\View\Helper;
 use Cake\View\View;
@@ -17,6 +18,7 @@ use Qobo\Utils\ModuleConfig\ConfigType;
 use Qobo\Utils\ModuleConfig\ModuleConfig;
 use Qobo\Utils\Utility\User;
 use RolesCapabilities\Access\AccessFactory;
+use Search\Model\Entity\SavedSearch;
 
 final class SearchHelper extends Helper
 {
@@ -153,49 +155,74 @@ final class SearchHelper extends Helper
     /**
      * Chart options getter.
      *
+     * @param \Search\Model\Entity\SavedSearch $entity Saved search entity
      * @return mixed[]
      */
-    public function getChartOptions(EntityInterface $entity, string $tableId) : array
+    public function getChartOptions(SavedSearch $entity) : array
     {
+        if (null === Hash::get($entity->get('content'), 'saved.group_by')) {
+            return [];
+        }
+
         $this->setTable($entity->get('model'));
 
-        list($plugin, $controller) = pluginSplit($entity->get('model'));
-        $content = $entity->get('content')['saved'];
-        list($prefix, $fieldName) = pluginSplit($content['group_by']);
+        list(, $groupBy) = pluginSplit(Hash::get($entity->get('content'), 'saved.group_by'));
+
+        $resultSet = $this->table->find(
+            'search',
+            SearchManager::getOptionsFromRequest([
+                'criteria' => Hash::get($entity->get('content'), 'saved.criteria', []),
+                'fields' => array_merge((array)$this->table->getPrimaryKey(), [
+                    Hash::get($entity->get('content'), 'saved.group_by'),
+                    $entity->get('model') . '.' . self::GROUP_BY_FIELD
+                ]),
+                'sort' => Hash::get($entity->get('content'), 'saved.sort_by_field', false),
+                'direction' => Hash::get($entity->get('content'), 'saved.sort_by_order', 'asc'),
+                'group_by' => Hash::get($entity->get('content'), 'saved.group_by'),
+            ], [])
+        )->all();
 
         $result = [];
         foreach ($this->charts as $chart) {
-            $result[] = [
+            $options = [
                 'chart' => $chart['type'],
                 'icon' => $chart['icon'],
-                'ajax' => [
-                    'url' => Router::url([
-                        'prefix' => 'api',
-                        'plugin' => $plugin,
-                        'controller' => $controller,
-                        'action' => 'search'
-                    ]),
-                    'token' => Configure::read('API.token'),
-                    'data' => [
-                        'direction' => $content['sort_by_order'],
-                        'fields' => [$content['group_by'], $prefix . '.' . self::GROUP_BY_FIELD],
-                        'sort' => $content['sort_by_field'],
-                        'group_by' => $content['group_by']
-                    ],
-                    'format' => 'pretty'
-                ],
                 'options' => [
-                    'element' => Inflector::delimit($chart['type']) . '_' . $tableId,
+                    'element' => Inflector::delimit($chart['type']) . '_' . uniqid(),
                     'resize' => true,
                     'hideHover' => true,
                     'data' => [],
                     'barColors' => ['#0874c7', '#04645e', '#5661f8', '#8298c1', '#c6ba08', '#07ada3'],
                     'lineColors' => ['#0874c7', '#04645e', '#5661f8', '#8298c1', '#c6ba08', '#07ada3'],
-                    'labels' => [Inflector::humanize(self::GROUP_BY_FIELD), Inflector::humanize($fieldName)],
-                    'xkey' => [$content['group_by']],
-                    'ykeys' => [$prefix . '.' . self::GROUP_BY_FIELD]
+                    'labels' => [Inflector::humanize(self::GROUP_BY_FIELD), Inflector::humanize($groupBy)],
+                    'xkey' => [$groupBy],
+                    'ykeys' => [self::GROUP_BY_FIELD]
                 ]
             ];
+
+            foreach ($resultSet as $record) {
+                $value = $record->get($options['options']['ykeys'][0]);
+                $label = $this->factory->renderValue(
+                    $this->table,
+                    $options['options']['xkey'][0],
+                    $record->get($options['options']['xkey'][0])
+                );
+
+                switch ($chart['type']) {
+                    case 'funnelChart':
+                    case 'donutChart':
+                        $options['options']['data'][] = ['value' => $value, 'label' => $label];
+                        break;
+                    case 'barChart':
+                        $options['options']['data'][] = [
+                            $options['options']['ykeys'][0] => $value,
+                            $options['options']['xkey'][0] => $label
+                        ];
+                        break;
+                }
+            }
+
+            $result[] = $options;
         }
 
         return $result;
