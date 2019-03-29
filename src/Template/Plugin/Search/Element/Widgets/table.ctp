@@ -1,12 +1,11 @@
 <?php
 use Cake\Core\Configure;
 use Cake\ORM\TableRegistry;
+use Cake\Utility\Hash;
 use Cake\Utility\Inflector;
 use Qobo\Utils\Utility\User;
 
 $savedSearch = $widget->getData();
-$widgetOptions = $widget->getOptions();
-
 if (null === $savedSearch) {
     return '';
 }
@@ -14,35 +13,31 @@ if (null === $savedSearch) {
 $this->Html->script(['/dist/vendor', '/dist/app'], ['block' => 'scriptBottom']);
 $this->Html->css('/dist/style', ['block' => 'css']);
 
-$content = $savedSearch->get('content')['saved'];
+$table = TableRegistry::get($savedSearch->get('model'));
+$groupBy = Hash::get($savedSearch->get('content'), 'saved.group_by', '');
 
 $headers = [];
-if (! empty($content['group_by'])) {
+if ('' !== $groupBy) {
     foreach ($this->Search->getFilters($savedSearch->get('model')) as $filter) {
-        if ($filter['field'] === $content['group_by']) {
-            $headers[] = ['value' => $content['group_by'], 'text' => $filter['label']];
+        if ($filter['field'] === $groupBy) {
+            $headers[] = ['value' => $groupBy, 'text' => $filter['label']];
             break;
         }
     }
     $headers[] = ['value' => $savedSearch->get('model') . '.total', 'text' => 'Total'];
 }
 
-if (empty($content['group_by'])) {
+if ('' === $groupBy) {
     foreach ($this->Search->getFilters($savedSearch->get('model')) as $filter) {
-        if (in_array($filter['field'], $content['display_columns'])) {
+        if (in_array($filter['field'], Hash::get($savedSearch->get('content'), 'saved.display_columns', []))) {
             $headers[] = ['value' => $filter['field'], 'text' => $filter['label']];
         }
     }
 }
 
-$data = [
-    'criteria' => empty($content['criteria']) ? [] : $content['criteria'],
-    'group_by' => empty($content['group_by']) ? '' : $content['group_by']
-];
-
 list($plugin, $controller) = pluginSplit($savedSearch->get('model'));
 $url = ['plugin' => $plugin, 'controller' => $controller, 'action' => 'search', $savedSearch->get('id')];
-$charts = ! empty($content['group_by']) ? $this->Search->getChartOptions($savedSearch) : [];
+$charts = '' !== $groupBy ? $this->Search->getChartOptions($savedSearch) : [];
 
 if (! empty($charts)) {
     echo $this->Html->css('AdminLTE./bower_components/morris.js/morris', ['block' => 'css']);
@@ -79,21 +74,24 @@ $uniqid = uniqid();
                 </a>
             </li>
         <?php endforeach; ?>
-        <li class="pull-left header"><?= $this->Html->link($savedSearch->has('name') ? $savedSearch->get('name') : $this->name, $url) ?></li>
+        <li class="pull-left header"><?= $this->Html->link($savedSearch->get('name'), $url) ?></li>
     </ul>
     <div class="tab-content">
         <div id="table_<?= $uniqid ?>" class="tab-pane <?= empty($charts) ? 'active' : '' ?>">
             <table-ajax
                 :batch="false"
-                :data='<?= json_encode($data) ?>'
+                :data='<?= json_encode([
+                    'criteria' => Hash::get($savedSearch->get('content'), 'saved.criteria', []),
+                    'group_by' => $groupBy
+                ]) ?>'
                 :headers='<?= json_encode($headers) ?>'
                 model="<?= Inflector::dasherize($savedSearch->get('model')) ?>"
-                order-field="<?= $content['sort_by_field'] ?>"
-                order-direction="<?= $content['sort_by_order'] ?>"
-                primary-key="<?= TableRegistry::get($savedSearch->get('model'))->getPrimaryKey() ?>"
+                order-field="<?= Hash::get($savedSearch->get('content'), 'saved.sort_by_field', '') ?>"
+                order-direction="<?= Hash::get($savedSearch->get('content'), 'saved.sort_by_order', '') ?>"
+                primary-key="<?= $table->aliasField($table->getPrimaryKey()) ?>"
                 request-type="POST"
                 url="/api/<?= Inflector::dasherize($savedSearch->get('model')) ?>/search"
-                :with-actions="<?= empty($content['group_by']) ? 'true' : 'false' ?>"
+                :with-actions="<?= '' === $groupBy ? 'true' : 'false' ?>"
             ></table-ajax>
         </div>
         <?php foreach ($charts as $key => $chart) : ?>
