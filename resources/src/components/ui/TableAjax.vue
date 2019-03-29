@@ -206,26 +206,27 @@ export default {
                 }).catch(error => console.log(error))
             })
 
-
             // select/deselect all table rows
             // @link https://stackoverflow.com/questions/42570465/datatables-select-all-checkbox?answertab=active#tab-top
             this.table.on('click', 'th.select-checkbox', function () {
-                if ($('th.select-checkbox').hasClass('selected')) {
+                let element = $(this)
+                if (element.hasClass('selected')) {
                     self.table.rows().deselect()
-                    $('th.select-checkbox').removeClass('selected')
+                    element.removeClass('selected')
                 } else {
                     self.table.rows().select()
-                    $('th.select-checkbox').addClass('selected')
+                    element.addClass('selected')
                 }
             })
 
             // check/uncheck select-all checkbox based on rows select/deselect triggering
             // @link https://stackoverflow.com/questions/42570465/datatables-select-all-checkbox?answertab=active#tab-top
             this.table.on('select deselect', function () {
+                let element = $(this).find('th.select-checkbox')
                 if (self.table.rows({ selected: true }).count() !== self.table.rows().count()) {
-                    $('th.select-checkbox').removeClass('selected')
+                    element.removeClass('selected')
                 } else {
-                    $('th.select-checkbox').addClass('selected')
+                    element.addClass('selected')
                 }
             })
         },
