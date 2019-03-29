@@ -199,4 +199,19 @@ class UsersControllerTest extends IntegrationTestCase
 
         $this->assertEquals($data['first_name'], $entity->get('first_name'));
     }
+
+    public function testIndexWithArrayConditions(): void
+    {
+        $this->setAuthHeaders('00000000-0000-0000-0000-000000000002');
+        $this->get('/api/users/index.json?conditions[username][]=foo&conditions[username][]=user-1');
+        $this->assertResponseOk();
+
+        $body = $this->_response->getBody();
+        $response = json_decode($body);
+
+        $id = '00000000-0000-0000-0000-000000000001';
+        $entity = $this->Users->get($id);
+
+        $this->assertEquals('first1', $entity->get('first_name'));
+    }
 }

@@ -56,9 +56,7 @@ class UsersController extends AppController
             }
         }
 
-        if (Configure::read('API.auth')) {
-            $this->Auth->allow(['token']);
-        }
+        $this->Auth->allow(['token']);
     }
 
     /**
@@ -81,7 +79,7 @@ class UsersController extends AppController
                 'token' => JWT::encode(
                     [
                         'sub' => $user['id'],
-                        'exp' => time() + 604800
+                        'exp' => time() + (int)Configure::read('API.expireTime'),
                     ],
                     Security::getSalt()
                 )

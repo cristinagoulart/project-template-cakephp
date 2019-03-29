@@ -1,9 +1,11 @@
 <?php
 namespace App\Shell;
 
+use CakeDC\Users\Model\Behavior\SocialBehavior;
 use CakeDC\Users\Shell\UsersShell as BaseShell;
 use Cake\Datasource\EntityInterface;
 use Cake\ORM\Entity;
+use Webmozart\Assert\Assert;
 
 class UsersShell extends BaseShell
 {
@@ -56,8 +58,8 @@ class UsersShell extends BaseShell
             return $this->params['username'];
         }
 
-        /** @var \CakeDC\Users\Model\Behavior\SocialBehavior */
         $behavior = $this->Users->getBehavior('Social');
+        Assert::isInstanceOf($behavior, SocialBehavior::class);
 
         return $behavior->generateUniqueUsername('superadmin');
     }

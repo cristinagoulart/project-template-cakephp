@@ -11,6 +11,7 @@ use Cake\ORM\TableRegistry;
 use CsvMigrations\FieldHandlers\FieldHandlerFactory;
 use DatabaseLog\Model\Table\DatabaseLogsTable;
 use InvalidArgumentException;
+use Qobo\Utils\ModuleConfig\Cache\Cache;
 use Qobo\Utils\ModuleConfig\ConfigType;
 use Qobo\Utils\ModuleConfig\ModuleConfig;
 use RolesCapabilities\Access\AccessFactory;
@@ -66,6 +67,15 @@ class SearchableFieldsListener implements EventListenerInterface
      */
     public static function getSearchableFieldsByTable(RepositoryInterface $table, array $user, bool $withAssociated = true): array
     {
+        // Cached response
+        $cache = new Cache(__FUNCTION__, []);
+        $cacheKey = $cache->getKey([$table->getAlias(), $user['id'], $withAssociated]);
+
+        $result = $cache->readFrom($cacheKey);
+        if ($result !== false) {
+            return $result;
+        }
+
         $factory = new FieldHandlerFactory();
         /**
          * @var \Cake\ORM\Table $table
@@ -92,6 +102,10 @@ class SearchableFieldsListener implements EventListenerInterface
 
         if ($withAssociated) {
             $result = array_merge($result, static::byAssociations($table, $user));
+        }
+
+        if ($cache instanceof Cache && !empty($cacheKey)) {
+            $cache->writeTo($cacheKey, $result);
         }
 
         return $result;
@@ -242,7 +256,6 @@ class SearchableFieldsListener implements EventListenerInterface
         try {
             $mc = new ModuleConfig(ConfigType::MODULE(), $table->getRegistryAlias());
             $config = $mc->parseToArray();
-            // $config = json_decode(json_encode($config), true);
         } catch (InvalidArgumentException $e) {
             Log::error($e);
         }
@@ -277,9 +290,13 @@ class SearchableFieldsListener implements EventListenerInterface
          */
         $entity = $query->first();
 
-        $searchData = json_decode($entity->get('content'));
+        $searchData = $entity->get('content');
 
-        return (array)$searchData->saved->display_columns;
+        if (! isset($searchData['saved']['display_columns'])) {
+            return [];
+        }
+
+        return (array)$searchData['saved']['display_columns'];
     }
 
     /**

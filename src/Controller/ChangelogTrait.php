@@ -2,7 +2,10 @@
 namespace App\Controller;
 
 use Cake\Core\Configure;
+use Cake\ORM\Table;
 use Cake\ORM\TableRegistry;
+use Cake\Utility\Inflector;
+use Webmozart\Assert\Assert;
 
 /**
  * Controller Trait responsible for changelog functionality.
@@ -37,15 +40,15 @@ trait ChangelogTrait
         very unlikely.
          */
         $query = TableRegistry::get($this->_tableLog)->find('all')
-            ->where(['primary_key' => $id, 'source' => $this->name])
+            ->where(['primary_key' => $id, 'source' => Inflector::underscore($this->name)])
             ->select(['timestamp', 'user_id', 'original', 'changed'])
             ->order(['timestamp' => 'DESC'])
             ->group('timestamp');
 
-        /** @var \Cake\Datasource\RepositoryInterface&\Cake\ORM\Table $table */
         $table = $this->loadModel();
+        Assert::isInstanceOf($table, Table::class);
 
-        $modelAlias = $this->loadModel()->getAlias();
+        $modelAlias = $table->getAlias();
         $methodName = 'moduleAlias';
         if (method_exists($this->loadModel(), $methodName) && is_callable([$this->loadModel(), $methodName])) {
             $modelAlias = $this->loadModel()->{$methodName}();

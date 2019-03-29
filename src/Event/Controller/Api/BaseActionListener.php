@@ -7,11 +7,13 @@ use Cake\Datasource\RepositoryInterface;
 use Cake\Event\EventListenerInterface;
 use Cake\ORM\Table;
 use Cake\Utility\Hash;
+use Cake\Utility\Inflector;
 use Cake\View\View;
 use CsvMigrations\FieldHandlers\FieldHandlerFactory;
 use CsvMigrations\Utility\FileUpload;
 use Psr\Http\Message\ServerRequestInterface;
 use RuntimeException;
+use Webmozart\Assert\Assert;
 
 abstract class BaseActionListener implements EventListenerInterface
 {
@@ -62,14 +64,11 @@ abstract class BaseActionListener implements EventListenerInterface
      * Fetch and attach associated files to provided entity.
      *
      * @param \Cake\Datasource\EntityInterface $entity Entity
-     * @param \Cake\Datasource\RepositoryInterface $table Table instance
+     * @param \Cake\ORM\Table $table Table instance
      * @return void
      */
-    protected function attachFiles(EntityInterface $entity, RepositoryInterface $table) : void
+    protected function attachFiles(EntityInterface $entity, Table $table) : void
     {
-        /** @var \Cake\Datasource\RepositoryInterface&\Cake\ORM\Table */
-        $table = $table;
-
         $primaryKey = $table->getPrimaryKey();
         if (! is_string($primaryKey)) {
             throw new RuntimeException('Primary key must be a string');
@@ -97,14 +96,11 @@ abstract class BaseActionListener implements EventListenerInterface
     /**
      * Method responsible for retrieving current table's file associations.
      *
-     * @param  \Cake\Datasource\RepositoryInterface $table Table instance
+     * @param \Cake\ORM\Table $table Table instance
      * @return \Cake\ORM\Association[]
      */
-    protected function getFileAssociations(RepositoryInterface $table) : array
+    protected function getFileAssociations(Table $table) : array
     {
-        /** @var \Cake\Datasource\RepositoryInterface&\Cake\ORM\Table */
-        $table = $table;
-
         $result = [];
         foreach ($table->associations() as $association) {
             if (FileUpload::FILE_STORAGE_TABLE_NAME !== $association->className()) {
@@ -128,34 +124,6 @@ abstract class BaseActionListener implements EventListenerInterface
     protected function resourceToString(EntityInterface $entity) : void
     {
         foreach (array_keys($entity->toArray()) as $field) {
-            /**
-             * handle belongsTo associated data
-             *
-             * @deprecated since qobo/cakephp-csv-migrations v12.1.0 - We currently do not support inclusion of
-             * associated data on API responses. The only exception being associated files, but this is handled
-             * within the field-handler factory call below.
-             */
-            if ($entity->get($field) instanceof EntityInterface) {
-                trigger_error(sprintf('Associated data in API responses are not supported.'), E_USER_DEPRECATED);
-                $this->resourceToString($entity->{$field});
-            }
-
-            /**
-             * handle hasMany associated data
-             *
-             * @deprecated since qobo/cakephp-csv-migrations v12.1.0 - We currently do not support inclusion of
-             * associated data on API responses. The only exception being associated files, but this is handled
-             * within the field-handler factory call below.
-             */
-            if (is_array($entity->get($field)) && ! empty($entity->get($field))) {
-                trigger_error(sprintf('Associated data in API responses are not supported.'), E_USER_DEPRECATED);
-                foreach ($entity->get($field) as $associatedEntity) {
-                    if ($associatedEntity instanceof EntityInterface) {
-                        $this->resourceToString($associatedEntity);
-                    }
-                }
-            }
-
             if (is_resource($entity->get($field))) {
                 $entity->set($field, stream_get_contents($entity->get($field)));
             }
@@ -166,15 +134,12 @@ abstract class BaseActionListener implements EventListenerInterface
      * Method that renders Entity values through Field Handler Factory.
      *
      * @param \Cake\Datasource\EntityInterface $entity Entity instance
-     * @param \Cake\Datasource\RepositoryInterface $table Table instance
+     * @param \Cake\ORM\Table $table Table instance
      * @param string[] $fields Fields to prettify
      * @return void
      */
-    protected function prettify(EntityInterface $entity, RepositoryInterface $table, array $fields = []) : void
+    protected function prettify(EntityInterface $entity, Table $table, array $fields = []) : void
     {
-        /** @var \Cake\Datasource\RepositoryInterface&\Cake\ORM\Table */
-        $table = $table;
-
         $fields = empty($fields) ? array_keys($entity->toArray()): $fields;
 
         /**
@@ -183,41 +148,8 @@ abstract class BaseActionListener implements EventListenerInterface
         $factory = $this->getFieldHandlerFactory();
 
         foreach ($fields as $field) {
-            /**
-             * handle belongsTo associated data
-             *
-             * @deprecated since qobo/cakephp-csv-migrations v12.1.0 - We currently do not support inclusion of
-             * associated data on API responses. The only exception being associated files, but this is handled
-             * within the field-handler factory call below.
-             */
-            if ($entity->get($field) instanceof EntityInterface) {
-                trigger_error(sprintf('Associated data in API responses are not supported.'), E_USER_DEPRECATED);
-
-                $tableName = $table->getAssociation($entity->get($field)->getSource())->getTarget();
-                $this->prettify($entity->{$field}, $tableName);
-            }
-
-            /**
-             * handle hasMany associated data
-             *
-             * @deprecated since qobo/cakephp-csv-migrations v12.1.0 - We currently do not support inclusion of
-             * associated data on API responses. The only exception being associated files, but this is handled
-             * within the field-handler factory call below.
-             */
-            if (is_array($entity->get($field)) && ! empty($entity->get($field))) {
-                trigger_error(sprintf('Associated data in API responses are not supported.'), E_USER_DEPRECATED);
-
-                foreach ($entity->get($field) as $associatedEntity) {
-                    if (! $associatedEntity instanceof EntityInterface) {
-                        continue;
-                    }
-
-                    list(, $associationName) = pluginSplit($associatedEntity->getSource());
-                    $tableName = $table->getAssociation($associationName)->getTarget();
-                    $this->prettify($associatedEntity, $tableName);
-                }
-            }
-
+            // Fix alias set by pagination hask
+            $table->setAlias(Inflector::camelize($table->getTable()));
             $entity->set($field, $factory->renderValue($table, $field, $entity->get($field), ['entity' => $entity]));
         }
     }
@@ -231,17 +163,11 @@ abstract class BaseActionListener implements EventListenerInterface
      * @link https://github.com/cakephp/cakephp/issues/7324
      *
      * @param \Psr\Http\Message\ServerRequestInterface $request Request instance
-     * @param \Cake\Datasource\RepositoryInterface $table Table instance
+     * @param \Cake\ORM\Table $table Table instance
      * @return mixed[]
      */
-    protected function getOrderClause(ServerRequestInterface $request, RepositoryInterface $table) : array
+    protected function getOrderClause(ServerRequestInterface $request, Table $table) : array
     {
-        /** @var \Psr\Http\Message\ServerRequestInterface&\Cake\Http\ServerRequest */
-        $request = $request;
-
-        /** @var \Cake\Datasource\RepositoryInterface&\Cake\ORM\Table */
-        $table = $table;
-
         $sortParam = Hash::get($request->getQueryParams(), 'sort', '');
         $directionParam = Hash::get($request->getQueryParams(), 'direction', 'ASC');
         $directionParam = is_string($directionParam) ? $directionParam : 'ASC';
@@ -262,15 +188,12 @@ abstract class BaseActionListener implements EventListenerInterface
      * Method that retrieves and attaches menu elements to API response.
      *
      * @param \Cake\Datasource\EntityInterface $entity Entity instance
-     * @param \Cake\Datasource\RepositoryInterface $table Table instance
+     * @param \Cake\ORM\Table $table Table instance
      * @param mixed[] $user User info
      * @return void
      */
-    protected function attachMenu(EntityInterface $entity, RepositoryInterface $table, array $user) : void
+    protected function attachMenu(EntityInterface $entity, Table $table, array $user) : void
     {
-        /** @var \Cake\Datasource\RepositoryInterface&\Cake\ORM\Table */
-        $table = $table;
-
         $data = [
             'plugin' => false,
             'controller' => $this->getControllerName($table),
@@ -286,16 +209,13 @@ abstract class BaseActionListener implements EventListenerInterface
      * Method that retrieves and attaches menu elements to API response.
      *
      * @param \Cake\Datasource\EntityInterface $entity Entity instance
-     * @param \Cake\Datasource\RepositoryInterface $table Table instance
+     * @param \Cake\ORM\Table $table Table instance
      * @param mixed[] $user User info
      * @param mixed[] $data for extra fields like origin Id
      * @return void
      */
-    protected function attachRelatedMenu(EntityInterface $entity, RepositoryInterface $table, array $user, array $data) : void
+    protected function attachRelatedMenu(EntityInterface $entity, Table $table, array $user, array $data) : void
     {
-        /** @var \Cake\Datasource\RepositoryInterface&\Cake\ORM\Table */
-        $table = $table;
-
         $data += [
             'plugin' => false,
             'controller' => $this->getControllerName($table),
@@ -344,6 +264,8 @@ abstract class BaseActionListener implements EventListenerInterface
     private function getFileUpload(RepositoryInterface $table) : FileUpload
     {
         if (null === $this->fileUpload) {
+            Assert::isInstanceOf($table, Table::class);
+
             $this->fileUpload = new FileUpload($table);
         }
 

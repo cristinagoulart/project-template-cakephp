@@ -55,19 +55,6 @@ class ScheduledJobsTableTest extends TestCase
         parent::tearDown();
     }
 
-    /**
-     * Test getActiveJobs method
-     *
-     * @return void
-     */
-    public function testGetActiveJobs(): void
-    {
-        $result = $this->ScheduledJobsTable->getActiveJobs();
-
-        $this->assertNotEmpty($result);
-        $this->assertInstanceOf('\Cake\ORM\ResultSet', $result);
-    }
-
     public function testGetJobs(): void
     {
         $result = $this->ScheduledJobsTable->getJobs(3);

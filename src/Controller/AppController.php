@@ -180,7 +180,7 @@ class AppController extends Controller
     public function index()
     {
         $entity = $this->getSystemSearch();
-        $searchData = json_decode($entity->get('content'), true);
+        $searchData = $entity->get('content');
 
         // return json response and skip any further processing.
         if ($this->request->is('ajax') && $this->request->accepts('application/json')) {
@@ -214,7 +214,7 @@ class AppController extends Controller
      *
      * @return \Cake\Datasource\EntityInterface
      */
-    private function getSystemSearch(): EntityInterface
+    protected function getSystemSearch(): EntityInterface
     {
         $table = TableRegistry::getTableLocator()->get('Search.SavedSearches');
 
@@ -236,7 +236,7 @@ class AppController extends Controller
      *
      * @return \Cake\Datasource\EntityInterface
      */
-    private function createSystemSearch(): EntityInterface
+    protected function createSystemSearch(): EntityInterface
     {
         $table = TableRegistry::getTableLocator()->get('Search.SavedSearches');
         /**
@@ -343,7 +343,7 @@ class AppController extends Controller
         Configure::write('API.token', JWT::encode(
             [
                 'sub' => $this->Auth->user('id'),
-                'exp' => time() + 604800
+                'exp' => time() + (int)Configure::read('API.expireTime'),
             ],
             Security::getSalt()
         ));

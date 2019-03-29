@@ -267,17 +267,12 @@ Plugin::load('AuditStash');
 Plugin::load('DatabaseLog', ['routes' => true]);
 Plugin::load('Search', ['bootstrap' => true, 'routes' => true]);
 Plugin::load('Burzum/FileStorage');
-if (Configure::read('Swagger.crawl') && Configure::read('API.auth')) {
+if (Configure::read('Swagger.crawl')) {
     Plugin::load('Alt3/Swagger', ['bootstrap' => true, 'routes' => true]);
 }
 Plugin::load('AdminLTE', ['bootstrap' => true, 'routes' => true]);
-Configure::load('admin_lte', 'default');
-/*
- * Only load JwtAuth plugin if API authentication is enabled
- */
-if (Configure::read('API.auth')) {
-    Plugin::load('ADmad/JwtAuth');
-}
+
+Plugin::load('ADmad/JwtAuth');
 
 // @link https://github.com/burzum/cakephp-file-storage/blob/master/docs/Documentation/Included-Event-Listeners.md
 EventManager::instance()->on(new LocalListener([
@@ -327,6 +322,20 @@ call_user_func(function () {
         EventManager::instance()->on(new $eventClassName);
     }
 });
+
+/*
+ * Load AdminLTE theme settings
+ */
+Configure::load('admin_lte', 'default');
+
+/*
+ * Load system information settings
+ */
+Configure::load('system_info', 'default');
+
+if (!is_null(env('API_AUTHENTICATION')) && (bool)env('API_AUTHENTICATION') === false) {
+    Log::write('critical', "Non-authenticated API requests are deprecated");
+}
 
 /*
  * Feature Factory initialization

@@ -20,7 +20,7 @@
             return;
         }
 
-        storage.write(prefix + navId, $(e.target).closest('li').index());
+        storage.write(prefix + navId, $(e.target).attr('href'));
     });
 
     // load active tab for each navtab
@@ -35,7 +35,7 @@
             return;
         }
 
-        $('#' + navId + ' li:eq(' + storage.read(prefix + navId) + ') a').tab('show');
+        $('#' + navId + ' li a[href="' + storage.read(prefix + navId) + '"]').trigger('click');
     });
 
     /**
@@ -75,6 +75,147 @@
         });
     }
 
+    $(window).resize(function () {
+        responsiveTabs()
+    });
+
+    responsiveTabs();
+
+    /**
+     * Get any responsive-tabs and check for overflow list-items in order to
+     * a new dropdown menu with the ones that are overflowing the list
+     */
+    function responsiveTabs()
+    {
+        $('.responsive-tabs').each(function () {
+            var parentUl = $(this)
+            var ulWidth = parentUl.width() - 45;
+
+            var hideTabs = hideListItems(parentUl, ulWidth)
+
+            //Check if the hideTabs is false
+            if (!hideTabs) {
+                showHiddenListItems(parentUl, ulWidth)
+            }
+
+            // Check if the dropdown-menu has items else delete it
+            if (!parentUl.find('.dropdown-menu li').length) {
+                parentUl.find('.dropdown').remove();
+            }
+        })
+    }
+
+    /**
+     * Hide list items froma a navigation menu that has too many
+     *
+     * @param {object} parentUl The parent ul
+     * @param {float} ulWidth The width
+     * @return {boolean}
+     */
+    function hideListItems(parentUl, ulWidth)
+    {
+        var hideTabs = false;
+        //Get the total width of all list items
+        var liTotalWidth = totalLiWidth(parentUl);
+
+        //Get the list items in reverse order
+        $(parentUl.find('li:not(.dropdown-li):not(.dropdown)').get().reverse()).each(function () {
+            //list item width including the margins size
+            var liWidth = $(this).width() + parseInt($(this).css("margin-left")) + parseInt($(this).css("margin-right"));
+
+            //Checks if the list item total width is larger than the ul width
+            if (liTotalWidth > ulWidth) {
+                hideTabs = true;
+                //Checks if the dropdown already exist else create it
+                if (!parentUl.find('.dropdown').length) {
+                    var dropdownString = '<li class="dropdown pull-right" style="width:45px">' +
+                            '<a class="dropdown-toggle" data-toggle="dropdown" href="#" aria-expanded="true">' +
+                                '<i class="fa fa-bars"></i>' +
+                            '</a>' +
+                            '<ul class="dropdown-menu pull-right"></ul>' +
+                        '</li>';
+                    parentUl.append(dropdownString)
+                }
+                //Move the item under the dropdown list
+                parentUl.find('.dropdown-menu').prepend($(this).addClass('dropdown-li'));
+                if ($(this).hasClass('active')) {
+                    parentUl.find('.dropdown').addClass('active')
+                }
+
+                liTotalWidth = liTotalWidth - liWidth;
+            } else {
+                return false;
+            }
+        });
+
+        return hideTabs;
+    }
+
+    /**
+     * Show hidden list items
+     *
+     * @param {object} parentUl The parent ul
+     * @param {float} ulWidth The width
+     * @param {object} obj The object
+     */
+    function showHiddenListItems(parentUl, ulWidth)
+    {
+        //Get the liTotalWidth again
+        var liTotalWidth = totalLiWidth(parentUl);
+
+        //Get all the list items from the dropdown
+        parentUl.find('.dropdown-menu li').each(function () {
+            liTotalWidth = liTotalWidth + realListItemWidth($(this));
+            if (liTotalWidth < ulWidth) {
+                parentUl.find('.dropdown').before($(this).removeClass('dropdown-li'))
+            } else {
+                return false;
+            }
+        });
+    }
+
+    /**
+     * Get total list items width
+     *
+     * @param {object} parentUl The parent ul
+     * @return {float} Return the total width
+     */
+    function totalLiWidth(parentUl)
+    {
+        // var liTotalWidth = 80;
+        var liTotalWidth = 0;
+        parentUl.find('li:not(.dropdown-li)').each(function () {
+            var marginLeft = parseInt($(this).css("margin-left"))
+            var marginRight = parseInt($(this).css("margin-right"))
+            liTotalWidth = liTotalWidth + $(this).width() + marginLeft + marginRight;
+        })
+
+        return liTotalWidth;
+    }
+
+    /**
+     * Get Real width of a hidden list item, in order to achieve that we have to
+     * create it with hidden visibility
+     *
+     * @param {object} obj The object
+     * @return {float} Return the width of the list item
+     */
+    function realListItemWidth(obj)
+    {
+        //Check if the hidden nav ul already exist
+        if (!$('#hidden-nav-ul').length) {
+            var ulString = $('<ul id="hidden-nav-ul" class="nav nav-tabs" role="tablist" stule="visibility:hidden"><ul>');
+            $('body').append(ulString)
+        }
+
+        var clone = obj.clone();
+        clone.css("visibility","hidden");
+        $('#hidden-nav-ul').append(clone);
+        var width = clone.outerWidth();
+        clone.remove();
+
+        return width;
+    }
 })(jQuery);
 
 

@@ -9,6 +9,9 @@ use Cake\Core\Configure;
 use Cake\Event\Event;
 use Cake\Http\Exception\ForbiddenException;
 use Cake\Http\Exception\NotFoundException;
+use Cake\ORM\Table;
+use Crud\Action\AddAction;
+use Crud\Action\EditAction;
 use Crud\Controller\ControllerTrait;
 use CsvMigrations\Controller\Traits\PanelsTrait;
 use CsvMigrations\Utility\FileUpload;
@@ -16,6 +19,7 @@ use Qobo\Utils\ModuleConfig\ConfigType;
 use Qobo\Utils\ModuleConfig\ModuleConfig;
 use Qobo\Utils\Utility\User;
 use RolesCapabilities\CapabilityTrait;
+use Webmozart\Assert\Assert;
 
 /**
  * @property \Cake\Http\ServerRequest $request
@@ -37,7 +41,8 @@ class AppController extends Controller
                 'Crud.Edit',
                 'Crud.Delete',
                 'Crud.Lookup',
-                'related' => ['className' => '\App\Crud\Action\RelatedAction']
+                'related' => ['className' => '\App\Crud\Action\RelatedAction'],
+                'schema' => ['className' => '\App\Crud\Action\SchemaAction']
             ],
             'listeners' => [
                 'Crud.Api',
@@ -96,9 +101,7 @@ class AppController extends Controller
             throw new NotFoundException();
         }
 
-        if (Configure::read('API.auth')) {
-            $this->enableAuthorization();
-        }
+        $this->enableAuthorization();
     }
 
     /**
@@ -135,16 +138,6 @@ class AppController extends Controller
 
         // set current user for access to all MVC layers
         User::setCurrentUser((array)$this->Auth->user());
-
-        // If API authentication is disabled, allow access to all actions. This is useful when using some
-        // other kind of access control check.
-        // @todo currently, even if API authentication is disabled, we are always generating an API token
-        // within the Application for internal system use. That way we populate the Auth->user() information
-        // which allows other access control systems to work as expected. This logic can be removed if API
-        // authentication is always forced.
-        if (!Configure::read('API.auth')) {
-            $this->Auth->allow();
-        }
     }
 
     /**
@@ -279,8 +272,8 @@ class AppController extends Controller
      */
     public function add()
     {
-        /** @var \Crud\Action\AddAction */
         $action = $this->Crud->action();
+        Assert::isInstanceOf($action, AddAction::class);
         $action->saveOptions(['lookup' => true]);
 
         $this->Crud->on('beforeSave', function (Event $event) {
@@ -304,8 +297,8 @@ class AppController extends Controller
                 return;
             }
 
-            /** @var \Cake\Datasource\RepositoryInterface&\Cake\ORM\Table */
             $table = $this->loadModel();
+            Assert::isInstanceOf($table, Table::class);
 
             // handle file uploads if found in the request data
             $fileUpload = new FileUpload($table);
@@ -330,8 +323,8 @@ class AppController extends Controller
      */
     public function edit()
     {
-        /** @var \Crud\Action\EditAction */
         $action = $this->Crud->action();
+        Assert::isInstanceOf($action, EditAction::class);
         $action->saveOptions(['lookup' => true]);
 
         $this->Crud->on('beforeFind', function (Event $event) {
@@ -377,8 +370,8 @@ class AppController extends Controller
                 return;
             }
 
-            /** @var \Cake\Datasource\RepositoryInterface&\Cake\ORM\Table */
             $table = $this->loadModel();
+            Assert::isInstanceOf($table, Table::class);
 
             // handle file uploads if found in the request data
             $fileUpload = new FileUpload($table);
@@ -410,7 +403,10 @@ class AppController extends Controller
     {
         $this->request->allowMethod(['post']);
 
-        $fileUpload = new FileUpload($this->loadModel());
+        $table = $this->loadModel();
+        Assert::isInstanceOf($table, Table::class);
+
+        $fileUpload = new FileUpload($table);
 
         $result = [
             'success' => true,

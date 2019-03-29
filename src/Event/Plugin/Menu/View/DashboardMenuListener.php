@@ -4,14 +4,18 @@ namespace App\Event\Plugin\Menu\View;
 
 use App\Menu\MenuName;
 use Cake\Datasource\EntityInterface;
+use Cake\Datasource\QueryInterface;
 use Cake\Event\Event;
 use Cake\Event\EventListenerInterface;
+use Cake\ORM\Table;
 use Cake\ORM\TableRegistry;
 use Cake\Routing\Router;
 use Menu\Event\EventName as MenuEventName;
 use Menu\MenuBuilder\MenuInterface;
 use Menu\MenuBuilder\MenuItemContainerInterface;
 use Menu\MenuBuilder\MenuItemFactory;
+use Search\Model\Table\DashboardsTable;
+use Webmozart\Assert\Assert;
 
 class DashboardMenuListener implements EventListenerInterface
 {
@@ -113,16 +117,17 @@ class DashboardMenuListener implements EventListenerInterface
      */
     private function addDashboardItemsFromTable(MenuItemContainerInterface $container, array $user, int $startAt): void
     {
-        /** @var \Search\Model\Table\DashboardsTable $table */
         $table = TableRegistry::get('Search.Dashboards');
-        /** @var \Cake\Datasource\QueryInterface&\Cake\ORM\Query $query */
+        Assert::isInstanceOf($table, DashboardsTable::class);
+
         $query = $table->getUserDashboards($user);
+        Assert::isInstanceOf($query, QueryInterface::class);
 
         /**
          * @var int $i
          * @var \Cake\Datasource\EntityInterface $entity
          */
-        foreach ($query as $i => $entity) {
+        foreach ($query->all() as $i => $entity) {
             $entityItem = MenuItemFactory::createMenuItem([
                 'label' => $entity->get('name'),
                 'url' => '/search/dashboards/view/' . $entity->get('id'),
