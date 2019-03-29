@@ -3,7 +3,7 @@ namespace App\Crud\Action;
 
 use App\Search\Manager as SearchManager;
 use Cake\Datasource\EntityInterface;
-use Cake\Datasource\RepositoryInterface;
+use Cake\ORM\Table;
 use Cake\Routing\Router;
 use Cake\Utility\Hash;
 use Crud\Action\BaseAction;
@@ -55,7 +55,7 @@ class SearchAction extends BaseAction
     {
         list($finder, ) = $this->_extractFinder();
         $options = SearchManager::getOptionsFromRequest(
-            $this->_request()->getData(),
+            (array)$this->_request()->getData(),
             $this->_request()->getQueryParams()
         );
 
@@ -64,6 +64,10 @@ class SearchAction extends BaseAction
         $query = $this->_table()->find($finder, $options);
 
         $subject = $this->_subject(['success' => true, 'query' => $query]);
+
+        if (! property_exists($subject, 'query')) {
+            throw new \InvalidArgumentException('"query" property is required');
+        }
 
         $this->_trigger('beforePaginate', $subject);
         $items = $this->_controller()->paginate($subject->query, [
@@ -90,10 +94,10 @@ class SearchAction extends BaseAction
      * Method that formats search result-set entity.
      *
      * @param \Cake\Datasource\EntityInterface $entity Entity instance
-     * @param \Cake\Datasource\RepositoryInterface|string $table Table instance
+     * @param \Cake\ORM\Table $table Table instance
      * @return mixed[]
      */
-    private function formatEntity(EntityInterface $entity, RepositoryInterface $table) : array
+    private function formatEntity(EntityInterface $entity, Table $table) : array
     {
         if (null === $this->factory) {
             $this->factory = new FieldHandlerFactory();

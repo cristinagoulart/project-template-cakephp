@@ -17,6 +17,7 @@ namespace App\Controller;
 use App\Controller\SearchTrait;
 use App\Event\Plugin\Search\Model\SearchableFieldsListener;
 use App\Feature\Factory as FeatureFactory;
+use App\Utility\Search;
 use AuditStash\Meta\RequestMetadata;
 use Cake\Controller\Controller;
 use Cake\Core\Configure;
@@ -34,8 +35,7 @@ use Qobo\Utils\ModuleConfig\ModuleConfig;
 use Qobo\Utils\Utility\User;
 use RolesCapabilities\CapabilityTrait;
 use RuntimeException;
-use Search\Utility as SearchUtility;
-use Search\Utility\Search;
+use Webmozart\Assert\Assert;
 
 /**
  * Application Controller
@@ -194,8 +194,11 @@ class AppController extends Controller
         $table = TableRegistry::getTableLocator()->get('Search.SavedSearches');
 
         $entity = $table->find()
+            ->enableHydration(true)
             ->where(['SavedSearches.model' => $this->name, 'SavedSearches.system' => true])
             ->first();
+
+        Assert::nullOrIsInstanceOf($entity, EntityInterface::class);
 
         if (null !== $entity) {
             return $entity;
@@ -214,23 +217,30 @@ class AppController extends Controller
     protected function createSystemSearch(): EntityInterface
     {
         $table = TableRegistry::getTableLocator()->get('Search.SavedSearches');
-        /**
-         * @var \Cake\Datasource\EntityInterface $query
-         */
-        $query = TableRegistry::getTableLocator()->get('CakeDC/Users.Users')
+
+        $user = TableRegistry::getTableLocator()->get('CakeDC/Users.Users')
             ->find()
             ->where(['is_superuser' => true])
             ->enableHydration(true)
             ->firstOrFail();
 
-        $user = $query->toArray();
+        Assert::isInstanceOf($user, EntityInterface::class);
 
-        $id = (new Search($this->loadModel(), $user))->create(['system' => true]);
+        $displayFields = Search::getDisplayFields($this->loadModel()->getRegistryAlias());
 
-        $entity = $table->get($id);
-        $entity = $table->patchEntity($entity, [
+        $entity = $table->newEntity([
             'name' => sprintf('Default %s search', Inflector::humanize(Inflector::underscore($this->name))),
-            'system' => true
+            'model' => $this->loadModel()->getRegistryAlias(),
+            'system' => true,
+            'user_id' => $user->get('id'),
+            'content' => [
+                'saved' => [
+                    'display_columns' => $displayFields,
+                    'sort_by_field' => current($displayFields),
+                    'sort_by_order' => Search::DEFAULT_SORT_BY_ORDER,
+                    'aggregator' => Search::DEFAULT_AGGREGATOR
+                ]
+            ]
         ]);
 
         if (! $table->save($entity)) {

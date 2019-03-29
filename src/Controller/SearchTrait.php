@@ -3,8 +3,10 @@ namespace App\Controller;
 
 use Cake\Core\Configure;
 use Cake\Http\Exception\BadRequestException;
+use Cake\ORM\Table;
 use Cake\Utility\Hash;
 use Search\Utility\Export;
+use Webmozart\Assert\Assert;
 
 trait SearchTrait
 {
@@ -17,6 +19,7 @@ trait SearchTrait
     public function search(string $id = '')
     {
         $table = $this->loadModel();
+        Assert::isInstanceOf($table, Table::class);
 
         if (! $table->hasBehavior('Searchable')) {
             throw new BadRequestException(sprintf('Search is not available for %s', $table->getAlias()));

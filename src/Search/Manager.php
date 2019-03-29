@@ -35,7 +35,14 @@ final class Manager
         'ends_with' => EndsWith::class
     ];
 
-    public static function getOptionsFromRequest(array $data, array $params)
+    /**
+     * Retrieve search options from HTTP request.
+     *
+     * @param mixed[] $data Request data
+     * @param mixed[] $params Request params
+     * @return mixed[]
+     */
+    public static function getOptionsFromRequest(array $data, array $params) : array
     {
         $result = [];
 
@@ -45,10 +52,24 @@ final class Manager
                     throw new \RuntimeException(sprintf('Unsupported filter provided: %s', $criteria['operator']));
                 }
 
+                switch (gettype($criteria['value'])) {
+                    case 'string':
+                        $value = self::applyMagicValue($criteria['value']);
+                        break;
+
+                    case 'array':
+                        $value = self::applyMagicValues($criteria['value']);
+                        break;
+
+                    default:
+                        $value = $criteria['value'];
+                        break;
+                }
+
                 $result['data'][] = [
                     'field' => $field,
                     'operator' => self::FILTER_MAP[$criteria['operator']],
-                    'value' => self::applyMagicValue($criteria['value'])
+                    'value' => $value
                 ];
             }
         }
@@ -74,23 +95,27 @@ final class Manager
     /**
      * Magic value handler.
      *
-     * @param mixed $value Field value
-     * @return mixed
+     * @param string $value Field value
+     * @return string
      */
-    private static function applyMagicValue($value)
+    private static function applyMagicValue(string $value) : string
     {
-        switch (gettype($value)) {
-            case 'string':
-                $value = (new MagicValue($value, User::getCurrentUser()))->get();
-                break;
+        return (new MagicValue($value, User::getCurrentUser()))->get();
+    }
 
-            case 'array':
-                foreach ($value as $key => $val) {
-                    $value[$key] = (new MagicValue($val, User::getCurrentUser()))->get();
-                }
-                break;
+    /**
+     * Magic values handler.
+     *
+     * @param string[] $values Field values
+     * @return string[]
+     */
+    private static function applyMagicValues(array $values) : array
+    {
+        $result = [];
+        foreach ($values as $value) {
+            $result[] = (new MagicValue($value, User::getCurrentUser()))->get();
         }
 
-        return $value;
+        return $result;
     }
 }

@@ -57,9 +57,9 @@ final class MagicValue
     /**
      * Magic value getter.
      *
-     * @return mixed
+     * @return string
      */
-    public function get()
+    public function get() : string
     {
         $value = str_replace(static::WRAPPER, '', $this->value);
 
