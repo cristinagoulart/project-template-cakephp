@@ -8,17 +8,15 @@ $this->Html->css('/dist/style', ['block' => 'css']);
 
 $tableName = $this->name . ($this->plugin ? '.' . $this->plugin : '');
 $table = TableRegistry::get($tableName);
-$primaryKey = $table->aliasField($table->getPrimaryKey());
-$searchId = $this->request->getParam('pass.0', '');
 ?>
 <section class="content-header"></section>
 <section class="content">
     <search
         :display-fields='<?= json_encode($this->Search->getDisplayFields($tableName)) ?>'
         filters='<?= json_encode($this->Search->getFilters($tableName)) ?>'
-        id="<?= $searchId ?>"
+        id="<?= $this->request->getParam('pass.0', '') ?>"
         model="<?= $this->name ?>"
-        primary-key="<?= $primaryKey ?>"
+        primary-key="<?= $table->aliasField($table->getPrimaryKey()) ?>"
         user-id="<?= User::getCurrentUser()['id'] ?>"
     ></search>
 </section>
