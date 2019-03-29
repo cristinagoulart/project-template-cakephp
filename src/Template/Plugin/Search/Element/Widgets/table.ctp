@@ -45,7 +45,7 @@ if (! empty($charts)) {
     echo $this->Html->scriptBlock('
         var chartsData = chartsData || [];
         chartsData = chartsData.concat(' . json_encode($charts) . ');
-    ', ['block' => 'scriptBottom']);
+    ', ['block' => 'script']);
 
     echo $this->Html->script(
         [
