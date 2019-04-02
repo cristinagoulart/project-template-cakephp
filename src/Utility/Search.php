@@ -328,8 +328,9 @@ final class Search
             }
 
             foreach ($searchOptions as $searchFieldName => $searchFieldOptions) {
-                $searchFieldOptions['field'] = $table->aliasField($searchFieldName);
-                $result[$table->aliasField($searchFieldName)] = $searchFieldOptions;
+                $searchFieldName = $table->aliasField((string)$searchFieldName);
+                $searchFieldOptions['field'] = $searchFieldName;
+                $result[$searchFieldName] = $searchFieldOptions;
             }
         }
 
