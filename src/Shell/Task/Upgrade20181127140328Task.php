@@ -34,5 +34,7 @@ class Upgrade20181127140328Task extends Shell
             'start_date' => new Time('02:00'),
             'options' => 'gc',
         ]);
+
+        return true;
     }
 }

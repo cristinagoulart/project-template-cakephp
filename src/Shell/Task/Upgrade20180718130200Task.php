@@ -44,6 +44,8 @@ class Upgrade20180718130200Task extends Shell
         foreach ($this->getTables() as $table) {
             $this->processTable($table);
         }
+
+        return true;
     }
 
     /**

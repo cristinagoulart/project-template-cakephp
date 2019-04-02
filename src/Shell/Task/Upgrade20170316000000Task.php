@@ -80,5 +80,7 @@ class Upgrade20170316000000Task extends Shell
                 }
             }
         }
+
+        return true;
     }
 }

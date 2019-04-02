@@ -51,6 +51,8 @@ class Upgrade20180907123600Task extends Shell
         $this->createDatabaseLists($lists);
 
         $this->success(sprintf('%s completed.', $this->getOptionParser()->getDescription()));
+
+        return true;
     }
 
     /**

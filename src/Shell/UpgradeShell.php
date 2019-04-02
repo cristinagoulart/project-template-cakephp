@@ -55,6 +55,8 @@ class UpgradeShell extends Shell
             $this->info(sprintf('Running task %s', $task));
             $this->{$task}->main();
         }
+
+        return true;
     }
 
     /**

@@ -38,5 +38,7 @@ class Upgrade20180511135300Task extends Shell
             // every 5 minutes
             'recurrence' => 'FREQ=MINUTELY;INTERVAL=5'
         ]);
+
+        return true;
     }
 }

@@ -78,5 +78,7 @@ class Upgrade20180726084300Task extends Shell
                 $this->warn($entity->getErrors());
             }
         }
+
+        return true;
     }
 }

@@ -94,5 +94,7 @@ class EmailShell extends Shell
         $this->hr();
         $this->out("Headers:", 1, Shell::VERBOSE);
         $this->out($result['headers'], 1, Shell::VERBOSE);
+
+        return true;
     }
 }

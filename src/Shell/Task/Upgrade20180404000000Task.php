@@ -63,6 +63,8 @@ class Upgrade20180404000000Task extends Shell
         }
 
         $this->success(sprintf('%s completed.', $this->getOptionParser()->getDescription()));
+
+        return true;
     }
 
     /**
