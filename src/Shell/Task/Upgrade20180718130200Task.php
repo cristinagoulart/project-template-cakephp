@@ -33,12 +33,12 @@ class Upgrade20180718130200Task extends Shell
     /**
      * Main method.
      *
-     * @return void
+     * @return int|bool|null
      */
     public function main()
     {
         if (! $this->needToRun()) {
-            return;
+            return false;
         }
 
         foreach ($this->getTables() as $table) {

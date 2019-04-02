@@ -281,10 +281,10 @@ class AppController extends Controller
         $this->viewBuilder()->setTheme('AdminLTE');
         $this->viewBuilder()->setLayout('adminlte');
 
-        $title = Inflector::humanize(Inflector::underscore($this->name));
-        $mc = new ModuleConfig(ConfigType::MODULE(), $this->name);
-        $config = $mc->parse();
-        $title = ! empty($config->table->alias) ? $config->table->alias : $title;
+        $config = (new ModuleConfig(ConfigType::MODULE(), $this->name))->parseToArray();
+        $title = empty($config['table']['alias']) ?
+            Inflector::humanize(Inflector::underscore($this->name)) :
+            $config['table']['alias'];
 
         // overwrite theme title before setting the theme
         // NOTE: we set controller specific title, to work around requestAction() calls.

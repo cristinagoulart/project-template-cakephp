@@ -95,7 +95,7 @@ class SearchableFieldsListener implements EventListenerInterface
 
             $options = [];
             foreach ($searchOptions as $k => $v) {
-                $options[$table->aliasField($k)] = $v;
+                $options[$table->aliasField((string)$k)] = $v;
             }
             $result = array_merge($result, $options);
         }

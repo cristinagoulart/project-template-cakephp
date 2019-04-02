@@ -15,6 +15,8 @@ use Qobo\Utils\ModuleConfig\ModuleConfig;
 
 /**
  * Users Model
+ *
+ * @method mixed changePassword(\Cake\Datasource\EntityInterface $user)
  */
 class UsersTable extends Table
 {

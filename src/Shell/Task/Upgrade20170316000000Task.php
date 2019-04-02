@@ -44,7 +44,7 @@ class Upgrade20170316000000Task extends Shell
     /**
      *  Run update process
      *
-     * @return void
+     * @return int|bool|null
      */
     public function main()
     {
