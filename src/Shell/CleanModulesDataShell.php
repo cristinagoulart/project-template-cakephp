@@ -92,6 +92,8 @@ class CleanModulesDataShell extends Shell
 
         // unlock file
         $lock->unlock();
+
+        return true;
     }
 
     /**
