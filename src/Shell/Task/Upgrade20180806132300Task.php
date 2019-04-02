@@ -22,7 +22,7 @@ class Upgrade20180806132300Task extends Shell
     /**
      * main() method
      *
-     * @return void
+     * @return int|bool|null
      */
     public function main()
     {

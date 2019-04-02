@@ -61,7 +61,7 @@ class EmailShell extends Shell
     /**
      * Main shell method
      *
-     * @return void
+     * @return bool|int|null
      */
     public function main()
     {

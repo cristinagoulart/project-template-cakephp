@@ -47,7 +47,7 @@ class UpgradeShell extends Shell
     /**
      * Shell entry point
      *
-     * @return void
+     * @return int|bool|null
      */
     public function main()
     {

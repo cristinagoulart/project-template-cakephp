@@ -14,7 +14,7 @@ class SystemController extends AppController
     {
         $tabs = Configure::read('SystemInfo.tabs');
 
-        $data = $this->request->getData();
+        $data = (array)$this->request->getData();
         $content = '';
         if (!empty($data['tab']) && in_array($data['tab'], array_keys($tabs))) {
             $content = $data['tab'];

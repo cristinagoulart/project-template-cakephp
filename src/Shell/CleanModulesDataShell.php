@@ -36,7 +36,7 @@ class CleanModulesDataShell extends Shell
     /**
      * Main method for shell execution
      *
-     * @return void
+     * @return bool|int|null
      */
     public function main()
     {

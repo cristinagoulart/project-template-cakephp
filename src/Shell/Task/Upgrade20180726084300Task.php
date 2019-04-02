@@ -30,7 +30,7 @@ class Upgrade20180726084300Task extends Shell
     /**
      * main() method
      *
-     * @return void
+     * @return int|bool|null
      */
     public function main()
     {
@@ -48,7 +48,7 @@ class Upgrade20180726084300Task extends Shell
         if (!$query->count()) {
             $this->warn("No DB stored profile images found. Exiting...");
 
-            return;
+            return false;
         }
 
         $avatarService = new AvatarService();
