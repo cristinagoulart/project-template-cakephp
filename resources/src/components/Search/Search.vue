@@ -55,7 +55,7 @@
                             <div class="row">
                                     <div class="col-md-5 col-lg-4">
                                         <label for="available-columns">Available Columns</label>
-                                        <select v-model="selectedColumns.available" class="form-control input-sm" multiple size="8">
+                                        <select v-model="selectedColumns.available" class="form-control input-sm" multiple size="8" :disabled="'' !== groupBy">
                                             <option v-for="filter in filtersList" v-if="-1 === displayColumns.indexOf(filter.field)" :value="filter.field">
                                                 {{ filter.label }}
                                                 <template v-if="filter.group !== modelName">({{ filter.group }})</template>
@@ -64,16 +64,16 @@
                                     </div>
                                     <div class="col-md-2">
                                         <label>&nbsp;</label>
-                                        <button type="button" @click="displayColumnsUpdated('add')" class="btn btn-block btn-xs">
+                                        <button type="button" @click="displayColumnsUpdated('add')" class="btn btn-block btn-xs" :disabled="'' !== groupBy">
                                             <i class="glyphicon glyphicon-chevron-right"></i>
                                         </button>
-                                        <button type="button" @click="displayColumnsUpdated('remove')" class="btn btn-block btn-xs">
+                                        <button type="button" @click="displayColumnsUpdated('remove')" class="btn btn-block btn-xs" :disabled="'' !== groupBy">
                                             <i class="glyphicon glyphicon-chevron-left"></i>
                                         </button>
                                     </div>
                                     <div class="col-md-5 col-lg-4">
                                         <label for="display-columns">Display Columns</label>
-                                        <select v-model="selectedColumns.display" class="form-control input-sm" multiple size="8">
+                                        <select v-model="selectedColumns.display" class="form-control input-sm" multiple size="8" :disabled="'' !== groupBy">
                                             <option v-for="column in displayColumns" :value="filtersFlat[column].field">
                                                 {{ filtersFlat[column].label }}
                                                 <template v-if="filtersFlat[column].group !== modelName">({{ filtersFlat[column].group }})</template>
@@ -81,12 +81,12 @@
                                         </select>
                                         <div class="row">
                                             <div class="col-sm-6">
-                                                <button type="button" @click="displayColumnsSorted('up')" :disabled="0 === displayColumns.length" class="btn btn-block btn-xs">
+                                                <button type="button" @click="displayColumnsSorted('up')" :disabled="0 === displayColumns.length || '' !== groupBy" class="btn btn-block btn-xs">
                                                     <i class="glyphicon glyphicon-arrow-up"></i>
                                                 </button>
                                             </div>
                                             <div class="col-sm-6">
-                                                <button type="button" @click="displayColumnsSorted('down')" :disabled="0 === displayColumns.length" class="btn btn-block btn-xs">
+                                                <button type="button" @click="displayColumnsSorted('down')" :disabled="0 === displayColumns.length || '' !== groupBy" class="btn btn-block btn-xs">
                                                     <i class="glyphicon glyphicon-arrow-down"></i>
                                                 </button>
                                             </div>
