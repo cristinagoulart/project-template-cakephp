@@ -50,7 +50,7 @@ if (! empty($charts)) {
     echo $this->Html->script(
         [
             'https://cdnjs.cloudflare.com/ajax/libs/raphael/2.1.0/raphael-min.js',
-            'AdminLTE./bower_components/morris.js/morris.min',
+            'Search./plugins/Chart.min.js',
             'Qobo/Utils./plugins/d3/d3.min',
             'Qobo/Utils./plugins/d3/extensions/d3-funnel.min',
             'Search.reportGraphs'
@@ -69,7 +69,7 @@ $uniqid = uniqid();
         </li>
         <?php foreach ($charts as $key => $chart) : ?>
             <li class="<?= count($charts) === $key + 1 ? 'active' : '' ?>">
-                <a href="<?= '#' . $chart['options']['element'] ?>" data-toggle="tab" aria-expanded="false">
+                <a href="<?= '#' . $chart['id'] ?>" data-toggle="tab" aria-expanded="false">
                     <i class="fa fa-<?= $chart['icon'] ?>"></i>
                 </a>
             </li>
@@ -95,7 +95,9 @@ $uniqid = uniqid();
             ></table-ajax>
         </div>
         <?php foreach ($charts as $key => $chart) : ?>
-            <div id="<?= $chart['options']['element'] ?>" class="tab-pane <?= count($charts) === $key + 1 ? 'active' : '' ?>"></div>
+            <div id="<?= $chart['id'] ?>" class="tab-pane <?= count($charts) === $key + 1 ? 'active' : '' ?>">
+                <canvas id="canvas_<?= $chart['id'] ?>" ></canvas>
+            </div>
         <?php endforeach; ?>
     </div>
 </div>
