@@ -9,6 +9,11 @@ use Qobo\Utils\ModuleConfig\ConfigType;
 use Qobo\Utils\ModuleConfig\ModuleConfig;
 use Search\Event\EventName;
 
+deprecationWarning(
+    '"App\Event\Plugin\Search\Model\ChildListItemsListener" class is deprecated. This functionality is ' .
+    'now handled in the UI'
+);
+
 class ChildListItemsListener implements EventListenerInterface
 {
     /**
