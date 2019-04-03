@@ -223,6 +223,10 @@ export default {
             state.result = value
         },
         savedSearch(state, value) {
+            if (Array.isArray(value.content.saved.criteria)) {
+                value.content.saved.criteria = {}
+            }
+
             Vue.set(state, 'savedSearch', value)
         },
         savedSearches(state, value) {
