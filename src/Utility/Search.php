@@ -64,9 +64,9 @@ final class Search
      * @var array
      */
     const CHARTS = [
-        ['type' => 'funnelChart', 'icon' => 'filter'],
-        ['type' => 'donutChart', 'icon' => 'pie-chart'],
-        ['type' => 'barChart', 'icon' => 'bar-chart']
+        ['type' => 'funnelChart', 'icon' => 'filter', 'class' => '\Search\Widgets\Reports\DonutChartReportWidget'],
+        ['type' => 'pie', 'icon' => 'pie-chart', 'class' => '\Search\Widgets\Reports\PieChartReportWidget'],
+        ['type' => 'bar', 'icon' => 'bar-chart', 'class' => '\Search\Widgets\Reports\BarChartReportWidget']
     ];
 
     /**
@@ -154,44 +154,55 @@ final class Search
             'group_by' => Hash::get($entity->get('content'), 'saved.group_by'),
         ], []))->all();
 
+        // prettify data
+        foreach ($resultSet as $record) {
+            $record->set(self::GROUP_BY_FIELD, $record->get(self::GROUP_BY_FIELD));
+            $record->set($groupBy, $factory->renderValue($table, $groupBy, $record->get($groupBy)));
+        }
+
         $result = [];
         foreach (self::CHARTS as $chart) {
             $options = [
-                'chart' => $chart['type'],
                 'icon' => $chart['icon'],
-                'options' => [
-                    'element' => Inflector::delimit($chart['type']) . '_' . uniqid(),
-                    'resize' => true,
-                    'hideHover' => true,
-                    'data' => [],
-                    'barColors' => ['#0874c7', '#04645e', '#5661f8', '#8298c1', '#c6ba08', '#07ada3'],
-                    'lineColors' => ['#0874c7', '#04645e', '#5661f8', '#8298c1', '#c6ba08', '#07ada3'],
-                    'labels' => [Inflector::humanize(self::GROUP_BY_FIELD), Inflector::humanize($groupBy)],
-                    'xkey' => [$groupBy],
-                    'ykeys' => [self::GROUP_BY_FIELD]
-                ]
+                'id' => Inflector::delimit($chart['type']) . '_' . uniqid(),
+                'chart' => $chart['type']
             ];
 
-            foreach ($resultSet as $record) {
-                $value = $record->get($options['options']['ykeys'][0]);
-                $label = $factory->renderValue(
-                    $table,
-                    $options['options']['xkey'][0],
-                    $record->get($options['options']['xkey'][0])
-                );
+            switch ($chart['type']) {
+                case 'bar':
+                case 'pie':
+                    $widget = new $chart['class'];
+                    $widget->setConfig([
+                        'info' => [
+                            'columns' => implode(',', [self::GROUP_BY_FIELD, $groupBy]),
+                            'x_axis' => $groupBy,
+                            'y_axis' => self::GROUP_BY_FIELD,
+                        ]
+                    ]);
 
-                switch ($chart['type']) {
-                    case 'funnelChart':
-                    case 'donutChart':
-                        $options['options']['data'][] = ['value' => $value, 'label' => $label];
-                        break;
-                    case 'barChart':
-                        $options['options']['data'][] = [
-                            $options['options']['ykeys'][0] => $value,
-                            $options['options']['xkey'][0] => $label
-                        ];
-                        break;
-                }
+                    $options += $widget->getChartData($resultSet->toArray());
+                    break;
+                case 'funnelChart':
+                    $data = [];
+                    foreach ($resultSet as $record) {
+                        $data[] = ['value' => $record->get(self::GROUP_BY_FIELD), 'label' => $record->get($groupBy)];
+                    }
+
+                    $options += [
+                        'options' => [
+                            'resize' => true,
+                            'hideHover' => true,
+                            'labels' => [Inflector::humanize(self::GROUP_BY_FIELD), Inflector::humanize($groupBy)],
+                            'xkey' => [$groupBy],
+                            'ykeys' => [self::GROUP_BY_FIELD],
+                            'dataChart' => [
+                                'type' => $chart['type'],
+                                'data' => $data
+                            ]
+                        ]
+                    ];
+
+                    break;
             }
 
             $result[] = $options;
