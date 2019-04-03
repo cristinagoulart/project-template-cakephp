@@ -223,7 +223,7 @@ export default {
             state.result = value
         },
         savedSearch(state, value) {
-            if (Array.isArray(value.content.saved.criteria)) {
+            if (Array.isArray(value.content.saved.criteria) && 0 === value.content.saved.criteria.length) {
                 value.content.saved.criteria = {}
             }
 
