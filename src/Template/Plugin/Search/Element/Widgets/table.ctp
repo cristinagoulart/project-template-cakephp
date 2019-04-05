@@ -15,23 +15,19 @@ $this->Html->css('/dist/style', ['block' => 'css']);
 
 $table = TableRegistry::get($savedSearch->get('model'));
 $groupBy = Hash::get($savedSearch->get('content'), 'saved.group_by', '');
+$filters = $this->Search->getFilters($savedSearch->get('model'));
 
 $headers = [];
 if ('' !== $groupBy) {
-    foreach ($this->Search->getFilters($savedSearch->get('model')) as $filter) {
-        if ($filter['field'] === $groupBy) {
-            $headers[] = ['value' => $groupBy, 'text' => $filter['label']];
-            break;
-        }
-    }
+    $key = array_search($groupBy, array_column($filters, 'field'));
+    $headers[] = ['value' => $groupBy, 'text' => $filters[$key]['label']];
     $headers[] = ['value' => $savedSearch->get('model') . '.total', 'text' => 'Total'];
 }
 
 if ('' === $groupBy) {
-    foreach ($this->Search->getFilters($savedSearch->get('model')) as $filter) {
-        if (in_array($filter['field'], Hash::get($savedSearch->get('content'), 'saved.display_columns', []))) {
-            $headers[] = ['value' => $filter['field'], 'text' => $filter['label']];
-        }
+    foreach (Hash::get($savedSearch->get('content'), 'saved.display_columns', []) as $item) {
+        $key = array_search($item, array_column($filters, 'field'));
+        $headers[] = ['value' => $filters[$key]['field'], 'text' => $filters[$key]['label']];
     }
 }
 
@@ -79,19 +75,17 @@ $uniqid = uniqid();
     <div class="tab-content">
         <div id="table_<?= $uniqid ?>" class="tab-pane <?= empty($charts) ? 'active' : '' ?>">
             <table-ajax
-                :batch="false"
                 :data='<?= json_encode([
                     'criteria' => Hash::get($savedSearch->get('content'), 'saved.criteria', []),
                     'group_by' => $groupBy
                 ]) ?>'
                 :headers='<?= json_encode($headers) ?>'
                 model="<?= Inflector::dasherize($savedSearch->get('model')) ?>"
-                order-field="<?= Hash::get($savedSearch->get('content'), 'saved.sort_by_field', '') ?>"
                 order-direction="<?= Hash::get($savedSearch->get('content'), 'saved.sort_by_order', '') ?>"
+                order-field="<?= Hash::get($savedSearch->get('content'), 'saved.sort_by_field', '') ?>"
                 primary-key="<?= $table->aliasField($table->getPrimaryKey()) ?>"
                 request-type="POST"
                 url="/api/<?= Inflector::dasherize($savedSearch->get('model')) ?>/search"
-                :with-actions="<?= '' === $groupBy ? 'true' : 'false' ?>"
             ></table-ajax>
         </div>
         <?php foreach ($charts as $key => $chart) : ?>

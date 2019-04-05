@@ -178,8 +178,7 @@ class AppController extends Controller
      */
     public function index()
     {
-        $entity = $this->getSystemSearch();
-        $this->set(['searchId' => $entity->get('id')]);
+        $this->set('savedSearch', $this->getSystemSearch());
 
         $this->render('/Module/index');
     }
