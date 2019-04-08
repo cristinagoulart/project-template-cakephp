@@ -20,6 +20,9 @@ use Webmozart\Assert\Assert;
 
 final class Search
 {
+    /**
+     * Supported association types.
+     */
     const ASSOCIATION_TYPES = ['manyToOne'];
 
     /**
