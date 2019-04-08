@@ -302,7 +302,6 @@ export default {
     },
 
     created() {
-        const self = this
 
         this.$store.commit('search/filters', JSON.parse(this.filters))
 
@@ -314,15 +313,7 @@ export default {
         }
 
         if ('' === this.id) {
-            // basic search
-            if ('' !== this.searchQuery) {
-                this.displayFields.map(function(field) {
-                    const filter = self.$store.state.search.filters.filter(filter => filter.field === field)
-                    if (-1 !== self.basic_types.indexOf(filter[0].type)) {
-                        self.criteriaCreate(filter[0].field, self.searchQuery)
-                    }
-                })
-            }
+            this.basicSearch()
             this.$store.commit('search/displayColumns',  {action: 'add', available: this.displayFields })
             this.$store.commit('search/savedSearchModel', this.model)
             this.$store.commit('search/savedSearchUserId', this.userId)
@@ -332,6 +323,21 @@ export default {
     },
 
     methods: {
+        basicSearch(query) {
+            if ('' === this.searchQuery) {
+                return
+            }
+
+            const self = this
+
+            this.displayFields.map(function(field) {
+                const filter = self.$store.state.search.filters.filter(filter => filter.field === field)
+                if (-1 !== self.basic_types.indexOf(filter[0].type)) {
+                    self.aggregator = 'OR'
+                    self.criteriaCreate(filter[0].field, self.searchQuery)
+                }
+            })
+        },
         criteriaCreate(filter, value = '') {
             if ('' !== filter) {
                 this.$store.commit('search/criteriaCreate', { field: filter, value: value })
@@ -394,7 +400,7 @@ export default {
             this.loadResult = false
 
             this.tableHeaders = []
-            this.tableData = { criteria: this.criteria, group_by: this.groupBy }
+            this.tableData = { criteria: this.criteria, group_by: this.groupBy, aggregator: this.aggregator }
 
             if (this.groupBy) {
                 this.tableHeaders.push({ value: this.groupBy, text: self.filtersFlat[this.groupBy].label })

@@ -63,6 +63,12 @@ class SearchAction extends BaseAction
         $options['fields'] = array_merge((array)$this->_table()->getPrimaryKey(), Hash::get($options, 'fields', []));
         $query = $this->_table()->find($finder, $options);
 
+        $whereClause = $query->clause('where');
+        // set root where clause aggregator
+        if (null !== $whereClause) {
+            $query->where($whereClause->setConjunction($options['aggregator']), [], true);
+        }
+
         $subject = $this->_subject(['success' => true, 'query' => $query]);
 
         if (! property_exists($subject, 'query')) {

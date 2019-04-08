@@ -74,6 +74,10 @@ final class Manager
             }
         }
 
+        if (Hash::get($data, 'aggregator')) {
+            $result['aggregator'] = Hash::get($data, 'aggregator', 'AND');
+        }
+
         if (Hash::get($data, 'fields')) {
             $result['fields'] = Hash::get($data, 'fields');
         }
