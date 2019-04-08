@@ -15,6 +15,7 @@ $table = TableRegistry::get($tableName);
         :display-fields='<?= json_encode($this->Search->getDisplayFields($tableName)) ?>'
         filters='<?= json_encode($this->Search->getFilters($tableName)) ?>'
         id="<?= $searchId ?>"
+        search-query="<?= '' !== $searchId ? '' : $searchQuery ?>"
         model="<?= $this->name ?>"
         primary-key="<?= $table->aliasField($table->getPrimaryKey()) ?>"
         user-id="<?= User::getCurrentUser()['id'] ?>"

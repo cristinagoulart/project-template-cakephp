@@ -6,7 +6,7 @@
                     <div class="row">
                         <div class="col-lg-3 col-lg-push-9">
                             <div class="form-group">
-                                <select v-model="filter" class="form-control input-sm" v-on:change="criteriaCreate()">
+                                <select v-model="filter" class="form-control input-sm" v-on:change="criteriaCreate(filter)">
                                     <option value="">-- Add filter --</option>
                                     <template v-for="(group_filters, group) in filtersGroup">
                                         <optgroup :label="group">
@@ -167,7 +167,7 @@ export default {
     props: {
         displayFields: {
             type: Array,
-            default: []
+            required: true
         },
         filters: {
             type: String,
@@ -185,6 +185,10 @@ export default {
             type: String,
             required: true
         },
+        searchQuery: {
+            type: String,
+            default: ''
+        },
         userId: {
             type: String,
             required: true
@@ -201,6 +205,7 @@ export default {
                 { text: 'Match all filters', value: 'AND' },
                 { text: 'Match any filter', value: 'OR' }
             ],
+            basic_types: ['string', 'text', 'textarea', 'related', 'email', 'url', 'phone', 'integer'],
             filter: '',
             loadResult: false,
             savedSearchSelected: '',
@@ -297,6 +302,8 @@ export default {
     },
 
     created() {
+        const self = this
+
         this.$store.commit('search/filters', JSON.parse(this.filters))
 
         if ('' !== this.id) {
@@ -307,6 +314,15 @@ export default {
         }
 
         if ('' === this.id) {
+            // basic search
+            if ('' !== this.searchQuery) {
+                this.displayFields.map(function(field) {
+                    const filter = self.$store.state.search.filters.filter(filter => filter.field === field)
+                    if (-1 !== self.basic_types.indexOf(filter[0].type)) {
+                        self.criteriaCreate(filter[0].field, self.searchQuery)
+                    }
+                })
+            }
             this.$store.commit('search/displayColumns',  {action: 'add', available: this.displayFields })
             this.$store.commit('search/savedSearchModel', this.model)
             this.$store.commit('search/savedSearchUserId', this.userId)
@@ -316,9 +332,9 @@ export default {
     },
 
     methods: {
-        criteriaCreate() {
-            if ('' !== this.filter) {
-                this.$store.commit('search/criteriaCreate', this.filter)
+        criteriaCreate(filter, value = '') {
+            if ('' !== filter) {
+                this.$store.commit('search/criteriaCreate', { field: filter, value: value })
             }
 
             this.filter = ''

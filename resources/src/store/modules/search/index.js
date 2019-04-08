@@ -97,8 +97,8 @@ export default {
         aggregator(state, value) {
             state.savedSearch.content.saved.aggregator = value
         },
-        criteriaCreate(state, value) {
-            const filter = state.filters.filter(filter => filter.field === value)
+        criteriaCreate(state, payload) {
+            const filter = state.filters.filter(filter => filter.field === payload.field)
 
             var s4 = function () {
                 return Math.floor((1 + Math.random()) * 0x10000).toString(16).substring(1)
@@ -115,7 +115,7 @@ export default {
             Vue.set(criteria[filter[0].field], guid, {
                 type: filter[0].type,
                 operator: state.operators.types[state.operators.map[filter[0].type]][0].text,
-                value: 'boolean' === filter[0].type ? 0 : ''
+                value: '' !== payload.value ? payload.value : ('boolean' === filter[0].type ? 0 : '')
             })
         },
         criteriaCopy(state, value) {

@@ -18,6 +18,8 @@ trait SearchTrait
      */
     public function search(string $id = '')
     {
+        $this->getRequest()->allowMethod('GET');
+
         $table = $this->loadModel();
         Assert::isInstanceOf($table, Table::class);
 
@@ -25,6 +27,7 @@ trait SearchTrait
             throw new BadRequestException(sprintf('Search is not available for %s', $table->getAlias()));
         }
 
+        $this->set('searchQuery', Hash::get($this->getRequest()->getQueryParams(), 'q', ''));
         $this->set('searchId', $id);
 
         $this->render('/Module/search');
