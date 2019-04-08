@@ -313,7 +313,9 @@ export default {
         }
 
         if ('' === this.id) {
-            this.basicSearch()
+            if ('' !== this.searchQuery) {
+                this.basicSearch(this.searchQuery)
+            }
             this.$store.commit('search/displayColumns',  {action: 'add', available: this.displayFields })
             this.$store.commit('search/savedSearchModel', this.model)
             this.$store.commit('search/savedSearchUserId', this.userId)
@@ -324,17 +326,14 @@ export default {
 
     methods: {
         basicSearch(query) {
-            if ('' === this.searchQuery) {
-                return
-            }
-
             const self = this
 
             this.displayFields.map(function(field) {
                 const filter = self.$store.state.search.filters.filter(filter => filter.field === field)
                 if (-1 !== self.basic_types.indexOf(filter[0].type)) {
+                    // switch to OR aggregator on basic search
                     self.aggregator = 'OR'
-                    self.criteriaCreate(filter[0].field, self.searchQuery)
+                    self.criteriaCreate(filter[0].field, query)
                 }
             })
         },
