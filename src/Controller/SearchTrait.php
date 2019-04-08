@@ -25,6 +25,8 @@ trait SearchTrait
             throw new BadRequestException(sprintf('Search is not available for %s', $table->getAlias()));
         }
 
+        $this->set('searchId', $id);
+
         $this->render('/Module/search');
     }
 
