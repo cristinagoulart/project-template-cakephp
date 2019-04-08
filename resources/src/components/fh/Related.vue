@@ -74,11 +74,11 @@ export default {
 
         const self = this
 
-        this.value = 'string' === typeof this.value ? [this.value] : this.value
+        const value = 'string' === typeof this.value ? [this.value] : this.value
 
         let hasMagicValue = false
         let promises = []
-        this.value.forEach(function (id) {
+        value.forEach(function (id) {
             if ('%%me%%' === id) {
                 hasMagicValue = true
                 return
