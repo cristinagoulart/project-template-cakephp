@@ -113,10 +113,10 @@ final class Search
     {
         $table = TableRegistry::getTableLocator()->get($tableName);
 
-        $result = self::getBasicSearchFieldsFromSystemSearch($tableName);
+        $result = self::getDisplayFieldsFromSystemSearch($tableName);
 
         if (empty($result)) {
-            $result = self::getBasicSearchFieldsFromView($tableName);
+            $result = self::getDisplayFieldsFromView($tableName);
         }
 
         foreach ($result as $key => $value) {
@@ -268,12 +268,12 @@ final class Search
     }
 
     /**
-     * Returns basic search fields from provided Table's system search.
+     * Returns display fields from provided Table's system search.
      *
      * @param string $tableName Table name
      * @return string[]
      */
-    private static function getBasicSearchFieldsFromSystemSearch(string $tableName) : array
+    private static function getDisplayFieldsFromSystemSearch(string $tableName) : array
     {
         $table = TableRegistry::getTableLocator()->get('Search.SavedSearches');
 
@@ -292,12 +292,12 @@ final class Search
     }
 
     /**
-     * Returns basic search fields from provided Table's index View csv fields.
+     * Returns display fields from provided Table's index View fields.
      *
      * @param string $tableName Table name
      * @return string[]
      */
-    private static function getBasicSearchFieldsFromView(string $tableName) : array
+    private static function getDisplayFieldsFromView(string $tableName) : array
     {
         $config = [];
 
