@@ -252,7 +252,7 @@ class AppController extends Controller
 
         Assert::isInstanceOf($user, EntityInterface::class);
 
-        $id = (new Search($this->loadModel(), $user))->create(['system' => true]);
+        $id = (new Search($this->loadModel(), $user->toArray()))->create(['system' => true]);
 
         $entity = $table->get($id);
         $entity = $table->patchEntity($entity, [
