@@ -52,13 +52,7 @@
         "qobo/qobo-robo-cakephp": "^2.0"
     },
     "require-dev": {
-        "brianium/paratest": "*",
-        "phpstan/phpstan": "^0.10.3",
-        "phpstan/phpstan-phpunit": "^0.10.0",
-        "phpunit/phpunit": "*",
-        "qobo/cakephp-composer-dev": "^v1.1",
-        "squizlabs/php_codesniffer": "*",
-        "thecodingmachine/phpstan-strict-rules": "^0.11.0"
+        "qobo/cakephp-composer-dev": "^v1.1"
     },
     "suggest": {
         "markstory/asset_compress": "An asset compression plugin which provides file concatenation and a flexible filter system for preprocessing and minification."
