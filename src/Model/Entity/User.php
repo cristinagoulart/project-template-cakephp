@@ -5,8 +5,15 @@ use App\Avatar\Service as AvatarService;
 use CakeDC\Users\Model\Entity\User as BaseUser;
 use Cake\Core\Configure;
 use Cake\ORM\TableRegistry;
-use Exception;
+use RolesCapabilities\Model\Table\CapabilitiesTable;
+use Webmozart\Assert\Assert;
 
+/**
+ * @property string $id
+ * @property string $first_name
+ * @property string $last_name
+ * @property string $username
+ */
 class User extends BaseUser
 {
     /**
@@ -69,16 +76,17 @@ class User extends BaseUser
             return true;
         }
 
-        try {
-            /** @var CapabilitiesTable $capabilities */
-            $capabilities = TableRegistry::get('RolesCapabilities.Capabilities');
-            $userGroups = $capabilities->getUserGroups($this->get('id'));
-            $userRoles = $capabilities->getGroupsRoles($userGroups);
-            $isAdmin = in_array(Configure::readOrFail('RolesCapabilities.Roles.Admin.name'), $userRoles);
-
-            return $isAdmin;
-        } catch (Exception $e) {
+        $roleName = Configure::read('RolesCapabilities.Roles.Admin.name');
+        if (! is_string($roleName)) {
             return false;
         }
+
+        $capabilities = TableRegistry::get('RolesCapabilities.Capabilities');
+        Assert::isInstanceOf($capabilities, CapabilitiesTable::class);
+        $userGroups = $capabilities->getUserGroups((string)$this->get('id'));
+        $userRoles = $capabilities->getGroupsRoles($userGroups);
+        $isAdmin = in_array($roleName, $userRoles);
+
+        return $isAdmin;
     }
 }

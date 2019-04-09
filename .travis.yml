@@ -25,13 +25,13 @@ matrix:
 
   include:
     - php: 7.1
-      env: PHPCS=1 COVERAGE=1 PHPSTAN=0
+      env: PHPCS=1 COVERAGE=1 PHPSTAN=1
     - php: 7.2
-      env: PHPCS=1 COVERAGE=0 PHPSTAN=0
+      env: PHPCS=1 COVERAGE=0 PHPSTAN=1
     - php: 7.3
-      env: PHPCS=1 COVERAGE=0 PHPSTAN=0
+      env: PHPCS=1 COVERAGE=0 PHPSTAN=1
     - php: nightly
-      env: PHPCS=1 COVERAGE=0 PHPSTAN=0
+      env: PHPCS=1 COVERAGE=0 PHPSTAN=1
 
 install:
   - ./bin/composer validate --strict
@@ -42,7 +42,11 @@ install:
 
 before_script:
   - ./bin/phpserv >/dev/null 2>&1 &
-  - sleep 10
+  # Add an IPv6 config - see the corresponding Travis issue
+  # https://github.com/travis-ci/travis-ci/issues/8361
+  - if [ "${TRAVIS_OS_NAME}" == "linux" ]; then
+      sudo sh -c 'echo 0 > /proc/sys/net/ipv6/conf/all/disable_ipv6';
+    fi
 
 script:
   - if [[ $PHPCS = 1 ]]; then ./vendor/bin/phpcs; fi

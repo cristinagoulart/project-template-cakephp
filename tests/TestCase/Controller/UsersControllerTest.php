@@ -1,9 +1,8 @@
 <?php
 namespace App\Test\TestCase\Controller;
 
-use App\Controller\DblistsController;
 use Cake\Core\Configure;
-use Cake\Network\Exception\ForbiddenException;
+use Cake\Http\Exception\ForbiddenException;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\IntegrationTestCase;
 
@@ -288,8 +287,7 @@ class UsersControllerTest extends IntegrationTestCase
         $this->withSession();
 
         $data = ['username' => 'john.smith'];
-
-        $this->get('/users/edit/' . $this->userId, $data);
+        $this->get('/users/edit/' . $this->userId . '?username=john.smith');
         $this->assertResponseOk();
 
         $this->put('/users/edit/' . $this->userId, $data);

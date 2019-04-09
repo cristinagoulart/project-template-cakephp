@@ -2,16 +2,21 @@
 namespace App\Event\Controller\Api;
 
 use App\Event\EventName;
+use Cake\Controller\Controller;
+use Cake\Datasource\EntityInterface;
+use Cake\Datasource\QueryInterface;
 use Cake\Event\Event;
-use Cake\ORM\Entity;
-use Cake\ORM\Query;
+use Cake\ORM\Table;
+use Webmozart\Assert\Assert;
 
 class ViewActionListener extends BaseActionListener
 {
     /**
-     * {@inheritDoc}
+     * Returns a list of all events that the API View endpoint will listen to.
+     *
+     * @return array
      */
-    public function implementedEvents()
+    public function implementedEvents() : array
     {
         return [
             (string)EventName::API_VIEW_BEFORE_FIND() => 'beforeFind',
@@ -20,32 +25,48 @@ class ViewActionListener extends BaseActionListener
     }
 
     /**
-     * {@inheritDoc}
+     * beforeFind method.
+     *
+     * @param \Cake\Event\Event $event Event instance
+     * @param \Cake\Datasource\QueryInterface $query Query instance
+     * @return void
      */
-    public function beforeFind(Event $event, Query $query)
+    public function beforeFind(Event $event, QueryInterface $query) : void
     {
-        if (static::FORMAT_PRETTY !== $event->subject()->request->getQuery('format')) {
-            $query->contain($this->_getFileAssociations($event->subject()->{$event->subject()->name}));
-        }
+        //
     }
 
     /**
-     * {@inheritDoc}
+     * afterFind method.
+     *
+     * Handles the following:
+     * - Converts field values of type resource to string
+     * - Prettifies field values if relevant format is requested
+     * - Attaches associated files to the entity
+     *
+     * @param \Cake\Event\Event $event Event instance
+     * @param \Cake\Datasource\EntityInterface $entity Entity instance
+     * @return void
      */
-    public function afterFind(Event $event, Entity $entity)
+    public function afterFind(Event $event, EntityInterface $entity) : void
     {
-        $table = $event->subject()->{$event->subject()->name};
-        $request = $event->subject()->request;
+        $controller = $event->getSubject();
+        Assert::isInstanceOf($controller, Controller::class);
 
-        $this->_resourceToString($entity);
+        $request = $controller->getRequest();
 
-        if (static::FORMAT_PRETTY === $request->query('format')) {
-            $this->_prettify($entity, $table, []);
-        } else { // @todo temporary functionality, please see _includeFiles() method documentation.
-            $this->_restructureFiles($entity, $table);
-        }
+        $table = $controller->loadModel();
+        Assert::isInstanceOf($table, Table::class);
 
-        $displayField = $table->displayField();
-        $entity->{$displayField} = $entity->get($displayField);
+        $this->resourceToString($entity);
+
+        static::FORMAT_PRETTY === $request->getQuery('format') ?
+            $this->prettify($entity, $table) :
+            $this->attachFiles($entity, $table);
+
+        /**
+         * TODO: seems like obsolete code needs to be tested and removed if not used (might be dealing with virtual fields). Added here: https://github.com/QoboLtd/cakephp-csv-migrations/pull/258
+         */
+        $entity->set($table->getDisplayField(), $entity->get($table->getDisplayField()));
     }
 }

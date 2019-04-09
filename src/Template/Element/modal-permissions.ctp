@@ -3,7 +3,7 @@ use Cake\ORM\TableRegistry;
 
 $this->Html->script(
     [
-        'AdminLTE./plugins/select2/select2.full.min',
+        'AdminLTE./bower_components/select2/dist/js/select2.full.min',
         'Qobo/Utils.select2.init',
         'RolesCapabilities.switch-target',
         'RolesCapabilities.permissions',
@@ -13,7 +13,7 @@ $this->Html->script(
 
 $this->Html->css(
     [
-        'AdminLTE./plugins/select2/select2.min',
+        'AdminLTE./bower_components/select2/dist/css/select2.min',
         'Qobo/Utils.select2-bootstrap.min',
         'Qobo/Utils.select2-style'
     ],
@@ -59,7 +59,7 @@ $permissions = $query->all();
                 <?= $this->Form->hidden('model', ['value' => $this->name]) ?>
                 <div class="row">
                     <div class="col-xs-6">
-                        <?= $this->Form->input('type', [
+                        <?= $this->Form->control('type', [
                             'type' => 'select',
                             'options' => ['user' => 'User', 'group' => 'Group'],
                             'class' => 'select2',

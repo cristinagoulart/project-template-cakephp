@@ -14,6 +14,8 @@ class FactoryTest extends TestCase
 {
     /**
      * For now we just make sure the Factory can be initialized, no assertions are made.
+     *
+     * @doesNotPerformAssertions
      */
     public function testInit(): void
     {

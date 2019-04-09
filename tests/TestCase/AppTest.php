@@ -9,11 +9,13 @@ class AppTest extends TestCase
 {
     /**
      * @dataProvider pluginProvider
+     * @param string $plugin Plugin name
+     * @param mixed $config Plugin config
      */
     public function testLoadedPlugins(string $plugin, $config): void
     {
         if (empty($config)) {
-            $this->assertTrue(Plugin::loaded($plugin), "Plugin $plugin is not loaded");
+            $this->assertTrue((bool)Plugin::loaded($plugin), "Plugin $plugin is not loaded");
         } else {
             $enabled = false;
             switch (gettype($config)) {
@@ -44,9 +46,9 @@ class AppTest extends TestCase
     public function pluginProvider(): array
     {
         return [
-            ['ADmad/JwtAuth', 'API.auth'],
+            ['ADmad/JwtAuth', null],
             ['AdminLTE', null],
-            ['Alt3/Swagger', ['API.auth', 'Swagger.crawl']],
+            ['Alt3/Swagger', 'Swagger.crawl'],
             ['AuditStash', null],
             ['Burzum/FileStorage', null],
             ['CakeDC/Users', null],

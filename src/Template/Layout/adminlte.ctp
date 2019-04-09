@@ -12,10 +12,11 @@ $skinName = Configure::read('Theme.skin');
         <title><?php echo Configure::read('Theme.title.' . $this->name); ?></title>
         <!-- Tell the browser to be responsive to screen width -->
         <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
-        <?php echo $this->Html->css('AdminLTE./bootstrap/css/bootstrap.min'); ?>
+        <?php echo $this->Html->css('AdminLTE./bower_components/bootstrap/dist/css/bootstrap.min'); ?>
         <?php echo $this->Html->css('/plugins/font-awesome/css/font-awesome.min'); ?>
         <?php echo $this->Html->css('/plugins/ionicons/css/ionicons.min'); ?>
         <!-- Theme style -->
+        <?php echo $this->Html->css('https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,700,300italic,400italic,600italic'); ?>
         <?php echo $this->Html->css('AdminLTE.AdminLTE.min'); ?>
         <?php echo $this->Html->css($skinUrl); ?>
 
@@ -30,7 +31,7 @@ $skinName = Configure::read('Theme.skin');
     </head>
     <body class="hold-transition skin-<?php echo Configure::read('Theme.skin'); ?> sidebar-mini">
         <!-- Site wrapper -->
-        <div class="wrapper">
+        <div class="wrapper" id="app">
             <header class="main-header">
                 <!-- Logo -->
                 <a href="<?php echo $this->Url->build('/'); ?>" class="logo">
@@ -70,12 +71,12 @@ $skinName = Configure::read('Theme.skin');
         </div>
         <!-- ./wrapper -->
 
-        <?php echo $this->Html->script('AdminLTE./plugins/jQuery/jquery-2.2.3.min'); ?>
-        <?php echo $this->Html->script('AdminLTE./bootstrap/js/bootstrap.min'); ?>
-        <?php echo $this->Html->script('AdminLTE./plugins/slimScroll/jquery.slimscroll.min'); ?>
-        <?php echo $this->Html->script('AdminLTE./plugins/fastclick/fastclick.min'); ?>
+        <?php echo $this->Html->script('AdminLTE./bower_components/jquery/dist/jquery.min'); ?>
+        <?php echo $this->Html->script('AdminLTE./bower_components/bootstrap/dist/js/bootstrap.min'); ?>
+        <?php echo $this->Html->script('AdminLTE./bower_components/jquery-slimscroll/jquery.slimscroll.min'); ?>
+        <?php echo $this->Html->script('AdminLTE./bower_components/fastclick/lib/fastclick'); ?>
         <!-- AdminLTE App -->
-        <?php echo $this->Html->script('AdminLTE./js/app.min'); ?>
+        <?php echo $this->Html->script('AdminLTE./js/adminlte.min'); ?>
 
         <?php echo $this->fetch('script'); ?>
         <?php echo $this->fetch('scriptBottom'); ?>
@@ -88,7 +89,7 @@ $skinName = Configure::read('Theme.skin');
                     size: "3px"
                 }).css("width", "100%");
 
-                var a = $('a[href="<?php echo $this->request->webroot . $this->request->url ?>"]');
+                var a = $('a[href="<?php echo $this->request->getAttribute('webroot') . $this->request->getPath() ?>"]');
                 if (!a.parent().hasClass('treeview') && !a.parent().parent().hasClass('pagination')) {
                     a.parent().addClass('active').parents('.treeview').addClass('active');
                 }

@@ -1,10 +1,12 @@
 <?php
 namespace App\Event\Plugin\CsvMigrations\Controller;
 
+use Cake\Controller\Controller;
 use Cake\Event\Event;
 use Cake\Event\EventListenerInterface;
 use CsvMigrations\Event\EventName;
 use RolesCapabilities\CapabilityTrait;
+use Webmozart\Assert\Assert;
 
 class BatchActionListener implements EventListenerInterface
 {
@@ -24,18 +26,21 @@ class BatchActionListener implements EventListenerInterface
      * Access check for batch operation ids.
      *
      * @param \Cake\Event\Event $event Event instance
-     * @param array $batchIds Batch ids
+     * @param mixed[] $batchIds Batch ids
      * @param string $operation Batch operation
-     * @param array $user User info
+     * @param mixed[] $user User info
      * @return void
      */
-    public function batchAccessCheck(Event $event, array $batchIds, $operation, array $user)
+    public function batchAccessCheck(Event $event, array $batchIds, string $operation, array $user): void
     {
+        $controller = $event->getSubject();
+        Assert::isInstanceOf($controller, Controller::class);
+
         $result = [];
         foreach ($batchIds as $batchId) {
             $url = [
-                'plugin' => $event->subject()->plugin,
-                'controller' => $event->subject()->name,
+                'plugin' => $controller->getPlugin(),
+                'controller' => $controller->getName(),
                 'action' => $operation,
                 $batchId
             ];

@@ -60,7 +60,7 @@ class UpgradeShell extends Shell
     /**
      * Fetches upgrade related tasks from src/Shell/Task directory
      *
-     * @return string[]
+     * @return mixed[]
      */
     private function fetchTasks(): array
     {

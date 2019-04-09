@@ -14,7 +14,6 @@
  */
 namespace App\Test\TestCase\Controller;
 
-use App\Controller\PagesController;
 use Cake\TestSuite\IntegrationTestCase;
 
 /**
@@ -28,7 +27,7 @@ class PagesControllerTest extends IntegrationTestCase
      *
      * @return void
      */
-    public function testDisplay()
+    public function testDisplay(): void
     {
         $this->get('/');
         $this->assertRedirect(['plugin' => 'CakeDC/Users', 'controller' => 'Users', 'action' => 'login']);

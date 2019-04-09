@@ -99,7 +99,7 @@ class FakerShell extends Shell
 
         $count = 1;
         foreach ($fields as $field) {
-            $field = trim($field) - 1;
+            $field = (int)trim($field) - 1;
             // skip invalid fields
             if (!array_key_exists($field, $options)) {
                 continue;
@@ -221,6 +221,11 @@ class FakerShell extends Shell
             $fullClassName = get_class($provider);
             $className = explode('\\', $fullClassName);
             $className = end($className);
+
+            if (!$className) {
+                continue;
+            }
+
             $result[Inflector::underscore($className)] = [
                 'className' => $fullClassName,
                 'shortName' => $className

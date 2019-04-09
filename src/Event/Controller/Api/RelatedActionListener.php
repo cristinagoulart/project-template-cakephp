@@ -2,17 +2,22 @@
 namespace App\Event\Controller\Api;
 
 use App\Event\EventName;
+use Cake\Controller\Controller;
 use Cake\Core\App;
 use Cake\Datasource\QueryInterface;
 use Cake\Datasource\ResultSetInterface;
 use Cake\Event\Event;
+use Cake\ORM\Table;
+use Webmozart\Assert\Assert;
 
 class RelatedActionListener extends BaseActionListener
 {
     /**
-     * {@inheritDoc}
+     * Returns a list of all events that the API Related endpoint will listen to.
+     *
+     * @return array
      */
-    public function implementedEvents()
+    public function implementedEvents() : array
     {
         return [
             (string)EventName::API_RELATED_BEFORE_PAGINATE() => 'beforePaginate',
@@ -24,24 +29,23 @@ class RelatedActionListener extends BaseActionListener
     /**
      * {@inheritDoc}
      */
-    public function beforePaginate(Event $event, QueryInterface $query)
+    public function beforePaginate(Event $event, QueryInterface $query) : void
     {
-        if (static::FORMAT_PRETTY !== $event->subject()->request->getQuery('format')) {
-            $query->contain(
-                $this->_getFileAssociations($this->getAssociatedTable($event))
-            );
-        }
+        $controller = $event->getSubject();
+        Assert::isInstanceOf($controller, Controller::class);
 
-        $query->order($this->getOrderClause(
-            $event->getSubject()->request,
-            $event->getSubject()->{$event->getSubject()->name}
-        ));
+        $request = $controller->getRequest();
+
+        $table = $controller->loadModel();
+        Assert::isInstanceOf($table, Table::class);
+
+        $query->order($this->getOrderClause($request, $table));
     }
 
     /**
      * {@inheritDoc}
      */
-    public function afterPaginate(Event $event, ResultSetInterface $resultSet)
+    public function afterPaginate(Event $event, ResultSetInterface $resultSet) : void
     {
         //
     }
@@ -49,52 +53,37 @@ class RelatedActionListener extends BaseActionListener
     /**
      * {@inheritDoc}
      */
-    public function beforeRender(Event $event, ResultSetInterface $resultSet)
+    public function beforeRender(Event $event, ResultSetInterface $resultSet) : void
     {
         if ($resultSet->isEmpty()) {
             return;
         }
 
-        $table = $this->getAssociatedTable($event);
+        $controller = $event->getSubject();
+        Assert::isInstanceOf($controller, Controller::class);
+
+        $request = $controller->getRequest();
+
+        $table = $controller->loadModel();
+        Assert::isInstanceOf($table, Table::class);
+
+        // Associated table instance.
+        $target = $table->getAssociation($request->getParam('pass.1'))->getTarget();
 
         foreach ($resultSet as $entity) {
-            $this->_resourceToString($entity);
-        }
+            $this->resourceToString($entity);
 
-        if (static::FORMAT_PRETTY === $event->getSubject()->request->getQuery('format')) {
-            foreach ($resultSet as $entity) {
-                $this->_prettify($entity, App::shortName(get_class($table), 'Model/Table', 'Table'));
+            static::FORMAT_PRETTY === $request->getQuery('format') ?
+                $this->prettify($entity, $target) :
+                $this->attachFiles($entity, $target);
+
+            if ((bool)$request->getQuery(static::FLAG_INCLUDE_MENUS)) {
+                $this->attachRelatedMenu($entity, $target, $controller->Auth->user(), [
+                    'associationController' => $request->getParam('controller'),
+                    'associationName' => $target->getRegistryAlias(),
+                    'associationId' => $request->getParam('pass.0'),
+                ]);
             }
         }
-
-        // @todo temporary functionality, please see _includeFiles() method documentation.
-        if (static::FORMAT_PRETTY !== $event->getSubject()->request->getQuery('format')) {
-            foreach ($resultSet as $entity) {
-                $this->_restructureFiles($entity, $table);
-            }
-        }
-
-        if ((bool)$event->getSubject()->request->getQuery(static::FLAG_INCLUDE_MENUS)) {
-            $this->attachRelatedMenu($resultSet, $table, $event->getSubject()->Auth->user(), [
-                'associationController' => $event->getSubject()->request->getParam('controller'),
-                'associationName' => $table->getRegistryAlias(),
-                'associationId' => $event->getSubject()->request->getParam('pass.0'),
-            ]);
-        }
-    }
-
-    /**
-     * Retrieves association's target table.
-     *
-     * @param \Cake\Event\Event $event Event object
-     * @return \Cake\Datasource\RepositoryInterface
-     */
-    private function getAssociatedTable(Event $event)
-    {
-        $associationName = $event->getSubject()->request->getParam('pass.1');
-
-        return $event->getSubject()->{$event->getSubject()->name}
-            ->association($associationName)
-            ->getTarget();
     }
 }

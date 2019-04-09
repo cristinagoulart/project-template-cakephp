@@ -36,11 +36,19 @@ class ScheduledJobsTask extends Shell
 
         $table = TableRegistry::getTableLocator()->get('ScheduledJobs');
 
+        if (!empty($data['start_date']) && !$data['start_date'] instanceof Time) {
+            $data['start_date'] = Time::parse($data['start_date'])->second(0);
+        }
+
+        if (empty($data['start_date'])) {
+            $data['start_date'] = Time::now();
+        }
+
         $entity = $table->newEntity(array_merge($data, [
             'name' => sprintf('System [%s] command', $job),
             'job' => $job,
             'active' => true,
-            'start_date' => Time::now()->second(0)
+            'start_date' => $data['start_date']->second(0),
         ]));
 
         $saved = (bool)$table->save($entity);
@@ -112,16 +120,23 @@ class ScheduledJobsTask extends Shell
      */
     private function exists(string $job): bool
     {
-        $entity = TableRegistry::getTableLocator()->get('ScheduledJobs')
+        $result = false;
+
+        $query = TableRegistry::getTableLocator()->get('ScheduledJobs')
             ->find('all')
             ->where(['job' => $job])
-            ->first();
+            ->enableHydration(true);
 
-        if (null === $entity) {
-            return false;
+        if ($query->count()) {
+            /**
+             * @var \Cake\Datasource\EntityInterface
+             */
+            $entity = $query->first();
+            $result = true;
+
+            $this->warn(sprintf('Scheduled job "%s" already added, with status "%s"', $job, $entity->get('active')));
         }
-        $this->warn(sprintf('Scheduled job "%s" already added, with status "%s"', $job, $entity->active));
 
-        return true;
+        return $result;
     }
 }

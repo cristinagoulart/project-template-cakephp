@@ -51,8 +51,11 @@ class Upgrade20170316000000Task extends Shell
         $targetTable = !empty($this->args[0]) ? $this->args[0] : null;
         $targetColumn = !empty($this->args[1]) ? $this->args[1] : self::DEFAULT_COLUMN_NAME;
 
+        /**
+         * @var \Cake\Database\Connection $db
+         */
         $db = ConnectionManager::get('default');
-        $collection = $db->schemaCollection();
+        $collection = $db->getSchemaCollection();
 
         if (!empty($targetTable)) {
             $tables = [$targetTable];
@@ -66,7 +69,7 @@ class Upgrade20170316000000Task extends Shell
             $columns = $tblSchema->columns();
 
             if (in_array($targetColumn, $columns)) {
-                $columnType = $tblSchema->columnType($targetColumn);
+                $columnType = $tblSchema->getColumnType($targetColumn);
                 $this->out("Type of column '$targetColumn' has type '$columnType'");
 
                 if ($tblSchema->isNullable($targetColumn) && $columnType == self::TARGET_COLUMN_TYPE) {

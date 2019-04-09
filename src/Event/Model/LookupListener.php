@@ -2,12 +2,15 @@
 namespace App\Event\Model;
 
 use ArrayObject;
-use Cake\Datasource\QueryInterface;
+use Cake\Datasource\EntityInterface;
 use Cake\Event\Event;
 use Cake\Event\EventListenerInterface;
 use Cake\ORM\Association;
+use Cake\ORM\Query;
+use Cake\ORM\Table;
 use Qobo\Utils\ModuleConfig\ConfigType;
 use Qobo\Utils\ModuleConfig\ModuleConfig;
+use Webmozart\Assert\Assert;
 
 /**
  * This class is responsible for adding Module's lookup fields into the query's
@@ -32,13 +35,16 @@ class LookupListener implements EventListenerInterface
      * Apply lookup fields to Query's where clause.
      *
      * @param \Cake\Event\Event $event Event object
-     * @param \Cake\Datasource\QueryInterface $query Query object
+     * @param \Cake\ORM\Query $query Query object
      * @param \ArrayObject $options Query options
      * @param bool $primary Primary Standalone Query flag
      * @return void
      */
-    public function beforeFind(Event $event, QueryInterface $query, ArrayObject $options, $primary)
+    public function beforeFind(Event $event, Query $query, ArrayObject $options, bool $primary): void
     {
+        $table = $event->getSubject();
+        Assert::isInstanceOf($table, Table::class);
+
         if (! $primary) {
             return;
         }
@@ -51,12 +57,16 @@ class LookupListener implements EventListenerInterface
             return;
         }
 
-        $config = (new ModuleConfig(ConfigType::MODULE(), $event->getSubject()->getAlias()))->parse();
+        $config = (new ModuleConfig(ConfigType::MODULE(), $table->getAlias()))->parse();
         if (empty($config->table->lookup_fields)) {
             // fail-safe binding of primary key to query's where clause, if lookup
             // fields are not defined, to avoid random record retrieval.
+            /**
+             * @var string
+             */
+            $primaryKey = $table->getPrimaryKey();
             $query->where([
-                $event->getSubject()->aliasField($event->getSubject()->getPrimaryKey()) => $options['value']
+                $table->aliasField($primaryKey) => $options['value']
             ]);
 
             return;
@@ -64,7 +74,7 @@ class LookupListener implements EventListenerInterface
 
         foreach ($config->table->lookup_fields as $field) {
             $query->orWhere([
-                $event->getSubject()->aliasField($field) => $options['value']
+                $table->aliasField($field) => $options['value']
             ]);
         }
     }
@@ -96,13 +106,18 @@ class LookupListener implements EventListenerInterface
      * @param \ArrayObject $options Query options
      * @return void
      */
-    public function beforeMarshal(Event $event, ArrayObject $data, ArrayObject $options)
+    public function beforeMarshal(Event $event, ArrayObject $data, ArrayObject $options): void
     {
         if (! isset($options['lookup']) || ! (bool)$options['lookup']) {
             return;
         }
 
-        foreach ($event->getSubject()->associations() as $association) {
+        /**
+         * @var \Cake\ORM\Table $table
+         */
+        $table = $event->getSubject();
+
+        foreach ($table->associations() as $association) {
             if (! $this->validate($association, $data)) {
                 continue;
             }
@@ -118,7 +133,7 @@ class LookupListener implements EventListenerInterface
      * @param \ArrayObject $data Request data
      * @return bool
      */
-    private function validate(Association $association, ArrayObject $data)
+    private function validate(Association $association, ArrayObject $data): bool
     {
         if (! $this->isValidAssociation($association)) {
             return false;
@@ -143,13 +158,13 @@ class LookupListener implements EventListenerInterface
      * @param \Cake\ORM\Association $association Table association
      * @return bool
      */
-    private function isValidAssociation(Association $association)
+    private function isValidAssociation(Association $association): bool
     {
         if (Association::MANY_TO_ONE !== $association->type()) {
             return false;
         }
 
-        if (is_null($association->className())) {
+        if (empty($association->className())) {
             return false;
         }
 
@@ -163,11 +178,19 @@ class LookupListener implements EventListenerInterface
      * @param mixed $value Foreign key value
      * @return bool
      */
-    private function isValidID(Association $association, $value)
+    private function isValidID(Association $association, $value): bool
     {
-        $query = $association->getTarget()
-            ->find('all')
-            ->where([$association->primaryKey() => $value])
+        /**
+         * @var \Cake\ORM\Table $table
+         */
+        $table = $association->getTarget();
+        /**
+         * @var string $primaryKey
+         */
+        $primaryKey = $table->getPrimaryKey();
+
+        $query = $table->find('all')
+            ->where([$primaryKey => $value])
             ->limit(1);
 
         return ! $query->isEmpty();
@@ -180,7 +203,7 @@ class LookupListener implements EventListenerInterface
      * @param \ArrayObject $data Request data
      * @return void
      */
-    private function getRelatedIdByLookupField(Association $association, ArrayObject $data)
+    private function getRelatedIdByLookupField(Association $association, ArrayObject $data): void
     {
         $lookupFields = $this->getLookupFields($association->className());
         if (empty($lookupFields)) {
@@ -191,21 +214,23 @@ class LookupListener implements EventListenerInterface
         if (is_null($relatedEntity)) {
             return;
         }
-
-        $data[$association->getForeignKey()] = $relatedEntity->get($association->getPrimaryKey());
+        /** @var string $primaryKey */
+        $primaryKey = $association->getTarget()->getPrimaryKey();
+        $data[$association->getForeignKey()] = $relatedEntity->get($primaryKey);
     }
 
     /**
      * Module lookup fields getter.
      *
      * @param string $moduleName Module name
-     * @return array
+     * @return mixed[]
      */
-    private function getLookupFields($moduleName)
+    private function getLookupFields(string $moduleName): array
     {
-        $config = (new ModuleConfig(ConfigType::MODULE(), $moduleName))->parse();
+        $mc = new ModuleConfig(ConfigType::MODULE(), $moduleName);
+        $config = $mc->parseToArray();
 
-        return $config->table->lookup_fields;
+        return $config['table']['lookup_fields'];
     }
 
     /**
@@ -213,20 +238,26 @@ class LookupListener implements EventListenerInterface
      *
      * @param \Cake\ORM\Association $association Table association
      * @param \ArrayObject $data Request data
-     * @param array $fields Lookup fields
+     * @param mixed[] $fields Lookup fields
      * @return \Cake\Datasource\EntityInterface|null
      */
-    private function getRelatedEntity(Association $association, ArrayObject $data, array $fields)
+    private function getRelatedEntity(Association $association, ArrayObject $data, array $fields): ?EntityInterface
     {
         $query = $association->getTarget()
             ->find('all')
-            ->select($association->getPrimaryKey())
+            ->select($association->getTarget()->getPrimaryKey())
+            ->enableHydration(true)
             ->limit(1);
 
         foreach ($fields as $field) {
             $query->orWhere([$field => $data[$association->getForeignKey()]]);
         }
 
-        return $query->first();
+        /**
+         * @var \Cake\Datasource\EntityInterface|null $result
+         */
+        $result = $query->first();
+
+        return $result;
     }
 }

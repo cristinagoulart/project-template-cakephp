@@ -19,17 +19,18 @@ use App\Feature\Factory as FeatureFactory;
 use AuditStash\Meta\RequestMetadata;
 use Cake\Controller\Controller;
 use Cake\Core\Configure;
+use Cake\Datasource\EntityInterface;
 use Cake\Event\Event;
 use Cake\Event\EventManager;
-use Cake\Network\Exception\ForbiddenException;
-use Cake\Network\Exception\NotFoundException;
+use Cake\Http\Exception\ForbiddenException;
+use Cake\Http\Exception\NotFoundException;
 use Cake\ORM\TableRegistry;
 use Cake\Utility\Inflector;
 use Cake\Utility\Security;
-use Exception;
 use Firebase\JWT\JWT;
 use Qobo\Utils\ModuleConfig\ConfigType;
 use Qobo\Utils\ModuleConfig\ModuleConfig;
+use Qobo\Utils\Utility\User;
 use RolesCapabilities\CapabilityTrait;
 use RuntimeException;
 use Search\Controller\SearchTrait;
@@ -64,7 +65,9 @@ class AppController extends Controller
     {
         parent::initialize();
 
-        $this->loadComponent('RequestHandler');
+        $this->loadComponent('RequestHandler', [
+            'enableBeforeRedirect' => false,
+        ]);
         $this->loadComponent('Flash');
 
         /*
@@ -76,9 +79,9 @@ class AppController extends Controller
 
         $this->loadComponent('CakeDC/Users.UsersAuth');
 
-        $this->Auth->config('authorize', false);
-        $this->Auth->config('loginRedirect', '/');
-        $this->Auth->config('flash', ['element' => 'error', 'key' => 'auth']);
+        $this->Auth->setConfig('authorize', false);
+        $this->Auth->setConfig('loginRedirect', '/');
+        $this->Auth->setConfig('flash', ['element' => 'error', 'key' => 'auth']);
 
         // enable LDAP authentication
         if ((bool)Configure::read('Ldap.enabled')) {
@@ -90,13 +93,15 @@ class AppController extends Controller
         if (!$feature->isActive()) {
             throw new NotFoundException();
         }
+
+        User::setCurrentUser((array)$this->Auth->user());
     }
 
     /**
      * Before render callback.
      *
      * @param \Cake\Event\Event $event The beforeRender event.
-     * @return \Cake\Http\Response|null|void
+     * @return \Cake\Http\Response|void|null
      */
     public function beforeRender(Event $event)
     {
@@ -105,7 +110,7 @@ class AppController extends Controller
         // in each action as required.
         // TODO: Adding warning logs and then remove later
         if (!array_key_exists('_serialize', $this->viewVars) &&
-            in_array($this->response->type(), ['application/json', 'application/xml'])
+            in_array($this->response->getType(), ['application/json', 'application/xml'])
         ) {
             $this->set('_serialize', true);
         }
@@ -117,23 +122,30 @@ class AppController extends Controller
      * Callack method.
      *
      * @param  \Cake\Event\Event $event Event object
-     * @return void|\Cake\Http\Response
+     * @return \Cake\Http\Response|void|null
      */
     public function beforeFilter(Event $event)
     {
         $this->_allowedResetPassword();
 
+        /**
+         * @var \Cake\Controller\Controller $controller
+         */
+        $controller = $event->getSubject();
+        $request = $controller->getRequest();
+
         // if user not logged in, redirect him to login page
-        $url = $event->subject()->request->params;
+        $url = $request->getAttribute('params');
         try {
-            $result = $this->_checkAccess($url, $this->Auth->user());
+            $user = empty($this->Auth->user()) ? [] : $this->Auth->user();
+            $result = $this->_checkAccess($url, $user);
             if (!$result) {
                 throw new ForbiddenException();
             }
         } catch (ForbiddenException $e) {
             $event->stopPropagation();
             if (empty($this->Auth->user())) {
-                $this->Auth->config('authError', false);
+                $this->Auth->setConfig('authError', false);
 
                 return $this->redirect('/login');
             } else {
@@ -141,7 +153,7 @@ class AppController extends Controller
                 if ($this->request->query('embedded')) {
                     return $this->response;
                 }
-                throw new ForbiddenException($e->getMessage());
+                throw new ForbiddenException($e->getMessage(), 0, $e);
             }
         }
 
@@ -163,20 +175,20 @@ class AppController extends Controller
     /**
      * Index method
      *
-     * @return void
+     * @return \Cake\Http\Response|void|null
      */
     public function index()
     {
         $entity = $this->getSystemSearch();
-        $searchData = json_decode($entity->content, true);
+        $searchData = $entity->get('content');
 
         // return json response and skip any further processing.
         if ($this->request->is('ajax') && $this->request->accepts('application/json')) {
-            $this->viewBuilder()->className('Json');
+            $this->viewBuilder()->setClassName('Json');
             $response = $this->getAjaxViewVars(
                 $searchData['latest'],
-                $this->{$this->name},
-                new Search($this->{$this->name}, $this->Auth->user())
+                $this->loadModel(),
+                new Search($this->loadModel(), $this->Auth->user())
             );
             $this->set($response);
 
@@ -186,12 +198,12 @@ class AppController extends Controller
         $this->set([
             'entity' => $entity,
             'searchData' => $searchData['latest'],
-            'preSaveId' => (new Search($this->{$this->name}, $this->Auth->user()))->create($searchData['latest']),
+            'preSaveId' => (new Search($this->loadModel(), $this->Auth->user()))->create($searchData['latest']),
             'searchableFields' => SearchableFieldsListener::getSearchableFieldsByTable(
-                $this->{$this->name},
+                $this->loadModel(),
                 $this->Auth->user()
             ),
-            'associationLabels' => SearchUtility::instance()->getAssociationLabels($this->{$this->name})
+            'associationLabels' => SearchUtility::instance()->getAssociationLabels($this->loadModel())
         ]);
 
         $this->render('/Module/index');
@@ -200,9 +212,9 @@ class AppController extends Controller
     /**
      * System search getter.
      *
-     * @return \Search\Model\Entity\SavedSearch
+     * @return \Cake\Datasource\EntityInterface
      */
-    private function getSystemSearch()
+    protected function getSystemSearch(): EntityInterface
     {
         $table = TableRegistry::getTableLocator()->get('Search.SavedSearches');
 
@@ -220,19 +232,25 @@ class AppController extends Controller
     /**
      * Creates system search for provided module.
      *
-     * @return \Search\Model\Entity\SavedSearch
      * @throws \RuntimeException when failed to create system search
+     *
+     * @return \Cake\Datasource\EntityInterface
      */
-    private function createSystemSearch()
+    protected function createSystemSearch(): EntityInterface
     {
         $table = TableRegistry::getTableLocator()->get('Search.SavedSearches');
-        $user = TableRegistry::getTableLocator()->get('CakeDC/Users.Users')
+        /**
+         * @var \Cake\Datasource\EntityInterface $query
+         */
+        $query = TableRegistry::getTableLocator()->get('CakeDC/Users.Users')
             ->find()
             ->where(['is_superuser' => true])
-            ->firstOrFail()
-            ->toArray();
+            ->enableHydration(true)
+            ->firstOrFail();
 
-        $id = (new Search($this->{$this->name}, $user))->create(['system' => true]);
+        $user = $query->toArray();
+
+        $id = (new Search($this->loadModel(), $user))->create(['system' => true]);
 
         $entity = $table->get($id);
         $entity = $table->patchEntity($entity, [
@@ -256,7 +274,7 @@ class AppController extends Controller
      *
      * @return void
      */
-    protected function loadAdminLTE()
+    protected function loadAdminLTE(): void
     {
         $loadAdminLTE = true;
 
@@ -272,22 +290,16 @@ class AppController extends Controller
 
         // Load AdminLTE for regular requests
         if ($loadAdminLTE) {
-            $this->viewBuilder()->className('AdminLTE.AdminLTE');
+            $this->viewBuilder()->setClassName('AdminLTE.AdminLTE');
         }
 
-        $this->viewBuilder()->theme('AdminLTE');
-        $this->viewBuilder()->layout('adminlte');
+        $this->viewBuilder()->setTheme('AdminLTE');
+        $this->viewBuilder()->setLayout('adminlte');
 
         $title = Inflector::humanize(Inflector::underscore($this->name));
-        try {
-            $mc = new ModuleConfig(ConfigType::MODULE(), $this->name);
-            $config = $mc->parse();
-            if (!empty($config->table->alias)) {
-                $title = $config->table->alias;
-            }
-        } catch (Exception $e) {
-            // do nothing
-        }
+        $mc = new ModuleConfig(ConfigType::MODULE(), $this->name);
+        $config = $mc->parse();
+        $title = ! empty($config->table->alias) ? $config->table->alias : $title;
 
         // overwrite theme title before setting the theme
         // NOTE: we set controller specific title, to work around requestAction() calls.
@@ -300,7 +312,7 @@ class AppController extends Controller
      *
      * @return void
      */
-    protected function _allowedResetPassword()
+    protected function _allowedResetPassword(): void
     {
         $url = [
             'plugin' => 'CakeDC/Users',
@@ -309,7 +321,7 @@ class AppController extends Controller
         ];
 
         // skip if url does not match Users requestResetPassword action.
-        if (array_diff_assoc($url, $this->request->params)) {
+        if (array_diff_assoc($url, $this->request->getAttribute('params'))) {
             return;
         }
 
@@ -326,14 +338,14 @@ class AppController extends Controller
      *
      * @return void
      */
-    protected function _generateApiToken()
+    protected function _generateApiToken(): void
     {
         Configure::write('API.token', JWT::encode(
             [
                 'sub' => $this->Auth->user('id'),
-                'exp' => time() + 604800
+                'exp' => time() + (int)Configure::read('API.expireTime'),
             ],
-            Security::salt()
+            Security::getSalt()
         ));
 
         Configure::write('CsvMigrations.api.token', Configure::read('API.token'));
@@ -349,12 +361,12 @@ class AppController extends Controller
      *
      * @return void
      */
-    protected function _setIframeRendering()
+    protected function _setIframeRendering(): void
     {
         $renderIframe = trim((string)getenv('ALLOW_IFRAME_RENDERING'));
 
         if ('' !== $renderIframe) {
-            $this->response->header('X-Frame-Options', $renderIframe);
+            $this->setResponse($this->response->withHeader('X-Frame-Options', $renderIframe));
         }
     }
 
@@ -362,9 +374,9 @@ class AppController extends Controller
      * Get list of controller's skipped actions.
      *
      * @param  string $controllerName Controller name
-     * @return array
+     * @return mixed[]
      */
-    public static function getSkipActions($controllerName)
+    public static function getSkipActions(string $controllerName): array
     {
         $result = [
             'getMenu',

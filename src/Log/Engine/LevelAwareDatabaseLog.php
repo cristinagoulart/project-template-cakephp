@@ -7,11 +7,14 @@ use DatabaseLog\Log\Engine\DatabaseLog;
 class LevelAwareDatabaseLog extends DatabaseLog
 {
     /**
-     * Skip writing logs if log level is not supported.
+     * Write the log to database. Skip writing logs if log level is not supported.
      *
-     * {@inheritDoc}
+     * @param string $level Log level
+     * @param mixed $message Log message
+     * @param array $context Log context
+     * @return bool Success
      */
-    public function log($level, $message, array $context = [])
+    public function log($level, $message, array $context = []) : bool
     {
         // avoid logging database queries, which results in infinite recursion
         if ($message instanceof LoggedQuery) {

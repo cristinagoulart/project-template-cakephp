@@ -19,8 +19,9 @@ if (!defined('STDIN')) {
 }
 
 use Cake\Utility\Security;
+use Composer\IO\IOInterface;
 use Composer\Script\Event;
-use Exception;
+use RuntimeException;
 
 /**
  * Provides installation hooks for when this application is installed via
@@ -47,10 +48,10 @@ class Installer
      * Does some routine installation tasks so people don't have to.
      *
      * @param \Composer\Script\Event $event The composer event object.
-     * @throws \Exception Exception raised by validator.
+     * @throws \RuntimeException RuntimeException raised by validator.
      * @return void
      */
-    public static function postInstall(Event $event)
+    public static function postInstall(Event $event): void
     {
         $io = $event->getIO();
 
@@ -65,7 +66,7 @@ class Installer
                 if (in_array($arg, ['Y', 'y', 'N', 'n'])) {
                     return $arg;
                 }
-                throw new Exception('This is not a valid answer. Please choose Y or n.');
+                throw new RuntimeException('This is not a valid answer. Please choose Y or n.');
             };
             $setFolderPermissions = $io->askAndValidate(
                 '<info>Set Folder Permissions ? (Default to Y)</info> [<comment>Y,n</comment>]? ',
@@ -83,8 +84,9 @@ class Installer
 
         static::setSecuritySalt($rootDir, $io);
 
-        if (class_exists('\Cake\Codeception\Console\Installer')) {
-            \Cake\Codeception\Console\Installer::customizeCodeceptionBinary($event);
+        $class = 'Cake\Codeception\Console\Installer';
+        if (class_exists($class)) {
+            $class::customizeCodeceptionBinary($event);
         }
     }
 
@@ -95,7 +97,7 @@ class Installer
      * @param \Composer\IO\IOInterface $io IO interface to write to console.
      * @return void
      */
-    public static function createAppConfig($dir, $io)
+    public static function createAppConfig(string $dir, IOInterface $io): void
     {
         $appConfig = $dir . '/config/app.php';
         $defaultConfig = $dir . '/config/app.default.php';
@@ -112,7 +114,7 @@ class Installer
      * @param \Composer\IO\IOInterface $io IO interface to write to console.
      * @return void
      */
-    public static function createWritableDirectories($dir, $io)
+    public static function createWritableDirectories(string $dir, IOInterface $io): void
     {
         foreach (static::WRITABLE_DIRS as $path) {
             $path = $dir . '/' . $path;
@@ -132,17 +134,17 @@ class Installer
      * @param \Composer\IO\IOInterface $io IO interface to write to console.
      * @return void
      */
-    public static function setFolderPermissions($dir, $io)
+    public static function setFolderPermissions(string $dir, IOInterface $io): void
     {
         // Change the permissions on a path and output the results.
-        $changePerms = function ($path, $perms, $io) {
-            // Get permission bits from stat(2) result.
+        $changePerms = function ($path) use ($io) {
             $currentPerms = fileperms($path) & 0777;
-            if (($currentPerms & $perms) == $perms) {
+            $worldWritable = $currentPerms | 0007;
+            if ($worldWritable == $currentPerms) {
                 return;
             }
 
-            $res = chmod($path, $currentPerms | $perms);
+            $res = chmod($path, $worldWritable);
             if ($res) {
                 $io->write('Permissions set on ' . $path);
             } else {
@@ -150,8 +152,8 @@ class Installer
             }
         };
 
-        $walker = function ($dir, $perms, $io) use (&$walker, $changePerms) {
-            $files = array_diff(scandir($dir), ['.', '..']);
+        $walker = function ($dir) use (&$walker, $changePerms) {
+            $files = array_diff((array)scandir($dir), ['.', '..']);
             foreach ($files as $file) {
                 $path = $dir . '/' . $file;
 
@@ -159,15 +161,14 @@ class Installer
                     continue;
                 }
 
-                $changePerms($path, $perms, $io);
-                $walker($path, $perms, $io);
+                $changePerms($path);
+                $walker($path);
             }
         };
 
-        $worldWritable = bindec('0000000111');
-        $walker($dir . '/tmp', $worldWritable, $io);
-        $changePerms($dir . '/tmp', $worldWritable, $io);
-        $changePerms($dir . '/logs', $worldWritable, $io);
+        $walker($dir . '/tmp');
+        $changePerms($dir . '/tmp');
+        $changePerms($dir . '/logs');
     }
 
     /**
@@ -177,7 +178,7 @@ class Installer
      * @param \Composer\IO\IOInterface $io IO interface to write to console.
      * @return void
      */
-    public static function setSecuritySalt($dir, $io)
+    public static function setSecuritySalt(string $dir, IOInterface $io): void
     {
         $newKey = hash('sha256', Security::randomBytes(64));
         static::setSecuritySaltInFile($dir, $io, $newKey, 'app.php');
@@ -192,12 +193,12 @@ class Installer
      * @param string $file A path to a file relative to the application's root
      * @return void
      */
-    public static function setSecuritySaltInFile($dir, $io, $newKey, $file)
+    public static function setSecuritySaltInFile(string $dir, IOInterface $io, string $newKey, string $file): void
     {
         $config = $dir . '/config/' . $file;
         $content = file_get_contents($config);
 
-        $content = str_replace('__SALT__', $newKey, $content, $count);
+        $content = str_replace('__SALT__', $newKey, (string)$content, $count);
 
         if ($count == 0) {
             $io->write('No Security.salt placeholder to replace.');
@@ -223,11 +224,11 @@ class Installer
      * @param string $file A path to a file relative to the application's root
      * @return void
      */
-    public static function setAppNameInFile($dir, $io, $appName, $file)
+    public static function setAppNameInFile(string $dir, IOInterface $io, string $appName, string $file): void
     {
         $config = $dir . '/config/' . $file;
         $content = file_get_contents($config);
-        $content = str_replace('__APP_NAME__', $appName, $content, $count);
+        $content = str_replace('__APP_NAME__', $appName, (string)$content, $count);
 
         if ($count == 0) {
             $io->write('No __APP_NAME__ placeholder to replace.');

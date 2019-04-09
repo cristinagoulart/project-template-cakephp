@@ -45,7 +45,6 @@ use Cake\Event\EventManager;
 use Cake\Http\ServerRequest;
 use Cake\Log\Log;
 use Cake\Mailer\Email;
-use Cake\Routing\DispatcherFactory;
 use Cake\Utility\Inflector;
 use Cake\Utility\Security;
 
@@ -91,6 +90,9 @@ try {
 } catch (\Exception $e) {
     exit($e->getMessage() . "\n");
 }
+
+require_once __DIR__ . '/routes_filters.php';
+
 /*
  * Load an environment local configuration file.
  * You can use a file like app_local.php to provide local overrides to your
@@ -118,14 +120,18 @@ Configure::load('Settings', 'dbconfig');
 if (Configure::read('debug')) {
     Configure::write('Cache._cake_model_.duration', '+2 minutes');
     Configure::write('Cache._cake_core_.duration', '+2 minutes');
+    // disable router cache during development
+    Configure::write('Cache._cake_routes_.duration', '+2 seconds');
+
+    Configure::write('Cache._cake_swagger_.duration', '+2 seconds');
+    Configure::write('Cache.default.duration', '+2 seconds');
 }
 
 /*
- * Set server timezone to UTC. You can change it to another timezone of your
- * choice but using UTC makes time calculations / conversions easier.
+ * Set the default server timezone. Using UTC makes time calculations / conversions easier.
  * Check http://php.net/manual/en/timezones.php for list of valid timezone strings.
  */
-date_default_timezone_set('UTC');
+date_default_timezone_set(Configure::read('App.defaultTimezone'));
 
 /*
  * Configure the mbstring extension to use the correct encoding.
@@ -261,24 +267,20 @@ Plugin::load('AuditStash');
 Plugin::load('DatabaseLog', ['routes' => true]);
 Plugin::load('Search', ['bootstrap' => true, 'routes' => true]);
 Plugin::load('Burzum/FileStorage');
-if (Configure::read('Swagger.crawl') && Configure::read('API.auth')) {
+if (Configure::read('Swagger.crawl')) {
     Plugin::load('Alt3/Swagger', ['bootstrap' => true, 'routes' => true]);
 }
 Plugin::load('AdminLTE', ['bootstrap' => true, 'routes' => true]);
-Configure::load('admin_lte', 'default');
-/*
- * Only load JwtAuth plugin if API authentication is enabled
- */
-if (Configure::read('API.auth')) {
-    Plugin::load('ADmad/JwtAuth');
-}
 
-/**
- * Connect middleware/dispatcher filters.
+Plugin::load('ADmad/JwtAuth');
+
+/*
+ * @todo seems like if CakeDC/Users plugin is loaded
+ * before any of our plugins that use routes, it breaks
+ * them, needs to be investigated further.
  */
-DispatcherFactory::add('Asset');
-DispatcherFactory::add('Routing');
-DispatcherFactory::add('ControllerFactory');
+Configure::write('Users.config', ['users']);
+Plugin::load('CakeDC/Users', ['routes' => true, 'bootstrap' => true]);
 
 // @link https://github.com/burzum/cakephp-file-storage/blob/master/docs/Documentation/Included-Event-Listeners.md
 EventManager::instance()->on(new LocalListener([
@@ -330,6 +332,23 @@ call_user_func(function () {
 });
 
 /*
+<<<<<<< HEAD
+=======
+ * Load AdminLTE theme settings
+ */
+Configure::load('admin_lte', 'default');
+
+/*
+ * Load system information settings
+ */
+Configure::load('system_info', 'default');
+
+if (!is_null(env('API_AUTHENTICATION')) && (bool)env('API_AUTHENTICATION') === false) {
+    Log::write('critical', "Non-authenticated API requests are deprecated");
+}
+
+/*
+>>>>>>> master
  * Feature Factory initialization
  * IMPORTANT: this line should be placed at the end of the bootstrap file.
  */

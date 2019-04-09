@@ -9,14 +9,19 @@ use ReflectionClass;
 
 class AnnotationTest extends TestCase
 {
+    public $fixtures = [
+        'plugin.CsvMigrations.dblists',
+        'plugin.CsvMigrations.dblist_items'
+    ];
+
     /**
      * @dataProvider propertyOptions
      */
-    public function testGetPropertyOptions($fieldType, $expectedType, $expectedFormat)
+    public function testGetPropertyOptions(string $fieldType, string $expectedType, string $expectedFormat): void
     {
         $field = new CsvField(['name' => 'fieldName', 'type' => $fieldType, 'limit' => 'listName']);
         $result = $this->invokeMethod(
-            new Annotation(__CLASS__, __FILE__),
+            new Annotation('Common', ''),
             'getPropertyOptions',
             [['field' => $field]]
         );
@@ -24,7 +29,10 @@ class AnnotationTest extends TestCase
         $this->assertEquals($expectedFormat, $result['format']);
     }
 
-    public function propertyOptions()
+    /**
+     * @return mixed[]
+     */
+    public function propertyOptions(): array
     {
         // type (input), type (output), format (output)
         $propertyOptions = [
@@ -36,6 +44,9 @@ class AnnotationTest extends TestCase
             ['boolean', 'boolean', 'boolean'],
             ['datetime', 'string', 'date-time'],
             ['datetime', 'string', 'date-time'],
+            ['list(countries)', 'string', 'list'],
+            ['sublist(countries)', 'string', 'list'],
+            ['dblist(companies)', 'string', 'list'],
             ['date', 'string', 'date'],
             ['time', 'string', 'time'],
             ['decimal', 'number', 'float'],
@@ -53,6 +64,7 @@ class AnnotationTest extends TestCase
 
     /**
      * Access protected and private method
+     *
      * @param  mixed $object Class to access
      * @param  string $methodName Method name
      * @param  mixed[] $parameters arguments of the methods

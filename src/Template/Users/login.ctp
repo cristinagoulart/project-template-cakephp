@@ -11,7 +11,7 @@ $this->layout = 'AdminLTE/login';
             <span class="input-group-addon">
                 <span class="fa fa-user"></span>
             </span>
-            <?= $this->Form->input('username', [
+            <?= $this->Form->control('username', [
                 'required' => true,
                 'label' => false,
                 'placeholder' => 'Username',
@@ -27,7 +27,7 @@ $this->layout = 'AdminLTE/login';
             <span class="input-group-addon">
                 <span class="fa fa-lock"></span>
             </span>
-            <?= $this->Form->input('password', [
+            <?= $this->Form->control('password', [
                 'required' => true,
                 'label' => false,
                 'placeholder' => 'Password',
@@ -41,7 +41,7 @@ $this->layout = 'AdminLTE/login';
         <?php if (Configure::read('Users.RememberMe.active')) : ?>
         <div class="col-xs-12">
             <div class="checkbox icheck">
-                <?= $this->Form->input(Configure::read('Users.Key.Data.rememberMe'), [
+                <?= $this->Form->control(Configure::read('Users.Key.Data.rememberMe'), [
                     'type' => 'checkbox',
                     'label' => ' ' . __d('Users', 'Remember Me'),
                     'templates' => ['inputContainer' => '{{content}}']

@@ -17,6 +17,8 @@ use Cake\I18n\Time;
 /**
  * Bake Upgrade<timestamp>Task files used by Upgrade shell.
  *
+ * @property \Bake\Shell\Task\BakeTemplateTask $BakeTemplate
+ *
  */
 class UpgradeFileTask extends BakeTask
 {

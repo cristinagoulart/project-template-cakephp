@@ -4,6 +4,7 @@ namespace App\Swagger;
 use Cake\Core\App;
 use Cake\Database\Exception;
 use Cake\Database\Type;
+use Cake\Database\TypeInterface;
 use Cake\I18n\Time;
 use Cake\ORM\TableRegistry;
 use Cake\Routing\Router;
@@ -13,9 +14,11 @@ use CsvMigrations\FieldHandlers\Config\ListConfig;
 use CsvMigrations\FieldHandlers\CsvField;
 use CsvMigrations\FieldHandlers\FieldHandlerFactory;
 use CsvMigrations\FieldHandlers\Provider\SelectOptions\ListSelectOptions;
+use CsvMigrations\Model\Table\DblistsTable;
 use Qobo\Utils\ModuleConfig\ConfigType;
 use Qobo\Utils\ModuleConfig\ModuleConfig;
 use Qobo\Utils\Utility;
+use Webmozart\Assert\Assert;
 
 class Annotation
 {
@@ -254,11 +257,11 @@ class Annotation
 
         $replacement = [$this->getInfo(), $this->getDefinition($this->getProperties()), $this->getPaths()];
         $replacement = implode("\n", $replacement) . "\n$1";
-        $content = file_get_contents($this->path);
+        $content = (string)file_get_contents($this->path);
 
         $pattern = '/(^class\s)/im';
         $content = preg_replace($pattern, $replacement, $content);
-        $content = trim($content);
+        $content = trim((string)$content);
 
         $this->setContent($content);
 
@@ -341,12 +344,12 @@ class Annotation
     {
         $factory = new FieldHandlerFactory();
         $table = TableRegistry::getTableLocator()->get($this->className);
-        $config = (new ModuleConfig(ConfigType::MIGRATION(), $this->className))->parse();
+        $config = (new ModuleConfig(ConfigType::MIGRATION(), $this->className))->parseToArray();
 
         $result = [];
         foreach ($config as $column) {
-            $csvField = new CsvField((array)$column);
-            foreach ($factory->fieldToDb(new CsvField((array)$column), $table) as $field) {
+            $csvField = new CsvField($column);
+            foreach ($factory->fieldToDb(new CsvField($column), $table) as $field) {
                 $result[] = ['field' => $csvField, 'db_field' => $field];
             }
         }
@@ -365,11 +368,15 @@ class Annotation
 
         $factory = new FieldHandlerFactory();
         $table = TableRegistry::getTableLocator()->get($this->className);
-        $columns = array_diff($table->getSchema()->columns(), $table->newEntity()->hiddenProperties());
+        $columns = array_diff($table->getSchema()->columns(), $table->newEntity()->getHidden());
         foreach ($columns as $column) {
             $type = $table->getSchema()->getColumnType($column);
+            /** @var string|\Cake\Database\TypeInterface|null */
+            $typeMap = Type::getMap($type);
+            $typeMap = $typeMap instanceof TypeInterface ? $typeMap->getName() : $typeMap;
+
             // handle custom database types
-            if (false === strpos(Type::map($type), 'Cake\\Database\\Type\\')) {
+            if (null === $typeMap || false === strpos($typeMap, 'Cake\\Database\\Type\\')) {
                 $type = 'string';
             }
             $column = [
@@ -565,8 +572,10 @@ class Annotation
      */
     private function getDatabaseList(string $listName): array
     {
-        $result = TableRegistry::get('CsvMigrations.Dblists')
-            ->find('options', ['name' => $listName]);
+        $table = TableRegistry::get('CsvMigrations.Dblists');
+        Assert::isInstanceOf($table, DblistsTable::class);
+
+        $result = $table->getOptions($listName);
 
         return is_array($result) ? $result : $result->toArray();
     }
@@ -581,23 +590,22 @@ class Annotation
      * @param  string $properties Swagger properties annotations
      * @return string
      */
-    protected function getDefinition(string $properties)
+    protected function getDefinition(string $properties): string
     {
-        $result = null;
+        $result = '';
         $table = TableRegistry::getTableLocator()->get($this->className);
 
         $entity = $table->newEntity();
-        $hiddenProperties = $entity->hiddenProperties();
         try {
-            $columns = $table->schema()->columns();
-            $columns = array_diff($columns, $hiddenProperties);
+            $columns = $table->getSchema()->columns();
+            $columns = array_diff($columns, $entity->getHidden());
         } catch (Exception $e) {
             return $result;
         }
 
         $required = [];
         foreach ($columns as $column) {
-            $data = $table->schema()->column($column);
+            $data = $table->getSchema()->getColumn($column);
             if ($data['null']) {
                 continue;
             }
@@ -626,21 +634,19 @@ class Annotation
      * of all visible columns to be used as sorting fields and generates
      * paths annotations on the fly.
      *
-     * @return array
+     * @return string
      */
-    protected function getPaths()
+    protected function getPaths() : string
     {
-        $result = null;
         $table = TableRegistry::getTableLocator()->get($this->className);
 
         $entity = $table->newEntity();
-        $hiddenProperties = $entity->hiddenProperties();
         try {
-            $fields = $table->schema()->columns();
-            $fields = array_diff($fields, $hiddenProperties);
+            $fields = $table->getSchema()->columns();
+            $fields = array_diff($fields, $entity->getHidden());
             sort($fields);
         } catch (Exception $e) {
-            return $result;
+            return '';
         }
 
         $placeholders = [
@@ -651,12 +657,10 @@ class Annotation
             '{{sort_fields}}' => '"' . implode('", "', $fields) . '"'
         ];
 
-        $result = str_replace(
+        return str_replace(
             array_keys($placeholders),
             array_values($placeholders),
             $this->annotations['paths']
         );
-
-        return $result;
     }
 }

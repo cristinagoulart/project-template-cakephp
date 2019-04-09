@@ -2,18 +2,18 @@
 namespace App\Test\TestCase\Controller\Api\V1\V0;
 
 use App\Event\Controller\Api\IndexActionListener;
+use App\Test\TestCase\Controller\BaseIntegrationTestCase;
 use Cake\Core\Configure;
 use Cake\Event\EventList;
 use Cake\Event\EventManager;
 use Cake\ORM\TableRegistry;
-use Cake\TestSuite\IntegrationTestCase;
-use Cake\Utility\Security;
-use Firebase\JWT\JWT;
 
 /**
  * Translations\Controller\TranslationsController Test Case
+ *
+ * @property \Cake\Http\Response $_response
  */
-class TranslationsControllerTest extends IntegrationTestCase
+class TranslationsControllerTest extends BaseIntegrationTestCase
 {
     /**
      * @var object $Translations
@@ -30,23 +30,12 @@ class TranslationsControllerTest extends IntegrationTestCase
     {
         parent::setUp();
 
-        $token = JWT::encode(
-            ['sub' => '00000000-0000-0000-0000-000000000002', 'exp' => time() + 604800],
-            Security::salt()
-        );
+        $this->setApiHeaders(['user_id' => '00000000-0000-0000-0000-000000000002']);
 
         $this->Translations = TableRegistry::get('Translations.Translations');
 
         // enable event tracking
-        $this->Translations->eventManager()->setEventList(new EventList());
-
-        $this->configRequest([
-            'headers' => [
-                'Accept' => 'application/json',
-                'Content-Type' => 'application/json',
-                'authorization' => 'Bearer ' . $token
-            ]
-        ]);
+        $this->Translations->getEventManager()->setEventList(new EventList());
 
         // Load default plugin configuration
         Configure::load('Translations.translations');
@@ -68,7 +57,9 @@ class TranslationsControllerTest extends IntegrationTestCase
         $this->assertResponseOk();
         $this->assertContentType('application/json');
 
-        $response = json_decode($this->_response->body());
+        $body = $this->_response->getBody();
+        $response = json_decode($body);
+        // $response = json_decode($this->_response->getBody());
         $this->assertTrue($response->success);
         $this->assertEmpty($response->data);
     }
@@ -79,7 +70,7 @@ class TranslationsControllerTest extends IntegrationTestCase
 
         $this->assertResponseOk();
 
-        $response = json_decode($this->_response->body());
+        $response = json_decode($this->_response->getBody());
         $this->assertEquals(3, count($response->data));
     }
 
@@ -89,7 +80,7 @@ class TranslationsControllerTest extends IntegrationTestCase
 
         $this->assertResponseOk();
 
-        $response = json_decode($this->_response->body());
+        $response = json_decode($this->_response->getBody());
         $this->assertEquals(2, count($response->data));
     }
 
@@ -99,7 +90,7 @@ class TranslationsControllerTest extends IntegrationTestCase
 
         $this->assertResponseOk();
 
-        $response = json_decode($this->_response->body());
+        $response = json_decode($this->_response->getBody());
         $this->assertEquals(2, count($response->data));
     }
 
@@ -109,7 +100,7 @@ class TranslationsControllerTest extends IntegrationTestCase
 
         $this->assertResponseOk();
 
-        $response = json_decode($this->_response->body());
+        $response = json_decode($this->_response->getBody());
         $this->assertEquals(1, count($response->data));
     }
 }

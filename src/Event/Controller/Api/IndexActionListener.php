@@ -2,16 +2,22 @@
 namespace App\Event\Controller\Api;
 
 use App\Event\EventName;
+use Cake\Controller\Controller;
 use Cake\Datasource\QueryInterface;
 use Cake\Datasource\ResultSetInterface;
 use Cake\Event\Event;
+use Cake\ORM\Table;
+use Cake\Utility\Hash;
+use Webmozart\Assert\Assert;
 
 class IndexActionListener extends BaseActionListener
 {
     /**
-     * {@inheritDoc}
+     * Returns a list of all events that the API Index endpoint will listen to.
+     *
+     * @return array
      */
-    public function implementedEvents()
+    public function implementedEvents() : array
     {
         return [
             (string)EventName::API_INDEX_BEFORE_PAGINATE() => 'beforePaginate',
@@ -23,28 +29,25 @@ class IndexActionListener extends BaseActionListener
     /**
      * {@inheritDoc}
      */
-    public function beforePaginate(Event $event, QueryInterface $query)
+    public function beforePaginate(Event $event, QueryInterface $query) : void
     {
-        $request = $event->subject()->request;
+        $controller = $event->getSubject();
+        Assert::isInstanceOf($controller, Controller::class);
 
-        if (static::FORMAT_PRETTY !== $event->subject()->request->getQuery('format')) {
-            $query->contain(
-                $this->_getFileAssociations($event->subject()->{$event->subject()->name})
-            );
-        }
+        $request = $controller->getRequest();
+
+        $table = $controller->loadModel();
+        Assert::isInstanceOf($table, Table::class);
 
         $this->filterByConditions($query, $event);
 
-        $query->order($this->getOrderClause(
-            $event->getSubject()->request,
-            $event->getSubject()->{$event->getSubject()->name}
-        ));
+        $query->order($this->getOrderClause($request, $table));
     }
 
     /**
      * {@inheritDoc}
      */
-    public function afterPaginate(Event $event, ResultSetInterface $resultSet)
+    public function afterPaginate(Event $event, ResultSetInterface $resultSet) : void
     {
         //
     }
@@ -52,33 +55,30 @@ class IndexActionListener extends BaseActionListener
     /**
      * {@inheritDoc}
      */
-    public function beforeRender(Event $event, ResultSetInterface $resultSet)
+    public function beforeRender(Event $event, ResultSetInterface $resultSet) : void
     {
         if ($resultSet->isEmpty()) {
             return;
         }
 
-        $table = $event->getSubject()->{$event->getSubject()->name};
+        $controller = $event->getSubject();
+        Assert::isInstanceOf($controller, Controller::class);
+
+        $request = $controller->getRequest();
+
+        $table = $controller->loadModel();
+        Assert::isInstanceOf($table, Table::class);
 
         foreach ($resultSet as $entity) {
-            $this->_resourceToString($entity);
-        }
+            $this->resourceToString($entity);
 
-        if (static::FORMAT_PRETTY === $event->getSubject()->request->getQuery('format')) {
-            foreach ($resultSet as $entity) {
-                $this->_prettify($entity, $table);
+            static::FORMAT_PRETTY === $request->getQuery('format') ?
+                $this->prettify($entity, $table) :
+                $this->attachFiles($entity, $table);
+
+            if ((bool)$request->getQuery(static::FLAG_INCLUDE_MENUS)) {
+                $this->attachMenu($entity, $table, $controller->Auth->user());
             }
-        }
-
-        // @todo temporary functionality, please see _includeFiles() method documentation.
-        if (static::FORMAT_PRETTY !== $event->getSubject()->request->getQuery('format')) {
-            foreach ($resultSet as $entity) {
-                $this->_restructureFiles($entity, $table);
-            }
-        }
-
-        if ((bool)$event->getSubject()->request->getQuery(static::FLAG_INCLUDE_MENUS)) {
-            $this->attachMenu($resultSet, $table, $event->getSubject()->Auth->user());
         }
     }
 
@@ -89,20 +89,28 @@ class IndexActionListener extends BaseActionListener
      * @param \Cake\Event\Event $event The event
      * @return void
      */
-    private function filterByConditions(QueryInterface $query, Event $event)
+    private function filterByConditions(QueryInterface $query, Event $event) : void
     {
-        if (empty($event->subject()->request->query('conditions'))) {
+        $controller = $event->getSubject();
+        Assert::isInstanceOf($controller, Controller::class);
+
+        $request = $controller->getRequest();
+
+        $table = $controller->loadModel();
+        Assert::isInstanceOf($table, Table::class);
+
+        $queryParam = Hash::get($request->getQueryParams(), 'conditions', []);
+        if (empty($queryParam)) {
             return;
         }
 
         $conditions = [];
-        $tableName = $event->subject()->name;
-        foreach ($event->subject()->request->query('conditions') as $k => $v) {
-            if (false === strpos($k, '.')) {
-                $k = $tableName . '.' . $k;
+        foreach ($queryParam as $field => $value) {
+            $key = $table->aliasField($field);
+            if (is_array($value)) {
+                $key .= ' IN';
             }
-
-            $conditions[$k] = $v;
+            $conditions[$key] = $value;
         };
 
         $query->applyOptions(['conditions' => $conditions]);

@@ -73,12 +73,11 @@ class Upgrade20180907123600Task extends Shell
      * Get an array of database lists from migrations config.
      *
      * @param string $module Module name
-     * @return string[]
+     * @return mixed[]
      */
     protected function getDatabaseListsByModule(string $module): array
     {
-        $config = (new ModuleConfig(ConfigType::MIGRATION(), $module))->parse();
-        $config = json_decode(json_encode($config), true);
+        $config = (new ModuleConfig(ConfigType::MIGRATION(), $module))->parseToArray();
 
         if (empty($config)) {
             return [];
@@ -98,7 +97,7 @@ class Upgrade20180907123600Task extends Shell
     /**
      * Creates database lists records for all relevant fields found in the application.
      *
-     * @param string[] $lists Database lists from all modules
+     * @param mixed[] $lists Database lists from all modules
      * @return void
      */
     protected function createDatabaseLists(array $lists): void

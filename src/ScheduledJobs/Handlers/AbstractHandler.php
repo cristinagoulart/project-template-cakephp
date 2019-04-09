@@ -9,9 +9,9 @@ abstract class AbstractHandler
      * Depending on the type/location of job sources
      * we execute the listing of them differently.
      *
-     * @param array $options with extra configs
+     * @param mixed[] $options with extra configs
      *
-     * @return array $result containing list of jobs
+     * @return mixed[] $result containing list of jobs
      */
-    abstract public function getList(array $options = []);
+    abstract public function getList(array $options = []) : array;
 }

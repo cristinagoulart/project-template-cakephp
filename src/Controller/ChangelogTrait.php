@@ -2,7 +2,10 @@
 namespace App\Controller;
 
 use Cake\Core\Configure;
+use Cake\ORM\Table;
 use Cake\ORM\TableRegistry;
+use Cake\Utility\Inflector;
+use Webmozart\Assert\Assert;
 
 /**
  * Controller Trait responsible for changelog functionality.
@@ -27,9 +30,9 @@ trait ChangelogTrait
      * Return log audit results for specific record.
      *
      * @param  string $id Record id
-     * @return void
+     * @return \Cake\Http\Response|void|null
      */
-    public function changelog($id)
+    public function changelog(string $id)
     {
         /*
         ideally we want to group by user and timestamp, but having user in the meta information makes this non-trivial
@@ -37,22 +40,28 @@ trait ChangelogTrait
         very unlikely.
          */
         $query = TableRegistry::get($this->_tableLog)->find('all')
-            ->where(['primary_key' => $id, 'source' => $this->name])
+            ->where(['primary_key' => $id, 'source' => Inflector::underscore($this->name)])
             ->select(['timestamp', 'user_id', 'original', 'changed'])
             ->order(['timestamp' => 'DESC'])
             ->group('timestamp');
 
-        $modelAlias = $this->{$this->name}->alias();
+        $table = $this->loadModel();
+        Assert::isInstanceOf($table, Table::class);
+
+        $modelAlias = $table->getAlias();
         $methodName = 'moduleAlias';
-        if (method_exists($this->{$this->name}, $methodName) && is_callable([$this->{$this->name}, $methodName])) {
-            $modelAlias = $this->{$this->name}->{$methodName}();
+        if (method_exists($this->loadModel(), $methodName) && is_callable([$this->loadModel(), $methodName])) {
+            $modelAlias = $this->loadModel()->{$methodName}();
         }
 
-        $entity = $this->{$this->name}->findById($id)->firstOrFail();
+        $entity = $table->find()
+            ->where(['id' => $id])
+            ->enableHydration(true)
+            ->firstOrFail();
 
         $this->set('changelog', $this->paginate($query));
         $this->set('modelAlias', $modelAlias);
-        $this->set('displayField', $this->{$this->name}->displayField());
+        $this->set('displayField', $table->getDisplayField());
         $this->set('usersTable', TableRegistry::get(Configure::read('Users.table')));
         $this->set('entity', $entity);
 
