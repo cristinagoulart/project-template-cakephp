@@ -22,7 +22,7 @@ class Upgrade20180806132300Task extends Shell
     /**
      * main() method
      *
-     * @return void
+     * @return int|bool|null
      */
     public function main()
     {
@@ -30,5 +30,7 @@ class Upgrade20180806132300Task extends Shell
             ->add('CakeShell::App:avatars_sync', [
                 'recurrence' => 'FREQ=HOURLY;INTERVAL=1',
             ]);
+
+        return true;
     }
 }

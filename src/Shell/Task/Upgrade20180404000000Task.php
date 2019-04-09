@@ -36,12 +36,12 @@ class Upgrade20180404000000Task extends Shell
     /**
      * Main method.
      *
-     * @return void
+     * @return int|bool|null
      */
     public function main()
     {
         if (! Plugin::loaded('Search')) {
-            return;
+            return false;
         }
 
         EventManager::instance()->on(new SearchableFieldsListener());
@@ -63,6 +63,8 @@ class Upgrade20180404000000Task extends Shell
         }
 
         $this->success(sprintf('%s completed.', $this->getOptionParser()->getDescription()));
+
+        return true;
     }
 
     /**

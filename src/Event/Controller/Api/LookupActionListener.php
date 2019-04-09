@@ -254,10 +254,10 @@ class LookupActionListener extends BaseActionListener
      */
     protected function _getTypeaheadFields(Table $table): array
     {
-        $config = (new ModuleConfig(ConfigType::MODULE(), $table->getRegistryAlias()))->parse();
+        $config = (new ModuleConfig(ConfigType::MODULE(), $table->getRegistryAlias()))->parseToArray();
 
-        $fields = ! empty($config->table->typeahead_fields) ?
-            $config->table->typeahead_fields :
+        $fields = ! empty($config['table']['typeahead_fields']) ?
+            $config['table']['typeahead_fields'] :
             [$table->getDisplayField()];
 
         // Extract the virtual fields to actual db fields before asking for an alias
@@ -369,9 +369,9 @@ class LookupActionListener extends BaseActionListener
      */
     protected function _getParentModule(RepositoryInterface $table): string
     {
-        $config = (new ModuleConfig(ConfigType::MODULE(), $table->getRegistryAlias()))->parse();
+        $config = (new ModuleConfig(ConfigType::MODULE(), $table->getRegistryAlias()))->parseToArray();
 
-        return isset($config->parent->module) ? $config->parent->module : '';
+        return isset($config['parent']['module']) ? $config['parent']['module'] : '';
     }
 
     /**
