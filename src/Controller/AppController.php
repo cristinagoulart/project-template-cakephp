@@ -252,21 +252,12 @@ class AppController extends Controller
 
         Assert::isInstanceOf($user, EntityInterface::class);
 
-        $displayFields = Search::getDisplayFields($this->loadModel()->getRegistryAlias());
+        $id = (new Search($this->loadModel(), $user))->create(['system' => true]);
 
-        $entity = $table->newEntity([
+        $entity = $table->get($id);
+        $entity = $table->patchEntity($entity, [
             'name' => sprintf('Default %s search', Inflector::humanize(Inflector::underscore($this->name))),
-            'model' => $this->loadModel()->getRegistryAlias(),
-            'system' => true,
-            'user_id' => $user->get('id'),
-            'content' => [
-                'saved' => [
-                    'display_columns' => $displayFields,
-                    'sort_by_field' => current($displayFields),
-                    'sort_by_order' => Search::DEFAULT_SORT_BY_ORDER,
-                    'aggregator' => Search::DEFAULT_AGGREGATOR
-                ]
-            ]
+            'system' => true
         ]);
 
         if (! $table->save($entity)) {
