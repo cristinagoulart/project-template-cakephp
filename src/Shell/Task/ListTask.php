@@ -46,7 +46,7 @@ class ListTask extends Shell
 
     /**
      * Method that retrieves and returns an array with all loaded plugins.
-     * @return mixed[]
+     * @return string[]
      */
     public function loadedPlugins(): array
     {

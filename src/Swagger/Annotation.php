@@ -575,9 +575,7 @@ class Annotation
         $table = TableRegistry::get('CsvMigrations.Dblists');
         Assert::isInstanceOf($table, DblistsTable::class);
 
-        $result = $table->getOptions($listName);
-
-        return is_array($result) ? $result : $result->toArray();
+        return $table->getOptions($listName);
     }
 
     /**

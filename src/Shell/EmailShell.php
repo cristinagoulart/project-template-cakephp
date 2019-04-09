@@ -61,7 +61,7 @@ class EmailShell extends Shell
     /**
      * Main shell method
      *
-     * @return void
+     * @return bool|int|null
      */
     public function main()
     {
@@ -94,5 +94,7 @@ class EmailShell extends Shell
         $this->hr();
         $this->out("Headers:", 1, Shell::VERBOSE);
         $this->out($result['headers'], 1, Shell::VERBOSE);
+
+        return true;
     }
 }

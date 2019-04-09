@@ -22,7 +22,7 @@ class Upgrade20180511135300Task extends Shell
     /**
      * main() method
      *
-     * @return void
+     * @return int|bool|null
      */
     public function main()
     {
@@ -38,5 +38,7 @@ class Upgrade20180511135300Task extends Shell
             // every 5 minutes
             'recurrence' => 'FREQ=MINUTELY;INTERVAL=5'
         ]);
+
+        return true;
     }
 }

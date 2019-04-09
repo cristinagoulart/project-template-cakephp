@@ -30,7 +30,7 @@ class Upgrade20180907123600Task extends Shell
     /**
      * main() method.
      *
-     * @return void
+     * @return int|bool|null
      */
     public function main()
     {
@@ -38,19 +38,21 @@ class Upgrade20180907123600Task extends Shell
         if (empty($modules)) {
             $this->err('No CSV modules found.');
 
-            return;
+            return false;
         }
 
         $lists = $this->getDatabaseLists($modules);
         if (empty($lists)) {
             $this->info('No database list fields found in the application.');
 
-            return;
+            return false;
         }
 
         $this->createDatabaseLists($lists);
 
         $this->success(sprintf('%s completed.', $this->getOptionParser()->getDescription()));
+
+        return true;
     }
 
     /**
