@@ -9,7 +9,35 @@ $this->Html->scriptStart(array('block' => 'scriptBottom', 'inline' => false)); ?
 
 $(document).ready(function(){
 	$('#settings-search').on('input',function(){
-		let search = $(this).val();
+		let search = $(this).val();	
+		let labels = $('.tab-content').find('label')
+		$('.tab-content').find("input").css("background-color","white")
+		if(!(search.length > 2)){
+			return
+		}
+		$.each(labels,function(label,data){
+			let lab = $(data).text().toUpperCase()
+			if(~lab.indexOf(search.toUpperCase())){
+				let id = $(data).attr('for')
+				$('.tab-content').find('#'+id).css("background-color","aquamarine")
+				$('form').find('.active').removeClass('active');
+				// active section
+				let col = $('.tab-content').find('#'+id).closest('.tab-pane')
+				col.addClass('active')
+				let panel = $('.tab-content').find('.active').attr('id')
+				let tab = $('#'+panel).parent().closest('.tab-pane')
+				// active col
+				$("a[href='#"+ col.attr('id') +"']").parent().addClass('active')
+				// active panel right
+				tab.addClass('active')
+				// active tab
+				$("a[data-tab='"+ tab.attr('id') +"']").parent().addClass('active')
+			}
+		})
+	})
+
+	$('.tab-content input').on('click',function(){
+		$(this).css("background-color","white")
 	})
 });
 
@@ -60,7 +88,7 @@ $(document).ready(function(){
 										$active = $first ? 'class="active"' : '';
 										$id_column = str_replace(' ','_',$column);
 										?>
-											<li <?= $active ?>><a href="#<?= $id_column ?>" data-toggle="tab"><?= $column ?></a></li>
+											<li <?= $active ?>><a href="#<?= $id_tab .'_'. $id_column ?>" data-toggle="tab"><?= $column ?></a></li>
 										<?php
 										$first = false;
 									endforeach;
@@ -75,7 +103,7 @@ $(document).ready(function(){
 									$active = $first ? 'active' : '';
 									$id_column = str_replace(' ','_',$column);
 									?>
-										<div class="tab-pane <?= $active ?>" id="<?= $id_column ?>">
+										<div class="tab-pane <?= $active ?>" id="<?= $id_tab .'_'. $id_column ?>">
 									<?php
 									// Section
 									foreach ($sections as $section => $fields) :

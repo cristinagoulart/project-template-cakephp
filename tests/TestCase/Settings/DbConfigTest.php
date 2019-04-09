@@ -11,10 +11,14 @@ class DbConfigTest extends TestCase
     /**
      * Test subject
      *
-     * @var \App\Model\Table\SettingsTable
+     * @var \Cake\ORM\Table
      */
     public $Settings;
 
+    /**
+     * $configure instance of DbConfig()
+     * @var \App\Settings\DbConfig
+     */
     public $configure;
 
     /**
@@ -39,13 +43,21 @@ class DbConfigTest extends TestCase
         $this->configure = new DbConfig();
     }
 
-    public function testGetArray()
+    /**
+     * testGetArray
+     * @return void
+     */
+    public function testGetArray(): void
     {
         $array = $this->configure->read('Settings');
         $this->assertInternalType('array', $array);
     }
 
-    public function testGetEmptyArray()
+    /**
+     * testGetEmptyArray
+     * @return void
+     */
+    public function testGetEmptyArray(): void
     {
         $array = $this->configure->read('SettingsWrong');
         $this->assertEquals([], $array);

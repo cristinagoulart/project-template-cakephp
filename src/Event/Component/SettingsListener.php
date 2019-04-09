@@ -25,11 +25,17 @@ class SettingsListener implements EventListenerInterface
      * @param \Cake\Event\Event $event Event instance
      * @return void
      */
-    public function loadUserSettings(Event $event)
+    public function loadUserSettings(Event $event): void
     {
-        if (! $event->getSubject()->components()->has('Auth')) {
+        /**
+         * @var \App\Controller\SettingsController
+         */
+        $controller = $event->getSubject();
+        if (! $controller->components()->has('Auth')) {
             return;
         }
+
+        $userId = $controller->Auth->user('id');
 
         if (empty($userId)) {
             return;

@@ -94,10 +94,10 @@ class SettingsTable extends Table
     /**
      * Validate the context according the scope value
      * @param string $value Value of the $context
-     * @param array $context The entity
+     * @param mixed[] $context The entity
      * @return bool True if validate
      */
-    public function contextValidator($value, $context)
+    public function contextValidator(string $value, array $context): bool
     {
         $scope = $context['data']['scope'];
 
@@ -116,10 +116,10 @@ class SettingsTable extends Table
     /**
      * Validate the field from the type in settings.php
      * @param string $value Value of the field
-     * @param array $context The entity
+     * @param mixed[] $context The entity
      * @return bool True if validate
      */
-    public function valueValidator($value, $context)
+    public function valueValidator(string $value, array $context): bool
     {
         $type = $context['data']['type'];
         $config = ConfigFactory::getByType($type, 'value');
@@ -142,20 +142,27 @@ class SettingsTable extends Table
      * @param  string $context uuid, value
      * @return \App\Model\Entity\Setting|void
      */
-    public function createEntity($key, $value, $type, $scope, $context)
+    public function createEntity(string $key, string $value, string $type, string $scope, string $context)
     {
         // It will check if there is any record with a key = $key.
         // if doesn't, it means that Settings table is not updated with settings.php.
-        $this->findByKey($key)->firstOrFail();
+        $this->find('all')->where(['key' => $key])->firstOrFail();
         // select based on key, scope, conext
         $entity = $this->find('all')->where(['key' => $key, 'scope' => $scope, 'context' => $context])->first();
+        // Manly need for phpstan
+        if (is_array($entity)) {
+            return;
+        }
 
-        // will storage only the modified settings
-        if (!is_null($entity) && $entity->value === $value) {
-            // if the user setting match the app setting, the entity will be deleted
-            if ($scope === self::SCOPE_USER && $value === $this->dataApp[$key]) {
-                $this->delete($entity);
-            }
+        // It will storage only the modified settings
+        if (!is_null($entity) && $entity['value'] === $value) {
+            return;
+        }
+
+        // If the user setting match the app setting, the entity will be deleted or not saved
+        $dataApp = $this->find('all')->where(['key' => $key, 'scope' => self::SCOPE_APP, 'context' => self::CONTEXT_APP])->first();
+        if ($scope === self::SCOPE_USER && $value === $dataApp['value']) {
+            !is_null($entity) ? $this->delete($entity) : '';
 
             return;
         }
@@ -169,7 +176,7 @@ class SettingsTable extends Table
             'type' => $type
         ];
 
-        // Check if the user has already a record with the key. if true will update instead of create a new one
+        // Check if the user has already a record with the key. If true will update instead of create a new one
         $newEntity = is_null($entity) ? $this->newEntity($params) : $this->patchEntity($entity, $params);
 
         return $newEntity;
@@ -179,12 +186,12 @@ class SettingsTable extends Table
      * Get all the Setting configuration and filter it base on the user
      * scope describe in settings.php
      *
-     * @param array $dataSettings Data to filter
-     * @param array $userScope list of scope of the user
-     * @return array Settings onw by the user
+     * @param mixed[] $dataSettings Data to filter
+     * @param mixed[] $userScope list of scope of the user
+     * @return mixed[] Settings onw by the user
      * @throws \RuntimeException when settings.php structure is broke
      */
-    public function filterSettings($dataSettings, $userScope)
+    public function filterSettings(array $dataSettings, array $userScope): array
     {
         $filter = array_filter(Hash::flatten($dataSettings), function ($value) use ($userScope) {
                 return in_array($value, $userScope);
@@ -194,7 +201,7 @@ class SettingsTable extends Table
         foreach ($filter as $key => $value) {
             $p = explode('.', $key);
             // ex: 'Config.UI.Theme.Title.scope.0'
-            // the stucture must be 4 defalut layer plus two
+            // the stucture must be 4 default layer plus two
             if (count($p) < 6) {
                 throw new \RuntimeException("broken configuration in Settings");
             }
@@ -210,10 +217,10 @@ class SettingsTable extends Table
     /**
      * getAliasDiff() return the missing alias in the DB
      *
-     * @param array $settings Array with settings
-     * @return array
+     * @param mixed[] $settings Array with settings
+     * @return mixed[]
      */
-    public function getAliasDiff($settings = [])
+    public function getAliasDiff(array $settings = []): array
     {
         // Array with all the alias from the config
         $alias = [];

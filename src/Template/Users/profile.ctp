@@ -87,7 +87,7 @@ echo $this->Html->script('AdminLTE./bower_components/bootstrap-datepicker/dist/j
                         ); ?>
                         <?php
                             $factory = new AccessFactory();
-                            if($factory->hasAccess(['controller' => 'settings', 'action' => 'my'], h($user['id']))): 
+                            if($factory->hasAccess(['controller' => 'settings', 'action' => 'my'], $user)): 
                         ?>
                             <?= $this->Html->link(
                                 '<i class="fa fa-gears"></i>' . __d('Users', 'User Settings'),

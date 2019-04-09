@@ -274,14 +274,6 @@ Plugin::load('AdminLTE', ['bootstrap' => true, 'routes' => true]);
 
 Plugin::load('ADmad/JwtAuth');
 
-/*
- * @todo seems like if CakeDC/Users plugin is loaded
- * before any of our plugins that use routes, it breaks
- * them, needs to be investigated further.
- */
-Configure::write('Users.config', ['users']);
-Plugin::load('CakeDC/Users', ['routes' => true, 'bootstrap' => true]);
-
 // @link https://github.com/burzum/cakephp-file-storage/blob/master/docs/Documentation/Included-Event-Listeners.md
 EventManager::instance()->on(new LocalListener([
     'imageProcessing' => true,
@@ -332,8 +324,6 @@ call_user_func(function () {
 });
 
 /*
-<<<<<<< HEAD
-=======
  * Load AdminLTE theme settings
  */
 Configure::load('admin_lte', 'default');
@@ -348,7 +338,6 @@ if (!is_null(env('API_AUTHENTICATION')) && (bool)env('API_AUTHENTICATION') === f
 }
 
 /*
->>>>>>> master
  * Feature Factory initialization
  * IMPORTANT: this line should be placed at the end of the bootstrap file.
  */

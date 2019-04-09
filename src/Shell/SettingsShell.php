@@ -5,6 +5,7 @@ use Cake\Console\Shell;
 use Cake\Core\Configure;
 use Cake\ORM\TableRegistry;
 use Cake\Utility\Hash;
+use RuntimeException;
 
 /**
  * Settings shell command.
@@ -56,10 +57,13 @@ class SettingsShell extends Shell
      */
     public function main()
     {
-        $query = TableRegistry::get('Settings');
         $alias = Hash::combine(Configure::read('Settings'), '{s}.{s}.{s}.{s}.alias', '{s}.{s}.{s}.{s}.type');
         $links = Hash::filter(Hash::combine(Configure::read('Settings'), '{s}.{s}.{s}.{s}.alias', '{s}.{s}.{s}.{s}.links'));
 
+        /**
+         * @var \App\Model\Table\SettingsTable $query
+         */
+        $query = TableRegistry::get('Settings');
         $settings = $query->getAliasDiff(array_keys($alias));
 
         $data = [];
@@ -70,21 +74,24 @@ class SettingsShell extends Shell
             }
             foreach ($links[$set] as $aliases => $value) {
                 if (in_array($value, $settings)) {
-                    throw new \Exception('Double alias found');
+                    throw new RuntimeException('Double alias found');
                 }
                 $data[] = $this->setData($alias, $set, $value);
             }
         }
 
         try {
+            /**
+             * @var \Cake\ORM\ResultSet&iterable<\Cake\Datasource\EntityInterface> $entities
+             */
             $entities = $query->newEntities($data);
             if ($query->saveMany($entities)) {
                 $this->out('Settings successfully updated');
             } else {
-                $this->out('Failed to update settings, please try again.');
+                $this->out('Failed or nothing to update.');
             }
-        } catch (\Exception $e) {
-            throw new \Exception($e);
+        } catch (RuntimeException $e) {
+            throw new RuntimeException($e);
         }
 
         return null;
@@ -92,12 +99,12 @@ class SettingsShell extends Shell
 
     /**
      * Prepare array for new entity
-     * @param string $alias alias
+     * @param mixed[] $alias alias
      * @param string $index index
      * @param string $value value
-     * @return array
+     * @return mixed
      */
-    private function setData($alias, $index, $value)
+    private function setData(array $alias, string $index, string $value)
     {
         return [
             'key' => $value,
@@ -113,7 +120,7 @@ class SettingsShell extends Shell
      * @param string $key key of DB to delete
      * @return void
      */
-    public function reset($key = '')
+    public function reset(string $key = ''): void
     {
         $query = TableRegistry::get('Settings');
         if (empty($key)) {
@@ -129,7 +136,7 @@ class SettingsShell extends Shell
      * resetAll() method. Truncate all table Settings
      * @return void
      */
-    public function resetAll()
+    public function resetAll(): void
     {
         $query = TableRegistry::get('Settings');
         $this->out('Truncate table Settings');

@@ -4,7 +4,7 @@ namespace App\Settings;
 use Cake\Core\Configure\ConfigEngineInterface;
 use Cake\ORM\TableRegistry;
 use Cake\Utility\Hash;
-use Exception;
+use RuntimeException;
 
 class DbConfig implements ConfigEngineInterface
 {
@@ -17,7 +17,7 @@ class DbConfig implements ConfigEngineInterface
      * @param string $scope   User, App, (Os, Env ...)
      * @param string $context depent on the scope, the context can be uuid, string, integer, etc.
      */
-    public function __construct($scope = 'user', $context = '')
+    public function __construct(string $scope = 'app', string $context = 'app')
     {
         $this->scope = $scope;
         $this->context = $context;
@@ -29,16 +29,15 @@ class DbConfig implements ConfigEngineInterface
      */
     public function read($key)
     {
-        // if the table $key doesn't exist will merge an empty array
-        if (!TableRegistry::exists($key)) {
-            return [];
-        }
-
         $query = TableRegistry::get($key);
         // App level costum settings
-        $data = $query->find('list', ['keyField' => 'key', 'valueField' => 'value'])
-                      ->where(['scope' => $this->scope, 'context' => $this->context])
-                      ->toArray();
+        try {
+            $data = $query->find('list', ['keyField' => 'key', 'valueField' => 'value'])
+                          ->where(['scope' => $this->scope, 'context' => $this->context])
+                          ->toArray();
+        } catch (\Cake\Database\Exception $e) {
+            return [];
+        }
 
         $config = Hash::expand($data);
 
@@ -53,6 +52,6 @@ class DbConfig implements ConfigEngineInterface
      */
     public function dump($key, array $data)
     {
-        throw new Exception('Not implemented');
+        throw new RuntimeException('Not implemented');
     }
 }
