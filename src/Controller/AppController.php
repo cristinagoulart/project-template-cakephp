@@ -37,6 +37,7 @@ use Search\Controller\SearchTrait;
 use Search\Model\Entity\SavedSearch;
 use Search\Utility as SearchUtility;
 use Search\Utility\Search;
+use Webmozart\Assert\Assert;
 
 /**
  * Application Controller
@@ -219,10 +220,13 @@ class AppController extends Controller
         $table = TableRegistry::getTableLocator()->get('Search.SavedSearches');
 
         $entity = $table->find()
+            ->enableHydration(true)
             ->where(['SavedSearches.model' => $this->name, 'SavedSearches.system' => true])
             ->first();
 
-        if ($entity instanceof SavedSearch) {
+        Assert::nullOrIsInstanceOf($entity, EntityInterface::class);
+
+        if (null !== $entity) {
             return $entity;
         }
 
@@ -239,18 +243,16 @@ class AppController extends Controller
     protected function createSystemSearch(): EntityInterface
     {
         $table = TableRegistry::getTableLocator()->get('Search.SavedSearches');
-        /**
-         * @var \Cake\Datasource\EntityInterface $query
-         */
-        $query = TableRegistry::getTableLocator()->get('CakeDC/Users.Users')
+
+        $user = TableRegistry::getTableLocator()->get('CakeDC/Users.Users')
             ->find()
             ->where(['is_superuser' => true])
             ->enableHydration(true)
             ->firstOrFail();
 
-        $user = $query->toArray();
+        Assert::isInstanceOf($user, EntityInterface::class);
 
-        $id = (new Search($this->loadModel(), $user))->create(['system' => true]);
+        $id = (new Search($this->loadModel(), $user->toArray()))->create(['system' => true]);
 
         $entity = $table->get($id);
         $entity = $table->patchEntity($entity, [
@@ -296,10 +298,10 @@ class AppController extends Controller
         $this->viewBuilder()->setTheme('AdminLTE');
         $this->viewBuilder()->setLayout('adminlte');
 
-        $title = Inflector::humanize(Inflector::underscore($this->name));
-        $mc = new ModuleConfig(ConfigType::MODULE(), $this->name);
-        $config = $mc->parse();
-        $title = ! empty($config->table->alias) ? $config->table->alias : $title;
+        $config = (new ModuleConfig(ConfigType::MODULE(), $this->name))->parseToArray();
+        $title = empty($config['table']['alias']) ?
+            Inflector::humanize(Inflector::underscore($this->name)) :
+            $config['table']['alias'];
 
         // overwrite theme title before setting the theme
         // NOTE: we set controller specific title, to work around requestAction() calls.

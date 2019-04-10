@@ -47,7 +47,7 @@ class UpgradeShell extends Shell
     /**
      * Shell entry point
      *
-     * @return void
+     * @return int|bool|null
      */
     public function main()
     {
@@ -55,6 +55,8 @@ class UpgradeShell extends Shell
             $this->info(sprintf('Running task %s', $task));
             $this->{$task}->main();
         }
+
+        return true;
     }
 
     /**

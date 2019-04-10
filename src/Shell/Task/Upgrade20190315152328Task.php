@@ -23,7 +23,7 @@ class Upgrade20190315152328Task extends Shell
     /**
      * Main method.
      *
-     * @return void
+     * @return int|bool|null
      */
     public function main()
     {
@@ -34,5 +34,7 @@ class Upgrade20190315152328Task extends Shell
             'start_date' => new Time('now'),
             'options' => 'cleanup'
         ]);
+
+        return true;
     }
 }

@@ -8,6 +8,7 @@ use Cake\Event\EventListenerInterface;
 use Cake\ORM\Association;
 use Cake\ORM\Query;
 use Cake\ORM\Table;
+use CsvMigrations\Exception\UnsupportedPrimaryKeyException;
 use Qobo\Utils\ModuleConfig\ConfigType;
 use Qobo\Utils\ModuleConfig\ModuleConfig;
 use Webmozart\Assert\Assert;
@@ -57,14 +58,17 @@ class LookupListener implements EventListenerInterface
             return;
         }
 
-        $config = (new ModuleConfig(ConfigType::MODULE(), $table->getAlias()))->parse();
-        if (empty($config->table->lookup_fields)) {
+        $config = (new ModuleConfig(ConfigType::MODULE(), $table->getAlias()))->parseToArray();
+        if (empty($config['table']['lookup_fields'])) {
             // fail-safe binding of primary key to query's where clause, if lookup
             // fields are not defined, to avoid random record retrieval.
             /**
              * @var string
              */
             $primaryKey = $table->getPrimaryKey();
+            if (! is_string($primaryKey)) {
+                throw new UnsupportedPrimaryKeyException();
+            }
             $query->where([
                 $table->aliasField($primaryKey) => $options['value']
             ]);
@@ -72,7 +76,7 @@ class LookupListener implements EventListenerInterface
             return;
         }
 
-        foreach ($config->table->lookup_fields as $field) {
+        foreach ($config['table']['lookup_fields'] as $field) {
             $query->orWhere([
                 $table->aliasField($field) => $options['value']
             ]);

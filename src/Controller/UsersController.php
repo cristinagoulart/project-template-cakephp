@@ -2,6 +2,7 @@
 namespace App\Controller;
 
 use App\Avatar\Service as AvatarService;
+use App\Model\Table\UsersTable;
 use CakeDC\Users\Controller\Traits\LoginTrait;
 use CakeDC\Users\Controller\Traits\ProfileTrait;
 use CakeDC\Users\Controller\Traits\RegisterTrait;
@@ -14,6 +15,7 @@ use Cake\Http\Exception\UnauthorizedException;
 use Cake\ORM\TableRegistry;
 use Cake\Utility\Hash;
 use Cake\Validation\Validator;
+use Webmozart\Assert\Assert;
 
 /**
  * Users Controller
@@ -41,19 +43,22 @@ class UsersController extends AppController
      */
     public function changeUserPassword($id)
     {
-        $user = $this->getUsersTable()->newEntity();
+        $table = $this->getUsersTable();
+        Assert::isInstanceOf($table, UsersTable::class);
+
+        $user = $table->newEntity();
         $user->id = $id;
         $redirect = ['controller' => 'Users', 'action' => 'index'];
 
         if ($this->request->is('post')) {
             try {
-                $validator = $this->getUsersTable()->validationPasswordConfirm(new Validator());
-                $user = $this->getUsersTable()->patchEntity($user, $this->request->getData(), ['validate' => $validator]);
+                $validator = $table->validationPasswordConfirm(new Validator());
+                $user = $table->patchEntity($user, (array)$this->request->getData(), ['validate' => $validator]);
 
                 if ($user->getErrors()) {
                     $this->Flash->error((string)__d('CakeDC/Users', 'Password could not be changed'));
                 } else {
-                    $user = $this->getUsersTable()->changePassword($user);
+                    $user = $table->changePassword($user);
                     if ($user) {
                         $this->Flash->success((string)__d('CakeDC/Users', 'Password has been changed successfully'));
 
