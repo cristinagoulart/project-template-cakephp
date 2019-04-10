@@ -25,6 +25,7 @@
 import axios from 'axios'
 import lodash from 'lodash'
 import vSelect from 'vue-select'
+import { MAGIC_VALUE_WRAPPER } from '@/utils/constants.js'
 
 export default {
 
@@ -61,7 +62,7 @@ export default {
 
     data: function () {
         return {
-            magicValue: { value: '%%me%%', label: '<< me >>' },
+            magicValue: { value: MAGIC_VALUE_WRAPPER + 'me' + MAGIC_VALUE_WRAPPER, label: '<< me >>' },
             options: [],
             val: []
         }
@@ -79,7 +80,7 @@ export default {
         let hasMagicValue = false
         let promises = []
         value.forEach(function (id) {
-            if ('%%me%%' === id) {
+            if (MAGIC_VALUE_WRAPPER + 'me' + MAGIC_VALUE_WRAPPER === id) {
                 hasMagicValue = true
                 return
             }

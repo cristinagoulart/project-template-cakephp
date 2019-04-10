@@ -15,6 +15,7 @@
 import 'bootstrap-datepicker/dist/css/bootstrap-datepicker3.min.css'
 import * as $ from 'jquery'
 import datepicker from 'bootstrap-datepicker'
+import { MAGIC_VALUE_WRAPPER } from '@/utils/constants.js'
 
 export default {
 
@@ -65,7 +66,7 @@ export default {
 
         this.magicValues.forEach(function (item) {
             // convert magic value to label, for example "%%today%%" becomes "Today"
-            if (self.val === '%%' + item.toLowerCase() + '%%') {
+            if (self.val === MAGIC_VALUE_WRAPPER + item.toLowerCase() + MAGIC_VALUE_WRAPPER) {
                 $input.val(item)
             }
         })
@@ -86,7 +87,7 @@ export default {
             $('th[data-magic-value="1"]').on('click', function () {
                 const value = $(this).text()
                 $input.val(value)
-                self.val = '%%' + value.toLowerCase() + '%%'
+                self.val = MAGIC_VALUE_WRAPPER + value.toLowerCase() + MAGIC_VALUE_WRAPPER
 
                 $input.datepicker('hide')
             })

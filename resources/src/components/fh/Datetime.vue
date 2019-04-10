@@ -16,6 +16,7 @@ import 'daterangepicker/daterangepicker.css'
 import * as $ from 'jquery'
 import daterangepicker from 'daterangepicker'
 import moment from 'moment'
+import { MAGIC_VALUE_WRAPPER } from '@/utils/constants.js'
 
 export default {
 
@@ -76,7 +77,7 @@ export default {
 
         Object.keys(options.ranges).forEach(function (item) {
             // convert magic value to label, for example "%%today%%" becomes "Today"
-            if (self.val === '%%' + item.toLowerCase() + '%%') {
+            if (self.val === MAGIC_VALUE_WRAPPER + item.toLowerCase() + MAGIC_VALUE_WRAPPER) {
                 $input.val(item)
                 options.startDate = options.ranges[item][0].format(options.locale.format)
             }
@@ -95,7 +96,7 @@ export default {
             )
             self.val = 'Custom Range' === picker.chosenLabel ?
                 picker.startDate.format(picker.locale.format) :
-                '%%' + picker.chosenLabel.toLowerCase() + '%%'
+                MAGIC_VALUE_WRAPPER + picker.chosenLabel.toLowerCase() + MAGIC_VALUE_WRAPPER
         })
 
         $input.on('cancel.daterangepicker', function (e, picker) {
