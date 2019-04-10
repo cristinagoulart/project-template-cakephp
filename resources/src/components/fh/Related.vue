@@ -116,7 +116,7 @@ export default {
         search: _.debounce((search, loading, vm, page = 1) => {
             axios({
                 method: 'get',
-                url: '/api/' + vm.source + '/lookup?query=' + encodeURI(search) + '&limit=100&page=' + page,
+                url: encodeURI('/api/' + vm.source + '/lookup?query=' + search + '&limit=100&page=' + page),
             }).then(response => {
                 const pagination = response.data.pagination
 
@@ -139,7 +139,7 @@ export default {
             return axios({
                 method: 'get',
                 async: false,
-                url: '/api/' + this.source + '/view/' + id,
+                url: encodeURI('/api/' + this.source + '/view/' + id),
             }).then(response => {
                 let label = true === response.data.success && response.data.data.hasOwnProperty(this.displayField) ?
                     label = response.data.data[this.displayField] :
