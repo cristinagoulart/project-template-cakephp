@@ -4,6 +4,7 @@ namespace App\Utility;
 use App\Model\Table\UsersTable;
 use App\Search\Manager;
 use Cake\Core\App;
+use Cake\Datasource\EntityInterface;
 use Cake\Log\Log;
 use Cake\ORM\Table;
 use Cake\ORM\TableRegistry;
@@ -16,6 +17,7 @@ use Qobo\Utils\ModuleConfig\ModuleConfig;
 use Qobo\Utils\Utility\User;
 use RolesCapabilities\Access\AccessFactory;
 use Search\Model\Entity\SavedSearch;
+use Search\Service\Search as SearchService;
 use Webmozart\Assert\Assert;
 
 final class Search
@@ -117,35 +119,41 @@ final class Search
     /**
      * Chart options getter.
      *
-     * @param \Search\Model\Entity\SavedSearch $entity Saved search entity
+     * @param \Search\Model\Entity\SavedSearch $savedSearch Saved search entity
      * @return mixed[]
      */
-    public static function getChartOptions(SavedSearch $entity) : array
+    public static function getChartOptions(SavedSearch $savedSearch) : array
     {
-        if (null === Hash::get($entity->get('content'), 'saved.group_by')) {
+        if (null === Hash::get($savedSearch->get('content'), 'saved.group_by')) {
             return [];
         }
 
-        $table = TableRegistry::getTableLocator()->get($entity->get('model'));
+        $table = TableRegistry::getTableLocator()->get($savedSearch->get('model'));
         $factory = new FieldHandlerFactory();
 
-        list(, $groupBy) = pluginSplit(Hash::get($entity->get('content'), 'saved.group_by'));
+        list(, $groupBy) = pluginSplit(Hash::get($savedSearch->get('content'), 'saved.group_by'));
 
         $resultSet = $table->find('search', Manager::getOptionsFromRequest([
-            'criteria' => Hash::get($entity->get('content'), 'saved.criteria', []),
+            'criteria' => Hash::get($savedSearch->get('content'), 'saved.criteria', []),
             'fields' => array_merge((array)$table->getPrimaryKey(), [
-                Hash::get($entity->get('content'), 'saved.group_by'),
-                $entity->get('model') . '.' . self::GROUP_BY_FIELD
+                Hash::get($savedSearch->get('content'), 'saved.group_by'),
+                $savedSearch->get('model') . '.' . SearchService::GROUP_BY_FIELD
             ]),
-            'sort' => Hash::get($entity->get('content'), 'saved.sort_by_field', false),
-            'direction' => Hash::get($entity->get('content'), 'saved.sort_by_order', 'asc'),
-            'group_by' => Hash::get($entity->get('content'), 'saved.group_by'),
+            'aggregator' => Hash::get($savedSearch->get('content'), 'saved.aggregator', SearchService::DEFAULT_AGGREGATOR),
+            'sort' => Hash::get($savedSearch->get('content'), 'saved.sort_by_field', false),
+            'direction' => Hash::get($savedSearch->get('content'), 'saved.sort_by_order', SearchService::DEFAULT_SORT_BY_ORDER),
+            'group_by' => Hash::get($savedSearch->get('content'), 'saved.group_by'),
         ], []))->all();
 
-        // prettify data
-        foreach ($resultSet as $record) {
-            $record->set(self::GROUP_BY_FIELD, $record->get(self::GROUP_BY_FIELD));
-            $record->set($groupBy, $factory->renderValue($table, $groupBy, $record->get($groupBy)));
+        $entities = [];
+        foreach ($resultSet as $entity) {
+            // prettify data
+            $row = self::formatEntity($entity, $table, $factory);
+
+            $entities[] = [
+                SearchService::GROUP_BY_FIELD => $row[$savedSearch->get('model') . '.' . SearchService::GROUP_BY_FIELD],
+                $groupBy => $row[Hash::get($savedSearch->get('content'), 'saved.group_by')]
+            ];
         }
 
         $result = [];
@@ -162,27 +170,33 @@ final class Search
                     $widget = new $chart['class'];
                     $widget->setConfig([
                         'info' => [
-                            'columns' => implode(',', [self::GROUP_BY_FIELD, $groupBy]),
+                            'columns' => implode(',', [SearchService::GROUP_BY_FIELD, $groupBy]),
                             'x_axis' => $groupBy,
-                            'y_axis' => self::GROUP_BY_FIELD,
+                            'y_axis' => SearchService::GROUP_BY_FIELD,
                         ]
                     ]);
 
-                    $options += $widget->getChartData($resultSet->toArray());
+                    $options += $widget->getChartData($entities);
                     break;
                 case 'funnelChart':
                     $data = [];
-                    foreach ($resultSet as $record) {
-                        $data[] = ['value' => $record->get(self::GROUP_BY_FIELD), 'label' => $record->get($groupBy)];
+                    foreach ($entities as $entity) {
+                        $data[] = [
+                            'value' => Hash::get($entity, SearchService::GROUP_BY_FIELD),
+                            'label' => Hash::get($entity, $groupBy)
+                        ];
                     }
 
                     $options += [
                         'options' => [
                             'resize' => true,
                             'hideHover' => true,
-                            'labels' => [Inflector::humanize(self::GROUP_BY_FIELD), Inflector::humanize($groupBy)],
+                            'labels' => [
+                                Inflector::humanize(SearchService::GROUP_BY_FIELD),
+                                Inflector::humanize($groupBy)
+                            ],
                             'xkey' => [$groupBy],
-                            'ykeys' => [self::GROUP_BY_FIELD],
+                            'ykeys' => [SearchService::GROUP_BY_FIELD],
                             'dataChart' => [
                                 'type' => $chart['type'],
                                 'data' => $data
@@ -194,6 +208,38 @@ final class Search
             }
 
             $result[] = $options;
+        }
+
+        return $result;
+    }
+
+    /**
+     * Method that formats search result-set entity.
+     *
+     * @param \Cake\Datasource\EntityInterface $entity Entity instance
+     * @param \Cake\ORM\Table $table Table instance
+     * @param \CsvMigrations\FieldHandlers\FieldHandlerFactory $factory Field handler factory instance
+     * @return mixed[]
+     */
+    private static function formatEntity(EntityInterface $entity, Table $table, FieldHandlerFactory $factory) : array
+    {
+        $result = [];
+        foreach (array_diff($entity->visibleProperties(), $entity->getVirtual()) as $field) {
+            // current table field
+            if ('_matchingData' !== $field) {
+                $result[$table->aliasField($field)] = SearchService::GROUP_BY_FIELD === $field ?
+                    $entity->get($field) :
+                    $factory->renderValue($table, $field, $entity->get($field));
+                continue;
+            }
+
+            foreach ($entity->get('_matchingData') as $associationName => $relatedEntity) {
+                $result = array_merge($result, self::formatEntity(
+                    $relatedEntity,
+                    $table->getAssociation($associationName)->getTarget(),
+                    $factory
+                ));
+            }
         }
 
         return $result;

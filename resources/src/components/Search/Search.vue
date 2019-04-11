@@ -99,7 +99,11 @@
                                                 <label for="group-by">Group By</label>
                                                 <select v-model="groupBy" class="form-control input-sm">
                                                     <option value="">-- Please choose --</option>
-                                                    <option v-for="filter in filtersList" :value="filter.field" v-if="filter.group === modelName">{{ filter.label }}</option>
+                                                    <template v-for="(group_filters, group) in filtersGroup">
+                                                        <optgroup :label="group">
+                                                            <option v-for="filter in group_filters" :value="filter.field">{{ filter.label }}</option>
+                                                        </optgroup>
+                                                    </template>
                                                 </select>
                                             </div>
                                         </div>
