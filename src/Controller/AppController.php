@@ -35,6 +35,7 @@ use Qobo\Utils\ModuleConfig\ModuleConfig;
 use Qobo\Utils\Utility\User;
 use RolesCapabilities\CapabilityTrait;
 use RuntimeException;
+use Search\Service\Search as SearchService;
 use Webmozart\Assert\Assert;
 
 /**
@@ -236,8 +237,8 @@ class AppController extends Controller
                 'saved' => [
                     'display_columns' => $displayFields,
                     'sort_by_field' => current($displayFields),
-                    'sort_by_order' => Search::DEFAULT_SORT_BY_ORDER,
-                    'aggregator' => Search::DEFAULT_CONJUNCTION
+                    'sort_by_order' => SearchService::DEFAULT_SORT_BY_ORDER,
+                    'aggregator' => SearchService::DEFAULT_CONJUNCTION
                 ]
             ]
         ]);
