@@ -227,6 +227,10 @@ export default {
                 value.content.saved.criteria = {}
             }
 
+            if (! value.content.saved.hasOwnProperty('group_by')) {
+                value.content.saved.group_by = ''
+            }
+
             Vue.set(state, 'savedSearch', value)
         },
         savedSearches(state, value) {
