@@ -21,6 +21,7 @@ use Search\Filter\Less;
 use Search\Filter\NotContains;
 use Search\Filter\NotEqual;
 use Search\Filter\StartsWith;
+use Search\Service\Search;
 
 final class Manager
 {
@@ -74,7 +75,7 @@ final class Manager
             }
         }
 
-        $result['aggregator'] = Hash::get($data, 'aggregator', 'AND');
+        $result['conjunction'] = Hash::get($data, 'aggregator', Search::DEFAULT_CONJUNCTION);
 
         if (Hash::get($data, 'fields')) {
             $result['fields'] = Hash::get($data, 'fields');
@@ -84,7 +85,7 @@ final class Manager
         //    $result['order'] = [Hash::get($params, 'sort') => Hash::get($params, 'direction', 'asc')];
         // }
         if (Hash::get($data, 'sort')) {
-            $result['order'] = [Hash::get($data, 'sort') => Hash::get($data, 'direction', 'asc')];
+            $result['order'] = [Hash::get($data, 'sort') => Hash::get($data, 'direction', Search::DEFAULT_SORT_BY_ORDER)];
         }
 
         if (Hash::get($data, 'group_by')) {

@@ -26,21 +26,6 @@ final class Search
     const ASSOCIATION_TYPES = ['manyToOne'];
 
     /**
-     * Default sql order by direction
-     */
-    const DEFAULT_SORT_BY_ORDER = 'desc';
-
-    /**
-     * Default sql aggregator
-     */
-    const DEFAULT_AGGREGATOR = 'AND';
-
-    /**
-     * Group by count field.
-     */
-    const GROUP_BY_FIELD = 'total';
-
-    /**
      * Searchable fields.
      *
      * @var array
