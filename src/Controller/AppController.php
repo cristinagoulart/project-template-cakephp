@@ -237,7 +237,7 @@ class AppController extends Controller
                     'display_columns' => $displayFields,
                     'sort_by_field' => current($displayFields),
                     'sort_by_order' => Search::DEFAULT_SORT_BY_ORDER,
-                    'aggregator' => Search::DEFAULT_AGGREGATOR
+                    'aggregator' => Search::DEFAULT_CONJUNCTION
                 ]
             ]
         ]);
