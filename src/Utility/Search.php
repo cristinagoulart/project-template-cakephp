@@ -139,7 +139,7 @@ final class Search
                 Hash::get($savedSearch->get('content'), 'saved.group_by'),
                 $savedSearch->get('model') . '.' . SearchService::GROUP_BY_FIELD
             ]),
-            'aggregator' => Hash::get($savedSearch->get('content'), 'saved.aggregator', SearchService::DEFAULT_AGGREGATOR),
+            'aggregator' => Hash::get($savedSearch->get('content'), 'saved.aggregator', SearchService::DEFAULT_CONJUNCTION),
             'sort' => Hash::get($savedSearch->get('content'), 'saved.sort_by_field', false),
             'direction' => Hash::get($savedSearch->get('content'), 'saved.sort_by_order', SearchService::DEFAULT_SORT_BY_ORDER),
             'group_by' => Hash::get($savedSearch->get('content'), 'saved.group_by'),
