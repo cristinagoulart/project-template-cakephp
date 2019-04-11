@@ -112,7 +112,7 @@ class SearchAction extends BaseAction
             }
 
             foreach ($entity->get('_matchingData') as $associationName => $relatedEntity) {
-                $result = array_merge($result, self::formatEntity(
+                $result = array_merge($result, $this->formatEntity(
                     $relatedEntity,
                     $table->getAssociation($associationName)->getTarget()
                 ));
