@@ -86,7 +86,7 @@
                                     <select v-model="selectedColumns.available" class="form-control input-sm" multiple size="8" :disabled="'' !== groupBy">
                                         <option v-for="filter in filtersGroup[selectedModuleAvailableColumns]" v-if="-1 === displayColumns.indexOf(filter.field)" :value="filter.field">{{ filter.label }}</option>
                                     </select>
-                                    <select v-model="selectedModuleAvailableColumns" class="form-control input-sm">
+                                    <select v-model="selectedModuleAvailableColumns" class="form-control input-sm" :disabled="'' !== groupBy">
                                         <option v-for="(group_filters, group) in filtersGroup">{{ group }}</option>
                                     </select>
                                 </div>
@@ -440,6 +440,7 @@ export default {
             this.tableData = { criteria: this.criteria, group_by: this.groupBy, aggregator: this.aggregator }
 
             if (this.groupBy) {
+                this.selectedModuleGroupBy = self.filtersFlat[this.groupBy].group
                 this.tableHeaders.push({ value: this.groupBy, text: self.filtersFlat[this.groupBy].label })
                 this.tableHeaders.push({ value: this.modelName + '.total', text: 'Total' })
             }
