@@ -50,22 +50,26 @@
                                 <template v-for="(fields, field_name) in criteria">
                                     <div v-for="(field, guid) in fields" class="form-group">
                                         <div class="row">
-                                            <div class="col-xs-12 col-md-3 col-lg-2"><label>{{ filtersFlat[field_name].label }}</label></div>
-                                            <div class="col-xs-4 col-md-2 col-lg-3">
+                                            <div class="col-xs-12 col-md-4 col-lg-3">
+                                                <label>{{ filtersFlat[field_name].label }}
+                                                    <template v-if="filtersFlat[field_name].group !== modelName"><i class="fa fa-info-circle" :title="filtersFlat[field_name].group"></i></template>
+                                                </label>
+                                            </div>
+                                            <div class="col-xs-4 col-md-2 col-lg-2">
                                                 <select v-model="operator[guid]" class="form-control input-sm" v-on:change="operatorUpdated(field_name, guid, operator[guid])">
                                                     <option v-for="option in $store.state.search.operators.types[$store.state.search.operators.map[filtersFlat[field_name].type]]" v-bind:value="option.value">
                                                         {{ option.text }}
                                                     </option>
                                                 </select>
                                             </div>
-                                            <div class="col-xs-6 col-md-5 col-lg-4">
+                                            <div class="col-xs-6 col-md-5">
                                                 <component :is="field.type + 'Input'" :guid="guid" :field="field_name" :key="guid + field.value" :value="field.value" :options="filtersFlat[field_name].options" :source="filtersFlat[field_name].source" :display-field="filtersFlat[field_name].display_field" :multiple="true" @input-value-updated="criteriaUpdated" />
                                             </div>
-                                            <div class="col-xs-2">
-                                                <div class="input-sm">
-                                                    <button type="button" @click="criteriaRemove(guid)" class="btn btn-default btn-xs"><i class="fa fa-trash" aria-hidden="true"></i></button>
-                                                    <!-- <button type="button" @click="criteriaCopy(guid)" class="btn btn-default btn-xs"><i class="fa fa-clone" aria-hidden="true"></i></button> -->
-                                                </div>
+                                            <div class="col-sm-2 col-md-1">
+                                                <button type="button" @click="criteriaRemove(guid)" class="btn btn-default btn-xs"><i class="fa fa-trash" aria-hidden="true"></i></button>
+                                                <!-- <div class="input-sm">
+                                                    <button type="button" @click="criteriaCopy(guid)" class="btn btn-default btn-xs"><i class="fa fa-clone" aria-hidden="true"></i></button>
+                                                </div> -->
                                             </div>
                                         </div>
                                     </div>
@@ -109,8 +113,7 @@
                                     <label for="display-columns">Display Columns</label>
                                     <select v-model="selectedColumns.display" class="form-control input-sm" multiple size="8" :disabled="'' !== groupBy">
                                         <option v-for="column in displayColumns" :value="filtersFlat[column].field">
-                                            {{ filtersFlat[column].label }}
-                                            <template v-if="filtersFlat[column].group !== modelName">- {{ filtersFlat[column].group }}</template>
+                                            {{ filtersFlat[column].label }} <template v-if="filtersFlat[column].group !== modelName">- {{ filtersFlat[column].group }}</template>
                                         </option>
                                     </select>
                                     <div class="row">
