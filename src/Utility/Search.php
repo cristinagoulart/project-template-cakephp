@@ -259,7 +259,11 @@ final class Search
                 continue;
             }
 
-            $result[$association->getName()] = Inflector::humanize(implode(', ', (array)$association->getForeignKey()));
+            $result[$association->getName()] = sprintf(
+                '%s (%s)',
+                App::shortName(get_class($association->getTarget()), 'Model/Table', 'Table'),
+                Inflector::humanize(implode(', ', (array)$association->getForeignKey()))
+            );
         }
 
         self::$associationLabels[$table->getRegistryAlias()] = $result;
