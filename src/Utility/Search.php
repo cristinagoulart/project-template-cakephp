@@ -6,6 +6,7 @@ use App\Search\Manager;
 use Cake\Core\App;
 use Cake\Datasource\EntityInterface;
 use Cake\Log\Log;
+use Cake\ORM\Association;
 use Cake\ORM\Table;
 use Cake\ORM\TableRegistry;
 use Cake\Utility\Hash;
@@ -22,11 +23,6 @@ use Webmozart\Assert\Assert;
 
 final class Search
 {
-    /**
-     * Supported association types.
-     */
-    const ASSOCIATION_TYPES = ['manyToOne'];
-
     /**
      * Searchable fields.
      *
@@ -259,7 +255,7 @@ final class Search
 
         $result = [];
         foreach ($table->associations() as $association) {
-            if (! in_array($association->type(), self::ASSOCIATION_TYPES)) {
+            if (! in_array($association->type(), [Association::MANY_TO_ONE])) {
                 continue;
             }
 
@@ -417,7 +413,7 @@ final class Search
 
         foreach ($table->associations() as $association) {
             // skip non-supported associations
-            if (! in_array($association->type(), self::ASSOCIATION_TYPES)) {
+            if (! in_array($association->type(), [Association::MANY_TO_ONE])) {
                 continue;
             }
 
