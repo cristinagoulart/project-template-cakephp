@@ -5,23 +5,46 @@
                 <form class="search-form" novalidate="novalidate" v-on:submit.prevent="search">
                     <div class="row">
                         <div class="col-lg-3 col-lg-push-9">
-                            <div class="form-group">
-                                <select v-model="filter" class="form-control input-sm" v-on:change="criteriaCreate(filter)">
-                                    <option value="">-- Add filter --</option>
-                                    <template v-for="(group_filters, group) in filtersGroup">
-                                        <optgroup :label="group">
-                                            <option v-for="filter in group_filters" :value="filter.field">{{ filter.label }}</option>
-                                        </optgroup>
-                                    </template>
-                                </select>
-                            </div>
-                            <div class="form-group">
-                                <select v-model="aggregator" class="form-control input-sm">
-                                    <option v-for="aggregator in aggregators" :value="aggregator.value">{{ aggregator.text }}</option>
-                                </select>
+                            <div class="row">
+                                <div class="col-xs-4">
+                                    <div class="form-group">
+                                        <select v-model="selectedModuleFilter" class="form-control input-sm">
+                                            <option v-for="(group_filters, group) in filtersGroup">{{ group }}</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-xs-8">
+                                    <div class="form-group">
+                                        <select v-model="filter" class="form-control input-sm" v-on:change="criteriaCreate(filter)">
+                                            <option value="">-- Add filter --</option>
+                                            <option v-for="filter in filtersGroup[selectedModuleFilter]" :value="filter.field">{{ filter.label }}</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-xs-4">
+                                    <div class="form-group">
+                                        <select v-model="selectedModuleGroupBy" class="form-control input-sm">
+                                            <option v-for="(group_filters, group) in filtersGroup">{{ group }}</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-xs-8">
+                                    <div class="form-group">
+                                        <select v-model="groupBy" class="form-control input-sm">
+                                            <option value="">-- Group by --</option>
+                                            <option v-for="filter in filtersGroup[selectedModuleGroupBy]" :value="filter.field">{{ filter.label }}</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-xs-12">
+                                    <div class="form-group">
+                                        <select v-model="aggregator" class="form-control input-sm">
+                                            <option v-for="aggregator in aggregators" :value="aggregator.value">{{ aggregator.text }}</option>
+                                        </select>
+                                    </div>
+                                </div>
                             </div>
                         </div>
-                        <hr class="visible-xs visible-sm visible-md" />
                         <div class="col-lg-9 col-lg-pull-3">
                             <fieldset>
                                 <template v-for="(fields, field_name) in criteria">
@@ -51,97 +74,106 @@
                         </div>
                     </div>
                     <div class="row">
-                        <div class="col-md-8 col-lg-9">
+                        <div class="col-md-12 col-lg-9">
+                            <hr class="visible-xs visible-sm visible-md" />
                             <div class="row">
-                                    <div class="col-md-5 col-lg-4">
-                                        <label for="available-columns">Available Columns</label>
-                                        <select v-model="selectedColumns.available" class="form-control input-sm" multiple size="8" :disabled="'' !== groupBy">
-                                            <option v-for="filter in filtersList" v-if="-1 === displayColumns.indexOf(filter.field)" :value="filter.field">
-                                                {{ filter.label }}
-                                                <template v-if="filter.group !== modelName">({{ filter.group }})</template>
-                                            </option>
-                                        </select>
-                                    </div>
-                                    <div class="col-md-2">
-                                        <label>&nbsp;</label>
-                                        <button type="button" @click="displayColumnsUpdated('add')" class="btn btn-block btn-xs" :disabled="'' !== groupBy">
-                                            <i class="glyphicon glyphicon-chevron-right"></i>
-                                        </button>
-                                        <button type="button" @click="displayColumnsUpdated('remove')" class="btn btn-block btn-xs" :disabled="'' !== groupBy">
-                                            <i class="glyphicon glyphicon-chevron-left"></i>
-                                        </button>
-                                    </div>
-                                    <div class="col-md-5 col-lg-4">
-                                        <label for="display-columns">Display Columns</label>
-                                        <select v-model="selectedColumns.display" class="form-control input-sm" multiple size="8" :disabled="'' !== groupBy">
-                                            <option v-for="column in displayColumns" :value="filtersFlat[column].field">
-                                                {{ filtersFlat[column].label }}
-                                                <template v-if="filtersFlat[column].group !== modelName">({{ filtersFlat[column].group }})</template>
-                                            </option>
-                                        </select>
-                                        <div class="row">
-                                            <div class="col-sm-6">
-                                                <button type="button" @click="displayColumnsSorted('up')" :disabled="0 === displayColumns.length || '' !== groupBy" class="btn btn-block btn-xs">
-                                                    <i class="glyphicon glyphicon-arrow-up"></i>
-                                                </button>
-                                            </div>
-                                            <div class="col-sm-6">
-                                                <button type="button" @click="displayColumnsSorted('down')" :disabled="0 === displayColumns.length || '' !== groupBy" class="btn btn-block btn-xs">
-                                                    <i class="glyphicon glyphicon-arrow-down"></i>
-                                                </button>
-                                            </div>
+                                <div class="col-md-5">
+                                    <label for="available-columns">Available Columns</label>
+                                    <select v-model="selectedColumns.available" class="form-control input-sm" multiple size="8" :disabled="'' !== groupBy">
+                                        <option v-for="filter in filtersGroup[selectedModuleAvailableColumns]" v-if="-1 === displayColumns.indexOf(filter.field)" :value="filter.field">{{ filter.label }}</option>
+                                    </select>
+                                    <select v-model="selectedModuleAvailableColumns" class="form-control input-sm">
+                                        <option v-for="(group_filters, group) in filtersGroup">{{ group }}</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-2">
+                                    <label>&nbsp;</label>
+                                    <div class="row">
+                                        <div class="col-xs-6 col-md-12">
+                                            <button type="button" @click="displayColumnsUpdated('add')" class="btn btn-block btn-sm" :disabled="'' !== groupBy || 0 === selectedColumns.available.length">
+                                                <span class="visible-md visible-lg"><i class="fa fa-angle-right"></i></span>
+                                                <span class="visible-xs visible-sm"><i class="fa fa-angle-down"></i></span>
+                                            </button>
+                                        </div>
+                                        <span class="visible-md visible-lg">&nbsp;</span>
+                                        <div class="col-xs-6 col-md-12">
+                                            <button type="button" @click="displayColumnsUpdated('remove')" class="btn btn-block btn-sm" :disabled="'' !== groupBy || 0 === selectedColumns.display.length">
+                                                <span class="visible-md visible-lg"><i class="fa fa-angle-left"></i></span>
+                                                <span class="visible-xs visible-sm"><i class="fa fa-angle-up"></i></span>
+                                            </button>
                                         </div>
                                     </div>
-                                <div class="col-lg-2">
+                                </div>
+                                <div class="col-md-5">
+                                    <span class="visible-xs visible-sm">&nbsp;</span>
+                                    <label for="display-columns">Display Columns</label>
+                                    <select v-model="selectedColumns.display" class="form-control input-sm" multiple size="8" :disabled="'' !== groupBy">
+                                        <option v-for="column in displayColumns" :value="filtersFlat[column].field">
+                                            {{ filtersFlat[column].label }}
+                                            <template v-if="filtersFlat[column].group !== modelName">- {{ filtersFlat[column].group }}</template>
+                                        </option>
+                                    </select>
                                     <div class="row">
-                                        <div class="col-md-4 col-lg-12">
-                                            <div class="form-group">
-                                                <label for="group-by">Group By</label>
-                                                <select v-model="groupBy" class="form-control input-sm">
-                                                    <option value="">-- Please choose --</option>
-                                                    <option v-for="filter in filtersList" :value="filter.field" v-if="filter.group === modelName">{{ filter.label }}</option>
-                                                </select>
-                                            </div>
+                                        <div class="col-xs-6">
+                                            <button type="button" @click="displayColumnsSorted('up')" :disabled="0 === displayColumns.length || 0 === selectedColumns.display.length || '' !== groupBy" class="btn btn-block btn-sm">
+                                                <i class="fa fa-angle-up"></i>
+                                            </button>
+                                        </div>
+                                        <div class="col-xs-6">
+                                            <button type="button" @click="displayColumnsSorted('down')" :disabled="0 === displayColumns.length || 0 === selectedColumns.display.length || '' !== groupBy" class="btn btn-block btn-sm">
+                                                <i class="fa fa-angle-down"></i>
+                                            </button>
                                         </div>
                                     </div>
                                 </div>
                             </div>
+                        </div>
+                        <div class="col-md-12 col-lg-3">
+                            <hr class="visible-xs visible-sm visible-md" />
+                            <div class="row">
+                                <div class="col-md-6 col-lg-12">
+                                    <div class="form-group">
+                                        <label class="control-label" for="saved-searches">Saved Searches</label>
+                                        <div class="input-group">
+                                            <select v-model="savedSearchSelected" class="form-control input-sm">
+                                                <option value="">-- Please choose --</option>
+                                                <option v-for="savedSearch in savedSearches" :value="savedSearch.id">{{ savedSearch.name }}</option>
+                                            </select>
+                                            <span class="input-group-btn">
+                                                <button type="button" @click="savedSearchGet()" :disabled="'' === savedSearchSelected" class="btn btn-default btn-sm">
+                                                    <i class="fa fa-eye"></i>
+                                                </button>
+                                                <button type="button" @click="savedSearchCopy()" :disabled="'' === savedSearchSelected" class="btn btn-default btn-sm">
+                                                    <i class="fa fa-clone"></i>
+                                                </button>
+                                                <button type="button" @click="savedSearchDelete()" :disabled="'' === savedSearchSelected || savedSearchSelected === $store.state.search.savedSearch.id" class="btn btn-danger btn-sm">
+                                                    <i class="fa fa-trash"></i>
+                                                </button>
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6 col-lg-12">
+                                    <div class="form-group">
+                                        <label class="control-label" for="save-search">Save Search</label>
+                                        <div class="input-group">
+                                            <div class="form-group input text required">
+                                                <input type="text" v-model="name" class="form-control input-sm" placeholder="Saved search name" required="required">
+                                            </div>
+                                            <span class="input-group-btn">
+                                                <button type="button" @click="savedSearchSave()" :disabled="'' === name" class="btn btn-sm btn-primary"><i class="fa fa-floppy-o" aria-hidden="true"></i></button>
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-xs-12">
+                            <hr class="visible-xs visible-sm visible-md" />
+                            <span class="visible-lg">&nbsp;</span>
                             <button class="btn btn-primary btn-sm" type="submit"><i class="fa fa-search"></i> Search</button>
                             <button type="button" @click="searchReset()" class="btn btn-default btn-sm"><i class="fa fa-undo"></i> Reset</button>
                             <button type="button" @click="searchExport()" class="btn btn-default btn-sm"><i class="fa fa-download"></i> Export</button>
-                        </div>
-                        <div class="col-md-4 col-lg-3">
-                            <div class="form-group">
-                                <label class="control-label" for="saved-searches">Saved Searches</label>
-                                <div class="input-group">
-                                    <select v-model="savedSearchSelected" class="form-control input-sm">
-                                        <option value="">-- Please choose --</option>
-                                        <option v-for="savedSearch in savedSearches" :value="savedSearch.id">{{ savedSearch.name }}</option>
-                                    </select>
-                                    <span class="input-group-btn">
-                                        <button type="button" @click="savedSearchGet()" :disabled="'' === savedSearchSelected" class="btn btn-default btn-sm">
-                                            <i class="fa fa-eye"></i>
-                                        </button>
-                                        <button type="button" @click="savedSearchCopy()" :disabled="'' === savedSearchSelected" class="btn btn-default btn-sm">
-                                            <i class="fa fa-clone"></i>
-                                        </button>
-                                        <button type="button" @click="savedSearchDelete()" :disabled="'' === savedSearchSelected || savedSearchSelected === $store.state.search.savedSearch.id" class="btn btn-danger btn-sm">
-                                            <i class="fa fa-trash"></i>
-                                        </button>
-                                    </span>
-                                </div>
-                            </div>
-                            <div class="form-group">
-                                <label class="control-label" for="save-search">Save Search</label>
-                                <div class="input-group">
-                                    <div class="form-group input text required">
-                                        <input type="text" v-model="name" class="form-control input-sm" placeholder="Saved search name" required="required">
-                                    </div>
-                                    <span class="input-group-btn">
-                                        <button type="button" @click="savedSearchSave()" :disabled="'' === name" class="btn btn-sm btn-primary"><i class="fa fa-floppy-o" aria-hidden="true"></i></button>
-                                    </span>
-                                </div>
-                            </div>
                         </div>
                     </div>
                 </form>
@@ -207,6 +239,9 @@ export default {
             ],
             basic_types: ['string', 'text', 'textarea', 'related', 'email', 'url', 'phone', 'integer'],
             filter: '',
+            selectedModuleAvailableColumns: this.model,
+            selectedModuleFilter: this.model,
+            selectedModuleGroupBy: this.model,
             loadResult: false,
             savedSearchSelected: '',
             selectedColumns: {
@@ -463,6 +498,11 @@ export default {
 
             this.$store.commit('search/displayColumns', { action: 'remove', display: this.displayColumns })
             this.$store.commit('search/displayColumns', { action: 'add', available: this.displayFields })
+            this.selectedColumns.available = []
+            this.selectedColumns.display = []
+            this.selectedModuleAvailableColumns = this.model
+            this.selectedModuleFilter = this.model
+            this.selectedModuleGroupBy = this.model
 
             this.search()
         },
