@@ -81,9 +81,6 @@ final class Manager
             $result['fields'] = Hash::get($data, 'fields');
         }
 
-        // if (Hash::get($params, 'sort')) {
-        //    $result['order'] = [Hash::get($params, 'sort') => Hash::get($params, 'direction', 'asc')];
-        // }
         if (Hash::get($data, 'sort')) {
             $result['order'] = [Hash::get($data, 'sort') => Hash::get($data, 'direction', Search::DEFAULT_SORT_BY_ORDER)];
         }
