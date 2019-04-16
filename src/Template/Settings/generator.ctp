@@ -160,10 +160,6 @@ $(document).ready(function(){
     }
     // +++++++++++++++++++++++++++++++++++++++++++++++++++++
 
-    $("input[type=text]").on('click',function(event){
-        event.preventDefault()
-    })
-
     // Tab button submit
     $("#addTab").on('submit',function(event){
         event.preventDefault()
