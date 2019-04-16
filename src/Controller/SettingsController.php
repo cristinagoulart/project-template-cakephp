@@ -53,7 +53,7 @@ class SettingsController extends AppController
     private $query;
 
     /**
-     * Instead Configure::read(), it will load form the DB the settings of each scope/contex
+     * Instead Configure::read(), it will load form the DB the settings of each scope/context
      * if the user doesn't have a record for a particular key, it will use the app value.
      * @var array
      */
@@ -71,9 +71,7 @@ class SettingsController extends AppController
          */
         $table = TableRegistry::get('Settings');
         $this->query = $table;
-        $this->dataApp = $this->query->find('list', ['keyField' => 'key', 'valueField' => 'value'])
-              ->where(['scope' => SettingsTable::SCOPE_APP, 'context' => SettingsTable::CONTEXT_APP])
-              ->toArray();
+        $this->dataApp = $table->find('dataApp', ['scope' => SettingsTable::SCOPE_APP, 'context' => SettingsTable::CONTEXT_APP]);
     }
 
     /**
@@ -85,9 +83,8 @@ class SettingsController extends AppController
     {
         $this->scope = SettingsTable::SCOPE_USER;
         $this->context = $context;
-        $dataUser = $this->query->find('list', ['keyField' => 'key', 'valueField' => 'value'])
-              ->where(['scope' => SettingsTable::SCOPE_USER, 'context' => $this->context])
-              ->toArray();
+        $dataUser = $this->query->find('dataApp', ['scope' => SettingsTable::SCOPE_USER, 'context' => $this->context]);
+
         $this->configureValue = Hash::merge($this->dataApp, $dataUser);
         $this->dataSettings = Hash::merge($this->dataSettings, Hash::expand($this->dataApp), Hash::expand($dataUser));
         $this->viewBuilder()->template('index');
@@ -125,9 +122,8 @@ class SettingsController extends AppController
     {
         $this->scope = SettingsTable::SCOPE_USER;
         $this->context = $this->Auth->user('id');
-        $dataUser = $this->query->find('list', ['keyField' => 'key', 'valueField' => 'value'])
-              ->where(['scope' => SettingsTable::SCOPE_USER, 'context' => $this->context])
-              ->toArray();
+        $dataUser = $this->query->find('dataApp', ['scope' => SettingsTable::SCOPE_USER, 'context' => $this->context]);
+
         $this->configureValue = Hash::merge($this->dataApp, $dataUser);
         $this->viewBuilder()->template('index');
 
@@ -231,7 +227,7 @@ class SettingsController extends AppController
 
         if ($this->request->is('post')) {
             $this->autoRender = false;
-            var_export($this->request->data());
+            var_export(["Settings" => $this->request->data()]);
         }
     }
 
@@ -241,12 +237,11 @@ class SettingsController extends AppController
      */
     private function isLocalhost(): bool
     {
-        $localhost = [
-            '127.0.0.1',
-            '::1'
-        ];
+        $localhost = '/^https?:\/\/(localhost|127(?:\.[0-9]+){0,2}\.[0-9]+|^(?:0*\:)*?:?0*1)(:\d{2,}|)(\/?)$/';
 
-        if (!in_array($_SERVER['REMOTE_ADDR'], $localhost)) {
+        $url = \Cake\Routing\Router::fullbaseUrl();
+
+        if (!preg_match_all($localhost, $url)) {
             return false;
         }
 

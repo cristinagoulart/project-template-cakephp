@@ -1,14 +1,12 @@
 <?php
 /**
- * The stucture of the HTML is the some of /settings, but rendered with jQuery.
+ * The structure of the HTML is the some of /settings, but rendered with jQuery.
  * To review maybe in VUE.js
  *
- * to fix/add : 
- * - if click on any input in the search table will enable/disable the selected one
- * - in the sections are display name and alias just for debugging
+ * to fix/add :
  * - button to delete fields
  * - button to edit fields (maybe)
- * 
+ *
  */
 use Cake\Core\Configure;
 
@@ -39,18 +37,18 @@ $(document).ready(function(){
                 $.each(field,function(key,value){
                     genField(tab,col,section,key,value)
                 })
-                addFieldButton(tab,col,section)   
+                addFieldButton(tab,col,section)
             })
             addSectionButton(tab,col)
         })
         addColButtun(tab)
     })
 
-    // Active the first tab and coloum
+    // Active the first tab and column
     $('#list_tabs li:nth-child(2)').addClass('active');
     $('.tab-pane:nth-child(1)').addClass('active');
 
-    // Add a new Tab : it is composed by the link on the top, adn the panel in the bottom
+    // Add a new Tab : it is composed by the link on the top, and the panel in the bottom
     // tab : new tab name
     function genTab(tab){
         let idTab = tab.replace(/ |_/g,"_")
@@ -83,7 +81,7 @@ $(document).ready(function(){
     }
 
     // Add new section on selected tab -> column
-    // tab,col : select the tab and coloum where to add the section
+    // tab,col : select the tab and column where to add the section
     // section : name of the new section
     function genSection(tab,col,section){
         let idSection = tab.replace(/ |_/g,"_") +"-"+ col.replace(/ |_/g,"_") +"-"+ section.replace(/ |_/g,"_")
@@ -96,15 +94,15 @@ $(document).ready(function(){
     }
 
     // Add new field on selected tab -> column -> section
-    // tab,col,section : select the tab,coloum and section where to add the field
-    // field : name of the new field 
+    // tab,col,section : select the tab,column and section where to add the field
+    // field : name of the new field
     // value : array with the alias,type,scope,help
     function genField(tab,col,section,name,value){
             let idField = tab.replace(/ |_/g,"_") +"-"+ col.replace(/ |_/g,"_") +"-"+ section.replace(/ |_/g,"_")
             let new_field = `<div class="box-body">
                                 <div class="form-group input text">
                                     <label for="settings-theme-title">`+ name +`</label>
-                                    Alias : 
+                                    Alias :
                                     <label for="settings-theme-title" alias='`+ value.alias +`'>`+ value.alias +`</label>
                                 </div>
                             </div>`
@@ -162,6 +160,10 @@ $(document).ready(function(){
     }
     // +++++++++++++++++++++++++++++++++++++++++++++++++++++
 
+    $("input[type=text]").on('click',function(event){
+        event.preventDefault()
+    })
+
     // Tab button submit
     $("#addTab").on('submit',function(event){
         event.preventDefault()
@@ -211,7 +213,7 @@ $(document).ready(function(){
                                   </tr>
                                   </thead>
                                   <tbody>
-                                  <?php foreach ($alldata as $key => $value) : 
+                                  <?php foreach ($alldata as $key => $value) :
                                       if( is_array($value) || is_object($value)):
                                           continue;
                                       endif;
@@ -222,13 +224,13 @@ $(document).ready(function(){
                                           <td class="type"><?= gettype($value) ?></td>
                                           <td class="help"><input type="text" placeholder="write the help here"></td>
                                           <td class="scope">
-                                             <?php 
+                                             <?php
                                                 $s = '';
                                                 foreach($scope as $key){
                                                     $s = $s . $key. ',';
                                                 }
                                              ?>
-                                           <input type="text" value="<?= substr($s, 0, -1) ?>">                                   
+                                           <input type="text" value="<?= substr($s, 0, -1) ?>">
                                           </td>
                                       </tr>
                                   <?php endforeach; ?>
@@ -242,6 +244,7 @@ $(document).ready(function(){
             paging:true,
             searching:true,
             select: {
+                        selector:'td:first-child',
                         style: 'multi',
                     }
             })
@@ -249,20 +252,20 @@ $(document).ready(function(){
             removeTdData($(value).text())
         })
     })
-    
-    // Remove from dataSettings table, the already choosen records
+
+    // Remove from dataSettings table, the already chosen records
     function removeTdData(alias){
          $("#dataSettings").DataTable().columns('alias').search(alias).row().remove().draw();
-    }    
+    }
 
-    // Get all the selected fields and send them to the array(data)    
+    // Get all the selected fields and send them to the array(data)
     $(document).on('submit','.AddSelectedFields',function(event){
             event.preventDefault()
             let data = $('#dataSettings .selected')
             let path = $(this).parents().parents().attr('id').replace(/_/g," ").split("-")
             $.each(data,function(index,value){
                 value = $(value)[0]
-                
+
                 let mydata = {
                     'alias' : $(value).find('.alias').text(),
                     'type' :  $(value).find('.type').text(),
@@ -277,7 +280,7 @@ $(document).ready(function(){
         })
 
     // Merge the new data with the main one
-    // path   : tab -> col -> section 
+    // path   : tab -> col -> section
     // field  : field name
     // mydaya : object with alias, type, help, scope
     function addToArray(path,mydata,field){

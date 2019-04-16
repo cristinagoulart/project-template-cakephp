@@ -147,9 +147,9 @@ class SettingsTable extends Table
         // It will check if there is any record with a key = $key.
         // if doesn't, it means that Settings table is not updated with settings.php.
         $this->find('all')->where(['key' => $key])->firstOrFail();
-        // select based on key, scope, conext
+        // select based on key, scope, context
         $entity = $this->find('all')->where(['key' => $key, 'scope' => $scope, 'context' => $context])->first();
-        // Manly need for phpstan
+        // Mainly need for phpstan
         if (is_array($entity)) {
             return;
         }
@@ -188,7 +188,7 @@ class SettingsTable extends Table
      *
      * @param mixed[] $dataSettings Data to filter
      * @param mixed[] $userScope list of scope of the user
-     * @return mixed[] Settings onw by the user
+     * @return mixed[] Settings own by the user
      * @throws \RuntimeException when settings.php structure is broke
      */
     public function filterSettings(array $dataSettings, array $userScope): array
@@ -201,7 +201,7 @@ class SettingsTable extends Table
         foreach ($filter as $key => $value) {
             $p = explode('.', $key);
             // ex: 'Config.UI.Theme.Title.scope.0'
-            // the stucture must be 4 default layer plus two
+            // the structure must be 4 default layer plus two
             if (count($p) < 6) {
                 throw new \RuntimeException("broken configuration in Settings");
             }
@@ -235,5 +235,19 @@ class SettingsTable extends Table
         $diff = array_values(array_diff($alias, $fromDB));
 
         return $diff;
+    }
+
+    /**
+     * Custom finder
+     *
+     * @param Query $query Default query
+     * @param array $options where options
+     * @return mixed[]
+     */
+    public function findDataApp(Query $query, array $options) : array
+    {
+        return $this->find('list', ['keyField' => 'key', 'valueField' => 'value'])
+              ->where($options)
+              ->toArray();
     }
 }
