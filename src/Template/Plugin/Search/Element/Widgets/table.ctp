@@ -4,9 +4,10 @@ use Cake\ORM\TableRegistry;
 use Cake\Utility\Hash;
 use Cake\Utility\Inflector;
 use Qobo\Utils\Utility\User;
+use Search\Model\Entity\SavedSearch;
 
 $savedSearch = $widget->getData();
-if (null === $savedSearch) {
+if (! $savedSearch instanceof SavedSearch) {
     return '';
 }
 
