@@ -12,7 +12,7 @@ class SettingsFixture extends TestFixture
     public $import = ['table' => 'settings'];
 
     /**
-     * Init metho
+     * Init method
      *
      * @return void
      */
@@ -22,15 +22,15 @@ class SettingsFixture extends TestFixture
             [
                 'id' => 1,
                 'key' => 'FileStorage.defaultImageSize',
-                'value' => '5000',
+                'value' => 'huge',
                 'scope' => 'app',
-                'context' => 'app'
+                'context' => 'app',
             ],
             [
                 'id' => 2,
                 'key' => 'ScheduledLog.stats.age',
-                'value' => 'my value',
-                'scope' => 'user',
+                'value' => '-1 month',
+                'scope' => 'app',
                 'context' => 'bb697cd7-c869-491d-8696-805b1af8c08f',
             ]
         ];
