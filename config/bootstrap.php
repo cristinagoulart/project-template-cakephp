@@ -87,6 +87,7 @@ try {
     Configure::load('roles_capabilities', 'default');
     Configure::load('scheduled_log', 'default');
     Configure::load('system_info', 'default');
+    Configure::load('admin_lte', 'default');
 } catch (\Exception $e) {
     exit($e->getMessage() . "\n");
 }
@@ -322,16 +323,6 @@ call_user_func(function () {
         EventManager::instance()->on(new $eventClassName);
     }
 });
-
-/*
- * Load AdminLTE theme settings
- */
-Configure::load('admin_lte', 'default');
-
-/*
- * Load system information settings
- */
-Configure::load('system_info', 'default');
 
 if (!is_null(env('API_AUTHENTICATION')) && (bool)env('API_AUTHENTICATION') === false) {
     Log::write('critical', "Non-authenticated API requests are deprecated");
