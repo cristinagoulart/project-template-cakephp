@@ -1,6 +1,11 @@
 <?php
 namespace App\Event\Plugin\Search\Model;
 
+deprecationWarning(
+    '"App\Event\Plugin\Search\Model\SearchableFieldsListener" class is deprecated. This functionality is ' .
+    'now handled by "\App\Utility\Search"'
+);
+
 use App\Model\Table\UsersTable;
 use Cake\Core\App;
 use Cake\Datasource\RepositoryInterface;

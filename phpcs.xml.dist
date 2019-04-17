@@ -32,7 +32,7 @@
     <file>./webroot/</file>
 
     <!-- Ignore files -->
-    <arg name="ignore" value="config/Migrations/" />
+    <arg name="ignore" value="config/Migrations/,webroot/dist/" />
 
     <!-- Ignore minified files -->
     <exclude-pattern>*\.min\.(css|js)</exclude-pattern>

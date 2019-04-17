@@ -1,3 +1,6 @@
+<?php
+deprecationWarning('"App.Search/Menu/search-view-actions" element is deprecated.');
+?>
 <?= $this->element('Menu.menu', [
     'name' => \App\Menu\MenuName::SEARCH_VIEW,
     'user' => $user,

@@ -2,7 +2,6 @@
 
 $skinUrl = Configure::read('Theme.skinUrl');
 $skinName = Configure::read('Theme.skin');
-
 ?>
 <!DOCTYPE html>
 <html>
@@ -77,7 +76,10 @@ $skinName = Configure::read('Theme.skin');
         <?php echo $this->Html->script('AdminLTE./bower_components/fastclick/lib/fastclick'); ?>
         <!-- AdminLTE App -->
         <?php echo $this->Html->script('AdminLTE./js/adminlte.min'); ?>
-
+        <?= $this->Html->scriptBlock(
+            'localStorage.setItem("token_jwt", "' . Configure::read('API.token') . '");' .
+            'localStorage.setItem("token_csrf", "' . $this->request->getParam('_csrfToken') . '");'
+        ) ?>
         <?php echo $this->fetch('script'); ?>
         <?php echo $this->fetch('scriptBottom'); ?>
 

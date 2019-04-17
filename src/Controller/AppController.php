@@ -14,8 +14,10 @@
  */
 namespace App\Controller;
 
+use App\Controller\SearchTrait;
 use App\Event\Plugin\Search\Model\SearchableFieldsListener;
 use App\Feature\Factory as FeatureFactory;
+use App\Utility\Search;
 use AuditStash\Meta\RequestMetadata;
 use Cake\Controller\Controller;
 use Cake\Core\Configure;
@@ -33,10 +35,7 @@ use Qobo\Utils\ModuleConfig\ModuleConfig;
 use Qobo\Utils\Utility\User;
 use RolesCapabilities\CapabilityTrait;
 use RuntimeException;
-use Search\Controller\SearchTrait;
-use Search\Model\Entity\SavedSearch;
-use Search\Utility as SearchUtility;
-use Search\Utility\Search;
+use Search\Service\Search as SearchService;
 use Webmozart\Assert\Assert;
 
 /**
@@ -180,32 +179,7 @@ class AppController extends Controller
      */
     public function index()
     {
-        $entity = $this->getSystemSearch();
-        $searchData = $entity->get('content');
-
-        // return json response and skip any further processing.
-        if ($this->request->is('ajax') && $this->request->accepts('application/json')) {
-            $this->viewBuilder()->setClassName('Json');
-            $response = $this->getAjaxViewVars(
-                $searchData['latest'],
-                $this->loadModel(),
-                new Search($this->loadModel(), $this->Auth->user())
-            );
-            $this->set($response);
-
-            return;
-        }
-
-        $this->set([
-            'entity' => $entity,
-            'searchData' => $searchData['latest'],
-            'preSaveId' => (new Search($this->loadModel(), $this->Auth->user()))->create($searchData['latest']),
-            'searchableFields' => SearchableFieldsListener::getSearchableFieldsByTable(
-                $this->loadModel(),
-                $this->Auth->user()
-            ),
-            'associationLabels' => SearchUtility::instance()->getAssociationLabels($this->loadModel())
-        ]);
+        $this->set('savedSearch', $this->getSystemSearch());
 
         $this->render('/Module/index');
     }
@@ -252,12 +226,21 @@ class AppController extends Controller
 
         Assert::isInstanceOf($user, EntityInterface::class);
 
-        $id = (new Search($this->loadModel(), $user->toArray()))->create(['system' => true]);
+        $displayFields = Search::getDisplayFields($this->loadModel()->getRegistryAlias());
 
-        $entity = $table->get($id);
-        $entity = $table->patchEntity($entity, [
+        $entity = $table->newEntity([
             'name' => sprintf('Default %s search', Inflector::humanize(Inflector::underscore($this->name))),
-            'system' => true
+            'model' => $this->loadModel()->getRegistryAlias(),
+            'system' => true,
+            'user_id' => $user->get('id'),
+            'content' => [
+                'saved' => [
+                    'display_columns' => $displayFields,
+                    'sort_by_field' => current($displayFields),
+                    'sort_by_order' => SearchService::DEFAULT_SORT_BY_ORDER,
+                    'aggregator' => SearchService::DEFAULT_CONJUNCTION
+                ]
+            ]
         ]);
 
         if (! $table->save($entity)) {

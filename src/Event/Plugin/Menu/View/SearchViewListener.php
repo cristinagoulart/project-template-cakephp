@@ -2,6 +2,8 @@
 
 namespace App\Event\Plugin\Menu\View;
 
+deprecationWarning('"App\Event\Plugin\Menu\View\SearchViewListener" class is deprecated.');
+
 use App\Menu\MenuName;
 use Cake\Datasource\EntityInterface;
 use Cake\Event\Event;

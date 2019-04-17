@@ -1,27 +1,34 @@
 <?php
-use Cake\Core\Configure;
+use Cake\ORM\TableRegistry;
 use Cake\Utility\Hash;
 use Cake\Utility\Inflector;
 use Qobo\Utils\ModuleConfig\ConfigType;
 use Qobo\Utils\ModuleConfig\ModuleConfig;
+use Qobo\Utils\Utility\User;
+
+$this->Html->script(['/dist/vendor', '/dist/app'], ['block' => 'scriptBottom']);
+$this->Html->css('/dist/style', ['block' => 'css']);
 
 $config = (new ModuleConfig(ConfigType::MODULE(), $this->name))->parse();
 $title = isset($config->table->alias) ? $config->table->alias : Inflector::humanize(Inflector::underscore($this->name));
+$table = TableRegistry::get($savedSearch->get('model'));
 
-$displayFields = Hash::get($searchData, 'display_columns', []);
-$scripts = [];
-foreach ($searchableFields as $field => $options) {
-    if (! in_array($field, $displayFields)) {
-        continue;
-    }
+$groupBy = Hash::get($savedSearch->get('content'), 'saved.group_by', '');
+$filters = $this->Search->getFilters($savedSearch->get('model'));
 
-    if (empty($options['input']['post'])) {
-        continue;
-    }
-    array_push($scripts, ['post' => $options['input']['post']]);
+$headers = [];
+if ('' !== $groupBy) {
+    $key = array_search($groupBy, array_column($filters, 'field'));
+    $headers[] = ['value' => $groupBy, 'text' => $filters[$key]['label']];
+    $headers[] = ['value' => $savedSearch->get('model') . '.total', 'text' => 'Total'];
 }
 
-echo $this->element('Search.widget_libraries', ['scripts' => $scripts]);
+if ('' === $groupBy) {
+    foreach (Hash::get($savedSearch->get('content'), 'saved.display_columns', []) as $item) {
+        $key = array_search($item, array_column($filters, 'field'));
+        $headers[] = ['value' => $filters[$key]['field'], 'text' => $filters[$key]['label']];
+    }
+}
 ?>
 <section class="content-header">
     <div class="row">
@@ -36,22 +43,21 @@ echo $this->element('Search.widget_libraries', ['scripts' => $scripts]);
     </div>
 </section>
 <section class="content">
-<?php
-$args = [
-    [
-        'entity' => $entity,
-        'searchData' => $searchData,
-        'searchableFields' => $searchableFields,
-        'associationLabels' => $associationLabels,
-        'batch' => (bool)Configure::read('Search.batch.active'),
-        'preSaveId' => $preSaveId,
-        'action' => 'index'
-    ],
-    $this
-];
-
-$cell = $this->cell('Search.Result', $args);
-
-echo $cell;
-?>
+    <div class="box box-solid">
+        <div class="box-body">
+            <table-ajax
+                :data='<?= json_encode([
+                    'criteria' => Hash::get($savedSearch->get('content'), 'saved.criteria', []),
+                    'group_by' => $groupBy
+                ]) ?>'
+                :headers='<?= json_encode($headers) ?>'
+                model="<?= Inflector::dasherize($savedSearch->get('model')) ?>"
+                order-direction="<?= Hash::get($savedSearch->get('content'), 'saved.sort_by_order', '') ?>"
+                order-field="<?= Hash::get($savedSearch->get('content'), 'saved.sort_by_field', '') ?>"
+                primary-key="<?= $table->aliasField($table->getPrimaryKey()) ?>"
+                request-type="POST"
+                url="/api/<?= Inflector::dasherize($savedSearch->get('model')) ?>/search"
+            ></table-ajax>
+        </div>
+    </div>
 </section>

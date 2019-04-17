@@ -32,12 +32,12 @@ class User extends BaseUser
      */
     protected function _getName(): string
     {
-        $result = trim($this->first_name . ' ' . $this->last_name);
+        $result = trim($this->get('first_name') . ' ' . $this->get('last_name'));
         if (empty($result)) {
-            $result = $this->username;
+            $result = $this->get('username');
         }
 
-        return $result;
+        return (string)$result;
     }
 
     /**
