@@ -52,69 +52,11 @@ class ModuleIndexListener implements EventListenerInterface
          * @var \Menu\MenuBuilder\MenuInterface $menu
          */
         $menu = $menu;
-        $menu->addMenuItem($this->getBatchMenuItem($request));
         $menu->addMenuItem($this->getImportMenuItem($request));
         $menu->addMenuItem($this->getAddMenuItem($request));
         $menu->addMenuItem($this->getDelLogItem($request));
 
         $event->setResult($menu);
-    }
-
-    /**
-     * Creates and returns the menu item for the batch operations
-     *
-     * @param \Cake\Http\ServerRequest $request Current server request
-     * @return \Menu\MenuBuilder\MenuItemInterface
-     */
-    private function getBatchMenuItem(ServerRequest $request): MenuItemInterface
-    {
-        $plugin = $request->getParam('plugin');
-        $controller = $request->getParam('controller');
-
-        $batchItem = MenuItemFactory::createMenuItem([
-            'type' => 'button',
-            'icon' => 'bars',
-            'label' => __('Batch'),
-            'order' => 1,
-            'attributes' => [
-                'id' => 'batch-button',
-                'disabled' => 'disabled',
-            ],
-        ]);
-        $batchItem->disableIf(function () {
-            return !Configure::read('CsvMigrations.batch.active');
-        });
-
-        $csrfToken = empty($request->getParam('_csrfToken')) ? $request->getCookie('csrfToken') : $request->getParam('_csrfToken');
-
-        $batchItem->addMenuItem(MenuItemFactory::createMenuItem([
-            'type' => 'link',
-            'icon' => 'pencil',
-            'label' => __('Edit'),
-            'url' => ['plugin' => $plugin, 'controller' => $controller, 'action' => 'batch', 'edit'],
-            'order' => 1,
-            'attributes' => [
-                'data-batch' => true,
-                'data-batch-url' => Router::url(['plugin' => $plugin, 'controller' => $controller, 'action' => 'batch', 'edit']),
-                'data-csrf-token' => $csrfToken
-            ],
-        ]));
-
-        $batchItem->addMenuItem(MenuItemFactory::createMenuItem([
-            'type' => 'link',
-            'icon' => 'trash',
-            'label' => __('Delete'),
-            'order' => 10,
-            'url' => ['plugin' => $plugin, 'controller' => $controller, 'action' => 'batch', 'delete'],
-            'attributes' => [
-                'data-batch' => true,
-                'data-batch-url' => Router::url(['plugin' => $plugin, 'controller' => $controller, 'action' => 'batch', 'delete']),
-                'data-batch-confirm' => __('Are you sure you want to delete the selected records?'),
-                'data-csrf-token' => $csrfToken,
-            ]
-        ]));
-
-        return $batchItem;
     }
 
     /**

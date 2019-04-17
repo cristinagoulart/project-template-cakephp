@@ -1,4 +1,6 @@
 <?php
+deprecationWarning('"App.Search/Menu/search-view-actions-delete" element is deprecated.');
+
 use Cake\Core\Configure;
 
 $token = Configure::read('API.token') ?

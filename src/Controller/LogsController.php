@@ -6,6 +6,7 @@ use Cake\Http\Exception\BadRequestException;
 use Cake\I18n\Time;
 use Cake\ORM\TableRegistry;
 use DatabaseLog\Controller\Admin\LogsController as BaseController;
+use Search\Controller\SearchTrait;
 use Search\Utility;
 use Search\Utility\Options as SearchOptions;
 use Search\Utility\Search;
@@ -13,6 +14,8 @@ use Search\Utility\Validator as SearchValidator;
 
 class LogsController extends BaseController
 {
+    use SearchTrait;
+
     /**
      * Setup pagination
      *
