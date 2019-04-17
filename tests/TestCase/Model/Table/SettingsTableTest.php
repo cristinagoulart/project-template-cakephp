@@ -111,16 +111,22 @@ class SettingsTableTest extends TestCase
             'value' => 'my NEW value',
             'scope' => 'user',
             'context' => 'bb697cd7-c869-491d-8696-805b1af8c08f',
-            'type' => 'integer'
+            'type' => 'string'
         ];
         /**
          * @var \Cake\Datasource\EntityInterface $oldEntity
          */
         $oldEntity = $this->Settings->find('all')->where(['key' => 'ScheduledLog.stats.age'])->first();
         $patchEntity = $this->Settings->patchEntity($oldEntity, $params);
-        $myEntity = $this->Settings->createEntity('ScheduledLog.stats.age', 'my NEW value', 'integer', 'user', 'bb697cd7-c869-491d-8696-805b1af8c08f');
+        $oldEntityValues = [
+            'key' => 'ScheduledLog.stats.age',
+            'value' => $oldEntity['value'],
+            'scope' => $oldEntity['scope'],
+            'context' => $oldEntity['context'],
+            'type' => $oldEntity['type']
+        ];
 
-        $this->assertEquals($patchEntity, $myEntity);
+        $this->assertEquals($params, $oldEntityValues);
     }
 
     /**
