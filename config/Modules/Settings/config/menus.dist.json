@@ -8,7 +8,7 @@
             "order": 100,
             "children": [
                 {
-                    "label": "Dynamic Templates",
+                    "label": "System Settings",
                     "desc": "Manage system settings",
                     "url": "/settings/app",
                     "order": 65

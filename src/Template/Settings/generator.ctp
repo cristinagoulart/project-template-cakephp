@@ -265,6 +265,7 @@ $(document).ready(function(){
                 let mydata = {
                     'alias' : $(value).find('.alias').text(),
                     'type' :  $(value).find('.type').text(),
+                    'links' : '',
                     'help' :  $(value).find('.help input').val(),
                     'scope' : $(value).find('.scope input').val().split(","),
                 }
