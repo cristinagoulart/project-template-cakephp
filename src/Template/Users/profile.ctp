@@ -1,4 +1,5 @@
 <?php
+use App\Feature\Factory as FeatureFactory;
 use CsvMigrations\FieldHandlers\FieldHandlerFactory;
 use RolesCapabilities\Access\AccessFactory;
 
@@ -87,7 +88,9 @@ echo $this->Html->script('AdminLTE./bower_components/bootstrap-datepicker/dist/j
                         ); ?>
                         <?php
                             $factory = new AccessFactory();
-                            if($factory->hasAccess(['controller' => 'settings', 'action' => 'my'], $user)): 
+                            $feature = FeatureFactory::get('Module' . DS . 'Settings');
+
+                            if($feature->isActive() && $factory->hasAccess(['controller' => 'settings', 'action' => 'my'], $user)):
                         ?>
                             <?= $this->Html->link(
                                 '<i class="fa fa-gears"></i>' . __d('Users', 'User Settings'),
