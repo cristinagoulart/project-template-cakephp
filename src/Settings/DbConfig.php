@@ -47,11 +47,15 @@ class DbConfig implements ConfigEngineInterface
     /**
      * @param string $key Table name
      * @param array $data Data to dump.
-     * @return void
+     * @return bool
      * @throws \Exception
      */
-    public function dump($key, array $data)
+    public function dump($key, array $data) : bool
     {
-        throw new RuntimeException('Not implemented');
+        if ($key || $data) {
+            throw new RuntimeException('Not implemented');
+        }
+
+        return false;
     }
 }

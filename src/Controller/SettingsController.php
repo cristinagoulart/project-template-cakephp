@@ -71,7 +71,7 @@ class SettingsController extends AppController
          */
         $table = TableRegistry::get('Settings');
         $this->query = $table;
-        $this->dataApp = $table->find('dataApp', ['scope' => SettingsTable::SCOPE_APP, 'context' => SettingsTable::CONTEXT_APP]);
+        $this->dataApp = (array)$table->find('dataApp', ['scope' => SettingsTable::SCOPE_APP, 'context' => SettingsTable::CONTEXT_APP]);
     }
 
     /**
@@ -83,7 +83,7 @@ class SettingsController extends AppController
     {
         $this->scope = SettingsTable::SCOPE_USER;
         $this->context = $context;
-        $dataUser = $this->query->find('dataApp', ['scope' => SettingsTable::SCOPE_USER, 'context' => $this->context]);
+        $dataUser = (array)$this->query->find('dataApp', ['scope' => SettingsTable::SCOPE_USER, 'context' => $this->context]);
 
         $this->configureValue = Hash::merge($this->dataApp, $dataUser);
         $this->dataSettings = Hash::merge($this->dataSettings, Hash::expand($this->dataApp), Hash::expand($dataUser));

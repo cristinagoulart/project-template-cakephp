@@ -241,7 +241,7 @@ class SettingsTable extends Table
      * Custom finder
      *
      * @param Query $query Default query
-     * @param array $options where options
+     * @param mixed[] $options where options
      * @return mixed[]
      */
     public function findDataApp(Query $query, array $options) : array
