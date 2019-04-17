@@ -107,8 +107,8 @@ ConnectionManager::setConfig(Configure::consume('Datasources'));
 /**
  * Load custom settings from the DB
  */
-Configure::config('dbconfig', new DbConfig());
-Configure::load('Settings', 'dbconfig');
+// Configure::config('dbconfig', new DbConfig());
+// Configure::load('Settings', 'dbconfig');
 /**
  *  After this point, all the Configure::load() will overwrite
  *  those from the DB, if exist.
