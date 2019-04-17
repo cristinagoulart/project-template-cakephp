@@ -227,7 +227,7 @@ class SettingsController extends AppController
 
         if ($this->request->is('post')) {
             $this->autoRender = false;
-            var_export(["Settings" => $this->request->data()]);
+            var_export($this->request->data());
         }
     }
 

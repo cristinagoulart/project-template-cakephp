@@ -303,6 +303,8 @@ $(document).ready(function(){
             dataType : 'text',
             data : JSON.stringify(data),
             success: function(result){
+                result = 'return [\n\'Settings\' => \n ' + result.replace(/array\ \(/gi, '[').replace(/\),\n/gi, '],\n').slice(0, -1) + ' ],\n];';
+
                 $("#preArray").html('<pre>'+ result +'<pre>');
             }
         });
