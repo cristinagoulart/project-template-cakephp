@@ -8,6 +8,7 @@ use Cake\Core\Plugin;
 use Cake\Datasource\EntityInterface;
 use Cake\Event\EventManager;
 use Cake\ORM\TableRegistry;
+use Cake\Utility\Hash;
 use Cake\Utility\Inflector;
 use Qobo\Utils\ModuleConfig\ConfigType;
 use Qobo\Utils\ModuleConfig\ModuleConfig;
@@ -85,7 +86,7 @@ class Upgrade20180404000000Task extends Shell
         $moduleConfig = new ModuleConfig(ConfigType::MODULE(), $module, null, ['cacheSkip' => true]);
         $config = $moduleConfig->parseToArray();
 
-        if ('module' !== $config['table']['type']) {
+        if ('module' !== Hash::get($config, 'table.type')) {
             return false;
         }
 
