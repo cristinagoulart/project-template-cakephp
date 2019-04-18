@@ -1,0 +1,19 @@
+{
+    "admin_menu": [
+        {
+            "label": "Settings",
+            "desc": "Manage settings",
+            "url": "#",
+            "icon": "wrench",
+            "order": 100,
+            "children": [
+                {
+                    "label": "System Settings",
+                    "desc": "Manage system settings",
+                    "url": "/settings/app",
+                    "order": 65
+                }
+            ]
+        }
+    ]
+}

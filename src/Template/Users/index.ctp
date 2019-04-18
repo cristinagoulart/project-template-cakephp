@@ -1,6 +1,7 @@
 <?php
 use Cake\Core\Configure;
 use CsvMigrations\FieldHandlers\FieldHandlerFactory;
+use RolesCapabilities\Access\AccessFactory;
 
 $fhf = new FieldHandlerFactory($this);
 
@@ -99,6 +100,16 @@ echo $this->Html->scriptBlock(
                                     ['action' => 'change-user-password', $user->id],
                                     ['title' => __('Change User Password'), 'class' => 'btn btn-default btn-sm', 'escape' => false]
                                 ) ?>
+                                <?php
+                                    $factory = new AccessFactory();
+                                    if($factory->hasAccess(['controller' => 'settings', 'action' => 'user'], [$user->id])): 
+                                ?>
+                                    <?= $this->Html->link(
+                                        '<i class="fa fa-gears"></i>',
+                                        ['controller' => 'settings', 'action' => 'user', $user->id],
+                                        ['title' => __('Change User Settings'), 'class' => 'btn btn-default btn-sm', 'escape' => false]
+                                    ) ?>
+                                <?php endif; ?>
                                 <?php if (in_array($user->username, $lockedUsers)): ?>
                                     <?= $this->Form->postLink(
                                         '<i class="fa fa-trash"></i>',

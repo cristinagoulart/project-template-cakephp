@@ -1,5 +1,7 @@
 <?php
+use App\Feature\Factory as FeatureFactory;
 use CsvMigrations\FieldHandlers\FieldHandlerFactory;
+use RolesCapabilities\Access\AccessFactory;
 
 $fhf = new FieldHandlerFactory($this);
 
@@ -84,6 +86,18 @@ echo $this->Html->script('AdminLTE./bower_components/bootstrap-datepicker/dist/j
                             ['controller' => 'Users', 'action' => 'changePassword'],
                             ['escape' => false, 'class' => 'btn btn-default btn-sm']
                         ); ?>
+                        <?php
+                            $factory = new AccessFactory();
+                            $feature = FeatureFactory::get('Module' . DS . 'Settings');
+
+                            if($feature->isActive() && $factory->hasAccess(['controller' => 'settings', 'action' => 'my'], $user)):
+                        ?>
+                            <?= $this->Html->link(
+                                '<i class="fa fa-gears"></i>' . __d('Users', 'User Settings'),
+                                ['controller' => 'settings', 'action' => 'my'],
+                                ['class' => 'btn btn-default btn-sm', 'escape' => false]
+                            ) ?>
+                        <?php endif; ?>
                     </div>
                     <!-- /.tab-pane -->
 
