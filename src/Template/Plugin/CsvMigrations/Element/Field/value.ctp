@@ -29,7 +29,7 @@ if ('' !== trim($field['name'])) {
 }
 
 $value = $factory->renderValue($tableName, $field['name'], $options['entity'], $renderOptions);
-$value = empty($value) ? '&nbsp;' : $value;
+$value = empty($value) && $value !== '0' ? '&nbsp;' : $value;
 
 // append translation modal button
 $value .= $this->element('Module/Menu/translations', [
