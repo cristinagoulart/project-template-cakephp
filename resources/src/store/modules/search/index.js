@@ -1,5 +1,6 @@
 import axios from 'axios'
 import Vue from 'vue'
+import { uuid } from 'vue-uuid'
 
 export default {
 
@@ -100,12 +101,7 @@ export default {
         criteriaCreate(state, payload) {
             const filter = state.filters.filter(filter => filter.field === payload.field)
 
-            var s4 = function () {
-                return Math.floor((1 + Math.random()) * 0x10000).toString(16).substring(1)
-            }
-
-            // const guid = Math.round(1000000 * Math.random())
-            const guid = s4() + s4() + '-' + s4() + '-' + s4() + '-' + s4() + '-' + s4() + s4() + s4()
+            const guid = uuid.v4()
 
             let criteria = state.savedSearch.content.saved.criteria
             if (! criteria.hasOwnProperty(filter[0].field)) {
@@ -119,11 +115,7 @@ export default {
             })
         },
         criteriaCopy(state, value) {
-            var s4 = function () {
-                return Math.floor((1 + Math.random()) * 0x10000).toString(16).substring(1)
-            }
-
-            const newGuid = s4() + s4() + '-' + s4() + '-' + s4() + '-' + s4() + '-' + s4() + s4() + s4()
+            const newGuid = uuid.v4()
             let criteria = state.savedSearch.content.saved.criteria
 
             for (const field in criteria) {
