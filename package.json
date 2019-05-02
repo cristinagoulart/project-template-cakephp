@@ -65,6 +65,7 @@
     "daterangepicker": "^2.1.27",
     "flag-icon-css": "^3.2.1",
     "icheck": "^1.0.2",
+    "inflected": "^2.0.4",
     "node-sass": "^4.9.0",
     "rrule": "^2.2.0",
     "sass-loader": "^7.0.1",
