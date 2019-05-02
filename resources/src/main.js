@@ -14,10 +14,10 @@ axios.defaults.headers.common['X-CSRF-Token'] = localStorage.getItem(TOKEN_CSRF)
 axios.defaults.headers.common['Authorization'] = 'Bearer ' + localStorage.getItem(TOKEN_JWT)
 
 new Vue({
-    el: '#app',
-    store,
-    components: {
-        'search': Search,
-        'tableAjax': TableAjax
-    }
+  el: '#app',
+  store,
+  components: {
+    'search': Search,
+    'tableAjax': TableAjax
+  }
 })

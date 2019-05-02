@@ -37,332 +37,331 @@ import dataTablesSelectBootstrap from 'datatables.net-select-bs'
 
 export default {
 
-    props: {
-        data: {
-            type: Object
-        },
-        headers: {
-            type: Array,
-            required: true
-        },
-        model: {
-            type: String,
-            required: true
-        },
-        orderDirection: {
-            type: String,
-            default: 'asc'
-        },
-        orderField: {
-            type: String,
-            default: ''
-        },
-        primaryKey: {
-            type: String,
-            required: true
-        },
-        requestType: {
-            type: String,
-            default: 'GET'
-        },
-        url: {
-            type: String,
-            required: true
-        }
+  props: {
+    data: {
+      type: Object
     },
-
-    data: function () {
-        return {
-            batchButton: {
-                disabled: true
-            },
-            table: {}
-        }
+    headers: {
+      type: Array,
+      required: true
     },
-
-    mounted() {
-        this.initialize()
+    model: {
+      type: String,
+      required: true
     },
-
-    methods: {
-        initialize: function () {
-            const self = this
-
-            let orderColumn = Array.from(this.headers, header => header.value).indexOf(this.orderField)
-            // handle out-of-bounds
-            orderColumn = -1 === orderColumn ? 0 : orderColumn
-            if (! this.data.group_by) {
-                orderColumn += 1
-            }
-
-            var settings = {
-                searching: false,
-                lengthMenu: [5, 10, 25, 50, 100],
-                pageLength: 10,
-                language: { processing: '<i class="fa fa-refresh fa-spin fa-fw"></i> Processing...' },
-                order: [[orderColumn, this.orderDirection]],
-                columnDefs: [{ targets: [-1], orderable: false }],
-                // ajax settings
-                processing: true,
-                serverSide: true,
-                deferRender: true,
-                ajax: {
-                    url: this.url,
-                    type: this.requestType,
-                    headers: axios.defaults.headers.common,
-                    data: function (d) {
-                        let fields = Array.from(self.headers, header => header.value)
-                        if (! self.data.group_by) {
-                            fields.unshift(self.primaryKey)
-                        }
-
-                        let sort = fields[d.order[0].column]
-
-                        const data = {
-                            direction: d.order[0].dir,
-                            fields: fields,
-                            limit: d.length,
-                            page: 1 + d.start / d.length,
-                            sort: sort
-                        }
-
-                        Object.assign(data, self.data)
-
-                        return JSON.stringify(data)
-                    },
-                    dataFilter: function (d) {
-                        d = $.parseJSON(d)
-
-                        d.recordsTotal = d.pagination.count
-                        d.recordsFiltered = d.pagination.count
-                        d.data = self.dataFormatter(d.data)
-
-                        return JSON.stringify(d)
-                    }
-                }
-            }
-
-
-            // batch specific options
-            if (! this.data.group_by) {
-                Object.assign(settings, {
-                    createdRow: function ( row, data, index ) {
-                        $(row).attr('data-id', data[0])
-                        $('td', row).eq(0).text('')
-                    },
-                    select: {
-                        style: 'multi',
-                        selector: 'td:first-child'
-                    }
-                })
-
-                settings.columnDefs[0].targets.push(0)
-                settings.columnDefs.push({targets: [0], className: 'select-checkbox'})
-            }
-
-            // Fetching alerted errors into callback
-            $.fn.dataTable.ext.errMode = function (settings, techNote, message) {
-                console.log(message)
-            }
-
-            this.table = $(this.$el.querySelector('table')).DataTable(settings)
-
-            if (! this.data.group_by) {
-                this.table.on('select', function () {
-                    self.batchButton.disabled = false
-                })
-
-                this.table.on('deselect', function (e, dt, type, indexes) {
-                    if (null === self.$el.querySelector('table tr.selected')) {
-                        self.batchButton.disabled = true
-                    }
-                })
-            }
-
-            this.table.on('order.dt', function () {
-                const order = self.table.order()
-
-                self.$emit('sort-field-updated', self.data.group_by ?
-                    self.headers[order[0][0]].value :
-                    self.headers[order[0][0] - 1].value
-                )
-                self.$emit('sort-order-updated', order[0][1])
-            })
-
-            this.table.on('click', 'a[data-delete="1"]', function(e) {
-                e.preventDefault()
-
-                if (! confirm('Are you sure you want to delete this record?')) {
-                    return
-                }
-
-                axios({
-                    method: 'delete',
-                    url: $(this).attr('href'),
-                }).then(response => {
-                    if (true === response.data.success) {
-                        self.table.ajax.reload()
-                    }
-                }).catch(error => console.log(error))
-            })
-
-            // select/deselect all table rows
-            // @link https://stackoverflow.com/questions/42570465/datatables-select-all-checkbox?answertab=active#tab-top
-            this.table.on('click', 'th.select-checkbox', function () {
-                let element = $(this)
-                if (element.hasClass('selected')) {
-                    self.table.rows().deselect()
-                    element.removeClass('selected')
-                } else {
-                    self.table.rows().select()
-                    element.addClass('selected')
-                }
-            })
-
-            // check/uncheck select-all checkbox based on rows select/deselect triggering
-            // @link https://stackoverflow.com/questions/42570465/datatables-select-all-checkbox?answertab=active#tab-top
-            this.table.on('select deselect', function () {
-                let element = $(this).find('th.select-checkbox')
-                if (self.table.rows({ selected: true }).count() !== self.table.rows().count()) {
-                    element.removeClass('selected')
-                } else {
-                    element.addClass('selected')
-                }
-            })
-        },
-
-        dataFormatter(data) {
-            const result = []
-
-            const combinedColumns = []
-            //this.options.ajax.hasOwnProperty('combinedColumns') ? this.options.ajax.combinedColumns : []
-            const headers = Array.from(this.headers, header => header.value)
-            if (! this.data.group_by) {
-                headers.unshift(this.primaryKey)
-            }
-
-            const length = headers.length
-
-            for (const index in data) {
-                if (! data.hasOwnProperty(index)) {
-                    continue
-                }
-
-                result[index] = []
-                for (let i = 0; i < length; i++) {
-                    const header = headers[i]
-                    var value = []
-
-                    // normal field
-                    if (data[index][header]) {
-                        value.push(data[index][header])
-                    }
-
-                    // combined field
-                    if (combinedColumns[header]) {
-                        let length = combinedColumns[header].length
-                        for (let x = 0; x < len; x++) {
-                            value.push(data[index][combinedColumns[header][x]])
-                        }
-                    }
-
-                    result[index].push(value.join(' '))
-                }
-            }
-
-            if (! this.data.group_by) {
-                for (const index in data) {
-                    if (! data[index].hasOwnProperty('_permissions')) {
-                        return
-                    }
-
-                    let html = ''
-
-                    if (data[index]._permissions.view) {
-                        html += '<a href="/' + this.model + '/view/' + data[index][this.primaryKey] + '" class="btn btn-default" title="View"><i class="menu-icon fa fa-eye"></i></a>'
-                    }
-
-                    if (data[index]._permissions.edit) {
-                        html += '<a href="/' + this.model + '/edit/' + data[index][this.primaryKey] + '" class="btn btn-default" title="Edit"><i class="menu-icon fa fa-pencil"></i></a>'
-                    }
-
-                    if (data[index]._permissions.delete) {
-                        html += '<a href="/api/' + this.model + '/delete/' + data[index][this.primaryKey] + '.json" data-delete="1" class="btn btn-default" title="Delete"><i class="menu-icon fa fa-trash"></i></a>'
-                    }
-
-                    html = '<div class="btn-group btn-group-xs">' + html + '</div>'
-
-                    result[index].push(html)
-                }
-            }
-
-            return result
-        },
-
-        /**
-         * {@link} https://stackoverflow.com/questions/19064352/how-to-redirect-through-post-method-using-javascript/27766998
-         * @return {undefined}
-         */
-        batchEdit() {
-            if (this.data.group_by) {
-                return
-            }
-
-            const form = document.createElement('form')
-            document.body.appendChild(form)
-
-            form.method = 'post'
-            form.action = '/' + this.model + '/batch/edit'
-            this.$el.querySelectorAll('table tr.selected').forEach(function(row) {
-                let input = document.createElement('input')
-                input.type = 'hidden'
-                input.name = 'batch[ids][]'
-                input.value = row.getAttribute('data-id')
-                form.appendChild(input)
-            })
-
-            let input = document.createElement('input')
-            input.type = 'hidden'
-            input.name = '_csrfToken'
-            input.value = axios.defaults.headers.common['X-CSRF-Token']
-
-            form.appendChild(input)
-
-            form.submit()
-        },
-
-        batchDelete() {
-            if (this.data.group_by) {
-                return
-            }
-
-            if (! confirm('Are you sure you want to delete the selected records?')) {
-                return
-            }
-
-            const form = document.createElement('form')
-            document.body.appendChild(form)
-
-            form.method = 'post'
-            form.action = '/' + this.model + '/batch/delete'
-            this.$el.querySelectorAll('table tr.selected').forEach(function(row) {
-                let input = document.createElement('input')
-                input.type = 'hidden'
-                input.name = 'batch[ids][]'
-                input.value = row.getAttribute('data-id')
-                form.appendChild(input)
-            })
-
-            let input = document.createElement('input')
-            input.type = 'hidden'
-            input.name = '_csrfToken'
-            input.value = axios.defaults.headers.common['X-CSRF-Token']
-
-            form.appendChild(input)
-
-            form.submit()
-        }
+    orderDirection: {
+      type: String,
+      default: 'asc'
+    },
+    orderField: {
+      type: String,
+      default: ''
+    },
+    primaryKey: {
+      type: String,
+      required: true
+    },
+    requestType: {
+      type: String,
+      default: 'GET'
+    },
+    url: {
+      type: String,
+      required: true
     }
+  },
+
+  data () {
+    return {
+      batchButton: {
+        disabled: true
+      },
+      table: {}
+    }
+  },
+
+  mounted () {
+    this.initialize()
+  },
+
+  methods: {
+    initialize () {
+        const self = this
+
+        let orderColumn = Array.from(this.headers, header => header.value).indexOf(this.orderField)
+        // handle out-of-bounds
+        orderColumn = -1 === orderColumn ? 0 : orderColumn
+        if (! this.data.group_by) {
+          orderColumn += 1
+        }
+
+        var settings = {
+          searching: false,
+          lengthMenu: [5, 10, 25, 50, 100],
+          pageLength: 10,
+          language: { processing: '<i class="fa fa-refresh fa-spin fa-fw"></i> Processing...' },
+          order: [[orderColumn, this.orderDirection]],
+          columnDefs: [{ targets: [-1], orderable: false }],
+          // ajax settings
+          processing: true,
+          serverSide: true,
+          deferRender: true,
+          ajax: {
+            url: this.url,
+            type: this.requestType,
+            headers: axios.defaults.headers.common,
+            data: function (d) {
+              let fields = Array.from(self.headers, header => header.value)
+              if (!self.data.group_by) {
+                  fields.unshift(self.primaryKey)
+              }
+
+              let sort = fields[d.order[0].column]
+
+              const data = {
+                direction: d.order[0].dir,
+                fields: fields,
+                limit: d.length,
+                page: 1 + d.start / d.length,
+                sort: sort
+              }
+
+              Object.assign(data, self.data)
+
+              return JSON.stringify(data)
+            },
+            dataFilter: function (d) {
+              d = $.parseJSON(d)
+
+              d.recordsTotal = d.pagination.count
+              d.recordsFiltered = d.pagination.count
+              d.data = self.dataFormatter(d.data)
+
+              return JSON.stringify(d)
+            }
+          }
+        }
+
+        // batch specific options
+        if (!this.data.group_by) {
+          Object.assign(settings, {
+            createdRow: function ( row, data, index ) {
+              $(row).attr('data-id', data[0])
+              $('td', row).eq(0).text('')
+            },
+            select: {
+              style: 'multi',
+              selector: 'td:first-child'
+            }
+          })
+
+          settings.columnDefs[0].targets.push(0)
+          settings.columnDefs.push({targets: [0], className: 'select-checkbox'})
+        }
+
+        // Fetching alerted errors into callback
+        $.fn.dataTable.ext.errMode = function (settings, techNote, message) {
+          console.log(message)
+        }
+
+        this.table = $(this.$el.querySelector('table')).DataTable(settings)
+
+        if (!this.data.group_by) {
+          this.table.on('select', function () {
+            self.batchButton.disabled = false
+          })
+
+          this.table.on('deselect', function (e, dt, type, indexes) {
+            if (null === self.$el.querySelector('table tr.selected')) {
+              self.batchButton.disabled = true
+            }
+          })
+        }
+
+        this.table.on('order.dt', function () {
+          const order = self.table.order()
+
+          self.$emit('sort-field-updated', self.data.group_by ?
+            self.headers[order[0][0]].value :
+            self.headers[order[0][0] - 1].value
+          )
+          self.$emit('sort-order-updated', order[0][1])
+        })
+
+        this.table.on('click', 'a[data-delete="1"]', function(e) {
+          e.preventDefault()
+
+          if (! confirm('Are you sure you want to delete this record?')) {
+            return
+          }
+
+          axios({
+            method: 'delete',
+            url: $(this).attr('href'),
+          }).then(response => {
+            if (true === response.data.success) {
+              self.table.ajax.reload()
+            }
+          }).catch(error => console.log(error))
+        })
+
+        // select/deselect all table rows
+        // @link https://stackoverflow.com/questions/42570465/datatables-select-all-checkbox?answertab=active#tab-top
+        this.table.on('click', 'th.select-checkbox', function () {
+          let element = $(this)
+          if (element.hasClass('selected')) {
+            self.table.rows().deselect()
+            element.removeClass('selected')
+          } else {
+            self.table.rows().select()
+            element.addClass('selected')
+          }
+        })
+
+        // check/uncheck select-all checkbox based on rows select/deselect triggering
+        // @link https://stackoverflow.com/questions/42570465/datatables-select-all-checkbox?answertab=active#tab-top
+        this.table.on('select deselect', function () {
+          let element = $(this).find('th.select-checkbox')
+          if (self.table.rows({ selected: true }).count() !== self.table.rows().count()) {
+            element.removeClass('selected')
+          } else {
+            element.addClass('selected')
+          }
+        })
+      },
+
+      dataFormatter (data) {
+        const result = []
+
+        const combinedColumns = []
+        //this.options.ajax.hasOwnProperty('combinedColumns') ? this.options.ajax.combinedColumns : []
+        const headers = Array.from(this.headers, header => header.value)
+        if (! this.data.group_by) {
+          headers.unshift(this.primaryKey)
+        }
+
+        const length = headers.length
+
+        for (const index in data) {
+          if (! data.hasOwnProperty(index)) {
+            continue
+          }
+
+          result[index] = []
+          for (let i = 0; i < length; i++) {
+            const header = headers[i]
+            var value = []
+
+            // normal field
+            if (data[index][header]) {
+              value.push(data[index][header])
+            }
+
+            // combined field
+            if (combinedColumns[header]) {
+              let length = combinedColumns[header].length
+              for (let x = 0; x < len; x++) {
+                value.push(data[index][combinedColumns[header][x]])
+              }
+            }
+
+            result[index].push(value.join(' '))
+          }
+        }
+
+        if (!this.data.group_by) {
+          for (const index in data) {
+            if (! data[index].hasOwnProperty('_permissions')) {
+              return
+            }
+
+            let html = ''
+
+            if (data[index]._permissions.view) {
+              html += '<a href="/' + this.model + '/view/' + data[index][this.primaryKey] + '" class="btn btn-default" title="View"><i class="menu-icon fa fa-eye"></i></a>'
+            }
+
+            if (data[index]._permissions.edit) {
+              html += '<a href="/' + this.model + '/edit/' + data[index][this.primaryKey] + '" class="btn btn-default" title="Edit"><i class="menu-icon fa fa-pencil"></i></a>'
+            }
+
+            if (data[index]._permissions.delete) {
+              html += '<a href="/api/' + this.model + '/delete/' + data[index][this.primaryKey] + '.json" data-delete="1" class="btn btn-default" title="Delete"><i class="menu-icon fa fa-trash"></i></a>'
+            }
+
+            html = '<div class="btn-group btn-group-xs">' + html + '</div>'
+
+            result[index].push(html)
+          }
+        }
+
+        return result
+    },
+
+    /**
+     * {@link} https://stackoverflow.com/questions/19064352/how-to-redirect-through-post-method-using-javascript/27766998
+     * @return {undefined}
+     */
+    batchEdit () {
+      if (this.data.group_by) {
+        return
+      }
+
+      const form = document.createElement('form')
+      document.body.appendChild(form)
+
+      form.method = 'post'
+      form.action = '/' + this.model + '/batch/edit'
+      this.$el.querySelectorAll('table tr.selected').forEach(function (row) {
+        const input = document.createElement('input')
+        input.type = 'hidden'
+        input.name = 'batch[ids][]'
+        input.value = row.getAttribute('data-id')
+        form.appendChild(input)
+      })
+
+      const input = document.createElement('input')
+      input.type = 'hidden'
+      input.name = '_csrfToken'
+      input.value = axios.defaults.headers.common['X-CSRF-Token']
+
+      form.appendChild(input)
+
+      form.submit()
+    },
+
+    batchDelete () {
+      if (this.data.group_by) {
+        return
+      }
+
+      if (!confirm('Are you sure you want to delete the selected records?')) {
+        return
+      }
+
+      const form = document.createElement('form')
+      document.body.appendChild(form)
+
+      form.method = 'post'
+      form.action = '/' + this.model + '/batch/delete'
+      this.$el.querySelectorAll('table tr.selected').forEach(function (row) {
+        const input = document.createElement('input')
+        input.type = 'hidden'
+        input.name = 'batch[ids][]'
+        input.value = row.getAttribute('data-id')
+        form.appendChild(input)
+      })
+
+      const input = document.createElement('input')
+      input.type = 'hidden'
+      input.name = '_csrfToken'
+      input.value = axios.defaults.headers.common['X-CSRF-Token']
+
+      form.appendChild(input)
+
+      form.submit()
+    }
+  }
 
 }
 </script>

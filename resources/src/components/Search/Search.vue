@@ -194,6 +194,8 @@
 import tableAjax from '@/components/ui/TableAjax.vue'
 import inputs from '@/components/fh'
 import axios from 'axios'
+import { mapState, mapGetters } from 'vuex'
+import { dasherize, underscore } from 'inflected'
 
 export default {
 
@@ -257,6 +259,10 @@ export default {
     },
 
     computed: {
+        ...mapGetters({
+          filtersGroup: 'search/filtersGroup',
+          filtersFlat: 'search/filtersFlat'
+        }),
         aggregator: {
             get() {
                 return this.$store.state.search.savedSearch.content.saved.aggregator
@@ -264,9 +270,6 @@ export default {
             set(value) {
                 this.$store.commit('search/aggregator', value)
             }
-        },
-        criteria() {
-            return this.$store.state.search.savedSearch.content.saved.criteria
         },
         displayColumns: {
             get() {
@@ -276,15 +279,6 @@ export default {
                 this.$store.commit('search/displayColumns', value)
             }
         },
-        filtersGroup() {
-            return this.$store.getters['search/filtersGroup']
-        },
-        filtersFlat() {
-            return this.$store.getters['search/filtersFlat']
-        },
-        filtersList() {
-            return this.$store.state.search.filters
-        },
         groupBy: {
             get() {
                 return this.$store.state.search.savedSearch.content.saved.group_by
@@ -293,20 +287,8 @@ export default {
                 this.$store.commit('search/groupBy', value)
             }
         },
-        modelName() {
-            return this.$store.state.search.savedSearch.model
-        },
         modelUrl() {
-            /**
-             * @link https://coderwall.com/p/hpq7sq/undescorize-dasherize-capitalize-string-prototype
-             */
-            const dasherize = function (string) {
-                return string.replace(/[A-Z]/g, function(char, index) {
-                    return (index !== 0 ? '-' : '') + char.toLowerCase()
-                })
-            }
-
-            return dasherize(this.modelName)
+            return dasherize(underscore(this.modelName))
         },
         name: {
             get() {
@@ -328,15 +310,14 @@ export default {
 
             return result
         },
-        savedSearches() {
-            return this.$store.state.search.savedSearches
-        },
-        sortByField() {
-            return this.$store.state.search.savedSearch.content.saved.sort_by_field
-        },
-        sortByOrder() {
-            return this.$store.state.search.savedSearch.content.saved.sort_by_order
-        }
+        ...mapState({
+          criteria: state => state.search.savedSearch.content.saved.criteria,
+          savedSearches: state => state.search.savedSearches,
+          sortByField: state => state.search.savedSearch.content.saved.sort_by_field,
+          sortByOrder: state => state.search.savedSearch.content.saved.sort_by_order,
+          modelName: state => state.search.savedSearch.model,
+          filtersList: state => state.search.filters
+        })
     },
 
     created() {
