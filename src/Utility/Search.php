@@ -157,7 +157,8 @@ final class Search
             $options = [
                 'icon' => $chart['icon'],
                 'id' => Inflector::delimit($chart['type']) . '_' . uniqid(),
-                'chart' => $chart['type']
+                'chart' => $chart['type'],
+                'slug' => $savedSearch->get('name')
             ];
 
             switch ($chart['type']) {
@@ -172,6 +173,7 @@ final class Search
                         ]
                     ]);
 
+                    $widget->setContainerId($options);
                     $options += $widget->getChartData($entities);
                     break;
                 case 'funnelChart':
