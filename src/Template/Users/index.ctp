@@ -102,7 +102,7 @@ echo $this->Html->scriptBlock(
                                 ) ?>
                                 <?php
                                     $factory = new AccessFactory();
-                                    if($factory->hasAccess(['controller' => 'settings', 'action' => 'user'], [$user->id])): 
+                                    if($factory->hasAccess(['controller' => 'settings', 'action' => 'user'], ['id' => $user->id])):
                                 ?>
                                     <?= $this->Html->link(
                                         '<i class="fa fa-gears"></i>',
