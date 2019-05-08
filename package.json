@@ -69,6 +69,7 @@
     "node-sass": "^4.9.0",
     "rrule": "^2.2.0",
     "sass-loader": "^7.0.1",
+    "svg-url-loader": "^2.3.2",
     "uglifyjs-webpack-plugin": "^1.2.5",
     "vue": "^2.5.2",
     "vue-select": "^2.5.1",
