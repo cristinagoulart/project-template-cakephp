@@ -166,6 +166,7 @@ final class Search
                 case 'pie':
                     $widget = new $chart['class'];
                     $widget->setConfig([
+                        'modelName' => $savedSearch->get('model'),
                         'info' => [
                             'columns' => implode(',', [SearchService::GROUP_BY_FIELD, $groupBy]),
                             'x_axis' => $groupBy,
