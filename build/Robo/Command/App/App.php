@@ -21,10 +21,10 @@ class App extends AbstractCommand
      *
      * @param string $env Custom env in KEY1=VALUE1,KEY2=VALUE2 format
      * @param array $options Command options
-     * @option $quick Quick synchronization mode
+     * @option $skip-test-db Skip test database migrations
      * @return bool true on success or false on failure
      */
-    public function appInstall($env = '', array $options = ['quick' => false])
+    public function appInstall($env = '', array $options = ['skip-test-db' => false])
     {
         $env = $this->getDotenv($env);
 
@@ -50,10 +50,10 @@ class App extends AbstractCommand
      *
      * @param string $env Custom env in KEY1=VALUE1,KEY2=VALUE2 format
      * @param array $options Command options
-     * @option $quick Quick synchronization mode
+     * @option $skip-test-db Skip test database migrations
      * @return bool true on success or false on failure
      */
-    public function appUpdate($env = '', array $options = ['quick' => false])
+    public function appUpdate($env = '', array $options = ['skip-test-db' => false])
     {
         $env = $this->getDotenv($env);
 
@@ -185,7 +185,7 @@ class App extends AbstractCommand
         }
         $plugins = $result->getData()['data'];
 
-        if (! (bool)$options['quick']) {
+        if (! (bool)$options['skip-test-db']) {
             // test plugin migrations
             foreach ($plugins as $plugin) {
                 $tasks[] = $this->taskCakephpMigration()
@@ -326,7 +326,7 @@ class App extends AbstractCommand
         }
         $plugins = $result->getData()['data'];
 
-        if (! (bool)$options['quick']) {
+        if (! (bool)$options['skip-test-db']) {
             // test plugin migrations
             foreach ($plugins as $plugin) {
                 $tasks[] = $this->taskCakephpMigration()
