@@ -42,6 +42,10 @@ class UsersTable extends Table
                 'fields' => ['first_name', 'last_name', 'username', 'email', 'created', 'modified']
             ]);
         }
+
+        if (Hash::get($tableConfig, 'table.lookup_fields')) {
+            $this->addBehavior('Lookup', ['lookupFields' => $tableConfig['table']['lookup_fields']]);
+        }
     }
 
     /**
