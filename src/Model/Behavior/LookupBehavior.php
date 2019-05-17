@@ -19,7 +19,7 @@ use Webmozart\Assert\Assert;
  */
 class LookupBehavior extends Behavior
 {
-    protected $lookupFields = null;
+    protected $lookupFields = [];
 
     /**
      * {@inheritDoc}
@@ -29,6 +29,7 @@ class LookupBehavior extends Behavior
         parent::initialize($config);
 
         if (!empty($this->getConfig('lookupFields'))) {
+            Assert::isArray($this->getConfig('lookupFields'));
             $this->lookupFields = $this->getConfig('lookupFields');
         }
     }
@@ -151,17 +152,15 @@ class LookupBehavior extends Behavior
             return;
         }
 
-        /**
-         * @var \Cake\ORM\Table $table
-         */
         $table = $event->getSubject();
+        Assert::isInstanceOf($table, Table::class);
 
         foreach ($table->associations() as $association) {
             if (! $this->validate($association, $data)) {
                 continue;
             }
 
-            $this->getRelatedIdByLookupField($association, $data);
+            $this->setRelatedIdByLookupField($association, $data);
         }
     }
 
@@ -219,14 +218,11 @@ class LookupBehavior extends Behavior
      */
     private function isValidID(Association $association, $value): bool
     {
-        /**
-         * @var \Cake\ORM\Table $table
-         */
         $table = $association->getTarget();
-        /**
-         * @var string $primaryKey
-         */
+        Assert::isInstanceOf($table, Table::class);
+
         $primaryKey = $table->getPrimaryKey();
+        Assert::string($primaryKey);
 
         $query = $table->find('all')
             ->where([$primaryKey => $value])
@@ -242,7 +238,7 @@ class LookupBehavior extends Behavior
      * @param \ArrayObject $data Request data
      * @return void
      */
-    private function getRelatedIdByLookupField(Association $association, ArrayObject $data): void
+    private function setRelatedIdByLookupField(Association $association, ArrayObject $data): void
     {
         $lookupFields = $this->getLookupFields($association->className());
         if (empty($lookupFields)) {
@@ -273,7 +269,7 @@ class LookupBehavior extends Behavior
         $mc = new ModuleConfig(ConfigType::MODULE(), $moduleName);
         $config = $mc->parseToArray();
 
-        return $config['table']['lookup_fields'];
+        return !empty($config['table']['lookup_fields']) ? $config['table']['lookup_fields'] : [];
     }
 
     /**
