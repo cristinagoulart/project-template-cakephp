@@ -292,10 +292,8 @@ class LookupBehavior extends Behavior
             $query->orWhere([$field => $data[$association->getForeignKey()]]);
         }
 
-        /**
-         * @var \Cake\Datasource\EntityInterface|null $result
-         */
         $result = $query->first();
+        Assert::nullOrIsInstanceOf($result, EntityInterface::class);
 
         return $result;
     }
