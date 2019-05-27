@@ -1,6 +1,7 @@
 <?php
 namespace App\Event\Component;
 
+use App\Feature\Factory as FeatureFactory;
 use App\Settings\DbConfig;
 use Cake\Core\Configure;
 use Cake\Event\Event;
@@ -27,6 +28,12 @@ class SettingsListener implements EventListenerInterface
      */
     public function loadUserSettings(Event $event): void
     {
+        $feature = FeatureFactory::get('Module' . DS . 'Settings');
+
+        if (!$feature->isActive()) {
+            return;
+        }
+
         /**
          * @var \App\Controller\SettingsController
          */
