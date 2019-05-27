@@ -47,7 +47,7 @@ $skinName = Configure::read('Theme.skin');
         ?>
         <div class="login-box">
             <div class="login-logo">
-                <a href="<?php echo $this->Url->build('/'); ?>"><?php echo $theme['logo']['large'] ?></a>
+                <a href="<?php echo $this->Url->build('/'); ?>"><?= $this->element('logo') ?></a>
             </div>
             <!-- /.login-logo -->
             <div class="login-box-body">
