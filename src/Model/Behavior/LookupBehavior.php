@@ -1,11 +1,12 @@
 <?php
-namespace App\Event\Model;
+namespace App\Model\Behavior;
 
 use ArrayObject;
+use Cake\Database\Schema\TableSchema;
 use Cake\Datasource\EntityInterface;
 use Cake\Event\Event;
-use Cake\Event\EventListenerInterface;
 use Cake\ORM\Association;
+use Cake\ORM\Behavior;
 use Cake\ORM\Query;
 use Cake\ORM\Table;
 use CsvMigrations\Exception\UnsupportedPrimaryKeyException;
@@ -14,22 +15,23 @@ use Qobo\Utils\ModuleConfig\ModuleConfig;
 use Webmozart\Assert\Assert;
 
 /**
- * This class is responsible for adding Module's lookup fields into the query's
- * "where" clause and is applied system wide. The logic is triggered only if the
- * "lookup = true" flag is used in the Query's options.
- *
+ * Lookup behavior
  */
-class LookupListener implements EventListenerInterface
+class LookupBehavior extends Behavior
 {
+    protected $lookupFields = [];
+
     /**
      * {@inheritDoc}
      */
-    public function implementedEvents()
+    public function initialize(array $config)
     {
-        return [
-            'Model.beforeFind' => 'beforeFind',
-            'Model.beforeMarshal' => 'beforeMarshal'
-        ];
+        parent::initialize($config);
+
+        if (!empty($this->getConfig('lookupFields'))) {
+            Assert::isArray($this->getConfig('lookupFields'));
+            $this->lookupFields = $this->getConfig('lookupFields');
+        }
     }
 
     /**
@@ -58,17 +60,14 @@ class LookupListener implements EventListenerInterface
             return;
         }
 
-        $config = (new ModuleConfig(ConfigType::MODULE(), $table->getAlias()))->parseToArray();
-        if (empty($config['table']['lookup_fields'])) {
-            // fail-safe binding of primary key to query's where clause, if lookup
-            // fields are not defined, to avoid random record retrieval.
-            /**
-             * @var string
-             */
+        // fail-safe binding of primary key to query's where clause, if lookup
+        // fields are not defined, to avoid random record retrieval.
+        if (empty($this->lookupFields)) {
             $primaryKey = $table->getPrimaryKey();
             if (! is_string($primaryKey)) {
                 throw new UnsupportedPrimaryKeyException();
             }
+
             $query->where([
                 $table->aliasField($primaryKey) => $options['value']
             ]);
@@ -76,11 +75,48 @@ class LookupListener implements EventListenerInterface
             return;
         }
 
-        foreach ($config['table']['lookup_fields'] as $field) {
+        foreach ($this->lookupFields as $field) {
+            $value = $this->castValueByFieldType($options['value'], (string)$table->getSchema()->getColumnType($field));
+            // cast value back to string and do strict comparison,
+            // skip lookup field if cast value does not match original
+            if ((string)$value !== $options['value']) {
+                continue;
+            }
+
             $query->orWhere([
                 $table->aliasField($field) => $options['value']
             ]);
         }
+    }
+
+    /**
+     * Returns value type-cast to the provided field type.
+     *
+     * @param mixed $value Original value
+     * @param string $fieldType Field type
+     * @return mixed
+     */
+    private function castValueByFieldType($value, string $fieldType)
+    {
+        switch ($fieldType) {
+            case TableSchema::TYPE_BOOLEAN:
+                $value = (bool)$value;
+                break;
+
+            case TableSchema::TYPE_TINYINTEGER:
+            case TableSchema::TYPE_SMALLINTEGER:
+            case TableSchema::TYPE_INTEGER:
+            case TableSchema::TYPE_BIGINTEGER:
+                $value = (int)$value;
+                break;
+
+            case TableSchema::TYPE_FLOAT:
+            case TableSchema::TYPE_DECIMAL:
+                $value = (float)$value;
+                break;
+        }
+
+        return $value;
     }
 
     /**
@@ -116,17 +152,15 @@ class LookupListener implements EventListenerInterface
             return;
         }
 
-        /**
-         * @var \Cake\ORM\Table $table
-         */
         $table = $event->getSubject();
+        Assert::isInstanceOf($table, Table::class);
 
         foreach ($table->associations() as $association) {
             if (! $this->validate($association, $data)) {
                 continue;
             }
 
-            $this->getRelatedIdByLookupField($association, $data);
+            $this->setRelatedIdByLookupField($association, $data);
         }
     }
 
@@ -184,14 +218,11 @@ class LookupListener implements EventListenerInterface
      */
     private function isValidID(Association $association, $value): bool
     {
-        /**
-         * @var \Cake\ORM\Table $table
-         */
         $table = $association->getTarget();
-        /**
-         * @var string $primaryKey
-         */
+        Assert::isInstanceOf($table, Table::class);
+
         $primaryKey = $table->getPrimaryKey();
+        Assert::string($primaryKey);
 
         $query = $table->find('all')
             ->where([$primaryKey => $value])
@@ -207,7 +238,7 @@ class LookupListener implements EventListenerInterface
      * @param \ArrayObject $data Request data
      * @return void
      */
-    private function getRelatedIdByLookupField(Association $association, ArrayObject $data): void
+    private function setRelatedIdByLookupField(Association $association, ArrayObject $data): void
     {
         $lookupFields = $this->getLookupFields($association->className());
         if (empty($lookupFields)) {
@@ -218,8 +249,12 @@ class LookupListener implements EventListenerInterface
         if (is_null($relatedEntity)) {
             return;
         }
-        /** @var string $primaryKey */
+
         $primaryKey = $association->getTarget()->getPrimaryKey();
+        if (!is_string($primaryKey)) {
+            throw new UnsupportedPrimaryKeyException();
+        }
+
         $data[$association->getForeignKey()] = $relatedEntity->get($primaryKey);
     }
 
@@ -234,7 +269,7 @@ class LookupListener implements EventListenerInterface
         $mc = new ModuleConfig(ConfigType::MODULE(), $moduleName);
         $config = $mc->parseToArray();
 
-        return $config['table']['lookup_fields'];
+        return !empty($config['table']['lookup_fields']) ? $config['table']['lookup_fields'] : [];
     }
 
     /**
@@ -257,10 +292,8 @@ class LookupListener implements EventListenerInterface
             $query->orWhere([$field => $data[$association->getForeignKey()]]);
         }
 
-        /**
-         * @var \Cake\Datasource\EntityInterface|null $result
-         */
         $result = $query->first();
+        Assert::nullOrIsInstanceOf($result, EntityInterface::class);
 
         return $result;
     }

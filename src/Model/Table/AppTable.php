@@ -2,6 +2,7 @@
 namespace App\Model\Table;
 
 use App\Feature\Factory as FeatureFactory;
+use Cake\Core\App;
 use Cake\Utility\Hash;
 use CsvMigrations\Table;
 use Qobo\Utils\ModuleConfig\ConfigType;
@@ -26,7 +27,8 @@ class AppTable extends Table
             'blacklist' => ['created', 'modified', 'created_by', 'modified_by']
         ]);
 
-        $tableConfig = (new ModuleConfig(ConfigType::MODULE(), $this->getAlias()))->parseToArray();
+        $tableConfig = (new ModuleConfig(ConfigType::MODULE(), App::shortName(get_class($this), 'Model/Table', 'Table')))->parseToArray();
+
         if (Hash::get($tableConfig, 'table.searchable')) {
             $fieldsConfig = (new ModuleConfig(ConfigType::MIGRATION(), $this->getAlias()))->parseToArray();
 
@@ -35,6 +37,10 @@ class AppTable extends Table
                     return ! (bool)$definition['non-searchable'];
                 }))
             ]);
+        }
+
+        if (Hash::get($tableConfig, 'table.lookup_fields')) {
+            $this->addBehavior('Lookup', ['lookupFields' => $tableConfig['table']['lookup_fields']]);
         }
     }
 
