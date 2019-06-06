@@ -59,7 +59,6 @@
                                 <thead>
                                     <tr>
                                         <th><?= __('Username') ?></th>
-                                        <th><?= __('Email') ?></th>
                                         <th><?= __('First Name') ?></th>
                                         <th><?= __('Last Name') ?></th>
                                     </tr>
@@ -74,7 +73,6 @@
                                             $users->id
                                         ]) ?>
                                         </td>
-                                        <td><?= h($users->email) ?></td>
                                         <td><?= h($users->first_name) ?></td>
                                         <td><?= h($users->last_name) ?></td>
                                     </tr>
