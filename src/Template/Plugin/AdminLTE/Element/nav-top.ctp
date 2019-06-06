@@ -1,3 +1,18 @@
+<?php
+/**
+ * Copyright (c) Qobo Ltd. (https://www.qobo.biz)
+ *
+ * Licensed under The MIT License
+ * For full copyright and license information, please see the LICENSE
+ * Redistributions of files must retain the above copyright notice.
+ *
+ * @copyright     Copyright (c) Qobo Ltd. (https://www.qobo.biz)
+ * @license       https://opensource.org/licenses/mit-license.php MIT License
+ */
+
+use RolesCapabilities\Access\AccessFactory;
+
+?>
 <nav class="navbar navbar-static-top" role="navigation">
     <?php if (!empty($user)) : ?>
     <!-- Sidebar toggle button-->
@@ -28,11 +43,16 @@
                     <!-- Menu Footer-->
                     <li class="user-footer">
                         <div class="pull-left">
-                            <?= $this->Html->link(
+                            <?php
+                                $factory = new AccessFactory();
+                                if($factory->hasAccess(['controller' => 'Users', 'action' => 'profile'], $user)):
+                            ?>
+                                <?= $this->Html->link(
                                 '<span class="glyphicon glyphicon-user" aria-hidden="true"></span> ' . __d('cake', 'Profile'),
                                 '/users/profile',
                                 ['class' => 'btn btn-default btn-flat', 'escape' => false]
-                            ); ?>
+                                ) ?>
+                            <?php endif; ?>
                         </div>
                         <div class="pull-right">
                             <?= $this->Html->link(
