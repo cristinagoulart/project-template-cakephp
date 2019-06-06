@@ -1,5 +1,6 @@
 <template>
     <div>
+        <notifications group="SearchNotification" />
         <div class="box box-solid" v-if="withForm">
             <div class="box-body">
                 <form class="search-form" novalidate="novalidate" v-on:submit.prevent="search">
@@ -176,7 +177,17 @@
                             <span class="visible-lg">&nbsp;</span>
                             <button class="btn btn-primary btn-sm" type="submit"><i class="fa fa-search"></i> Search</button>
                             <button type="button" @click="searchReset()" class="btn btn-default btn-sm"><i class="fa fa-undo"></i> Reset</button>
-                            <button type="button" @click="searchExport()" class="btn btn-default btn-sm"><i class="fa fa-download"></i> Export</button>
+                            <button v-if="withExport" type="button" @click="searchExport()" class="btn btn-default btn-sm"><i class="fa fa-download"></i> Export</button>
+                            <div v-if="withSets" class="btn-group btn-group-sm">
+                                <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+                                    <i class="fa fa-plus"></i> Add to set <span class="caret"></span>
+                                </button>
+                                <ul class="dropdown-menu">
+                                    <li><a href="#" data-toggle="modal" :data-target="'#' + sets.modal">Create new set</a></li>
+                                    <li v-if="0 < sets.list.length" role="separator" class="divider"></li>
+                                    <li v-for="set in sets.list"><a href="#" @click.prevent="setsAddTo(set.id)">{{ set.name }}</a></li>
+                                </ul>
+                            </div>
                         </div>
                     </div>
                 </form>
@@ -184,7 +195,32 @@
         </div>
         <div class="box box-solid">
             <div class="box-body">
-                <table-ajax v-if="loadResult" :url="'/api/' + modelUrl + '/search'" request-type="POST" :data="tableData" :order-field="sortByField" :order-direction="sortByOrder" :model="modelUrl" :primary-key="primaryKey" :headers="tableHeaders" @sort-field-updated="sortFieldUpdated" @sort-order-updated="sortOrderUpdated"></table-ajax>
+                <table-ajax v-if="loadResult" :url="'/api/' + modelUrl + '/search'" request-type="POST" :data="tableData" :order-field="sortByField" :order-direction="sortByOrder" :model="modelUrl" :primary-key="primaryKey" :headers="tableHeaders" @sort-field-updated="sortFieldUpdated" @sort-order-updated="sortOrderUpdated" :with-batch="withBatch"></table-ajax>
+            </div>
+        </div>
+        <div class="modal fade" :id="sets.modal" tabindex="-1" role="dialog" aria-labelledby="mySetsLabel">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                        <h4 class="modal-title">Create new set</h4>
+                    </div>
+                    <div class="modal-body">
+                        <div class="form-group input text required">
+                            <label class="control-label" for="sets-name">Name</label>
+                            <input type="text" v-model="sets.name" class="form-control" required="required">
+                        </div>
+                        <div class="form-group input ">
+                            <label class="control-label" for="sets-active">Active</label>
+                            <div class="clearfix"></div>
+                            <input type="checkbox" v-model="sets.active">
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" @click="setsCreate()" :disabled="'' === sets.name" class="btn btn-primary">Submit</button>
+                        <button type="button" class="btn btn-link" data-dismiss="modal">Close</button>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -233,6 +269,18 @@ export default {
         withForm: {
             type: Boolean,
             default: true
+        },
+        withBatch: {
+            type: Boolean,
+            default: true
+        },
+        withExport: {
+            type: Boolean,
+            default: true
+        },
+        withSets: {
+            type: Boolean,
+            default: true
         }
     },
 
@@ -252,6 +300,12 @@ export default {
             selectedColumns: {
                 available: [],
                 display: []
+            },
+            sets: {
+                active: true,
+                list: [],
+                modal: 'sets-modal',
+                name: ''
             },
             tableHeaders: [],
             tableData: {}
@@ -341,6 +395,8 @@ export default {
             this.search()
             this.$store.dispatch('search/savedSearchesGet')
         }
+
+        this.setsFetch()
     },
 
     methods: {
@@ -429,7 +485,9 @@ export default {
 
             if (! this.groupBy) {
                 this.displayColumns.forEach(function (column) {
-                    self.tableHeaders.push({ value: column, text: self.filtersFlat[column].label })
+                    if (undefined !== self.filtersFlat[column]) {
+                      self.tableHeaders.push({ value: column, text: self.filtersFlat[column].label})
+                    }
                 })
             }
 
@@ -438,7 +496,73 @@ export default {
                 this.loadResult = true
             })
         },
+        setsCreate() {
+            if (! this.withSets) {
+                return
+            }
+
+            if ('' === this.sets.name) {
+                return
+            }
+
+            return axios({
+                method: 'post',
+                url: '/sets/add',
+                data: { name: this.sets.name, active: this.sets.active, module: this.modelUrl },
+            }).then(response => {
+                $('#' + this.sets.modal).modal('hide')
+                this.setsFetch()
+            }).catch(error => console.log(error))
+        },
+        setsFetch() {
+            if (! this.withSets) {
+                return
+            }
+
+            return axios({
+                method: 'get',
+                url: '/sets/index'
+            }).then(response => {
+                this.sets.list = []
+                for (const key of Object.keys(response.data.sets)) {
+                    if (! response.data.sets[key].active) {
+                        continue
+                    }
+
+                    if (response.data.sets[key].module !== this.modelUrl) {
+                        continue
+                    }
+
+                    this.sets.list.push(response.data.sets[key])
+                }
+            }).catch(error => console.log(error))
+        },
+        setsAddTo(setId) {
+            if (! this.withSets) {
+                return
+            }
+
+            this.$store.dispatch('search/savedSearchExport').then(() => {
+                const id = this.$store.state.search.exportId
+
+                if ('' === id) {
+                    return
+                }
+
+                return axios({
+                    method: 'put',
+                    url: '/sets/assign-search',
+                    data: { id: setId, record_id: id },
+                }).then(response => {
+                    console.log(response)
+                }).catch(error => console.log(error))
+            })
+        },
         searchExport() {
+            if (! this.withExport) {
+                return
+            }
+
             this.$store.dispatch('search/savedSearchExport').then(() => {
                 const id = this.$store.state.search.exportId
 
