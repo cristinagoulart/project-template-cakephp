@@ -20,7 +20,17 @@ class LookupBehaviorTest extends TestCase
      */
     public $Lookup;
 
-    public $table;
+    /**
+     * Thinks table
+     * @var \Cake\ORM\Table
+     */
+    public $things;
+
+    /**
+     * Users table
+     * @var \Cake\ORM\Table
+     */
+    public $users;
 
     /**
      * Fixtures
@@ -28,7 +38,8 @@ class LookupBehaviorTest extends TestCase
      * @var array
      */
     public $fixtures = [
-        'app.things'
+        'app.things',
+        'app.users'
     ];
 
     /**
@@ -40,7 +51,8 @@ class LookupBehaviorTest extends TestCase
     {
         parent::setUp();
 
-        $this->table = TableRegistry::get('Things');
+        $this->things = TableRegistry::get('Things');
+        $this->users = TableRegistry::get('Users');
 
         $config = [
             'lookupFields' => [
@@ -48,7 +60,7 @@ class LookupBehaviorTest extends TestCase
             ]
         ];
 
-        $this->Lookup = new LookupBehavior($this->table, $config);
+        $this->Lookup = new LookupBehavior($this->things, $config);
     }
 
     /**
@@ -59,6 +71,8 @@ class LookupBehaviorTest extends TestCase
     public function tearDown() : void
     {
         unset($this->Lookup);
+        unset($this->things);
+        unset($this->users);
 
         parent::tearDown();
     }
@@ -70,8 +84,8 @@ class LookupBehaviorTest extends TestCase
      */
     public function testBeforeFind() : void
     {
-        $entity = $this->table->find();
-        $event = new Event('Model.beforeFind', $this->table, [
+        $entity = $this->things->find();
+        $event = new Event('Model.beforeFind', $this->things, [
             'entity' => $entity,
         ]);
 
@@ -82,8 +96,19 @@ class LookupBehaviorTest extends TestCase
 
         $primary = true;
         $this->Lookup->beforeFind($event, $entity, $options, $primary);
-        $idResult = $entity->firstOrFail()->get('id');
+        $idResult = $entity->firstOrFail();
 
-        $this->assertEquals('00000000-0000-0000-0000-000000000002', $idResult);
+        $id = is_array($idResult) ?: $idResult->get('id');
+
+        $this->assertEquals('00000000-0000-0000-0000-000000000002', $id);
+    }
+
+    public function testUsersLookup() : void
+    {
+        $query = $this->users->find('all')->applyOptions(['lookup' => true, 'value' => 'user-1@test.com'])->firstOrFail();
+
+        $email = is_array($query) ?: $query->get('email');
+
+        $this->assertSame('user-1@test.com', $email);
     }
 }
