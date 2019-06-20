@@ -272,6 +272,12 @@ export default {
         }).then(response => {
           if (response.data.success === true) {
             dispatch('savedSearchesGet')
+
+            Vue.notify({
+              group: 'SearchNotification',
+              type: 'info',
+              text: 'Successfully copied the search'
+            })
           }
         }).catch(error => console.log(error))
       }).catch(error => console.log(error))
@@ -308,6 +314,12 @@ export default {
       }).then(response => {
         if (response.data.success === true) {
           commit('savedSearch', response.data.data)
+
+          Vue.notify({
+            group: 'SearchNotification',
+            type: 'info',
+            text: 'Successfully loaded search results'
+          })
         }
       }).catch(error => console.log(error))
     },
@@ -324,6 +336,11 @@ export default {
             commit('savedSearchId', response.data.data.id)
           }
           dispatch('savedSearchesGet')
+          Vue.notify({
+            group: 'SearchNotification',
+            type: 'info',
+            text: 'Search successfully saved'
+          })
         }
       }).catch(error => console.log(error))
     },
