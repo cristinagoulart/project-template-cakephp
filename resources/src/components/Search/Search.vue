@@ -305,7 +305,9 @@ export default {
                 name: ''
             },
             tableHeaders: [],
-            tableData: {}
+            tableData: {},
+            // See setter code in this file for info.
+            unwatchCriteria: null
         }
     },
 
@@ -372,6 +374,50 @@ export default {
     },
 
     created() {
+        /**
+         * This watcher is responsible for initiating the search execution after all related type
+         * filters are done fetching the records IDs and display values using the lookup API endpoint.
+         *
+         * This logic handles the case where a basic search is executed and related type field(s) are
+         * part of the basic search criteria.
+         *
+         * This watcher is destroyed once the search is initiated for the first time.
+         */
+        this.unwatchCriteria = this.$watch('criteria', function () {
+            const self = this
+
+            const isUuid = function (value) {
+                const regex = RegExp(/^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i)
+
+                return regex.test(value)
+            }
+
+            const hasOnlyUuids = function (filter) {
+                const values = Array.isArray(filter.value) ? filter.value : [filter.value]
+
+                return values.every(item => isUuid(item))
+            }
+
+            const haveOnlyUuids = function (filters) {
+                return Object.values(filters).every(item => {
+                    if ('related' !== item.type) {
+                        return true
+                    }
+
+                    return hasOnlyUuids(item)
+                })
+            }
+
+            const canSearch = function () {
+                return Object.values(self.criteria).every(item => {
+                    return haveOnlyUuids(item)
+                })
+            }
+
+            if (canSearch()) {
+                this.search()
+            }
+        },  { deep: true })
 
         this.$store.commit('search/filters', JSON.parse(this.filters))
 
@@ -389,7 +435,13 @@ export default {
             this.$store.commit('search/displayColumns',  {action: 'add', available: this.displayFields })
             this.$store.commit('search/savedSearchModel', this.model)
             this.$store.commit('search/savedSearchUserId', this.userId)
-            this.search()
+
+            // If there are no criteria, execute search right away, otherwise we
+            // need to wait. See unwatchCriteria setter code in this file for info.
+            if (0 === Object.keys(this.criteria).length) {
+                this.search()
+            }
+
             this.$store.dispatch('search/savedSearchesGet')
         }
 
@@ -461,6 +513,9 @@ export default {
         },
         search() {
             const self = this
+
+            // Remove criteria watcher, see setter code in this file for more info.
+            this.unwatchCriteria()
 
             this.loadResult = false
 
