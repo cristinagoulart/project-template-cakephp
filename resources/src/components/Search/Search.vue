@@ -229,10 +229,13 @@ import inputs from '@/components/fh'
 import axios from 'axios'
 import { mapState, mapGetters } from 'vuex'
 import { dasherize, underscore } from 'inflected'
+import UuidMixin from '@/mixins/uuid.js'
 
 export default {
 
     components: Object.assign({ tableAjax }, inputs),
+
+    mixins: [UuidMixin],
 
     props: {
         displayFields: {
@@ -386,16 +389,10 @@ export default {
         this.unwatchCriteria = this.$watch('criteria', function () {
             const self = this
 
-            const isUuid = function (value) {
-                const regex = RegExp(/^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i)
-
-                return regex.test(value)
-            }
-
             const hasOnlyUuids = function (filter) {
                 const values = Array.isArray(filter.value) ? filter.value : [filter.value]
 
-                return values.every(item => isUuid(item))
+                return values.every(item => self.isUuid(item))
             }
 
             const haveOnlyUuids = function (filters) {

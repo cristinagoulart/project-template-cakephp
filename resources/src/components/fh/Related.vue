@@ -26,12 +26,15 @@ import axios from 'axios'
 import lodash from 'lodash'
 import vSelect from 'vue-select'
 import { MAGIC_VALUE_WRAPPER } from '@/utils/constants.js'
+import UuidMixin from '@/mixins/uuid.js'
 
 export default {
 
     components: {
         vSelect
     },
+
+    mixins: [UuidMixin],
 
     props: {
         displayField: {
@@ -77,11 +80,6 @@ export default {
 
         const value = 'string' === typeof this.value ? [this.value] : this.value
 
-        /**
-         * @link https://stackoverflow.com/a/13653180/2562232
-         */
-        const regex = RegExp(/^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i)
-
         let hasMagicValue = false
         let promises = []
         value.forEach(function (id) {
@@ -90,7 +88,7 @@ export default {
                 return
             }
 
-            promises.push(regex.test(id) ? self.getDisplayValueById(id) : self.getDisplayValueByLookup(id))
+            promises.push(self.isUuid(id) ? self.getDisplayValueById(id) : self.getDisplayValueByLookup(id))
         })
 
         Promise.all(promises).then(function(values) {
