@@ -68,9 +68,6 @@
                                             </div>
                                             <div class="col-sm-2 col-md-1">
                                                 <button type="button" @click="criteriaRemove(guid)" class="btn btn-default btn-xs"><i class="fa fa-trash" aria-hidden="true"></i></button>
-                                                <!-- <div class="input-sm">
-                                                    <button type="button" @click="criteriaCopy(guid)" class="btn btn-default btn-xs"><i class="fa fa-clone" aria-hidden="true"></i></button>
-                                                </div> -->
                                             </div>
                                         </div>
                                     </div>
@@ -418,12 +415,6 @@ export default {
             }
 
             this.filter = ''
-        },
-        criteriaCopy(guid) {
-            // skipping for now, this functionality becomes tricky when you consider events, vuex store etc.
-            return
-
-            this.$store.commit('search/criteriaCopy', guid)
         },
         criteriaRemove(guid) {
             this.$store.commit('search/criteriaRemove', guid)
