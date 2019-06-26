@@ -64,7 +64,7 @@
                                                 </select>
                                             </div>
                                             <div class="col-xs-6 col-md-5">
-                                                <component :is="field.type + 'Input'" :guid="guid" :field="field_name" :key="guid + field.value" :value="field.value" :options="filtersFlat[field_name].options" :source="filtersFlat[field_name].source" :display-field="filtersFlat[field_name].display_field" :multiple="true" @input-value-updated="criteriaUpdated" />
+                                                <component :is="field.type + 'Input'" :guid="guid" :field="field_name" :value="field.value" :options="filtersFlat[field_name].options" :source="filtersFlat[field_name].source" :display-field="filtersFlat[field_name].display_field" :multiple="true" @input-value-updated="criteriaUpdated" />
                                             </div>
                                             <div class="col-sm-2 col-md-1">
                                                 <button type="button" @click="criteriaRemove(guid)" class="btn btn-default btn-xs"><i class="fa fa-trash" aria-hidden="true"></i></button>
