@@ -39,7 +39,7 @@ class AppTable extends Table
             ]);
         }
 
-        $this->addBehavior('Lookup', ['lookupFields' => $tableConfig['table']['lookup_fields']]);
+        $this->addBehavior('Lookup', ['lookupFields' => Hash::get($tableConfig, 'table.lookup_fields', [])]);
     }
 
     /**
