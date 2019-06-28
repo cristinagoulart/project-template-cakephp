@@ -64,13 +64,10 @@
                                                 </select>
                                             </div>
                                             <div class="col-xs-6 col-md-5">
-                                                <component :is="field.type + 'Input'" :guid="guid" :field="field_name" :key="guid + field.value" :value="field.value" :options="filtersFlat[field_name].options" :source="filtersFlat[field_name].source" :display-field="filtersFlat[field_name].display_field" :multiple="true" @input-value-updated="criteriaUpdated" />
+                                                <component :is="field.type + 'Input'" :guid="guid" :field="field_name" :value="field.value" :options="filtersFlat[field_name].options" :source="filtersFlat[field_name].source" :display-field="filtersFlat[field_name].display_field" :multiple="true" @input-value-updated="criteriaUpdated" />
                                             </div>
                                             <div class="col-sm-2 col-md-1">
                                                 <button type="button" @click="criteriaRemove(guid)" class="btn btn-default btn-xs"><i class="fa fa-trash" aria-hidden="true"></i></button>
-                                                <!-- <div class="input-sm">
-                                                    <button type="button" @click="criteriaCopy(guid)" class="btn btn-default btn-xs"><i class="fa fa-clone" aria-hidden="true"></i></button>
-                                                </div> -->
                                             </div>
                                         </div>
                                     </div>
@@ -232,10 +229,13 @@ import inputs from '@/components/fh'
 import axios from 'axios'
 import { mapState, mapGetters } from 'vuex'
 import { dasherize, underscore } from 'inflected'
+import UuidMixin from '@/mixins/uuid.js'
 
 export default {
 
     components: Object.assign({ tableAjax }, inputs),
+
+    mixins: [UuidMixin],
 
     props: {
         displayFields: {
@@ -308,7 +308,9 @@ export default {
                 name: ''
             },
             tableHeaders: [],
-            tableData: {}
+            tableData: {},
+            // See setter code in this file for info.
+            unwatchCriteria: null
         }
     },
 
@@ -375,6 +377,44 @@ export default {
     },
 
     created() {
+        /**
+         * This watcher is responsible for initiating the search execution after all related type
+         * filters are done fetching the records IDs and display values using the lookup API endpoint.
+         *
+         * This logic handles the case where a basic search is executed and related type field(s) are
+         * part of the basic search criteria.
+         *
+         * This watcher is destroyed once the search is initiated for the first time.
+         */
+        this.unwatchCriteria = this.$watch('criteria', function () {
+            const self = this
+
+            const hasOnlyUuids = function (filter) {
+                const values = Array.isArray(filter.value) ? filter.value : [filter.value]
+
+                return values.every(item => self.isUuid(item))
+            }
+
+            const haveOnlyUuids = function (filters) {
+                return Object.values(filters).every(item => {
+                    if ('related' !== item.type) {
+                        return true
+                    }
+
+                    return hasOnlyUuids(item)
+                })
+            }
+
+            const canSearch = function () {
+                return Object.values(self.criteria).every(item => {
+                    return haveOnlyUuids(item)
+                })
+            }
+
+            if (canSearch()) {
+                this.search()
+            }
+        },  { deep: true })
 
         this.$store.commit('search/filters', JSON.parse(this.filters))
 
@@ -392,7 +432,13 @@ export default {
             this.$store.commit('search/displayColumns',  {action: 'add', available: this.displayFields })
             this.$store.commit('search/savedSearchModel', this.model)
             this.$store.commit('search/savedSearchUserId', this.userId)
-            this.search()
+
+            // If there are no criteria, execute search right away, otherwise we
+            // need to wait. See unwatchCriteria setter code in this file for info.
+            if (0 === Object.keys(this.criteria).length) {
+                this.search()
+            }
+
             this.$store.dispatch('search/savedSearchesGet')
         }
 
@@ -418,12 +464,6 @@ export default {
             }
 
             this.filter = ''
-        },
-        criteriaCopy(guid) {
-            // skipping for now, this functionality becomes tricky when you consider events, vuex store etc.
-            return
-
-            this.$store.commit('search/criteriaCopy', guid)
         },
         criteriaRemove(guid) {
             this.$store.commit('search/criteriaRemove', guid)
@@ -470,6 +510,9 @@ export default {
         },
         search() {
             const self = this
+
+            // Remove criteria watcher, see setter code in this file for more info.
+            this.unwatchCriteria()
 
             this.loadResult = false
 
