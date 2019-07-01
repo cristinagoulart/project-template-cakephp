@@ -26,12 +26,15 @@ import axios from 'axios'
 import lodash from 'lodash'
 import vSelect from 'vue-select'
 import { MAGIC_VALUE_WRAPPER } from '@/utils/constants.js'
+import UuidMixin from '@/mixins/uuid.js'
 
 export default {
 
     components: {
         vSelect
     },
+
+    mixins: [UuidMixin],
 
     props: {
         displayField: {
@@ -85,10 +88,24 @@ export default {
                 return
             }
 
-            promises.push(self.getDisplayValue(id))
+            promises.push(self.isUuid(id) ? self.getDisplayValueById(id) : self.getDisplayValueByLookup(id))
         })
 
         Promise.all(promises).then(function(values) {
+            function flatten(array) {
+                var result = []
+                array.forEach(item => {
+                    if (Array.isArray(item)) {
+                        result = result.concat(flatten(item))
+                    } else {
+                        result.push(item)
+                    }
+                })
+                return result
+            }
+
+            values = flatten(values)
+
             if (hasMagicValue) {
                 values.push(self.magicValue)
             }
@@ -134,12 +151,11 @@ export default {
                 } else {
                     loading(false)
                 }
-            })
+            }).catch(error => console.log(error))
         }, 1000),
-        getDisplayValue(id) {
+        getDisplayValueById(id) {
             return axios({
                 method: 'get',
-                async: false,
                 url: encodeURI('/api/' + this.source + '/view/' + id),
             }).then(response => {
                 let label = true === response.data.success && response.data.data.hasOwnProperty(this.displayField) ?
@@ -147,6 +163,23 @@ export default {
                     id
 
                 return { value: id, label: label }
+            }).catch(error => console.log(error))
+        },
+        getDisplayValueByLookup(query) {
+            return axios({
+                method: 'get',
+                url: encodeURI('/api/' + this.source + '/lookup?query=' + query),
+            }).then(response => {
+                if (true !== response.data.success) {
+                    return
+                }
+
+                let values = []
+                Object.keys(response.data.data).forEach(key => {
+                    values.push({ value: key, label: response.data.data[key] })
+                })
+
+                return values
             }).catch(error => console.log(error))
         }
     }

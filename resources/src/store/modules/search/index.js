@@ -114,22 +114,6 @@ export default {
         value: payload.value !== '' ? payload.value : (filter[0].type === 'boolean' ? 0 : '')
       })
     },
-    criteriaCopy (state, value) {
-      const newGuid = uuid.v4()
-      const criteria = state.savedSearch.content.saved.criteria
-
-      for (const field in criteria) {
-        for (const guid in criteria[field]) {
-          if (value !== guid) {
-            continue
-          }
-
-          const data = Object.assign({}, criteria[field][guid])
-
-          Vue.set(criteria[field], newGuid, data)
-        }
-      }
-    },
     criteriaRemove (state, value) {
       const criteria = state.savedSearch.content.saved.criteria
 
@@ -216,6 +200,10 @@ export default {
     },
     savedSearch (state, value) {
       if (Array.isArray(value.content.saved.criteria) && value.content.saved.criteria.length === 0) {
+        value.content.saved.criteria = {}
+      }
+
+      if (value.content.saved.criteria === undefined) {
         value.content.saved.criteria = {}
       }
 
