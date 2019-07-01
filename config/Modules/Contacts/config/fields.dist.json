@@ -1,0 +1,10 @@
+{
+    "type": {
+        "default": "organization"
+    },
+    "ref": {
+        "auto-increment": true,
+        "min": 100000,
+        "renderAs": "plain"
+    }
+}

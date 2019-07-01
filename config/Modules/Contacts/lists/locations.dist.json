@@ -1,0 +1,22 @@
+{
+    "items": [
+        {
+            "value": "other",
+            "label": "Other",
+            "inactive": false,
+            "children": []
+        },
+        {
+            "value": "office",
+            "label": "Office",
+            "inactive": false,
+            "children": []
+        },
+        {
+            "value": "home",
+            "label": "Home",
+            "inactive": false,
+            "children": []
+        }
+    ]
+}
