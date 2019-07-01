@@ -17,6 +17,6 @@ $options = [
     'fields' => $fields,
     'title' => null
 ];
-echo $this->element('CsvMigrations.View/view', [
+echo $this->element('View/view', [
     'options' => $options
 ]);
