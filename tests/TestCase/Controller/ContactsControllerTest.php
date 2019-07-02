@@ -2,6 +2,7 @@
 namespace App\Test\TestCase\Controller;
 
 use App\Model\Entity\Contact;
+use Cake\Http\Exception\MethodNotAllowedException;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\IntegrationTestCase;
 
@@ -165,8 +166,9 @@ class ContactsControllerTest extends IntegrationTestCase
 
     public function testDeleteGetRequest() : void
     {
+        $this->disableErrorHandlerMiddleware();
+        $this->expectException(MethodNotAllowedException::class);
         $this->get('/contacts/delete/00000000-0000-0000-0000-000000000001');
-        $this->assertResponseError();
     }
 
     public function testDeleteData() : void
@@ -195,8 +197,9 @@ class ContactsControllerTest extends IntegrationTestCase
 
     public function testBatchGetRequest() : void
     {
+        $this->disableErrorHandlerMiddleware();
+        $this->expectException(MethodNotAllowedException::class);
         $this->get('/contacts/batch/edit');
-        $this->assertResponseError();
     }
 
     public function testBatchDelete() : void
