@@ -1,0 +1,58 @@
+{
+    "items": [
+        [
+            "Details",
+            "ref",
+            "type",
+            "description"
+        ],
+        [
+            "Details",
+            "created",
+            "modified",
+            ""
+        ],
+        [
+            "Personal Information",
+            "first_name",
+            "last_name",
+            ""
+        ],
+        [
+            "Personal Information",
+            "gender",
+            "birthdate",
+            "nationality"
+        ],
+        [
+            "Company Information",
+            "company_name",
+            "registration_number",
+            ""
+        ],
+        [
+            "Contact Information",
+            "email",
+            "phone",
+            "website"
+        ],
+        [
+            "Contact Information",
+            "skype",
+            "facebook",
+            "linkedin"
+        ],
+        [
+            "Address",
+            "country",
+            "city",
+            "state"
+        ],
+        [
+            "Address",
+            "post_code",
+            "street",
+            "street_2"
+        ]
+    ]
+}

@@ -1,0 +1,22 @@
+{
+    "items": [
+        [
+            "name"
+        ],
+        [
+            "phone"
+        ],
+        [
+            "email"
+        ],
+        [
+            "website"
+        ],
+        [
+            "country"
+        ],
+        [
+            "city"
+        ]
+    ]
+}

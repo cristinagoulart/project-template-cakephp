@@ -14,6 +14,7 @@ class ContactsControllerTest extends IntegrationTestCase
         'app.contacts',
         'app.log_audit',
         'plugin.CakeDC/Users.users',
+        'plugin.Menu.menus',
         'plugin.Menu.menu_items',
         'plugin.RolesCapabilities.roles',
     ];
