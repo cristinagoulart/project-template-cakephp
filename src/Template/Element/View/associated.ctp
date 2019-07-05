@@ -1,21 +1,32 @@
 <?php
-/**
- * Copyright (c) Qobo Ltd. (https://www.qobo.biz)
- *
- * Licensed under The MIT License
- * For full copyright and license information, please see the LICENSE
- * Redistributions of files must retain the above copyright notice.
- *
- * @copyright     Copyright (c) Qobo Ltd. (https://www.qobo.biz)
- * @license       https://opensource.org/licenses/mit-license.php MIT License
- */
-
 use Cake\ORM\Association;
+use Qobo\Utils\ModuleConfig\ConfigType;
+use Qobo\Utils\ModuleConfig\ModuleConfig;
+use RolesCapabilities\Access\AccessFactory;
+
+$accessFactory = new AccessFactory();
+
+$mc = new ModuleConfig(ConfigType::MODULE(), $this->name);
+$config = $mc->parse();
+
+$hiddenAssociations = (array)$config->associations->hide_associations;
 
 $associations = [];
 foreach ($table->associations() as $association) {
+    list($plugin, $controller) = pluginSplit($association->className());
+    $url = ['plugin' => $plugin, 'controller' => $controller, 'action' => 'index'];
+    // skip associations which current user has no access
+    if (!$accessFactory->hasAccess($url, $user)) {
+        continue;
+    }
+
     // skip association(s) with Burzum/FileStorage, because it is rendered within the respective field handler
     if ('Burzum/FileStorage.FileStorage' === $association->className()) {
+        continue;
+    }
+
+    // skip hidden associations
+    if (in_array($association->getName(), $hiddenAssociations)) {
         continue;
     }
 
@@ -37,10 +48,10 @@ if (!empty($associations)) : ?>
         ['block' => 'scriptBottom']
     ); ?>
     <div class="nav-tabs-custom">
-        <?= $this->element('Associated/tabs-list', [
+        <?= $this->element('CsvMigrations.Associated/tabs-list', [
             'table' => $table, 'associations' => $associations
         ]); ?>
-        <?= $this->element('Associated/tabs-content', [
+        <?= $this->element('CsvMigrations.Associated/tabs-content', [
             'table' => $table, 'associations' => $associations, 'factory' => $factory, 'entity' => $entity
         ]); ?>
     </div>

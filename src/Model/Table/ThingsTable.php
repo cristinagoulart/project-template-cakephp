@@ -2,10 +2,10 @@
 namespace App\Model\Table;
 
 /**
- * Contacts Model
+ * Things Model
  *
  */
-class ContactsTable extends AppTable
+class ThingsTable extends AppTable
 {
 
     /**
@@ -18,7 +18,7 @@ class ContactsTable extends AppTable
     {
         parent::initialize($config);
 
-        $this->setTable('contacts');
+        $this->setTable('things');
         $this->setPrimaryKey('id');
 
         $this->addBehavior('Timestamp');

@@ -4,8 +4,8 @@ namespace App\Controller;
 use App\Controller\BaseModuleController;
 
 /**
- * Contacts Controller
+ * Things Controller
  */
-class ContactsController extends BaseModuleController
+class ThingsController extends BaseModuleController
 {
 }

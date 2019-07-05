@@ -5,5 +5,8 @@
     },
     "notifications": {
         "enable": true
+    },
+    "associations": {
+        "hide_associations": []
     }
 }

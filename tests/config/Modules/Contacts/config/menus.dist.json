@@ -1,9 +1,0 @@
-{
-    "main_menu": [
-        {
-            "label": "Contacts",
-            "url": "/contacts/",
-            "order": 10
-        }
-    ]
-}

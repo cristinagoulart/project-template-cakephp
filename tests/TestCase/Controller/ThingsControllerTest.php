@@ -1,17 +1,17 @@
 <?php
 namespace App\Test\TestCase\Controller;
 
-use App\Model\Entity\Contact;
+use App\Model\Entity\Thing;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\IntegrationTestCase;
 
 /**
- * App\Test\App\Controller\ContactsController Test Case
+ * App\Test\App\Controller\ThingsController Test Case
  */
-class ContactsControllerTest extends IntegrationTestCase
+class ThingsControllerTest extends IntegrationTestCase
 {
     public $fixtures = [
-        'app.contacts',
+        'app.things',
         'app.log_audit',
         'plugin.CakeDC/Users.users',
         'plugin.Menu.menus',
@@ -41,13 +41,13 @@ class ContactsControllerTest extends IntegrationTestCase
         $this->session(['Auth' => '']);
 
         // No session data set.
-        $this->get('/contacts/view/00000000-0000-0000-0000-000000000001');
+        $this->get('/things/view/00000000-0000-0000-0000-000000000001');
         $this->assertRedirectContains('/login');
     }
 
     public function testView() : void
     {
-        $this->get('/contacts/view/00000000-0000-0000-0000-000000000001');
+        $this->get('/things/view/00000000-0000-0000-0000-000000000001');
 
         $this->assertResponseOk();
     }
@@ -57,37 +57,37 @@ class ContactsControllerTest extends IntegrationTestCase
         $this->session(['Auth' => '']);
 
         // No session data set.
-        $this->get('/contacts/add');
+        $this->get('/things/add');
 
         $this->assertRedirectContains('/login');
     }
 
     public function testAdd() : void
     {
-        $this->get('/contacts/add');
+        $this->get('/things/add');
         $this->assertResponseOk();
         // form element and attributes
         $this->assertResponseContains('<form');
-        $this->assertResponseContains('action="/contacts/add"');
+        $this->assertResponseContains('action="/things/add"');
         // submit button
         $this->assertResponseContains('type="submit"');
         // input element(s) and attributes
-        $this->assertResponseContains('Email');
-        $this->assertResponseContains('name="Contacts[email]"');
+        $this->assertResponseContains('name');
+        $this->assertResponseContains('name="Things[name]"');
     }
 
     public function testAddPostData() : void
     {
         $data = [
-            'type' => 'individual',
-            'email' => 'unique_email@test123.com'
+            'type' => 'a',
+            'name' => 'test'
         ];
 
-        $this->post('/contacts/add', $data);
+        $this->post('/things/add', $data);
         $this->assertResponseSuccess();
 
         // fetch new record
-        $query = TableRegistry::get('contacts')->find()->where(['email' => $data['email']]);
+        $query = TableRegistry::get('things')->find()->where(['name' => $data['name']]);
 
         $this->assertEquals(1, $query->count());
     }
@@ -97,24 +97,24 @@ class ContactsControllerTest extends IntegrationTestCase
         $this->session(['Auth' => '']);
 
         // No session data set.
-        $this->get('/contacts/edit');
+        $this->get('/things/edit');
 
         $this->assertRedirectContains('/login');
     }
 
     public function testEdit() : void
     {
-        $this->get('/contacts/edit/00000000-0000-0000-0000-000000000001');
+        $this->get('/things/edit/00000000-0000-0000-0000-000000000001');
         $this->assertResponseOk();
         // form element and attributes
         $this->assertResponseContains('<form');
-        $this->assertResponseContains('action="/contacts/edit/00000000-0000-0000-0000-000000000001"');
-        // $this->assertResponseContains('data-panels-url="/api/contacts/panels"');
+        $this->assertResponseContains('action="/things/edit/00000000-0000-0000-0000-000000000001"');
+        // $this->assertResponseContains('data-panels-url="/api/things/panels"');
         // submit button
         $this->assertResponseContains('type="submit"');
         // input element(s) and attributes
-        $this->assertResponseContains('Email');
-        $this->assertResponseContains('name="Contacts[email]"');
+        $this->assertResponseContains('name');
+        $this->assertResponseContains('name="Things[name]"');
     }
 
     public function testEditPostData() : void
@@ -122,17 +122,17 @@ class ContactsControllerTest extends IntegrationTestCase
         $id = '00000000-0000-0000-0000-000000000001';
 
         $data = [
-            'type' => 'individual',
-            'email' => 'unique_email@test123.com'
+            'type' => 'a',
+            'name' => 'test'
         ];
 
-        $this->post('/contacts/edit/' . $id, $data);
+        $this->post('/things/edit/' . $id, $data);
         $this->assertResponseSuccess();
 
         // fetch modified record
-        $entity = TableRegistry::get('contacts')->get($id);
+        $entity = TableRegistry::get('things')->get($id);
 
-        $this->assertEquals($data['email'], $entity->get('email'));
+        $this->assertEquals($data['name'], $entity->get('name'));
     }
 
     public function testEditPutData() : void
@@ -140,17 +140,17 @@ class ContactsControllerTest extends IntegrationTestCase
         $id = '00000000-0000-0000-0000-000000000001';
 
         $data = [
-            'type' => 'individual',
-            'email' => 'unique_email@test123.com'
+            'type' => 'a',
+            'name' => 'test'
         ];
 
-        $this->put('/contacts/edit/' . $id, $data);
+        $this->put('/things/edit/' . $id, $data);
         $this->assertResponseSuccess();
 
         // fetch modified record
-        $entity = TableRegistry::get('contacts')->get($id);
+        $entity = TableRegistry::get('things')->get($id);
 
-        $this->assertEquals($data['email'], $entity->get('email'));
+        $this->assertEquals($data['name'], $entity->get('name'));
     }
 
     public function testDeleteUnauthenticatedFails() : void
@@ -158,14 +158,14 @@ class ContactsControllerTest extends IntegrationTestCase
         $this->session(['Auth' => '']);
 
         // No session data set.
-        $this->delete('/contacts/delete/00000000-0000-0000-0000-000000000001');
+        $this->delete('/things/delete/00000000-0000-0000-0000-000000000001');
 
         $this->assertRedirect(['controller' => 'Users', 'action' => 'login']);
     }
 
     public function testDeleteGetRequest() : void
     {
-        $this->get('/contacts/delete/00000000-0000-0000-0000-000000000001');
+        $this->get('/things/delete/00000000-0000-0000-0000-000000000001');
         $this->assertResponseError();
     }
 
@@ -173,11 +173,11 @@ class ContactsControllerTest extends IntegrationTestCase
     {
         $id = '00000000-0000-0000-0000-000000000001';
 
-        $this->delete('/contacts/delete/' . $id);
+        $this->delete('/things/delete/' . $id);
         $this->assertResponseSuccess();
 
         // try to fetch deleted record
-        $query = TableRegistry::get('contacts')->find()->where(['id' => $id]);
+        $query = TableRegistry::get('things')->find()->where(['id' => $id]);
         $this->assertEquals(0, $query->count());
     }
 
@@ -185,23 +185,23 @@ class ContactsControllerTest extends IntegrationTestCase
     {
         $id = '00000000-0000-0000-0000-000000000001';
 
-        $this->post('/contacts/delete/' . $id);
+        $this->post('/things/delete/' . $id);
         $this->assertResponseSuccess();
 
         // try to fetch deleted record
-        $query = TableRegistry::get('contacts')->find()->where(['id' => $id]);
+        $query = TableRegistry::get('things')->find()->where(['id' => $id]);
         $this->assertEquals(0, $query->count());
     }
 
     public function testBatchGetRequest() : void
     {
-        $this->get('/contacts/batch/edit');
+        $this->get('/things/batch/edit');
         $this->assertResponseError();
     }
 
     public function testBatchDelete() : void
     {
-        $table = TableRegistry::get('contacts');
+        $table = TableRegistry::get('things');
         $initialCount = $table->find('all')->count();
 
         $data = [
@@ -213,7 +213,7 @@ class ContactsControllerTest extends IntegrationTestCase
             ]
         ];
 
-        $this->post('/contacts/batch/delete', $data);
+        $this->post('/things/batch/delete', $data);
         $this->assertResponseSuccess();
         $this->assertSession('2 of 2 selected records have been deleted.', 'Flash.flash.0.message');
 
@@ -222,7 +222,7 @@ class ContactsControllerTest extends IntegrationTestCase
 
     public function testBatchDeleteNoIds() : void
     {
-        $this->post('/contacts/batch/delete');
+        $this->post('/things/batch/delete');
         $this->assertRedirect('/');
         $this->assertSession('No records selected.', 'Flash.flash.0.message');
     }
@@ -237,45 +237,20 @@ class ContactsControllerTest extends IntegrationTestCase
                 ]
             ]
         ];
-        $this->post('/contacts/batch/edit', $data);
+        $this->post('/things/batch/edit', $data);
         $this->assertResponseSuccess();
 
         $entity = $this->viewVariable('entity');
 
-        $this->assertInstanceOf(Contact::class, $entity);
+        $this->assertInstanceOf(Thing::class, $entity);
         $this->assertTrue($entity->isNew());
     }
 
     public function testBatchEditNoIds() : void
     {
-        $this->post('/contacts/batch/edit');
+        $this->post('/things/batch/edit');
         $this->assertRedirect('/');
         $this->assertSession('No records selected.', 'Flash.flash.0.message');
-    }
-
-    public function testBatchEditExecute() : void
-    {
-        $data = [
-            'batch' => [
-                'execute' => true,
-                'ids' => [
-                    '00000000-0000-0000-0000-000000000001',
-                    '00000000-0000-0000-0000-000000000002'
-                ]
-            ],
-            'contacts' => [
-                'location' => ''
-            ]
-        ];
-
-        $this->post('/contacts/batch/edit', $data);
-        $this->assertRedirect('/');
-        $this->assertSession('Selected records could not be updated. No changes provided.', 'Flash.flash.0.message');
-
-        $query = TableRegistry::get('contacts')->find()->where(['id IN' => $data['batch']['ids']]);
-        foreach ($query->all() as $entity) {
-            $this->assertEquals($data['contacts']['location'], $entity->get('location'));
-        }
     }
 
     public function testBatchEditExecuteNoIds() : void
@@ -286,7 +261,7 @@ class ContactsControllerTest extends IntegrationTestCase
             ]
         ];
 
-        $this->post('/contacts/batch/edit', $data);
+        $this->post('/things/batch/edit', $data);
         $this->assertRedirect('/');
         $this->assertSession('No records selected.', 'Flash.flash.0.message');
     }
@@ -303,7 +278,7 @@ class ContactsControllerTest extends IntegrationTestCase
             ]
         ];
 
-        $this->post('/contacts/batch/edit', $data);
+        $this->post('/things/batch/edit', $data);
         $this->assertResponseSuccess();
         $this->assertSession('Selected records could not be updated. No changes provided.', 'Flash.flash.0.message');
     }
