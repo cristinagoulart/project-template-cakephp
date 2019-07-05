@@ -166,7 +166,7 @@ class ThingsControllerTest extends IntegrationTestCase
     public function testDeleteGetRequest() : void
     {
         $this->get('/things/delete/00000000-0000-0000-0000-000000000001');
-        $this->assertResponseError();
+        $this->assertRedirect();
     }
 
     public function testDeleteData() : void
@@ -196,7 +196,7 @@ class ThingsControllerTest extends IntegrationTestCase
     public function testBatchGetRequest() : void
     {
         $this->get('/things/batch/edit');
-        $this->assertResponseError();
+        $this->assertRedirect();
     }
 
     public function testBatchDelete() : void
