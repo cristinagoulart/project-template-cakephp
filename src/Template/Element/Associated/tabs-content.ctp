@@ -1,16 +1,8 @@
 <?php
-/**
- * Copyright (c) Qobo Ltd. (https://www.qobo.biz)
- *
- * Licensed under The MIT License
- * For full copyright and license information, please see the LICENSE
- * Redistributions of files must retain the above copyright notice.
- *
- * @copyright     Copyright (c) Qobo Ltd. (https://www.qobo.biz)
- * @license       https://opensource.org/licenses/mit-license.php MIT License
- */
-
 use Cake\Utility\Inflector;
+use RolesCapabilities\Access\AccessFactory;
+
+$accessFactory = new AccessFactory();
 ?>
 <div class="tab-content">
     <?php $active = 'active'; ?>
@@ -27,11 +19,13 @@ use Cake\Utility\Inflector;
         <?php $containerId = Inflector::underscore($association->getAlias()); ?>
         <div role="tabpanel" class="tab-pane <?= $active ?>" id="<?= $containerId ?>">
             <?php
-            if (in_array($association->type(), ['manyToMany'])) {
-                echo $this->element('Embedded/lookup', ['association' => $association]);
+            list($plugin, $controller) = pluginSplit($association->className());
+            $accessUrl = ['plugin' => $plugin, 'controller' => $controller, 'action' => 'add'];
+            if (in_array($association->type(), ['manyToMany']) && $accessFactory->hasAccess($accessUrl, $user)) {
+                echo $this->element('Embedded/lookup', ['association' => $association, 'user' => $user]);
             } ?>
             <?= $this->element('Associated/tab-content', [
-                'association' => $association, 'table' => $table, 'url' => $this->Url->build($url), 'factory' => $factory, 'tableContainerId' => $containerId
+                'association' => $association, 'table' => $table, 'url' => $this->Url->build($url), 'factory' => $factory, 'containerId' => $containerId
             ]) ?>
         </div>
         <?php $active = ''; ?>

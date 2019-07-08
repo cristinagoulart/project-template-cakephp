@@ -63,7 +63,7 @@ if (!$this->request->getQuery('embedded')) : ?>
         <div class="col-xs-12 col-md-6">
             <div class="pull-right">
             <div class="btn-group btn-group-sm" role="group">
-                <?= $this->element('CsvMigrations.Menu/view_top', [
+                <?= $this->element('Menu/view_top', [
                     'options' => $options, 'displayField' => $table->getDisplayField()
                 ]); ?>
             </div>
@@ -138,7 +138,7 @@ foreach ($options['fields'] as $panelName => $panelFields) : ?>
         continue;
     }
 
-    echo $this->element('CsvMigrations.Embedded/fields', [
+    echo $this->element('Embedded/fields', [
         'fields' => $embeddedFields, 'table' => $table, 'options' => $options
     ]);
 
