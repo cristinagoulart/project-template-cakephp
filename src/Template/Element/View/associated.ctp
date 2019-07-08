@@ -48,10 +48,10 @@ if (!empty($associations)) : ?>
         ['block' => 'scriptBottom']
     ); ?>
     <div class="nav-tabs-custom">
-        <?= $this->element('CsvMigrations.Associated/tabs-list', [
+        <?= $this->element('Associated/tabs-list', [
             'table' => $table, 'associations' => $associations
         ]); ?>
-        <?= $this->element('CsvMigrations.Associated/tabs-content', [
+        <?= $this->element('Associated/tabs-content', [
             'table' => $table, 'associations' => $associations, 'factory' => $factory, 'entity' => $entity
         ]); ?>
     </div>
