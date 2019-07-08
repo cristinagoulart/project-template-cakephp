@@ -2,8 +2,14 @@
     "items": [
         [
             "Things",
-            "id",
-            "name"
+            "name",
+            "description",
+            "test_list"
+        ],
+        [
+            "Things",
+            "testmetric",
+            "testmoney"
         ],
         [
             "Things",

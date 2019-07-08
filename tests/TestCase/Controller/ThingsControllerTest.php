@@ -2,6 +2,7 @@
 namespace App\Test\TestCase\Controller;
 
 use App\Model\Entity\Thing;
+use Cake\Core\Configure;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\IntegrationTestCase;
 
@@ -166,7 +167,7 @@ class ThingsControllerTest extends IntegrationTestCase
     public function testDeleteGetRequest() : void
     {
         $this->get('/things/delete/00000000-0000-0000-0000-000000000001');
-        $this->assertRedirect();
+        Configure::read("debug") ? $this->assertResponseError() : $this->assertRedirect();
     }
 
     public function testDeleteData() : void
@@ -196,7 +197,7 @@ class ThingsControllerTest extends IntegrationTestCase
     public function testBatchGetRequest() : void
     {
         $this->get('/things/batch/edit');
-        $this->assertRedirect();
+        Configure::read("debug") ? $this->assertResponseError() : $this->assertRedirect();
     }
 
     public function testBatchDelete() : void

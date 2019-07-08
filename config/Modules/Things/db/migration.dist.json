@@ -22,7 +22,21 @@
     },
     "test_list": {
         "name": "test_list",
-        "type": "list(titles)",
+        "type": "list(test_list)",
+        "required": false,
+        "non-searchable": false,
+        "unique": false
+    },
+    "testmetric": {
+        "name": "testmetric",
+        "type": "metric(units_area)",
+        "required": false,
+        "non-searchable": false,
+        "unique": false
+    },
+    "testmoney": {
+        "name": "testmoney",
+        "type": "money(currencies)",
         "required": false,
         "non-searchable": false,
         "unique": false
