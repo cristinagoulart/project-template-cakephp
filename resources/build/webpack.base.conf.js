@@ -14,6 +14,9 @@ module.exports = {
     filename: '[name].js',
     path: resolve(__dirname, '../../webroot/dist'),
   },
+  externals: {
+    jquery: 'jQuery'
+  },
   module: {
     rules: [
       {
@@ -55,22 +58,22 @@ module.exports = {
         ]
       },
       {
-          test: /\.css$/,
-          use: [
-              process.env.NODE_ENV !== 'production'
-              ? 'vue-style-loader'
-              : MiniCssExtractPlugin.loader,
-                'css-loader'
-            ]
-        }
+        test: /\.css$/,
+        use: [
+          process.env.NODE_ENV !== 'production'
+            ? 'vue-style-loader'
+            : MiniCssExtractPlugin.loader,
+          'css-loader'
+        ]
+      }
     ]
   },
   plugins: [
       new VueLoaderPlugin(),
       new CleanWebpackPlugin(),
       new MiniCssExtractPlugin({
-        filename: 'style.css'
-      })
+      filename: 'style.css',
+    })
   ],
   resolve: {
     extensions: ['.js', '.vue', '.json'],
