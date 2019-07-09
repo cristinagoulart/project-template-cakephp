@@ -3,25 +3,25 @@
         {
             "value": "Mr",
             "label": "Mr",
-            "inactive": "",
+            "inactive": false,
             "children": []
         },
         {
             "value": "Mrs",
             "label": "Mrs",
-            "inactive": "",
+            "inactive": false,
             "children": []
         },
         {
             "value": "Ms",
             "label": "Ms",
-            "inactive": "",
+            "inactive": false,
             "children": []
         },
         {
             "value": "Dr",
             "label": "Dr",
-            "inactive": "",
+            "inactive": false,
             "children": []
         }
     ]

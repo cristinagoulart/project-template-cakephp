@@ -12,19 +12,12 @@
 
 use Cake\ORM\TableRegistry;
 use Cake\Utility\Inflector;
+use CsvMigrations\FieldHandlers\CsvField;
 use CsvMigrations\FieldHandlers\FieldHandlerFactory;
 use Qobo\Utils\ModuleConfig\ConfigType;
 use Qobo\Utils\ModuleConfig\ModuleConfig;
 
 $factory = new FieldHandlerFactory($this);
-
-
-$options = [
-    'entity' => $entity,
-    'fields' => $fields,
-    'title' => null,
-];
-
 
 $defaultOptions = [
     'title' => null,
@@ -49,10 +42,9 @@ $table = TableRegistry::get($tableName);
 if (!$options['title']) {
     $config = (new ModuleConfig(ConfigType::MODULE(), $this->name))->parse();
     $options['title'] = $this->Html->link(
-        __('Scheduled Job'),
-        ['controller' => 'ScheduledJobs', 'action' => 'view', $entity->scheduled_job_id]
+        isset($config->table->alias) ? $config->table->alias : Inflector::humanize(Inflector::underscore($this->name)),
+        ['plugin' => $this->plugin, 'controller' => $this->name, 'action' => 'index']
     );
-
     $options['title'] .= ' &raquo; ';
     $options['title'] .= $factory->renderValue(
         $table,
@@ -62,7 +54,7 @@ if (!$options['title']) {
     );
 }
 
-if (!$this->request->query('embedded')) : ?>
+if (!$this->request->getQuery('embedded')) : ?>
 <section class="content-header">
     <div class="row">
         <div class="col-xs-12 col-md-6">
@@ -80,14 +72,22 @@ if (!$this->request->query('embedded')) : ?>
     </div>
 </section>
 <section class="content">
-<?php endif;
+<?php endif; ?>
+<?php
+// row field count with most fields
+$fieldCountMax = 1;
+foreach ($options['fields'] as $panelFields) {
+    foreach ($panelFields as $subFields) {
+        if (count($subFields) > $fieldCountMax) {
+            $fieldCountMax = count($subFields);
+        }
+    }
+}
 
 $embeddedFields = [];
-$embeddedDirty = false;
-
 foreach ($options['fields'] as $panelName => $panelFields) : ?>
     <?php
-    if ($this->request->query('embedded')) {
+    if ($this->request->getQuery('embedded')) {
         $panelName = Inflector::singularize(Inflector::humanize($this->name)) . ': ' . $panelName;
     }
     ?>
@@ -104,28 +104,29 @@ foreach ($options['fields'] as $panelName => $panelFields) : ?>
         <?php foreach ($panelFields as $subFields) : ?>
             <div class="row">
             <?php foreach ($subFields as $field) : ?>
-                <?php if (trim($field['name'])) : ?>
-                    <?php
-                    if (!$embeddedDirty) {
-                        // embedded field
-                        if ('EMBEDDED' === $field['name']) {
-                            $embeddedDirty = true;
-                        }
-
-                        if (!$embeddedDirty) { // non-embedded field
-                            echo $this->element('Field/value', [
-                                'factory' => $factory, 'field' => $field, 'options' => $options
-                            ]);
-                        }
-                    } else {
-                        $embeddedFields[] = $field['name'];
-                        $embeddedDirty = false;
-                    }
-                    ?>
-                <?php else : ?>
-                        <div class="col-xs-4 col-md-2 text-right">&nbsp;</div>
-                        <div class="col-xs-8 col-md-4">&nbsp;</div>
+                <?php $fieldCount = 12 < count($subFields) ? 12 : count($subFields); ?>
+                <?php if ('' === trim($field['name'])) : ?>
+                    <div class="col-xs-4 col-md-2 text-right">&nbsp;</div>
+                    <div class="col-xs-8 col-md-4">&nbsp;</div>
+                    <?php continue; ?>
                 <?php endif; ?>
+                <?php
+                // embedded field detection
+                preg_match(CsvField::PATTERN_TYPE, $field['name'], $matches);
+
+                if (! empty($matches[1]) && 'EMBEDDED' === $matches[1]) {
+                    $embeddedFields[] = $matches[2];
+                    continue;
+                }
+
+                echo $this->element('Field/value', [
+                    'factory' => $factory,
+                    'field' => $field,
+                    'options' => $options,
+                    'fieldCount' => $fieldCount,
+                    'fieldCountMax' => $fieldCountMax
+                ]);
+                ?>
                 <div class="clearfix visible-xs visible-sm"></div>
             <?php endforeach; ?>
             </div>
@@ -144,7 +145,7 @@ foreach ($options['fields'] as $panelName => $panelFields) : ?>
     $embeddedFields = [];
     ?>
 <?php endforeach; ?>
-<?php if (!$this->request->query('embedded')) : ?>
+<?php if (!$this->request->getQuery('embedded')) : ?>
     <?= $this->element('CsvMigrations.common_js_libs'); // loading common setup for typeahead/panel/etc libs ?>
     <?= $this->Html->script('Qobo/Utils.dataTables.init', ['block' => 'scriptBottom']) ?>
     <hr />
