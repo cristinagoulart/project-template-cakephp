@@ -1,13 +1,13 @@
 <?php
 namespace App\Controller;
 
-use CsvMigrations\Controller\AppController as BaseController;
+use App\Controller\BaseModuleController;
 
 /**
  * ScheduledJobs Controller
  *
  */
-class ScheduledJobsController extends BaseController
+class ScheduledJobsController extends BaseModuleController
 {
     /**
      * Index method
