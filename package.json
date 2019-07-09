@@ -5,7 +5,6 @@
     "build:dev": "cross-env NODE_ENV=development webpack-dev-server --config ./resources/build/webpack.dev.conf.js --hot --progress -d",
     "build:prod": "cross-env NODE_ENV=production webpack --config ./resources/build/webpack.prod.conf.js --progress --hide-modules",
     "watch": "webpack --config ./resources/build/webpack.base.conf.js --progress --hide-modules --watch --watch-poll",
-    "lintx": "./node_modules/eslint/bin/eslint.js --config ./resources/.eslintrc.js --ext js --ext vue ./resources/src",
     "lint": "eslint --config ./resources/.eslintrc.js --ext js --ext vue ./resources/src",
     "e2e": "./node_modules/nightwatch/bin/nightwatch",
     "test": "jest --verbose ./resources/test/unit/*"
@@ -25,7 +24,7 @@
     "cross-env": "^5.0.5",
     "css-loader": "^2.1.1",
     "dotenv": "^4.0.0",
-    "eslint": "^5.15.3",
+    "eslint": "^5.16.0",
     "eslint-plugin-vue": "^5.2.2",
     "file-loader": "^1.1.4",
     "friendly-errors-webpack-plugin": "^1.6.1",
