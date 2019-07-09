@@ -2,13 +2,13 @@
     "items": [
         {
             "value": "m",
-            "label": "Male",
+            "label": "m²",
             "inactive": false,
             "children": []
         },
         {
-            "value": "f",
-            "label": "Female",
+            "value": "ft",
+            "label": "ft²",
             "inactive": false,
             "children": []
         }

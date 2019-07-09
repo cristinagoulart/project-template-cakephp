@@ -1,7 +1,12 @@
 {
     "items": [
         [
-            "Details",
+            "Things",
+            "id",
+            "name"
+        ],
+        [
+            "Things",
             "created",
             "modified"
         ]

@@ -1,0 +1,15 @@
+{
+    "items": [
+        [
+            "Things",
+            "name",
+            "description",
+            "test_list"
+        ],
+        [
+            "Things",
+            "testmetric",
+            "testmoney"
+        ]
+    ]
+}

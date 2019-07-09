@@ -1,9 +1,13 @@
 {
     "table": {
         "icon": "cube",
-        "searchable": true
+        "searchable": true,
+        "translatable" : false
     },
     "notifications": {
         "enable": true
+    },
+    "associations": {
+        "hide_associations": []
     }
 }
