@@ -302,7 +302,7 @@ class LookupBehavior extends Behavior
      * Apply lookup fields to Query's where clause.
      *
      * @param \Cake\ORM\Query $query Query object
-     * @param array $options Query options
+     * @param mixed[] $options Query options
      * @return \Cake\ORM\Query|null
      */
     public function findLookup(Query $query, array $options): ?Query
