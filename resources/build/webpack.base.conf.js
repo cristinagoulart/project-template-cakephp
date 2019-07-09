@@ -1,19 +1,18 @@
 const { resolve } = require('path')
-const webpack = require('webpack')
-const ExtractTextPlugin = require('extract-text-webpack-plugin')
-
-const appEntry = './resources/src/main.js'
-const distPath = resolve(__dirname, '../../webroot/dist')
+const { VueLoaderPlugin } = require('vue-loader')
+const MiniCssExtractPlugin = require('mini-css-extract-plugin')
+const CleanWebpackPlugin = require('clean-webpack-plugin')
 
 module.exports = {
+  mode: 'development',
   devtool: '#eval-source-map',
   entry: {
-    app: appEntry,
+    app: './resources/src/main.js',
     vendor: ['vue']
   },
   output: {
-    path: distPath,
-    filename: '[name].js'
+    filename: '[name].js',
+    path: resolve(__dirname, '../../webroot/dist'),
   },
   module: {
     rules: [
@@ -56,16 +55,22 @@ module.exports = {
         ]
       },
       {
-       test: /\.css$/,
-       loader: ExtractTextPlugin.extract({
-         use: 'css-loader',
-         fallback: 'vue-style-loader'
-       })
-     },
+          test: /\.css$/,
+          use: [
+              process.env.NODE_ENV !== 'production'
+              ? 'vue-style-loader'
+              : MiniCssExtractPlugin.loader,
+                'css-loader'
+            ]
+        }
     ]
   },
   plugins: [
-     new ExtractTextPlugin("style.css")
+      new VueLoaderPlugin(),
+      new CleanWebpackPlugin(),
+      new MiniCssExtractPlugin({
+        filename: 'style.css'
+      })
   ],
   resolve: {
     extensions: ['.js', '.vue', '.json'],
