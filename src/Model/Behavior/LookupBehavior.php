@@ -297,4 +297,53 @@ class LookupBehavior extends Behavior
 
         return $result;
     }
+
+    /**
+     * Apply lookup fields to Query's where clause.
+     *
+     * @param \Cake\ORM\Query $query Query object
+     * @param array $options Query options
+     * @return \Cake\ORM\Query|null
+     */
+    public function findLookup(Query $query, array $options): ?Query
+    {
+        $table = $this->_table;
+
+        $tableAlias = $this->_table->getAlias();
+        Assert::isInstanceOf($table, Table::class);
+
+        if (! isset($options['value'])) {
+            return null;
+        }
+
+        // fail-safe binding of primary key to query's where clause, if lookup
+        // fields are not defined, to avoid random record retrieval.
+        if (empty($this->lookupFields)) {
+            $primaryKey = $table->getPrimaryKey();
+            if (! is_string($primaryKey)) {
+                throw new UnsupportedPrimaryKeyException();
+            }
+
+            $query->where([
+                $table->aliasField($primaryKey) => $options['value']
+            ]);
+
+            return null;
+        }
+
+        foreach ($this->lookupFields as $field) {
+            $value = $this->castValueByFieldType($options['value'], (string)$table->getSchema()->getColumnType($field));
+            // cast value back to string and do strict comparison,
+            // skip lookup field if cast value does not match original
+            if ((string)$value !== $options['value']) {
+                continue;
+            }
+
+            $query->orWhere([
+                $table->aliasField($field) => $options['value']
+            ]);
+        }
+
+        return $query;
+    }
 }
