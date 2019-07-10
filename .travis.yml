@@ -11,7 +11,6 @@ addons:
   chrome: stable
 
 cache:
-  npm: true
   directories:
     - node_modules
     - $HOME/.composer/cache
@@ -54,6 +53,8 @@ script:
   - if [[ $COVERAGE = 0 ]]; then ./vendor/bin/phpunit --exclude-group example --no-coverage; fi
   - if [[ $COVERAGE = 1 ]]; then ./vendor/bin/phpunit --exclude-group example; fi
   - if [[ $PHPSTAN = 1 ]]; then ./vendor/bin/phpstan analyse; fi
+  - node --version
+  - npm --version
   - npm run test
 
 after_success:
