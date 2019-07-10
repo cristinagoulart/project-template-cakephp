@@ -339,7 +339,7 @@ export default {
      * @return {undefined}
      */
     batchEdit () {
-      if (this.data.group_by || ! this.withBatch) {
+      if (this.data.group_by || !this.withBatch) {
         return
       }
 
@@ -367,7 +367,7 @@ export default {
     },
 
     batchDelete () {
-      if (this.data.group_by || this.withBatch) {
+      if (this.data.group_by || !this.withBatch) {
         return
       }
 
