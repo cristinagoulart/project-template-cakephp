@@ -1,71 +1,28 @@
-import axios from 'axios'
+import ApiSearch from '@/ApiService/ApiSearch'
 import Vue from 'vue'
 import { uuid } from 'vue-uuid'
+import {
+  API_STORE_SEARCH,
+  API_VIEW_SEARCH,
+  API_LIST_SEARCHES,
+  API_EDIT_SEARCH,
+  API_DELETE_SEARCH,
+  FIELD_TYPE_MAP,
+  FIELD_OPERATOR_TYPES,
+  SEARCH_INSTANCE
+} from '@/utils/search'
 
 export default {
-
   namespaced: true,
 
   state: {
     exportId: '',
     filters: [],
     operators: {
-      map: {
-        blob: 'text',
-        boolean: 'boolean',
-        country: 'boolean',
-        currency: 'boolean',
-        date: 'number',
-        datetime: 'number',
-        dblist: 'boolean',
-        decimal: 'number',
-        email: 'text',
-        integer: 'number',
-        list: 'boolean',
-        phone: 'text',
-        related: 'boolean',
-        reminder: 'number',
-        string: 'text',
-        sublist: 'boolean',
-        text: 'text',
-        time: 'number',
-        url: 'text'
-      },
-      types: {
-        boolean: [
-          { value: 'is', text: 'is' },
-          { value: 'is_not', text: 'is not' }
-        ],
-        number: [
-          { value: 'is', text: 'is' },
-          { value: 'is_not', text: 'is not' },
-          { value: 'greater', text: 'greater' },
-          { value: 'less', text: 'less' }
-        ],
-        text: [
-          { value: 'contains', text: 'contains' },
-          { value: 'not_contains', text: 'does not contain' },
-          { value: 'starts_with', text: 'starts with' },
-          { value: 'ends_with', text: 'ends with' }
-        ]
-      }
+      map: FIELD_TYPE_MAP,
+      types: FIELD_OPERATOR_TYPES
     },
-    savedSearch: {
-      id: '',
-      name: '',
-      user_id: '',
-      model: '',
-      content: {
-        saved: {
-          aggregator: 'AND',
-          criteria: {},
-          display_columns: [],
-          sort_by_field: '',
-          sort_by_order: 'asc',
-          group_by: ''
-        }
-      }
-    },
+    savedSearch: SEARCH_INSTANCE,
     savedSearches: []
   },
 
@@ -73,8 +30,8 @@ export default {
     filtersGroup (state) {
       const result = {}
       for (var index in state.filters) {
-            const filter = state.filters[index]
-        if (! result.hasOwnProperty(filter.group)) {
+        const filter = state.filters[index]
+        if (!result.hasOwnProperty(filter.group)) {
           result[filter.group] = []
         }
         result[filter.group].push(filter)
@@ -114,6 +71,22 @@ export default {
         value: payload.value !== '' ? payload.value : (filter[0].type === 'boolean' ? 0 : '')
       })
     },
+    criteriaCopy (state, value) {
+      const newGuid = uuid.v4()
+      const criteria = state.savedSearch.content.saved.criteria
+
+      for (const field in criteria) {
+        for (const guid in criteria[field]) {
+          if (value !== guid) {
+            continue
+          }
+
+          const data = Object.assign({}, criteria[field][guid])
+
+          Vue.set(criteria[field], newGuid, data)
+        }
+      }
+    },
     criteriaRemove (state, value) {
       const criteria = state.savedSearch.content.saved.criteria
 
@@ -134,8 +107,8 @@ export default {
     criteriaOperator (state, payload) {
       Vue.set(state.savedSearch.content.saved.criteria[payload.field][payload.guid], 'operator', payload.value)
     },
-    criteriaValue (state, payload) {
-      Vue.set(state.savedSearch.content.saved.criteria[payload.field][payload.guid], 'value', payload.value)
+    criteriaValue (state, { field, guid, value }) {
+      Vue.set(state.savedSearch.content.saved.criteria[field][guid], 'value', value)
     },
     displayColumns (state, payload) {
       if (['add', 'remove'].indexOf(payload.action) === -1) {
@@ -236,113 +209,106 @@ export default {
 
   actions: {
     savedSearchCopy ({ commit, state, dispatch }, payload) {
-      return axios({
-        method: 'get',
-        url: '/search/saved-searches/view/' + payload.id
-      }).then(response => {
-        if (response.data.success !== true) {
-          return
-        }
+      return ApiSearch
+        .getSearch(API_VIEW_SEARCH, payload.id)
+        .then(response => {
+          const data = response.data.data
+          delete data.id
+          data.user_id = payload.user_id
 
-        const data = response.data.data
-
-        delete data.id
-        data.user_id = payload.user_id
-
-        axios({
-          method: 'post',
-          url: '/search/saved-searches/add',
-          data: data
-        }).then(response => {
-          if (response.data.success === true) {
-            dispatch('savedSearchesGet')
-
-            Vue.notify({
-              group: 'SearchNotification',
-              type: 'info',
-              text: 'Successfully copied the search'
+          ApiSearch
+            .addSearch(API_STORE_SEARCH, data)
+            .then(resp => {
+              dispatch('savedSearchesGet')
+              dispatch('setNotification', {
+                'type': 'info',
+                'msg': 'Successfully copied the search'
+              })
             })
-          }
-        }).catch(error => console.log(error))
-      }).catch(error => console.log(error))
+        })
     },
     savedSearchDelete ({ commit, state, dispatch }, id) {
-      return axios({
-        method: 'delete',
-        url: '/search/saved-searches/delete/' + id
-      }).then(response => {
-        if (response.data.success === true) {
+      return ApiSearch
+        .deleteSearch(`${API_DELETE_SEARCH}/${id}`)
+        .then(response => {
           dispatch('savedSearchesGet')
-        }
-      }).catch(error => console.log(error))
+          dispatch('setNotification', {
+            'type': 'info',
+            'msg': 'Saved Search successfully removed'
+          })
+        })
     },
     savedSearchExport ({ commit, state }) {
       const data = state.savedSearch
-            // this is treated as temporary saved search
+      // this is treated as temporary saved search
       data.name = ''
 
-      return axios({
-        method: 'post',
-        url: '/search/saved-searches/add',
-        data: data
-      }).then(response => {
-        if (response.data.success === true) {
+      return ApiSearch
+        .exportSearch(API_STORE_SEARCH, data)
+        .then(response => {
           commit('exportId', response.data.data.id)
-        }
-      }).catch(error => console.log(error))
+        })
     },
-    savedSearchGet ({ commit, state }, id) {
-      return axios({
-        method: 'get',
-        url: '/search/saved-searches/view/' + id
-      }).then(response => {
-        if (response.data.success === true) {
+    savedSearchGet ({ commit, state, dispatch }, id) {
+      return ApiSearch
+        .getSearch(API_VIEW_SEARCH, id)
+        .then(response => {
           commit('savedSearch', response.data.data)
-
-          Vue.notify({
-            group: 'SearchNotification',
-            type: 'info',
-            text: 'Successfully loaded search results'
+          dispatch('setNotification', {
+            'type': 'info',
+            'msg': 'Successfully loaded search results'
           })
-        }
-      }).catch(error => console.log(error))
+        })
     },
     savedSearchSave ({ commit, state, dispatch }) {
       const create = state.savedSearch.id === ''
+      let url = API_STORE_SEARCH
 
-      return axios({
-        method: create ? 'post' : 'put',
-        url: '/search/saved-searches/' + (create ? 'add' : 'edit/' + state.savedSearch.id),
-        data: state.savedSearch
-      }).then(response => {
-        if (response.data.success === true) {
-          if (create) {
+      if (!create) {
+        url = `${API_EDIT_SEARCH}/${state.savedSearch.id}`
+      }
+
+      if (create) {
+        return ApiSearch
+          .addSearch(url, state.savedSearch)
+          .then(response => {
             commit('savedSearchId', response.data.data.id)
-          }
-          dispatch('savedSearchesGet')
-          Vue.notify({
-            group: 'SearchNotification',
-            type: 'info',
-            text: 'Search successfully saved'
+            dispatch('savedSearchesGet')
+            dispatch('setNotification', {
+              'type': 'info',
+              'msg': 'Search successfully saved'
+            })
           })
-        }
-      }).catch(error => console.log(error))
+      } else {
+        return ApiSearch
+          .editSearch(url, state.savedSearch)
+          .then(response => {
+            commit('savedSearchId', response.data.data.id)
+            dispatch('savedSearchesGet')
+            dispatch('setNotification', {
+              'type': 'info',
+              'msg': 'Search successfully saved'
+            })
+          })
+      }
     },
     savedSearchesGet ({ commit, state }) {
-      return axios({
-        method: 'get',
-        url: '/search/saved-searches/index',
-        params: {
-          model: state.savedSearch.model,
-          system: 0,
-          user_id: state.savedSearch.user_id
-        }
-      }).then(response => {
-        if (response.data.success === true) {
+      return ApiSearch
+        .getSearches(API_LIST_SEARCHES, {
+          'model': state.savedSearch.model,
+          'system': 0,
+          'user_id': state.savedSearch.user_id
+        })
+        .then(response => {
           commit('savedSearches', response.data.data)
-        }
-      }).catch(error => console.log(error))
+        })
+    },
+    setNotification ({ commit, state }, data) {
+      Vue.notify({
+        'group': 'SearchNotification',
+        'type': data.type,
+        'text': data.msg
+      })
     }
   }
-
 }
