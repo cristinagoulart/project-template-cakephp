@@ -8,7 +8,6 @@
     "build:prod": "cross-env NODE_ENV=production webpack --config ./resources/build/webpack.prod.conf.js --progress --hide-modules",
     "watch": "webpack --config ./resources/build/webpack.base.conf.js --progress --hide-modules --watch --watch-poll",
     "lint": "eslint --config ./resources/.eslintrc.js --ext js --ext vue ./resources/src",
-    "e2e": "./node_modules/nightwatch/bin/nightwatch",
     "test": "jest --verbose ./resources/test/unit/*"
   },
   "devDependencies": {
