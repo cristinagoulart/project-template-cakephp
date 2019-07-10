@@ -11,6 +11,7 @@ addons:
   chrome: stable
 
 cache:
+  yarn: true
   directories:
     - node_modules
     - $HOME/.composer/cache
@@ -37,7 +38,7 @@ install:
   - ./bin/composer install --no-interaction --no-progress --no-suggest
   - mkdir -p build/test-coverage build/test-results
   - ./bin/build app:install CHOWN_USER=$USER,CHGRP_GROUP=$USER,DB_NAME=app,DB_ADMIN_USER=root,DB_USER=root --skip-test-db
-  - npm install
+  - yarn install
 
 before_script:
   - ./bin/phpserv >/dev/null 2>&1 &
@@ -54,8 +55,8 @@ script:
   - if [[ $COVERAGE = 1 ]]; then ./vendor/bin/phpunit --exclude-group example; fi
   - if [[ $PHPSTAN = 1 ]]; then ./vendor/bin/phpstan analyse; fi
   - node --version
-  - npm --version
-  - npm run test
+  - yarn --version
+  - yarn test
 
 after_success:
   - curl -s https://codecov.io/bash > /tmp/codecov.sh
