@@ -1,6 +1,8 @@
 {
   "name": "qobrix-app",
   "description": "Qobrix VueJS application",
+  "version": "1.0.0",
+  "license": "MIT",
   "scripts": {
     "build:dev": "cross-env NODE_ENV=development webpack-dev-server --config ./resources/build/webpack.dev.conf.js --hot --progress -d",
     "build:prod": "cross-env NODE_ENV=production webpack --config ./resources/build/webpack.prod.conf.js --progress --hide-modules",
@@ -10,6 +12,7 @@
     "test": "jest --verbose ./resources/test/unit/*"
   },
   "devDependencies": {
+    "@babel/cli": "^7.5.0",
     "@babel/core": "^7.5.4",
     "@babel/preset-env": "^7.5.4",
     "@jest/core": "^24.5.0",
@@ -48,6 +51,7 @@
     "webpack-merge": "^4.2.1"
   },
   "dependencies": {
+    "@babel/register": "^7.4.4",
     "axios": "^0.18.0",
     "bootstrap-datepicker": "^1.8.0",
     "bootstrap-timepicker": "^0.5.2",
