@@ -15,7 +15,112 @@
     },
     "description": {
         "name": "description",
-        "type": "string",
+        "type": "text",
+        "required": false,
+        "non-searchable": false,
+        "unique": false
+    },
+    "country": {
+        "name": "country",
+        "type": "country(countries)",
+        "required": true,
+        "non-searchable": false,
+        "unique": false
+    },
+    "gender": {
+        "name": "gender",
+        "type": "list(genders)",
+        "required": true,
+        "non-searchable": false,
+        "unique": false
+    },
+    "assigned_to": {
+        "name": "assigned_to",
+        "type": "related(Users)",
+        "required": false,
+        "non-searchable": false,
+        "unique": false
+    },
+    "salary": {
+        "name": "salary",
+        "type": "money(currencies)",
+        "required": false,
+        "non-searchable": false,
+        "unique": false
+    },
+    "vip": {
+        "name": "vip",
+        "type": "boolean",
+        "required": false,
+        "non-searchable": false,
+        "unique": false
+    },
+    "area": {
+        "name": "area",
+        "type": "metric(units_area)",
+        "required": false,
+        "non-searchable": false,
+        "unique": false
+    },
+    "date_of_birth": {
+        "name": "date_of_birth",
+        "type": "date",
+        "required": false,
+        "non-searchable": false,
+        "unique": false
+    },
+    "work_start": {
+        "name": "work_start",
+        "type": "time",
+        "required": false,
+        "non-searchable": false,
+        "unique": false
+    },
+    "website": {
+        "name": "website",
+        "type": "url",
+        "required": false,
+        "non-searchable": false,
+        "unique": false
+    },
+    "bio": {
+        "name": "bio",
+        "type": "blob",
+        "required": false,
+        "non-searchable": false,
+        "unique": false
+    },
+    "level": {
+        "name": "level",
+        "type": "integer",
+        "required": false,
+        "non-searchable": false,
+        "unique": false
+    },
+    "appointment": {
+        "name": "appointment",
+        "type": "reminder",
+        "required": false,
+        "non-searchable": false,
+        "unique": false
+    },
+    "phone": {
+        "name": "phone",
+        "type": "phone",
+        "required": false,
+        "non-searchable": false,
+        "unique": false
+    },
+    "email": {
+        "name": "email",
+        "type": "email",
+        "required": true,
+        "non-searchable": false,
+        "unique": true
+    },
+    "rate": {
+        "name": "rate",
+        "type": "decimal",
         "required": false,
         "non-searchable": false,
         "unique": false
@@ -29,14 +134,14 @@
     },
     "testmetric": {
         "name": "testmetric",
-        "type": "metric(unit)",
+        "type": "metric(units_area)",
         "required": false,
         "non-searchable": false,
         "unique": false
     },
-    "testunit": {
+    "testmoney": {
         "name": "testmoney",
-        "type": "money(currency)",
+        "type": "money(currencies)",
         "required": false,
         "non-searchable": false,
         "unique": false
