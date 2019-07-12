@@ -305,7 +305,7 @@ class LookupBehavior extends Behavior
      * @param mixed[] $options Query options
      * @return \Cake\ORM\Query|null
      */
-    public function findLookupa(Query $query, array $options): ?Query
+    public function findLookup(Query $query, array $options): ?Query
     {
         $table = $this->_table;
         Assert::isInstanceOf($table, Table::class);
