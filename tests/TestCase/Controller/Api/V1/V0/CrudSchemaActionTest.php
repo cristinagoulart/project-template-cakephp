@@ -38,63 +38,54 @@ class CrudSchemaActionTest extends IntegrationTestCase
         $this->assertEquals('label name', $data[1]['label']);
 
         // Check two fields for money and metric
-        $metric_amount = [
-            'name' => 'testmetric_amount',
-            'type' => 'metric',
-            'db_type' => 'decimal'
-        ];
-
-        $metric_unit = [
-            'name' => 'testmetric_unit',
-            'type' => 'metric',
-            'db_type' => 'string'
-        ];
-
-        $this->assertEquals($metric_amount, Hash::extract($data, '{n}[name=testmetric_amount]')[0]);
-        $this->assertEquals($metric_unit, Hash::extract($data, '{n}[name=testmetric_unit]')[0]);
-
-        $money_amount = [
-            'name' => 'testmoney_amount',
-            'type' => 'money',
-            'db_type' => 'decimal'
-        ];
-
-        $money_unit = [
-            'name' => 'testmoney_currency',
-            'type' => 'money',
-            'db_type' => 'string'
-        ];
-
-        $this->assertEquals($money_amount, Hash::extract($data, '{n}[name=testmoney_amount]')[0]);
-        $this->assertEquals($money_unit, Hash::extract($data, '{n}[name=testmoney_currency]')[0]);
-
-        // Test list
-        $test_list = [
-           'name' => 'test_list',
-            'type' => 'list',
-            'options' => [
-                [
-                    'label' => 'first',
-                    'children' => [
-                        [
-                            'label' => 'first children',
-                            'value' => 'first.first_children'
+        $expected = [
+            [
+                'name' => 'testmetric_amount',
+                'type' => 'metric',
+                'db_type' => 'decimal'
+            ],
+            [
+                'name' => 'testmetric_unit',
+                'type' => 'metric',
+                'db_type' => 'string'
+            ],
+            [
+                'name' => 'testmoney_amount',
+                'type' => 'money',
+                'db_type' => 'decimal'
+            ],
+            [
+                'name' => 'testmoney_currency',
+                'type' => 'money',
+                'db_type' => 'string'
+            ],
+            [
+                'name' => 'test_list',
+                'type' => 'list',
+                'options' => [
+                    [
+                        'label' => 'first',
+                        'children' => [
+                            [
+                                'label' => 'first children',
+                                'value' => 'first.first_children'
+                            ],
+                            [
+                                'label' => 'second children',
+                                'value' => 'first.second_children'
+                            ]
                         ],
-                        [
-                            'label' => 'second children',
-                            'value' => 'first.second_children'
-                        ]
+                        'value' => 'first'
                     ],
-                    'value' => 'first'
-                ],
-                [
-                    'label' => 'second',
-                    'value' => 'second'
+                    [
+                        'label' => 'second',
+                        'value' => 'second'
+                    ]
                 ]
             ]
         ];
 
-        $this->assertEquals($test_list, Hash::extract($data, '{n}[name=test_list]')[0]);
+        $this->assertSame([], array_diff(Hash::flatten($expected), Hash::flatten($data)));
     }
 
     /**
