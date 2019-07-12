@@ -27,7 +27,7 @@ $options = [
             'disabled' => true
         ]
     ],
-    'hasPanels' => false
+    'hasPanels' => property_exists($config, 'panels')
 ];
 echo $this->element('View/post', ['options' => $options]);
 
@@ -36,7 +36,8 @@ echo $this->Html->script('CsvMigrations.view-batch', ['block' => 'scriptBottom']
 $formUrl = $this->Url->build([
     'plugin' => $this->request->getParam('plugin'),
     'controller' => $this->request->getParam('controller'),
-    'action' => $this->request->getParam('action')
+    'action' => $this->request->getParam('action'),
+    empty($this->request->getParam('pass')[0]) ?: $this->request->getParam('pass')[0]
 ]);
 echo $this->Html->scriptBlock(
     '$("form[action=\'' . $formUrl . '\']").viewBatch({
