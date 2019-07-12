@@ -1,11 +1,14 @@
 <?php
 namespace App\Test\TestCase\Controller\Api;
 
+use App\Crud\Action\SchemaAction;
 use App\Feature\Factory;
+use Cake\Controller\Controller;
 use Cake\Core\App;
 use Cake\Core\Configure;
 use Cake\Filesystem\Folder;
 use Cake\ORM\TableRegistry;
+use Cake\Utility\Hash;
 use Cake\Utility\Inflector;
 use Qobo\Utils\ModuleConfig\ConfigType;
 use Qobo\Utils\ModuleConfig\ModuleConfig;
@@ -135,6 +138,84 @@ class ControllerApiTest extends JsonIntegrationTestCase
 
         $query = $table->find()->where([$primaryKey => $entity->get($primaryKey)]);
         $this->assertTrue($query->isEmpty());
+    }
+
+    public function testSchema(): void
+    {
+        $schema = new SchemaAction(new Controller(null, null, 'Things'));
+        $data = $this->invokeMethod($schema, 'getFields', [[]]);
+        $this->assertInternalType('array', $data);
+
+        // Check label
+        $this->assertEquals('label name', $data[1]['label']);
+
+        // Check two fields for money and metric
+        $expected = [
+            [
+                'name' => 'testmetric_amount',
+                'type' => 'metric',
+                'db_type' => 'decimal'
+            ],
+            [
+                'name' => 'testmetric_unit',
+                'type' => 'metric',
+                'db_type' => 'string'
+            ],
+            [
+                'name' => 'testmoney_amount',
+                'type' => 'money',
+                'db_type' => 'decimal'
+            ],
+            [
+                'name' => 'testmoney_currency',
+                'type' => 'money',
+                'db_type' => 'string'
+            ],
+            [
+                'name' => 'test_list',
+                'type' => 'list',
+                'options' => [
+                    [
+                        'label' => 'first',
+                        'children' => [
+                            [
+                                'label' => 'first children',
+                                'value' => 'first.first_children'
+                            ],
+                            [
+                                'label' => 'second children',
+                                'value' => 'first.second_children'
+                            ]
+                        ],
+                        'value' => 'first'
+                    ],
+                    [
+                        'label' => 'second',
+                        'value' => 'second'
+                    ]
+                ]
+            ]
+        ];
+
+        $this->assertSame([], array_diff(Hash::flatten($expected), Hash::flatten($data)));
+    }
+
+    /**
+     * Call protected/private method of a class.
+     *
+     * @param SchemaAction $object Instantiated object that we will run method on.
+     * @param string $methodName Method name to call
+     * @param mixed[] $parameters Array of parameters to pass into method.
+     *
+     * @return mixed Method return.
+     */
+    private function invokeMethod(SchemaAction &$object, string $methodName, array $parameters = [])
+    {
+        $reflection = new \ReflectionClass(get_class($object));
+        $method = $reflection->getMethod($methodName);
+        $method->setAccessible(true);
+
+        return $method->invokeArgs($object, $parameters);
     }
 
     /**
