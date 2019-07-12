@@ -125,4 +125,23 @@ class LookupBehaviorTest extends TestCase
         $email = is_array($query) ?: $query->get('email');
         $this->assertSame('user-1@test.com', $email);
     }
+
+    public function testfindLookupIgnoreLookupFieldsInConfig() : void
+    {
+        $query = $this->users->find('lookup', ['value' => '00000000-0000-0000-0000-000000000002', 'lookupfields' => false])->firstOrFail();
+        $email = is_array($query) ?: $query->get('email');
+        $this->assertSame('user-2@test.com', $email);
+    }
+
+    public function testfindLookupWithoutValueInOptions() : void
+    {
+        $query = $this->users->find('lookup')->firstOrFail();
+        $this->assertInstanceOf('App\Model\Entity\User', $query);
+    }
+
+    public function testfindLookupWithLookupFieldsInConfig() : void
+    {
+        $query = $this->users->find('lookup', ['value' => '00000000-0000-0000-0000-000000000002', 'lookupfields' => true])->first();
+        $this->assertNull($query);
+    }
 }

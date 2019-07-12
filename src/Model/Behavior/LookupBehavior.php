@@ -309,14 +309,18 @@ class LookupBehavior extends Behavior
     {
         $table = $this->_table;
         Assert::isInstanceOf($table, Table::class);
-
         if (! isset($options['value'])) {
-            return null;
+            return $query;
         }
 
+        /**
+         * In case lookupfields in table config are not empty and we want to use the custom finder
+         * we can do it by sending in the options an empty array in lookupfields
+         */
+        $ignoreLookupFields = (isset($options['lookupfields']) && !$options['lookupfields']) ? true : false;
         // fail-safe binding of primary key to query's where clause, if lookup
         // fields are not defined, to avoid random record retrieval.
-        if (empty($this->lookupFields)) {
+        if (empty($this->lookupFields) || ($ignoreLookupFields && !empty($this->lookupFields))) {
             $primaryKey = $table->getPrimaryKey();
             if (! is_string($primaryKey)) {
                 throw new UnsupportedPrimaryKeyException();
