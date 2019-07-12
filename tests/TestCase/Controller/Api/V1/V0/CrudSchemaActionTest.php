@@ -5,6 +5,7 @@ use App\Crud\Action\SchemaAction;
 use Cake\Controller\Controller;
 use Cake\Core\Configure;
 use Cake\TestSuite\IntegrationTestCase;
+use Cake\Utility\Hash;
 use ReflectionClass;
 
 /**
@@ -49,8 +50,8 @@ class CrudSchemaActionTest extends IntegrationTestCase
             'db_type' => 'string'
         ];
 
-        $this->assertEquals($metric_amount, $data[4]);
-        $this->assertEquals($metric_unit, $data[5]);
+        $this->assertEquals($metric_amount, Hash::extract($data, '{n}[name=testmetric_amount]')[0]);
+        $this->assertEquals($metric_unit, Hash::extract($data, '{n}[name=testmetric_unit]')[0]);
 
         $money_amount = [
             'name' => 'testmoney_amount',
@@ -64,8 +65,8 @@ class CrudSchemaActionTest extends IntegrationTestCase
             'db_type' => 'string'
         ];
 
-        $this->assertEquals($money_amount, $data[6]);
-        $this->assertEquals($money_unit, $data[7]);
+        $this->assertEquals($money_amount, Hash::extract($data, '{n}[name=testmoney_amount]')[0]);
+        $this->assertEquals($money_unit, Hash::extract($data, '{n}[name=testmoney_currency]')[0]);
 
         // Test list
         $test_list = [
@@ -93,7 +94,7 @@ class CrudSchemaActionTest extends IntegrationTestCase
             ]
         ];
 
-        $this->assertEquals($test_list, $data[3]);
+        $this->assertEquals($test_list, Hash::extract($data, '{n}[name=test_list]')[0]);
     }
 
     /**
