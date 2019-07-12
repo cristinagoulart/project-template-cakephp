@@ -11,6 +11,7 @@ parameters:
     earlyTerminatingMethodCalls:
         Cake\Console\Shell:
             - abort
+    inferPrivatePropertyTypeFromConstructor: true
     ignoreErrors:
         # This rule is ignored to avoid aborting early during scheduled jobs run.
         - '#In method "App\\Shell\\CronShell::main", caught "Exception" must be rethrown.#'
