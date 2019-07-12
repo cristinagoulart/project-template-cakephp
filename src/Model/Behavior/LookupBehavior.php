@@ -305,11 +305,9 @@ class LookupBehavior extends Behavior
      * @param mixed[] $options Query options
      * @return \Cake\ORM\Query|null
      */
-    public function findLookup(Query $query, array $options): ?Query
+    public function findLookupa(Query $query, array $options): ?Query
     {
         $table = $this->_table;
-
-        $tableAlias = $this->_table->getAlias();
         Assert::isInstanceOf($table, Table::class);
 
         if (! isset($options['value'])) {
@@ -328,7 +326,7 @@ class LookupBehavior extends Behavior
                 $table->aliasField($primaryKey) => $options['value']
             ]);
 
-            return null;
+            return $query;
         }
 
         foreach ($this->lookupFields as $field) {

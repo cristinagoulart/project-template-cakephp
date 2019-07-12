@@ -114,14 +114,14 @@ class LookupBehaviorTest extends TestCase
 
     public function testfindLookup() : void
     {
-        $query = $this->users->find('Lookup', ['value' => 'user-1@test.com'])->firstOrFail();
+        $query = $this->users->find('lookup', ['value' => 'user-1@test.com'])->firstOrFail();
         $email = is_array($query) ?: $query->get('email');
         $this->assertSame('user-1@test.com', $email);
     }
 
     public function testfindLookupWithWhere() : void
     {
-        $query = $this->users->find('Lookup', ['value' => 'user-1@test.com'])->where(['username' => 'user-1'])->firstOrFail();
+        $query = $this->users->find('lookup', ['value' => 'user-1@test.com'])->where(['username' => 'user-1'])->firstOrFail();
         $email = is_array($query) ?: $query->get('email');
         $this->assertSame('user-1@test.com', $email);
     }
