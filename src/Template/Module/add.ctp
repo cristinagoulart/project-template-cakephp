@@ -29,4 +29,4 @@ $options = [
     'handlerOptions' => ['entity' => $this->request],
     'hasPanels' => property_exists($config, 'panels')
 ];
-echo $this->element('View/post', ['options' => $options]);
+echo $this->element('Module/post', ['options' => $options]);

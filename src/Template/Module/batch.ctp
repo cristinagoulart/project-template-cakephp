@@ -29,7 +29,7 @@ $options = [
     ],
     'hasPanels' => false
 ];
-echo $this->element('View/post', ['options' => $options]);
+echo $this->element('Module/post', ['options' => $options]);
 
 echo $this->Html->script('CsvMigrations.view-batch', ['block' => 'scriptBottom']);
 

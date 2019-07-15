@@ -151,9 +151,9 @@ foreach ($options['fields'] as $panelName => $panelFields) : ?>
     <hr />
     <div class="row associated-records">
         <div class="col-xs-12">
-            <?= $this->element('View/associated', [
+            <?= $this->element('Module/associated', [
                 'options' => $options, 'table' => $table, 'factory' => $factory, 'entity' => $options['entity']
-            ]) ?>
+            ], ['plugin' => false]) ?>
         </div>
     </div>
 </section>

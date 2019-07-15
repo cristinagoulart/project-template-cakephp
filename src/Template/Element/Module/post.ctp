@@ -40,14 +40,12 @@ $formOptions = [
 ];
 
 if ($options['hasPanels']) {
-    $formOptions = [
-        'data-panels-url' => $this->Url->build([
+    $formOptions['data-panels-url'] = $this->Url->build([
             'prefix' => 'api',
             'plugin' => $this->request->getParam('plugin'),
             'controller' => $this->request->getParam('controller'),
             'action' => 'panels'
-        ]),
-    ];
+        ]);
 }
 
 if (!empty($this->request->getQuery('embedded'))) {
