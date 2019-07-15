@@ -10,22 +10,22 @@
                                 <div class="col-xs-4">
                                     <div class="form-group">
                                         <select v-model="selectedModuleFilter" class="form-control input-sm">
-                                            <option v-for="(group_filters, group) in filtersGroup">{{ group }}</option>
+                                            <option v-for="item in filterModules">{{ item }}</option>
                                         </select>
                                     </div>
                                 </div>
                                 <div class="col-xs-8">
                                     <div class="form-group">
-                                        <select v-model="filter" class="form-control input-sm" v-on:change="criteriaCreate(filter)">
+                                        <select v-model="filter" class="form-control input-sm" @change="criteriaCreate(filter)">
                                             <option value="">-- Add filter --</option>
-                                            <option v-for="filter in filtersGroup[selectedModuleFilter]" :value="filter.field">{{ filter.label }}</option>
+                                            <option v-for="item in filtersGroup[selectedModuleFilter]" :value="item.field">{{ item.label }}</option>
                                         </select>
                                     </div>
                                 </div>
                                 <div class="col-xs-4">
                                     <div class="form-group">
                                         <select v-model="selectedModuleGroupBy" class="form-control input-sm">
-                                            <option v-for="(group_filters, group) in filtersGroup">{{ group }}</option>
+                                            <option v-for="item in filterModules">{{ item }}</option>
                                         </select>
                                     </div>
                                 </div>
@@ -33,14 +33,14 @@
                                     <div class="form-group">
                                         <select v-model="groupBy" class="form-control input-sm">
                                             <option value="">-- Group by --</option>
-                                            <option v-for="filter in filtersGroup[selectedModuleGroupBy]" :value="filter.field">{{ filter.label }}</option>
+                                            <option v-for="item in filtersGroup[selectedModuleGroupBy]" :value="item.field">{{ item.label }}</option>
                                         </select>
                                     </div>
                                 </div>
                                 <div class="col-xs-12">
                                     <div class="form-group">
                                         <select v-model="aggregator" class="form-control input-sm">
-                                            <option v-for="aggregator in aggregators" :value="aggregator.value">{{ aggregator.text }}</option>
+                                            <option v-for="item in aggregators" :value="item.value">{{ item.text }}</option>
                                         </select>
                                     </div>
                                 </div>
@@ -58,13 +58,23 @@
                                             </div>
                                             <div class="col-xs-4 col-md-2 col-lg-2">
                                                 <select v-model="operator[guid]" class="form-control input-sm" v-on:change="operatorUpdated(field_name, guid, operator[guid])">
-                                                    <option v-for="option in $store.state.search.operators.types[$store.state.search.operators.map[filtersFlat[field_name].type]]" v-bind:value="option.value">
+                                                    <option v-for="option in operatorTypes[operatorMaps[filtersFlat[field_name].type]]" v-bind:value="option.value">
                                                         {{ option.text }}
                                                     </option>
                                                 </select>
                                             </div>
                                             <div class="col-xs-6 col-md-5">
-                                                <component :is="field.type + 'Input'" :guid="guid" :field="field_name" :value="field.value" :options="filtersFlat[field_name].options" :source="filtersFlat[field_name].source" :display-field="filtersFlat[field_name].display_field" :multiple="true" @input-value-updated="criteriaUpdated" />
+                                                <component
+                                                  :is="field.type + 'Input'"
+                                                  :guid="guid"
+                                                  :field="field_name"
+                                                  :value="field.value"
+                                                  :options="filtersFlat[field_name].options"
+                                                  :source="filtersFlat[field_name].source"
+                                                  :display-field="filtersFlat[field_name].display_field"
+                                                  :multiple="true"
+                                                  @input-value-updated="criteriaUpdated"
+                                                />
                                             </div>
                                             <div class="col-sm-2 col-md-1">
                                                 <button type="button" @click="criteriaRemove(guid)" class="btn btn-default btn-xs"><i class="fa fa-trash" aria-hidden="true"></i></button>
@@ -81,50 +91,36 @@
                             <div class="row">
                                 <div class="col-md-5">
                                     <label for="available-columns">Available Columns</label>
-                                    <select v-model="selectedColumns.available" class="form-control input-sm" multiple size="8" :disabled="'' !== groupBy">
+                                    <select v-model="selectedColumns.available" class="form-control input-sm" multiple size="8" :disabled="isGroupByEnabled">
                                         <option v-for="filter in filtersGroup[selectedModuleAvailableColumns]" v-if="-1 === displayColumns.indexOf(filter.field)" :value="filter.field">{{ filter.label }}</option>
                                     </select>
-                                    <select v-model="selectedModuleAvailableColumns" class="form-control input-sm" :disabled="'' !== groupBy">
+                                    <select v-model="selectedModuleAvailableColumns" class="form-control input-sm" :disabled="isGroupByEnabled">
                                         <option v-for="(group_filters, group) in filtersGroup">{{ group }}</option>
                                     </select>
                                 </div>
                                 <div class="col-md-2">
                                     <label>&nbsp;</label>
                                     <div class="row">
-                                        <div class="col-xs-6 col-md-12">
-                                            <button type="button" @click="displayColumnsUpdated('add')" class="btn btn-block btn-sm" :disabled="'' !== groupBy || 0 === selectedColumns.available.length">
-                                                <span class="visible-md visible-lg"><i class="fa fa-angle-right"></i></span>
-                                                <span class="visible-xs visible-sm"><i class="fa fa-angle-down"></i></span>
-                                            </button>
-                                        </div>
-                                        <span class="visible-md visible-lg">&nbsp;</span>
-                                        <div class="col-xs-6 col-md-12">
-                                            <button type="button" @click="displayColumnsUpdated('remove')" class="btn btn-block btn-sm" :disabled="'' !== groupBy || 0 === selectedColumns.display.length">
-                                                <span class="visible-md visible-lg"><i class="fa fa-angle-left"></i></span>
-                                                <span class="visible-xs visible-sm"><i class="fa fa-angle-up"></i></span>
-                                            </button>
-                                        </div>
+                                        <ColumnsMover
+                                          @column-moved="displayColumnsUpdated"
+                                          :is-group-by-enabled="isGroupByEnabled"
+                                          :selectedColumns="selectedColumns"
+                                        />
                                     </div>
                                 </div>
                                 <div class="col-md-5">
                                     <span class="visible-xs visible-sm">&nbsp;</span>
                                     <label for="display-columns">Display Columns</label>
-                                    <select v-model="selectedColumns.display" class="form-control input-sm" multiple size="8" :disabled="'' !== groupBy">
+                                    <select v-model="selectedColumns.display" class="form-control input-sm" multiple size="8" :disabled="isGroupByEnabled">
                                         <option v-for="column in displayColumns" :value="filtersFlat[column].field">
                                             {{ filtersFlat[column].label }} <template v-if="filtersFlat[column].group !== modelName">- {{ filtersFlat[column].group }}</template>
                                         </option>
                                     </select>
                                     <div class="row">
-                                        <div class="col-xs-6">
-                                            <button type="button" @click="displayColumnsSorted('up')" :disabled="0 === displayColumns.length || 0 === selectedColumns.display.length || '' !== groupBy" class="btn btn-block btn-sm">
-                                                <i class="fa fa-angle-up"></i>
-                                            </button>
-                                        </div>
-                                        <div class="col-xs-6">
-                                            <button type="button" @click="displayColumnsSorted('down')" :disabled="0 === displayColumns.length || 0 === selectedColumns.display.length || '' !== groupBy" class="btn btn-block btn-sm">
-                                                <i class="fa fa-angle-down"></i>
-                                            </button>
-                                        </div>
+                                        <ColumnsSorter
+                                          :is-order-disabled="isOrderingDisabled"
+                                          @display-columns-sorted="displayColumnsSorted"
+                                        />
                                     </div>
                                 </div>
                             </div>
@@ -138,7 +134,7 @@
                                         <div class="input-group">
                                             <select v-model="savedSearchSelected" class="form-control input-sm">
                                                 <option value="">-- Please choose --</option>
-                                                <option v-for="savedSearch in savedSearches" :value="savedSearch.id">{{ savedSearch.name }}</option>
+                                                <option v-for="item in savedSearches" :value="item.id">{{ item.name }}</option>
                                             </select>
                                             <span class="input-group-btn">
                                                 <button type="button" @click="savedSearchGet()" :disabled="'' === savedSearchSelected" class="btn btn-default btn-sm">
@@ -192,7 +188,20 @@
         </div>
         <div class="box box-solid">
             <div class="box-body">
-                <table-ajax v-if="loadResult" :url="'/api/' + modelUrl + '/search'" request-type="POST" :data="tableData" :order-field="sortByField" :order-direction="sortByOrder" :model="modelUrl" :primary-key="primaryKey" :headers="tableHeaders" @sort-field-updated="sortFieldUpdated" @sort-order-updated="sortOrderUpdated" :with-batch="withBatch"></table-ajax>
+                <table-ajax
+                  v-if="loadResult"
+                  :url="'/api/' + modelUrl + '/search'"
+                  request-type="POST"
+                  :data="tableData"
+                  :order-field="sortByField"
+                  :order-direction="sortByOrder"
+                  :model="modelUrl"
+                  :primary-key="primaryKey"
+                  :headers="tableHeaders"
+                  @sort-field-updated="sortFieldUpdated"
+                  @sort-order-updated="sortOrderUpdated"
+                  :with-batch="withBatch">
+                </table-ajax>
             </div>
         </div>
         <div class="modal fade" :id="sets.modal" tabindex="-1" role="dialog" aria-labelledby="mySetsLabel">
@@ -225,18 +234,18 @@
 
 <script>
 import tableAjax from '@/components/ui/TableAjax.vue'
+import ColumnsSorter from '@/components/Search/ColumnsSorter.vue'
+import ColumnsMover from '@/components/Search/ColumnsMover.vue'
 import inputs from '@/components/fh'
 import axios from 'axios'
-import { mapState, mapGetters } from 'vuex'
+import { mapState, mapGetters, mapActions, mapMutations } from 'vuex'
 import { dasherize, underscore } from 'inflected'
 import UuidMixin from '@/mixins/uuid.js'
+import { FIELD_AGGREGATOR_TYPES, FIELDS_BASIC_TYPES } from '@/utils/search'
 
 export default {
-
-    components: Object.assign({ tableAjax }, inputs),
-
+    components: Object.assign({ tableAjax, ColumnsSorter, ColumnsMover }, inputs),
     mixins: [UuidMixin],
-
     props: {
         displayFields: {
             type: Array,
@@ -280,17 +289,14 @@ export default {
         },
         withSets: {
             type: Boolean,
-            default: true
+            default: false
         }
     },
 
     data() {
         return {
-            aggregators: [
-                { text: 'Match all filters', value: 'AND' },
-                { text: 'Match any filter', value: 'OR' }
-            ],
-            basic_types: ['string', 'text', 'textarea', 'related', 'email', 'url', 'phone', 'integer'],
+            aggregators: FIELD_AGGREGATOR_TYPES,
+            basic_types: FIELDS_BASIC_TYPES,
             filter: '',
             selectedModuleAvailableColumns: this.model,
             selectedModuleFilter: this.model,
@@ -343,6 +349,18 @@ export default {
                 this.$store.commit('search/groupBy', value)
             }
         },
+        isGroupByEnabled () {
+          return ('' !== this.groupBy) ? true : false
+        },
+        isOrderingDisabled () {
+          let result = false
+
+          if (0 === this.displayColumns.length || 0 === this.selectedColumns.display.length || this.isGroupByEnabled) {
+            result = true
+          }
+
+          return result
+        },
         modelUrl() {
             return dasherize(underscore(this.modelName))
         },
@@ -355,8 +373,7 @@ export default {
             }
         },
         operator() {
-            const criteria = this.$store.state.search.savedSearch.content.saved.criteria
-
+            let criteria = this.criteria
             let result = {}
             for (const field in criteria) {
                 for (const guid in criteria[field]) {
@@ -366,8 +383,24 @@ export default {
 
             return result
         },
+        filterModules () {
+          let result = []
+
+          if (!this.filtersGroup) {
+            return result
+          }
+
+          Object.keys(this.filtersGroup).forEach((item) => {
+            result.push(item)
+          })
+
+          return result
+        },
         ...mapState({
+          operatorTypes: state => state.search.operators.types,
+          operatorMaps: state => state.search.operators.map,
           criteria: state => state.search.savedSearch.content.saved.criteria,
+          savedSearch: state => state.search.savedSearch,
           savedSearches: state => state.search.savedSearches,
           sortByField: state => state.search.savedSearch.content.saved.sort_by_field,
           sortByOrder: state => state.search.savedSearch.content.saved.sort_by_order,
@@ -375,7 +408,6 @@ export default {
           filtersList: state => state.search.filters
         })
     },
-
     created() {
         /**
          * This watcher is responsible for initiating the search execution after all related type
@@ -420,7 +452,7 @@ export default {
 
         if ('' !== this.id) {
             this.$store.dispatch('search/savedSearchGet', this.id).then(() => {
-                this.$store.dispatch('search/savedSearchesGet')
+                this.savedSearchesGet()
                 this.search()
             })
         }
@@ -439,13 +471,21 @@ export default {
                 this.search()
             }
 
-            this.$store.dispatch('search/savedSearchesGet')
+            this.savedSearchesGet()
         }
 
         this.setsFetch()
     },
 
     methods: {
+        ...mapActions({
+          savedSearchSave: 'search/savedSearchSave',
+          savedSearchesGet: 'search/savedSearchesGet'
+        }),
+        ...mapMutations({
+          sortFieldUpdated: 'search/sortByField',
+          sortOrderUpdated: 'search/sortByOrder'
+        }),
         basicSearch(query) {
             const self = this
 
@@ -488,7 +528,8 @@ export default {
             this.$store.dispatch('search/savedSearchCopy', { id: this.savedSearchSelected, user_id: this.userId })
         },
         savedSearchDelete() {
-            if (this.savedSearchSelected === this.$store.state.search.savedSearch.id) {
+            let searchId = this.savedSearch.id
+            if (this.savedSearchSelected === searchId) {
                 return
             }
 
@@ -504,9 +545,6 @@ export default {
             this.$store.dispatch('search/savedSearchGet', this.savedSearchSelected).then(() => {
                 this.search()
             })
-        },
-        savedSearchSave() {
-            this.$store.dispatch('search/savedSearchSave')
         },
         search() {
             const self = this
@@ -657,12 +695,6 @@ export default {
             this.selectedModuleGroupBy = this.model
 
             this.search()
-        },
-        sortFieldUpdated(value) {
-            this.$store.commit('search/sortByField', value)
-        },
-        sortOrderUpdated(value) {
-            this.$store.commit('search/sortByOrder', value)
         }
     }
 
