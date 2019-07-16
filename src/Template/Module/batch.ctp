@@ -27,17 +27,18 @@ $options = [
             'disabled' => true
         ]
     ],
-    'hasPanels' => false
+    'hasPanels' => property_exists($config, 'panels')
 ];
 echo $this->element('Module/post', ['options' => $options]);
 
-echo $this->Html->script('CsvMigrations.view-batch', ['block' => 'scriptBottom']);
+echo $this->Html->script('view-batch', ['block' => 'scriptBottom']);
 
 $formUrl = $this->Url->build([
     'plugin' => $this->request->getParam('plugin'),
     'controller' => $this->request->getParam('controller'),
     'action' => $this->request->getParam('action')
 ]);
+
 echo $this->Html->scriptBlock(
     '$("form[action=\'' . $formUrl . '\']").viewBatch({
         batch_ids: ' . json_encode($this->request->getData('batch.ids')) . ',
