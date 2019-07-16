@@ -1,6 +1,7 @@
 <?php
 namespace App\Test\TestCase\Controller;
 
+use App\Feature\Factory;
 use App\Model\Entity\Thing;
 use Cake\Core\Configure;
 use Cake\ORM\TableRegistry;
@@ -39,6 +40,12 @@ class ThingsControllerTest extends IntegrationTestCase
 
     public function testViewUnauthenticatedFails() : void
     {
+        $feature = Factory::get('Module' . DS . 'Things');
+
+        if (! $feature->isActive()) {
+            $this->markTestSkipped('Skipping, Things module is disabled');
+        }
+
         $this->session(['Auth' => '']);
 
         // No session data set.
@@ -48,6 +55,12 @@ class ThingsControllerTest extends IntegrationTestCase
 
     public function testView() : void
     {
+        $feature = Factory::get('Module' . DS . 'Things');
+
+        if (! $feature->isActive()) {
+            $this->markTestSkipped('Skipping, Things module is disabled');
+        }
+
         $this->get('/things/view/00000000-0000-0000-0000-000000000001');
 
         $this->assertResponseOk();
@@ -55,6 +68,12 @@ class ThingsControllerTest extends IntegrationTestCase
 
     public function testAddUnauthenticatedFails() : void
     {
+        $feature = Factory::get('Module' . DS . 'Things');
+
+        if (! $feature->isActive()) {
+            $this->markTestSkipped('Skipping, Things module is disabled');
+        }
+
         $this->session(['Auth' => '']);
 
         // No session data set.
@@ -65,6 +84,12 @@ class ThingsControllerTest extends IntegrationTestCase
 
     public function testAdd() : void
     {
+        $feature = Factory::get('Module' . DS . 'Things');
+
+        if (! $feature->isActive()) {
+            $this->markTestSkipped('Skipping, Things module is disabled');
+        }
+
         $this->get('/things/add');
         $this->assertResponseOk();
         // form element and attributes
@@ -79,6 +104,12 @@ class ThingsControllerTest extends IntegrationTestCase
 
     public function testAddPostData() : void
     {
+        $feature = Factory::get('Module' . DS . 'Things');
+
+        if (! $feature->isActive()) {
+            $this->markTestSkipped('Skipping, Things module is disabled');
+        }
+
         $data = [
             'type' => 'a',
             'name' => 'test'
@@ -95,6 +126,12 @@ class ThingsControllerTest extends IntegrationTestCase
 
     public function testEditUnauthenticatedFails() : void
     {
+        $feature = Factory::get('Module' . DS . 'Things');
+
+        if (! $feature->isActive()) {
+            $this->markTestSkipped('Skipping, Things module is disabled');
+        }
+
         $this->session(['Auth' => '']);
 
         // No session data set.
@@ -105,6 +142,12 @@ class ThingsControllerTest extends IntegrationTestCase
 
     public function testEdit() : void
     {
+        $feature = Factory::get('Module' . DS . 'Things');
+
+        if (! $feature->isActive()) {
+            $this->markTestSkipped('Skipping, Things module is disabled');
+        }
+
         $this->get('/things/edit/00000000-0000-0000-0000-000000000001');
         $this->assertResponseOk();
         // form element and attributes
@@ -120,6 +163,12 @@ class ThingsControllerTest extends IntegrationTestCase
 
     public function testEditPostData() : void
     {
+        $feature = Factory::get('Module' . DS . 'Things');
+
+        if (! $feature->isActive()) {
+            $this->markTestSkipped('Skipping, Things module is disabled');
+        }
+
         $id = '00000000-0000-0000-0000-000000000001';
 
         $data = [
@@ -138,6 +187,12 @@ class ThingsControllerTest extends IntegrationTestCase
 
     public function testEditPutData() : void
     {
+        $feature = Factory::get('Module' . DS . 'Things');
+
+        if (! $feature->isActive()) {
+            $this->markTestSkipped('Skipping, Things module is disabled');
+        }
+
         $id = '00000000-0000-0000-0000-000000000001';
 
         $data = [
@@ -156,6 +211,12 @@ class ThingsControllerTest extends IntegrationTestCase
 
     public function testDeleteUnauthenticatedFails() : void
     {
+        $feature = Factory::get('Module' . DS . 'Things');
+
+        if (! $feature->isActive()) {
+            $this->markTestSkipped('Skipping, Things module is disabled');
+        }
+
         $this->session(['Auth' => '']);
 
         // No session data set.
@@ -166,12 +227,24 @@ class ThingsControllerTest extends IntegrationTestCase
 
     public function testDeleteGetRequest() : void
     {
+        $feature = Factory::get('Module' . DS . 'Things');
+
+        if (! $feature->isActive()) {
+            $this->markTestSkipped('Skipping, Things module is disabled');
+        }
+
         $this->get('/things/delete/00000000-0000-0000-0000-000000000001');
         Configure::read("debug") ? $this->assertResponseError() : $this->assertRedirect();
     }
 
     public function testDeleteData() : void
     {
+        $feature = Factory::get('Module' . DS . 'Things');
+
+        if (! $feature->isActive()) {
+            $this->markTestSkipped('Skipping, Things module is disabled');
+        }
+
         $id = '00000000-0000-0000-0000-000000000001';
 
         $this->delete('/things/delete/' . $id);
@@ -184,6 +257,12 @@ class ThingsControllerTest extends IntegrationTestCase
 
     public function testDeletePostData() : void
     {
+        $feature = Factory::get('Module' . DS . 'Things');
+
+        if (! $feature->isActive()) {
+            $this->markTestSkipped('Skipping, Things module is disabled');
+        }
+
         $id = '00000000-0000-0000-0000-000000000001';
 
         $this->post('/things/delete/' . $id);
@@ -196,12 +275,24 @@ class ThingsControllerTest extends IntegrationTestCase
 
     public function testBatchGetRequest() : void
     {
+        $feature = Factory::get('Module' . DS . 'Things');
+
+        if (! $feature->isActive()) {
+            $this->markTestSkipped('Skipping, Things module is disabled');
+        }
+
         $this->get('/things/batch/edit');
         Configure::read("debug") ? $this->assertResponseError() : $this->assertRedirect();
     }
 
     public function testBatchDelete() : void
     {
+        $feature = Factory::get('Module' . DS . 'Things');
+
+        if (! $feature->isActive()) {
+            $this->markTestSkipped('Skipping, Things module is disabled');
+        }
+
         $table = TableRegistry::get('things');
         $initialCount = $table->find('all')->count();
 
@@ -223,6 +314,12 @@ class ThingsControllerTest extends IntegrationTestCase
 
     public function testBatchDeleteNoIds() : void
     {
+        $feature = Factory::get('Module' . DS . 'Things');
+
+        if (! $feature->isActive()) {
+            $this->markTestSkipped('Skipping, Things module is disabled');
+        }
+
         $this->post('/things/batch/delete');
         $this->assertRedirect('/');
         $this->assertSession('No records selected.', 'Flash.flash.0.message');
@@ -230,6 +327,12 @@ class ThingsControllerTest extends IntegrationTestCase
 
     public function testBatchEdit() : void
     {
+        $feature = Factory::get('Module' . DS . 'Things');
+
+        if (! $feature->isActive()) {
+            $this->markTestSkipped('Skipping, Things module is disabled');
+        }
+
         $data = [
             'batch' => [
                 'ids' => [
@@ -249,6 +352,12 @@ class ThingsControllerTest extends IntegrationTestCase
 
     public function testBatchEditNoIds() : void
     {
+        $feature = Factory::get('Module' . DS . 'Things');
+
+        if (! $feature->isActive()) {
+            $this->markTestSkipped('Skipping, Things module is disabled');
+        }
+
         $this->post('/things/batch/edit');
         $this->assertRedirect('/');
         $this->assertSession('No records selected.', 'Flash.flash.0.message');
@@ -256,6 +365,12 @@ class ThingsControllerTest extends IntegrationTestCase
 
     public function testBatchEditExecuteNoIds() : void
     {
+        $feature = Factory::get('Module' . DS . 'Things');
+
+        if (! $feature->isActive()) {
+            $this->markTestSkipped('Skipping, Things module is disabled');
+        }
+
         $data = [
             'batch' => [
                 'execute' => true
@@ -269,6 +384,12 @@ class ThingsControllerTest extends IntegrationTestCase
 
     public function testBatchEditExecuteNoData() : void
     {
+        $feature = Factory::get('Module' . DS . 'Things');
+
+        if (! $feature->isActive()) {
+            $this->markTestSkipped('Skipping, Things module is disabled');
+        }
+
         $data = [
             'batch' => [
                 'execute' => true,
