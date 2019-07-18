@@ -114,23 +114,20 @@ class LookupBehaviorTest extends TestCase
 
     public function testfindLookup() : void
     {
-        $query = $this->users->find('lookup', ['value' => 'user-1@test.com'])->firstOrFail();
-        $email = is_array($query) ?: $query->get('email');
-        $this->assertSame('user-1@test.com', $email);
+        $query = $this->users->find('lookup', ['value' => 'user-1@test.com'])->first();
+        $this->assertInstanceOf('App\Model\Entity\User', $query);
     }
 
     public function testfindLookupWithWhere() : void
     {
-        $query = $this->users->find('lookup', ['value' => 'user-1@test.com'])->where(['username' => 'user-1'])->firstOrFail();
-        $email = is_array($query) ?: $query->get('email');
-        $this->assertSame('user-1@test.com', $email);
+        $query = $this->users->find('lookup', ['value' => 'user-1@test.com'])->where(['username' => 'user-1'])->first();
+        $this->assertInstanceOf('App\Model\Entity\User', $query);
     }
 
-    public function testfindLookupIgnoreLookupFieldsInConfig() : void
+    public function testfindLookupWithWhereFailed() : void
     {
-        $query = $this->users->find('lookup', ['value' => '00000000-0000-0000-0000-000000000002', 'lookupfields' => false])->firstOrFail();
-        $email = is_array($query) ?: $query->get('email');
-        $this->assertSame('user-2@test.com', $email);
+        $query = $this->users->find('lookup', ['value' => 'user-2@test.com'])->where(['username' => 'user-1'])->first();
+        $this->assertNull($query);
     }
 
     public function testfindLookupWithoutValueInOptions() : void
@@ -139,9 +136,9 @@ class LookupBehaviorTest extends TestCase
         $this->assertInstanceOf('App\Model\Entity\User', $query);
     }
 
-    public function testfindLookupWithLookupFieldsInConfig() : void
+    public function testfindLookupWithNonExistentRecord() : void
     {
-        $query = $this->users->find('lookup', ['value' => '00000000-0000-0000-0000-000000000002', 'lookupfields' => true])->first();
+        $query = $this->users->find('lookup', ['value' => '00000000-0000-0000-0000-000000000002'])->first();
         $this->assertNull($query);
     }
 }
