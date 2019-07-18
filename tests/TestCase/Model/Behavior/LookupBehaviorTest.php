@@ -111,4 +111,34 @@ class LookupBehaviorTest extends TestCase
 
         $this->assertSame('user-1@test.com', $email);
     }
+
+    public function testfindLookup() : void
+    {
+        $query = $this->users->find('lookup', ['value' => 'user-1@test.com'])->first();
+        $this->assertInstanceOf('App\Model\Entity\User', $query);
+    }
+
+    public function testfindLookupWithWhere() : void
+    {
+        $query = $this->users->find('lookup', ['value' => 'user-1@test.com'])->where(['username' => 'user-1'])->first();
+        $this->assertInstanceOf('App\Model\Entity\User', $query);
+    }
+
+    public function testfindLookupWithWhereFailed() : void
+    {
+        $query = $this->users->find('lookup', ['value' => 'user-2@test.com'])->where(['username' => 'user-1'])->first();
+        $this->assertNull($query);
+    }
+
+    public function testfindLookupWithoutValueInOptions() : void
+    {
+        $query = $this->users->find('lookup')->firstOrFail();
+        $this->assertInstanceOf('App\Model\Entity\User', $query);
+    }
+
+    public function testfindLookupWithNonExistentRecord() : void
+    {
+        $query = $this->users->find('lookup', ['value' => '00000000-0000-0000-0000-000000000002'])->first();
+        $this->assertNull($query);
+    }
 }
