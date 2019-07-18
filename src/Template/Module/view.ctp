@@ -17,6 +17,6 @@ $options = [
     'fields' => $fields,
     'title' => null
 ];
-echo $this->element('View/view', [
+echo $this->element('Module/view', [
     'options' => $options
 ]);

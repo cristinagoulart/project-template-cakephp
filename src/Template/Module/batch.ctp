@@ -29,7 +29,7 @@ $options = [
     ],
     'hasPanels' => property_exists($config, 'panels')
 ];
-echo $this->element('View/post', ['options' => $options]);
+echo $this->element('Module/post', ['options' => $options]);
 
 echo $this->Html->script('view-batch', ['block' => 'scriptBottom']);
 
