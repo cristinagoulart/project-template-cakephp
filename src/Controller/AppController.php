@@ -69,6 +69,7 @@ class AppController extends Controller
             'enableBeforeRedirect' => false,
         ]);
         $this->loadComponent('Flash');
+        $this->loadComponent('LogActions');
 
         /*
          * Enable the following components for recommended CakePHP security settings.
