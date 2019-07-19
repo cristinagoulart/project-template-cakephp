@@ -1,15 +1,19 @@
 <?php
 namespace App\Controller\Component;
 
+use App\Event\AuditViewEvent;
+use AuditStash\PersisterInterface;
+use AuditStash\Persister\ElasticSearchPersister;
 use Cake\Controller\Component;
-use Cake\Controller\ComponentRegistry;
 use Cake\Core\Configure;
 use Cake\Event\Event;
 use Cake\Filesystem\File;
 use Cake\Filesystem\Folder;
 use Cake\I18n\Time;
-use Cake\ORM\Entity;
-use Cake\ORM\TableRegistry;
+use Cake\ORM\Table;
+use Cake\Utility\Inflector;
+use Cake\Utility\Text;
+use Webmozart\Assert\Assert;
 
 /**
  * LogActions component
@@ -45,26 +49,42 @@ class LogActionsComponent extends Component
      */
     protected function logToDb() : void
     {
-        $table = TableRegistry::getTableLocator()->get('LogAudit');
         $user_id = $this->_registry->getController()->Auth->user('id');
 
+        $controller = $this->getController();
+        $request = $controller->request;
+        $table = $this->getController()->loadModel();
+        Assert::isInstanceOf($table, Table::class);
+
         $meta = [
-            'ip' => $this->request->clientIp(),
+            /**
+             * The following details must be auto-completed by AuditStash.beforeLog
+            'ip' => $request->clientIp(),
             'user' => $user_id,
-            'url' => $this->request->here(),
-            'action' => $this->request->getParam('action'),
-            'pass' => empty($this->request->getParam('pass')[0]) ? '' : $this->request->getParam('pass')[0]
+            'url' => $request->getRequestTarget(),
+             */
+            'action' => $request->getParam('action'),
+            'pass' => empty($request->getParam('pass')[0]) ? '' : $request->getParam('pass')[0]
         ];
 
-        $data = [
+        /**
+         * Event details are passed when creating the event
+        $event = [
             'timestamp' => Time::parse('now'),
-            'primary_key' => empty($this->request->getParam('pass')[0]) ? '' : $this->request->getParam('pass')[0],
-            'source' => $this->request->getParam('controller'),
+            'primary_key' => empty($request->getParam('pass')[0]) ? '' : $request->getParam('pass')[0],
+            'source' => $request->getParam('controller'),
             'user_id' => $user_id,
             'meta' => json_encode($meta)
         ];
+         */
 
-        $table->save(new Entity($data));
+        $primary = empty($request->getParam('pass')[0]) ? '' : $request->getParam('pass')[0];
+
+        $event = new AuditViewEvent(Text::uuid(), $primary, $table->getAlias(), [], []);
+        $event->setMetaInfo($meta);
+
+        $data = $controller->dispatchEvent('AuditStash.beforeLog', ['logs' => [$event]]);
+        $this->getPersister()->logEvents($data->getData('logs'));
     }
 
     /**
@@ -86,5 +106,19 @@ class LogActionsComponent extends Component
 
         $log = sprintf('%s %s - [%s] "%s" - -' . PHP_EOL, $ip, $user_id, $now, $url);
         $file->append($log, true);
+    }
+
+    /**
+     * Initiates a new persister object to use for logging view audit events.
+     *
+     * @return PersisterInterface The configured persister
+     */
+    private function getPersister(): PersisterInterface
+    {
+        $class = Configure::read('AuditStash.persister') ?: ElasticSearchPersister::class;
+        $index = $this->getConfig('index') ?: $this->getController()->loadModel();
+        $type = $this->getConfig('type') ?: Inflector::singularize($index);
+
+        return new $class(compact('index', 'type'));
     }
 }
