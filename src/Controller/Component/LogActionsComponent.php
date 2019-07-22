@@ -1,15 +1,16 @@
 <?php
 namespace App\Controller\Component;
 
+use App\Event\AuditViewEvent;
+use AuditStash\PersisterInterface;
+use AuditStash\Persister\ElasticSearchPersister;
 use Cake\Controller\Component;
-use Cake\Controller\ComponentRegistry;
 use Cake\Core\Configure;
 use Cake\Event\Event;
-use Cake\Filesystem\File;
-use Cake\Filesystem\Folder;
-use Cake\I18n\Time;
-use Cake\ORM\Entity;
-use Cake\ORM\TableRegistry;
+use Cake\ORM\Table;
+use Cake\Utility\Inflector;
+use Cake\Utility\Text;
+use Webmozart\Assert\Assert;
 
 /**
  * LogActions component
@@ -25,66 +26,48 @@ class LogActionsComponent extends Component
     public function beforeFilter(Event $event) : void
     {
         $controllers = Configure::read('LogActions.controllers');
-        $actions = Configure::read('LogActions.actions');
+        $actions = Configure::read('LogActions.excludeActions');
 
-        if (empty($controllers) || empty($actions)) {
+        if (empty($controllers)) {
             return;
         }
 
-        if (!in_array($this->request->getParam('controller'), $controllers) && !in_array($this->request->getParam('action'), $actions)) {
+        if (!in_array($this->request->getParam('controller'), $controllers) && in_array($this->request->getParam('action'), $actions)) {
             return;
         }
 
-        Configure::read('LogActions.log_to_file') ? $this->logToFile() :$this->logToDb();
-    }
-
-    /**
-     * Log in LogAudid table
-     *
-     * @return void
-     */
-    protected function logToDb() : void
-    {
-        $table = TableRegistry::getTableLocator()->get('LogAudit');
         $user_id = $this->_registry->getController()->Auth->user('id');
+
+        $controller = $this->getController();
+        $request = $controller->request;
+        $table = $this->getController()->loadModel();
+        Assert::isInstanceOf($table, Table::class);
 
         $meta = [
-            'ip' => $this->request->clientIp(),
-            'user' => $user_id,
-            'url' => $this->request->here(),
-            'action' => $this->request->getParam('action'),
-            'pass' => empty($this->request->getParam('pass')[0]) ? '' : $this->request->getParam('pass')[0]
+            'action' => $request->getParam('action'),
+            'pass' => empty($request->getParam('pass')[0]) ? '' : $request->getParam('pass')[0]
         ];
 
-        $data = [
-            'timestamp' => Time::parse('now'),
-            'primary_key' => empty($this->request->getParam('pass')[0]) ? '' : $this->request->getParam('pass')[0],
-            'source' => $this->request->getParam('controller'),
-            'user_id' => $user_id,
-            'meta' => json_encode($meta)
-        ];
+        $primary = empty($request->getParam('pass')[0]) ? 'index' : $request->getParam('pass')[0];
 
-        $table->save(new Entity($data));
+        $event = new AuditViewEvent(Text::uuid(), $primary, $table->getAlias(), [], []);
+        $event->setMetaInfo($meta);
+
+        $data = $controller->dispatchEvent('AuditStash.beforeLog', ['logs' => [$event]]);
+        $this->getPersister()->logEvents($data->getData('logs'));
     }
 
     /**
-     * Log to file
-     * https://en.wikipedia.org/wiki/Common_Log_Format
+     * Initiates a new persister object to use for logging view audit events.
      *
-     * @return void
+     * @return PersisterInterface The configured persister
      */
-    protected function logToFile() : void
+    private function getPersister(): PersisterInterface
     {
-        $date = Time::now();
-        $folder = new Folder(ROOT . DS . 'logs' . DS . $date->i18nFormat('yyyy_MM'), true);
-        $file = new File($folder->pwd() . DS . $date->i18nFormat('yyyy_MM_dd'), true);
+        $class = Configure::read('AuditStash.persister') ?: ElasticSearchPersister::class;
+        $index = $this->getConfig('index') ?: $this->getController()->loadModel()->getAlias();
+        $type = $this->getConfig('type') ?: Inflector::singularize($index);
 
-        $ip = $this->request->clientIp();
-        $user_id = $this->_registry->getController()->Auth->user('id');
-        $url = $this->request->here();
-        $now = $date->i18nFormat('dd/MMM/yyyy:HH:mm:ss');
-
-        $log = sprintf('%s %s - [%s] "%s" - -' . PHP_EOL, $ip, $user_id, $now, $url);
-        $file->append($log, true);
+        return new $class(compact('index', 'type'));
     }
 }

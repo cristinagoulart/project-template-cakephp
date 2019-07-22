@@ -19,6 +19,7 @@ class MysqlPersister implements PersisterInterface
             $eventType = $log->getEventType();
             $meta = $log->getMetaInfo();
             $data = [
+                'action' => !empty($meta['action']) ? $meta['action'] : null,
                 'timestamp' => $log->getTimestamp(),
                 'transaction' => $log->getTransactionId(),
                 'type' => $log->getEventType(),
@@ -28,7 +29,7 @@ class MysqlPersister implements PersisterInterface
                 'changed' => 'delete' === $eventType ? null : json_encode($log->getChanged()),
                 'original' => 'delete' === $eventType ? null : json_encode($log->getOriginal()),
                 'meta' => json_encode($meta),
-                'user_id' => isset($meta['user']) ? $meta['user'] : null
+                'user_id' => !empty($meta['user']) ? $meta['user'] : null
             ];
             // save audit log
             TableRegistry::get('LogAudit')->save(new Entity($data));

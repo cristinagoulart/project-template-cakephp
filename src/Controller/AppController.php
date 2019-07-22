@@ -69,7 +69,6 @@ class AppController extends Controller
             'enableBeforeRedirect' => false,
         ]);
         $this->loadComponent('Flash');
-        $this->loadComponent('LogActions');
 
         /*
          * Enable the following components for recommended CakePHP security settings.
@@ -96,6 +95,10 @@ class AppController extends Controller
         }
 
         User::setCurrentUser((array)$this->Auth->user());
+
+        // for audit-stash functionality
+        EventManager::instance()->on(new RequestMetadata($this->request, $this->Auth->user('id')));
+        $this->loadComponent('LogActions');
     }
 
     /**
@@ -163,9 +166,6 @@ class AppController extends Controller
         }
 
         $this->_setIframeRendering();
-
-        // for audit-stash functionality
-        EventManager::instance()->on(new RequestMetadata($this->request, $this->Auth->user('id')));
 
         $this->_generateApiToken();
 
