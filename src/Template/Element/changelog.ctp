@@ -46,7 +46,7 @@ $iconColors = [
         <ul class="timeline">
 <?php foreach ($changelog as $record) : ?>
     <?php
-    // dd(count($changelog));
+
     $date = $record->timestamp->i18nFormat('d MMM. YYY');
 
     $url = '#';
@@ -88,7 +88,7 @@ $iconColors = [
                     ]) ?>
                 </span>
                 <h3 class="timeline-header">
-                    <a href="<?= $url ?>"><?= $username; ?></a> Retrive entity data
+                    <a href="<?= $url ?>"><?= $username; ?></a> Retrieved entity data
                 </h3>
         </div>
         </li>
