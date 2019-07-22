@@ -49,7 +49,7 @@ if (!empty($embeddedFields)) {
 }
 
 if (!empty($associationFields)) {
-    echo $this->element('Associated/modals', [
+    echo $this->element('Module/Associated/modals', [
         'fields' => $associationFields
     ]);
 }
