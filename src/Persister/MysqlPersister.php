@@ -19,9 +19,7 @@ class MysqlPersister implements PersisterInterface
             $eventType = $log->getEventType();
             $meta = $log->getMetaInfo();
             $data = [
-                'action' => !empty($meta['action']) ? $meta['action'] : null,
                 'timestamp' => $log->getTimestamp(),
-                'transaction' => $log->getTransactionId(),
                 'type' => $log->getEventType(),
                 'primary_key' => $log->getId(),
                 'source' => $log->getSourceName(),

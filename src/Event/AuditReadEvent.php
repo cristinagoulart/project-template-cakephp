@@ -3,7 +3,7 @@ namespace App\Event;
 
 use AuditStash\Event\BaseEvent;
 
-class AuditViewEvent extends BaseEvent
+class AuditReadEvent extends BaseEvent
 {
     /**
      * Returns the type name of this event object.
@@ -12,6 +12,6 @@ class AuditViewEvent extends BaseEvent
      */
     public function getEventType()
     {
-        return 'view';
+        return 'read';
     }
 }

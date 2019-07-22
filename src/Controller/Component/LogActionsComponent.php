@@ -1,7 +1,7 @@
 <?php
 namespace App\Controller\Component;
 
-use App\Event\AuditViewEvent;
+use App\Event\AuditReadEvent;
 use AuditStash\PersisterInterface;
 use AuditStash\Persister\ElasticSearchPersister;
 use Cake\Controller\Component;
@@ -43,7 +43,7 @@ class LogActionsComponent extends Component
 
         $primary = empty($request->getParam('pass')[0]) ? 'index' : $request->getParam('pass')[0];
 
-        $event = new AuditViewEvent(Text::uuid(), $primary, strtolower($table->getAlias()), [], []);
+        $event = new AuditReadEvent(Text::uuid(), $primary, strtolower($table->getAlias()), [], []);
 
         $data = $controller->dispatchEvent('AuditStash.beforeLog', ['logs' => [$event]]);
         $this->getPersister()->logEvents($data->getData('logs'));

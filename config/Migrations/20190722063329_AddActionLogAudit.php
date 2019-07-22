@@ -13,7 +13,7 @@ class AddActionLogAudit extends AbstractMigration
     public function change()
     {
         $table = $this->table('log_audit');
-        $table->addColumn('action', 'string', [
+        $table->addColumn('type', 'string', [
             'default' => null,
             'limit' => 255,
             'null' => true,
