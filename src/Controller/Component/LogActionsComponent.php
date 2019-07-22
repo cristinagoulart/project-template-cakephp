@@ -36,22 +36,14 @@ class LogActionsComponent extends Component
             return;
         }
 
-        $user_id = $this->_registry->getController()->Auth->user('id');
-
         $controller = $this->getController();
         $request = $controller->request;
         $table = $this->getController()->loadModel();
         Assert::isInstanceOf($table, Table::class);
 
-        $meta = [
-            'action' => $request->getParam('action'),
-            'pass' => empty($request->getParam('pass')[0]) ? '' : $request->getParam('pass')[0]
-        ];
-
         $primary = empty($request->getParam('pass')[0]) ? 'index' : $request->getParam('pass')[0];
 
-        $event = new AuditViewEvent(Text::uuid(), $primary, $table->getAlias(), [], []);
-        $event->setMetaInfo($meta);
+        $event = new AuditViewEvent(Text::uuid(), $primary, strtolower($table->getAlias()), [], []);
 
         $data = $controller->dispatchEvent('AuditStash.beforeLog', ['logs' => [$event]]);
         $this->getPersister()->logEvents($data->getData('logs'));
