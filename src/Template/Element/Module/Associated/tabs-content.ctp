@@ -24,7 +24,7 @@ $accessFactory = new AccessFactory();
             if (in_array($association->type(), ['manyToMany']) && $accessFactory->hasAccess($accessUrl, $user)) {
                 echo $this->element('Embedded/lookup', ['association' => $association, 'user' => $user]);
             } ?>
-            <?= $this->element('Associated/tab-content', [
+            <?= $this->element('Module/Associated/tab-content', [
                 'association' => $association, 'table' => $table, 'url' => $this->Url->build($url), 'factory' => $factory, 'containerId' => $containerId
             ]) ?>
         </div>

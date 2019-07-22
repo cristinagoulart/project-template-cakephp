@@ -48,10 +48,10 @@ if (!empty($associations)) : ?>
         ['block' => 'scriptBottom']
     ); ?>
     <div class="nav-tabs-custom">
-        <?= $this->element('Associated/tabs-list', [
+        <?= $this->element('Module/Associated/tabs-list', [
             'table' => $table, 'associations' => $associations
         ]); ?>
-        <?= $this->element('Associated/tabs-content', [
+        <?= $this->element('Module/Associated/tabs-content', [
             'table' => $table, 'associations' => $associations, 'factory' => $factory, 'entity' => $entity
         ]); ?>
     </div>
