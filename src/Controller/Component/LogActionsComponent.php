@@ -25,6 +25,10 @@ class LogActionsComponent extends Component
      */
     public function beforeFilter(Event $event) : void
     {
+        if (!$this->request->is('get')) {
+            return;
+        }
+
         $controllers = Configure::read('LogActions.controllers');
         $actions = Configure::read('LogActions.excludeActions');
 
