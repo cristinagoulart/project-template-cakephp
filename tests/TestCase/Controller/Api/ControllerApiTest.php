@@ -20,11 +20,11 @@ use Qobo\Utils\TestSuite\JsonIntegrationTestCase;
 class ControllerApiTest extends JsonIntegrationTestCase
 {
     public $fixtures = [
-        'plugin.CakeDC/Users.users',
         'plugin.CsvMigrations.dblists',
         'plugin.CsvMigrations.dblist_items',
         'app.things',
-        'app.log_audit'
+        'app.log_audit',
+        'app.users'
     ];
 
     public function setUp()

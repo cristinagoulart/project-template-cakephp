@@ -21,9 +21,9 @@ class TranslationsControllerTest extends BaseIntegrationTestCase
     private $Translations;
 
     public $fixtures = [
+        'app.users',
         'plugin.translations.languages',
         'plugin.translations.language_translations',
-        'plugin.CakeDC/Users.users',
     ];
 
     public function setUp()
