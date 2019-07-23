@@ -16,6 +16,7 @@ class ThingsControllerTest extends IntegrationTestCase
         'app.things',
         'app.users',
         'app.log_audit',
+        'app.file_storage',
         'plugin.Menu.menus',
         'plugin.Menu.menu_items',
         'plugin.RolesCapabilities.roles',
