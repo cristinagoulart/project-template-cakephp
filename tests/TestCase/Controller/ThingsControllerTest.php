@@ -14,8 +14,8 @@ class ThingsControllerTest extends IntegrationTestCase
 {
     public $fixtures = [
         'app.things',
+        'app.users',
         'app.log_audit',
-        'plugin.CakeDC/Users.users',
         'plugin.Menu.menus',
         'plugin.Menu.menu_items',
         'plugin.RolesCapabilities.roles',
@@ -119,7 +119,7 @@ class ThingsControllerTest extends IntegrationTestCase
         $this->assertResponseSuccess();
 
         // fetch new record
-        $query = TableRegistry::get('things')->find()->where(['name' => $data['name']]);
+        $query = TableRegistry::get('Things')->find()->where(['name' => $data['name']]);
 
         $this->assertEquals(1, $query->count());
     }

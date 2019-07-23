@@ -24,7 +24,7 @@ class UsersShellTest extends TestCase
      * @var array
      */
     public $fixtures = [
-        'plugin.CakeDC/Users.users',
+        'app.users',
     ];
 
     /**

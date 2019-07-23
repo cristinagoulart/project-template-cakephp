@@ -2,9 +2,9 @@
     "id": {
         "name": "id",
         "type": "uuid",
-        "required": true,
+        "required": false,
         "non-searchable": false,
-        "unique": true
+        "unique": false
     },
     "name": {
         "name": "name",
@@ -37,6 +37,13 @@
     "assigned_to": {
         "name": "assigned_to",
         "type": "related(Users)",
+        "required": false,
+        "non-searchable": false,
+        "unique": false
+    },
+    "primary_thing": {
+        "name": "primary_thing",
+        "type": "related(Things)",
         "required": false,
         "non-searchable": false,
         "unique": false
