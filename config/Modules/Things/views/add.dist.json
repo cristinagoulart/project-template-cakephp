@@ -1,20 +1,50 @@
 {
     "items": [
         [
-            "Things",
+            "Details",
             "name",
-            "description",
-            "test_list"
+            "gender",
+            "assigned_to"
         ],
         [
-            "Things",
+            "Details",
+            "description",
+            "country",
+            "primary_thing"
+        ],
+        [
+            "Details",
+            "salary",
+            "vip",
+            "area",
+            "date_of_birth"
+        ],
+        [
+            "Details",
+            "work_start",
+            "website",
+            "bio",
+            "level"
+        ],
+        [
+            "Details",
+            "appointment",
+            "phone",
+            "email",
+            "rate"
+        ],
+        [
+            "Details",
+            "language",
+            "title",
+            "photos",
+            "file"
+        ],
+        [
+            "Details",
+            "test_list",
             "testmetric",
             "testmoney"
-        ],
-        [
-            "Things",
-            "email",
-            ""
         ]
     ]
 }
