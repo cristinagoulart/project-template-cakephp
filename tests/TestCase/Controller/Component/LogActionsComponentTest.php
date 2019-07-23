@@ -54,8 +54,8 @@ class LogActionsComponentTest extends IntegrationTestCase
         $configure = [
             'LogActions' => [
                 'enableLogActions' => true,
-                'controllers' => ['Things'],
-                'excludeActions' => [],
+                'controllers' => [\App\Controller\ThingsController::class],
+                'actions' => ['view'],
             ]
         ];
         Configure::write($configure);
@@ -74,8 +74,8 @@ class LogActionsComponentTest extends IntegrationTestCase
         $configure = [
             'LogActions' => [
                 'enableLogActions' => true,
-                'controllers' => ['Things'],
-                'excludeActions' => [],
+                'controllers' => [\App\Controller\ThingsController::class],
+                'actions' => ['view'],
             ]
         ];
         Configure::write($configure);
@@ -101,7 +101,7 @@ class LogActionsComponentTest extends IntegrationTestCase
             'LogActions' => [
                 'enableLogActions' => true,
                 'controllers' => [],
-                'excludeActions' => [],
+                'actions' => ['view'],
             ]
         ];
         Configure::write($configure);
@@ -120,8 +120,8 @@ class LogActionsComponentTest extends IntegrationTestCase
         $configure = [
             'LogActions' => [
                 'enableLogActions' => true,
-                'controllers' => ['Things'],
-                'excludeActions' => ['view'],
+                'controllers' => [\App\Controller\ThingsController::class],
+                'actions' => [],
             ]
         ];
         Configure::write($configure);

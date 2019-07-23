@@ -30,13 +30,13 @@ class LogActionsComponent extends Component
         }
 
         $controllers = Configure::read('LogActions.controllers');
-        $actions = Configure::read('LogActions.excludeActions');
+        $actions = Configure::read('LogActions.actions');
 
         if (empty($controllers)) {
             return;
         }
 
-        if (in_array($this->request->getParam('controller'), $controllers) && in_array($this->request->getParam('action'), $actions)) {
+        if (!in_array(get_class($this->_registry->getController()), $controllers) || !in_array($this->request->getParam('action'), $actions)) {
             return;
         }
 
