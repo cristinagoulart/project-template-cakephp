@@ -97,11 +97,11 @@ class CsvViewComponent extends Component
                 $controller->viewVars['fields'],
                 array_flip($panels['fail'])
             );
-
-            return;
         }
 
-        $this->filterBatchFields($event);
+        if ($batchAction) {
+            $this->filterBatchFields($event);
+        }
     }
 
     /**
