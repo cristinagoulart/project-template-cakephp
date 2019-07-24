@@ -18,6 +18,7 @@ use App\Controller\SearchTrait;
 use App\Event\Plugin\Search\Model\SearchableFieldsListener;
 use App\Feature\Factory as FeatureFactory;
 use App\Utility\Search;
+use AuditStash\Meta\ApplicationMetadata;
 use AuditStash\Meta\RequestMetadata;
 use Cake\Controller\Controller;
 use Cake\Core\Configure;
@@ -95,6 +96,17 @@ class AppController extends Controller
         }
 
         User::setCurrentUser((array)$this->Auth->user());
+
+        // for audit-stash functionality
+        EventManager::instance()->on(new RequestMetadata($this->request, $this->Auth->user('id')));
+
+        if (Configure::read('LogActions.enableLogActions')) {
+            EventManager::instance()->on(new ApplicationMetadata('log', [
+                'action' => $this->request->getParam('action'),
+            ]));
+
+            $this->loadComponent('LogActions');
+        }
     }
 
     /**
@@ -162,9 +174,6 @@ class AppController extends Controller
         }
 
         $this->_setIframeRendering();
-
-        // for audit-stash functionality
-        EventManager::instance()->on(new RequestMetadata($this->request, $this->Auth->user('id')));
 
         $this->_generateApiToken();
 

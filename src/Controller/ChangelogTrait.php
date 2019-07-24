@@ -41,7 +41,7 @@ trait ChangelogTrait
          */
         $query = TableRegistry::get($this->_tableLog)->find('all')
             ->where(['primary_key' => $id, 'source' => Inflector::underscore($this->name)])
-            ->select(['timestamp', 'user_id', 'original', 'changed'])
+            ->select(['timestamp', 'user_id', 'original', 'changed', 'type'])
             ->order(['timestamp' => 'DESC'])
             ->group('timestamp');
 
