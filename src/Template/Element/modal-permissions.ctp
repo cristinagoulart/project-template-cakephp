@@ -47,6 +47,16 @@ foreach (PermissionsTable::ALLOWED_ACTIONS as $action) {
     $controllerPermissions[$action] = Inflector::humanize($action);
 }
 ?>
+
+<?php $this->Html->scriptStart(['block' => 'scriptBottom']); ?>
+    (function ($) {
+        $(document).ready(function () {
+            let parent = $('#permissions-modal-add').closest('.btn-group');
+            $('#permissions-modal-add').detach().appendTo(parent);
+        });
+    })(jQuery);
+<?= $this->Html->scriptEnd() ?>
+
 <div class="modal fade" id="permissions-modal-add" tabindex="-1" role="dialog" aria-labelledby="mySetsLabel">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
