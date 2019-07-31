@@ -12,6 +12,7 @@ use Menu\Event\EventName as MenuEventName;
 use Menu\MenuBuilder\MenuInterface;
 use Menu\MenuBuilder\MenuItemFactory;
 use Menu\MenuBuilder\MenuItemInterface;
+use Webmozart\Assert\Assert;
 
 class ModuleViewListener implements EventListenerInterface
 {
@@ -43,6 +44,8 @@ class ModuleViewListener implements EventListenerInterface
      */
     public function getMenuItems(Event $event, string $name, array $user, bool $fullBaseUrl = false, array $modules = [], MenuInterface $menu = null): void
     {
+        Assert::isInstanceOf($menu, MenuInterface::class);
+
         $listens = [MenuName::MODULE_VIEW];
         if (!in_array($name, $listens)) {
             return;
@@ -58,15 +61,22 @@ class ModuleViewListener implements EventListenerInterface
          * @var \Cake\Http\ServerRequest $request
          */
         $request = Router::getRequest();
-        /**
-         * @var \Menu\MenuBuilder\MenuInterface $menu
-         */
-        $menu = $menu;
-        $menu->addMenuItem($this->getPermissionsMenuItem($entity, $request));
-        $menu->addMenuItem($this->getChangelogMenuItem($entity, $request));
+        Assert::isInstanceOf($request, ServerRequest::class);
+
         $menu->addMenuItem($this->getEditMenuItem($entity, $request));
         $menu->addMenuItem($this->getDeleteMenuItem($entity, $request));
 
+        $moreActions = MenuItemFactory::createMenuItem([
+            'label' => __('More Actions'),
+            'icon' => 'plus-square-o',
+            'type' => 'button_group',
+            'order' => 0,
+        ]);
+
+        $moreActions->addMenuItem($this->getPermissionsMenuItem($entity, $request));
+        $moreActions->addMenuItem($this->getChangelogMenuItem($entity, $request));
+
+        $menu->addMenuItem($moreActions);
         $event->setResult($event);
     }
 
@@ -85,6 +95,7 @@ class ModuleViewListener implements EventListenerInterface
 
         return MenuItemFactory::createMenuItem([
             'url' => ['plugin' => $plugin, 'controller' => $controller, 'action' => 'managePermissions'],
+            'attributes' => ['class' => ' '],
             'label' => __('Permissions'),
             'icon' => 'shield',
             'type' => 'link_button_modal',
@@ -109,6 +120,7 @@ class ModuleViewListener implements EventListenerInterface
 
         return MenuItemFactory::createMenuItem([
             'url' => ['plugin' => $plugin, 'controller' => $controller, 'action' => 'changelog', $id],
+            'attributes' => ['class' => ' '],
             'label' => __('Changelog'),
             'icon' => 'book',
             'type' => 'link_button',
