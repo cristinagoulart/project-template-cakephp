@@ -88,21 +88,23 @@ class LookupActionListener extends BaseActionListener
             return;
         }
 
-        // add typeahead fields to where clause
+        $conditions = [];
         foreach ($fields as $field) {
             $csvField = $this->_getCsvField($field, $table);
             if (!empty($csvField) && 'related' === $csvField->getType()) {
                 $values = $this->_getRelatedModuleValues($csvField, $request);
-                $query->orWhere([$field . ' IN' => $values]);
+                $conditions[$field . ' IN'] = $values;
             } else {
                 // always type-cast fields to string for LIKE clause to work.
                 // otherwise for cases where type is integer LIKE value '%123%' will be converted to '0'
                 $typeMap = array_combine($fields, array_pad([], count($fields), 'string'));
                 Assert::isArray($typeMap);
                 $query->setTypeMap($typeMap);
-                $query->orWhere([$field . ' LIKE' => '%' . $value . '%']);
+                $conditions[$field . ' LIKE'] = '%' . $value . '%';
             }
         }
+
+        $query->where(['OR' => $conditions]);
     }
 
     /**
