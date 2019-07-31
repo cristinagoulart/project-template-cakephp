@@ -113,7 +113,7 @@ foreach ($options['fields'] as $panelName => $panelFields) : ?>
                         }
 
                         if (!$embeddedDirty) { // non-embedded field
-                            echo $this->element('Field/value', [
+                            echo $this->element('Module/Field/value', [
                                 'factory' => $factory, 'field' => $field, 'options' => $options
                             ]);
                         }
@@ -137,7 +137,7 @@ foreach ($options['fields'] as $panelName => $panelFields) : ?>
         continue;
     }
 
-    echo $this->element('Embedded/fields', [
+    echo $this->element('Module/Embedded/fields', [
         'fields' => $embeddedFields, 'table' => $table, 'options' => $options
     ]);
 
