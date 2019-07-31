@@ -7,13 +7,12 @@ use Cake\I18n\Time;
 use Cake\Log\Log;
 use Cake\ORM\TableRegistry;
 use Cake\Validation\Validation;
-use CsvMigrations\Controller\AppController as BaseController;
 
 /**
  * ScheduledJobs Controller
  *
  */
-class ScheduledJobLogsController extends BaseController
+class ScheduledJobLogsController extends BaseModuleController
 {
     /**
      * Index method
