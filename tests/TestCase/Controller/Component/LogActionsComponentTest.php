@@ -20,7 +20,7 @@ class LogActionsComponentTest extends IntegrationTestCase
     public $fixtures = [
         'app.things',
         'app.log_audit',
-        'plugin.CakeDC/Users.users',
+        'app.users',
         'plugin.Menu.menus',
         'plugin.Menu.menu_items',
         'plugin.RolesCapabilities.roles',
