@@ -20,7 +20,7 @@ foreach ($options['fields'] as $panelName => $panelFields) : ?>
         <h3 class="box-title" data-title="dynamic-panel-title"><?= $panelName ?></h3>
     </div>
     <div class="box-body">
-        <?= $this->element('Form/fields_panel', [
+        <?= $this->element('Module/Form/fields_panel', [
             'panelFields' => $panelFields,
             'options' => $options,
             'factory' => $factory
