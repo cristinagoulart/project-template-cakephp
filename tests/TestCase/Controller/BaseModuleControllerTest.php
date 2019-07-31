@@ -58,6 +58,7 @@ class BaseModuleControllerTest extends IntegrationTestCase
     {
         $table = TableRegistry::getTableLocator()->get($module);
         $entity = $table->find()->firstOrFail();
+        Assert::isInstanceOf($entity, \Cake\Datasource\EntityInterface::class);
 
         $primaryKey = $table->getPrimaryKey();
         Assert::string($primaryKey);
@@ -90,6 +91,7 @@ class BaseModuleControllerTest extends IntegrationTestCase
     {
         $table = TableRegistry::getTableLocator()->get($module);
         $entity = $table->find()->firstOrFail();
+        Assert::isInstanceOf($entity, \Cake\Datasource\EntityInterface::class);
 
         $primaryKey = $table->getPrimaryKey();
         Assert::string($primaryKey);
@@ -111,6 +113,7 @@ class BaseModuleControllerTest extends IntegrationTestCase
 
         $table = TableRegistry::getTableLocator()->get($module);
         $entity = $table->find()->firstOrFail();
+        Assert::isInstanceOf($entity, \Cake\Datasource\EntityInterface::class);
 
         $primaryKey = $table->getPrimaryKey();
         Assert::string($primaryKey);
