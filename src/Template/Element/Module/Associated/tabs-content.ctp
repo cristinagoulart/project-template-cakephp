@@ -22,7 +22,7 @@ $accessFactory = new AccessFactory();
             list($plugin, $controller) = pluginSplit($association->className());
             $accessUrl = ['plugin' => $plugin, 'controller' => $controller, 'action' => 'add'];
             if (in_array($association->type(), ['manyToMany']) && $accessFactory->hasAccess($accessUrl, $user)) {
-                echo $this->element('Embedded/lookup', ['association' => $association, 'user' => $user]);
+                echo $this->element('Module/Embedded/lookup', ['association' => $association, 'user' => $user]);
             } ?>
             <?= $this->element('Module/Associated/tab-content', [
                 'association' => $association, 'table' => $table, 'url' => $this->Url->build($url), 'factory' => $factory, 'containerId' => $containerId

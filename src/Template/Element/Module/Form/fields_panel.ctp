@@ -14,7 +14,7 @@
     <?php $fieldCount = 12 < count($subFields) ? 12 : count($subFields); ?>
     <div class="row">
     <?php foreach ($subFields as $field) : ?>
-        <?= $this->element('Field/input', [
+        <?= $this->element('Module/Field/input', [
             'factory' => $factory,
             'field' => $field,
             'fieldCount' => $fieldCount,

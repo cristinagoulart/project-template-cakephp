@@ -43,7 +43,7 @@ foreach ($fields as $panelFields) {
 }
 
 if (!empty($embeddedFields)) {
-    echo $this->element('Embedded/modals', [
+    echo $this->element('Module/Embedded/modals', [
         'fields' => $embeddedFields
     ]);
 }

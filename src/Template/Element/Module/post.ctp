@@ -90,7 +90,7 @@ $linkTitle = is_array($options['title']) ? $this->Html->link(
     }
 
     if (!empty($options['fields'])) {
-        echo $this->element('Form/fields', ['options' => $options]);
+        echo $this->element('Module/Form/fields', ['options' => $options]);
     }
 
     /**
@@ -109,7 +109,7 @@ $linkTitle = is_array($options['title']) ? $this->Html->link(
         echo $this->Form->end();
 
         // Fetch embedded module(s) using CakePHP's requestAction() method, if request is not coming from requestAction()
-        echo $this->element('Form/fields_embedded', ['fields' => $options['fields']]);
+        echo $this->element('Module/Form/fields_embedded', ['fields' => $options['fields']]);
     }
     ?>
 </section>
