@@ -2,9 +2,9 @@
     "id": {
         "name": "id",
         "type": "uuid",
-        "required": true,
+        "required": false,
         "non-searchable": false,
-        "unique": true
+        "unique": false
     },
     "name": {
         "name": "name",
@@ -37,6 +37,13 @@
     "assigned_to": {
         "name": "assigned_to",
         "type": "related(Users)",
+        "required": false,
+        "non-searchable": false,
+        "unique": false
+    },
+    "primary_thing": {
+        "name": "primary_thing",
+        "type": "related(Things)",
         "required": false,
         "non-searchable": false,
         "unique": false
@@ -121,6 +128,34 @@
     "rate": {
         "name": "rate",
         "type": "decimal",
+        "required": false,
+        "non-searchable": false,
+        "unique": false
+    },
+    "title": {
+        "name": "title",
+        "type": "list(titles)",
+        "required": false,
+        "non-searchable": false,
+        "unique": false
+    },
+    "language": {
+        "name": "language",
+        "type": "list(languages)",
+        "required": false,
+        "non-searchable": false,
+        "unique": false
+    },
+    "photos": {
+        "name": "photos",
+        "type": "files",
+        "required": false,
+        "non-searchable": false,
+        "unique": false
+    },
+    "file": {
+        "name": "file",
+        "type": "files",
         "required": false,
         "non-searchable": false,
         "unique": false
