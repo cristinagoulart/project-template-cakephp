@@ -9,6 +9,7 @@ use Cake\Utility\Inflector;
 use Exception;
 use Qobo\Utils\Utility\Lock\FileLock;
 use RuntimeException;
+use Webmozart\Assert\Assert;
 
 class CleanModulesDataShell extends Shell
 {
@@ -45,10 +46,8 @@ class CleanModulesDataShell extends Shell
         if (!$lock->lock()) {
             $this->abort('Clean Module Data is already in progress');
         }
-        /**
-         * @var string
-         */
-        $modulesstr = $this->param('modules');
+
+        $modulesstr = (string)$this->param('modules');
         if (empty($modulesstr)) {
             $lock->unlock();
             $this->err("0 Modules Provided");

@@ -85,7 +85,7 @@ try {
     Configure::load('icons', 'default');
     Configure::load('menu', 'default');
     Configure::load('roles_capabilities', 'default');
-    Configure::load('scheduled_log', 'default');
+    Configure::load('scheduled_task', 'default');
     Configure::load('system_info', 'default');
     Configure::load('admin_lte', 'default');
     Configure::load('log_actions', 'default');
