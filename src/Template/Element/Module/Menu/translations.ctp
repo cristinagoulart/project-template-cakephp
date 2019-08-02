@@ -11,8 +11,7 @@ if (! $options['entity']->get($field['name'])) {
 
 $isTranslatable = function ($tableName, $fieldName) {
     $config = (new ModuleConfig(ConfigType::MODULE(), Inflector::camelize($tableName)))->parseToArray();
-
-    if (Hash::get($config, 'table.translatable', false)) {
+    if (! Hash::get($config, 'table.translatable', false)) {
         return false;
     }
 
