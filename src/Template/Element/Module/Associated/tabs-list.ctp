@@ -1,4 +1,5 @@
 <?php
+use Cake\Utility\Hash;
 use Cake\Utility\Inflector;
 use Qobo\Utils\ModuleConfig\ConfigType;
 use Qobo\Utils\ModuleConfig\ModuleConfig;
@@ -6,7 +7,7 @@ use Qobo\Utils\ModuleConfig\ModuleConfig;
 $mc = new ModuleConfig(ConfigType::MODULE(), $this->name);
 $config = $mc->parse();
 
-$labels = (array)$config->associationLabels;
+$labels = Hash::get($config, 'associationLabels', []);
 $setLabels = [];
 ?>
 <ul id="relatedTabs" class="nav nav-tabs responsive-tabs" role="tablist">

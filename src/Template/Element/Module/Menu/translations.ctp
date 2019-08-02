@@ -1,4 +1,5 @@
 <?php
+use Cake\Utility\Hash;
 use Cake\Utility\Inflector;
 use Qobo\Utils\ModuleConfig\ConfigType;
 use Qobo\Utils\ModuleConfig\ModuleConfig;
@@ -9,23 +10,15 @@ if (! $options['entity']->get($field['name'])) {
 }
 
 $isTranslatable = function ($tableName, $fieldName) {
-    // Read translatable from config.ini
-    $mc = new ModuleConfig(ConfigType::MODULE(), Inflector::camelize($tableName));
-    $config = $mc->parse();
+    $config = (new ModuleConfig(ConfigType::MODULE(), Inflector::camelize($tableName)))->parse();
 
-    if (!(bool)$config->table->translatable) {
+    if (Hash::get($config, 'table.translatable', false)) {
         return false;
     }
 
-    // Read field options from fields.ini
-    $mc = new ModuleConfig(ConfigType::FIELDS(), Inflector::camelize($tableName));
-    $config = $mc->parse();
+    $config = (new ModuleConfig(ConfigType::FIELDS(), Inflector::camelize($tableName)))->parse();
 
-    if (!isset($config->{$fieldName}->translatable)) {
-        return false;
-    }
-
-    return (bool)$config->{$fieldName}->translatable;
+    return Hash::get($config, $fieldName . '.translatable', false);
 };
 
 if (! $isTranslatable($tableName, $field['name'])) {

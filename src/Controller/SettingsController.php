@@ -4,7 +4,7 @@ namespace App\Controller;
 use App\Controller\AppController;
 use App\Model\Table\SettingsTable;
 use Cake\Core\Configure;
-use Cake\Network\Exception\UnauthorizedException;
+use Cake\Http\Exception\UnauthorizedException;
 use Cake\ORM\TableRegistry;
 use Cake\Utility\Hash;
 
@@ -204,7 +204,7 @@ class SettingsController extends AppController
      * Pass data to generator page
      * Avaiable only for developers in localhost
      * @return \Cake\Http\Response|void
-     * @throws UnauthorizedException check if is localhost
+     * @throws \Cake\Http\Exception\UnauthorizedException check if is localhost
      */
     public function generator()
     {
