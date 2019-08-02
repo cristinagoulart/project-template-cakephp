@@ -7,8 +7,7 @@ use RolesCapabilities\Access\AccessFactory;
 
 $accessFactory = new AccessFactory();
 
-$mc = new ModuleConfig(ConfigType::MODULE(), $this->name);
-$config = $mc->parse();
+$config = (new ModuleConfig(ConfigType::MODULE(), $this->name))->parseToArray();
 
 $hiddenAssociations = Hash::get($config, 'associations.hide_associations', []);
 
