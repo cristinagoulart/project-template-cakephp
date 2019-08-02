@@ -10,13 +10,13 @@ if (! $options['entity']->get($field['name'])) {
 }
 
 $isTranslatable = function ($tableName, $fieldName) {
-    $config = (new ModuleConfig(ConfigType::MODULE(), Inflector::camelize($tableName)))->parse();
+    $config = (new ModuleConfig(ConfigType::MODULE(), Inflector::camelize($tableName)))->parseToArray();
 
     if (Hash::get($config, 'table.translatable', false)) {
         return false;
     }
 
-    $config = (new ModuleConfig(ConfigType::FIELDS(), Inflector::camelize($tableName)))->parse();
+    $config = (new ModuleConfig(ConfigType::FIELDS(), Inflector::camelize($tableName)))->parseToArray();
 
     return Hash::get($config, $fieldName . '.translatable', false);
 };
