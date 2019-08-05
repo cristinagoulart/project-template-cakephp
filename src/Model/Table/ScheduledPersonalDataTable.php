@@ -7,21 +7,21 @@ use Cake\ORM\Table;
 use Cake\Validation\Validator;
 
 /**
- * SchedulerPersonalData Model
+ * ScheduledPersonalData Model
  *
  * @property \App\Model\Table\UsersTable|\Cake\ORM\Association\BelongsTo $Users
  * @property \App\Model\Table\RecordsTable|\Cake\ORM\Association\BelongsTo $Records
  *
- * @method \App\Model\Entity\SchedulerPersonalData get($primaryKey, $options = [])
- * @method \App\Model\Entity\SchedulerPersonalData newEntity($data = null, array $options = [])
- * @method \App\Model\Entity\SchedulerPersonalData[] newEntities(array $data, array $options = [])
- * @method \App\Model\Entity\SchedulerPersonalData|bool save(\Cake\Datasource\EntityInterface $entity, $options = [])
- * @method \App\Model\Entity\SchedulerPersonalData|bool saveOrFail(\Cake\Datasource\EntityInterface $entity, $options = [])
- * @method \App\Model\Entity\SchedulerPersonalData patchEntity(\Cake\Datasource\EntityInterface $entity, array $data, array $options = [])
- * @method \App\Model\Entity\SchedulerPersonalData[] patchEntities($entities, array $data, array $options = [])
- * @method \App\Model\Entity\SchedulerPersonalData findOrCreate($search, callable $callback = null, $options = [])
+ * @method \App\Model\Entity\ScheduledPersonalData get($primaryKey, $options = [])
+ * @method \App\Model\Entity\ScheduledPersonalData newEntity($data = null, array $options = [])
+ * @method \App\Model\Entity\ScheduledPersonalData[] newEntities(array $data, array $options = [])
+ * @method \App\Model\Entity\ScheduledPersonalData|bool save(\Cake\Datasource\EntityInterface $entity, $options = [])
+ * @method \App\Model\Entity\ScheduledPersonalData|bool saveOrFail(\Cake\Datasource\EntityInterface $entity, $options = [])
+ * @method \App\Model\Entity\ScheduledPersonalData patchEntity(\Cake\Datasource\EntityInterface $entity, array $data, array $options = [])
+ * @method \App\Model\Entity\ScheduledPersonalData[] patchEntities($entities, array $data, array $options = [])
+ * @method \App\Model\Entity\ScheduledPersonalData findOrCreate($search, callable $callback = null, $options = [])
  */
-class SchedulerPersonalDataTable extends Table
+class ScheduledPersonalDataTable extends Table
 {
 
     /**
@@ -34,7 +34,7 @@ class SchedulerPersonalDataTable extends Table
     {
         parent::initialize($config);
 
-        $this->setTable('scheduler_personal_data');
+        $this->setTable('scheduled_personal_data');
         $this->setDisplayField('id');
         $this->setPrimaryKey('id');
 

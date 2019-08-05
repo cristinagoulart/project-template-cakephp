@@ -86,7 +86,10 @@ class ClearPersonalDataShell extends Shell
                 continue;
             }
 
-            $entity = $scheduledTable->patchEntity($entity, ['status' => 'failed']);
+            $entity = $scheduledTable->patchEntity($entity, [
+                'status' => 'failed',
+                'errors' => $entity->getErrors()
+            ]);
             $scheduledTable->save($entity);
         }
 
