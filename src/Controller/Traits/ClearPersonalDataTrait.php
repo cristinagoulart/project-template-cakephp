@@ -2,11 +2,14 @@
 namespace App\Controller\Traits;
 
 use Cake\Core\Configure;
+use Cake\Datasource\EntityInterface;
+use Cake\Http\Response;
 use Cake\I18n\Time;
 use Cake\ORM\Table;
 use Cake\ORM\TableRegistry;
 use Cake\Utility\Text;
 use IntlDateFormatter;
+use Webmozart\Assert\Assert;
 
 /**
  * Controller Trait responsible for add the personal data to clear in the scheduler.
@@ -16,10 +19,10 @@ trait ClearPersonalDataTrait
     /**
      * Main method
      *
-     * @param uuid $id Entity id
-     * @return \Cake\Http\Response|void|null
+     * @param string $id Entity id
+     * @return \Cake\Http\Response|null
      */
-    public function clearPersonalData($id)
+    public function clearPersonalData(string $id) : ?\Cake\Http\Response
     {
         $table = TableRegistry::getTableLocator()->get('ScheduledPersonalData');
         $query = $table->find()->where([
@@ -30,6 +33,7 @@ trait ClearPersonalDataTrait
 
         // If is already in the table will not be insert again.
         if (!empty($query)) {
+            Assert::isInstanceOf($query, EntityInterface::class);
             $time = $query->get('scheduled');
             $time = $time->i18nFormat([IntlDateFormatter::FULL, IntlDateFormatter::SHORT]);
             $this->Flash->success((string)__('The data will be removed on {0}', $time));
