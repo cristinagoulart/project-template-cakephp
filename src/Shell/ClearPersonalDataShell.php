@@ -4,6 +4,7 @@ namespace App\Shell;
 use Cake\Console\Shell;
 use Cake\Core\Configure;
 use Cake\Datasource\EntityInterface;
+use Cake\I18n\Time;
 use Cake\ORM\Table;
 use Cake\ORM\TableRegistry;
 use Qobo\Utils\ModuleConfig\ConfigType;
@@ -62,8 +63,12 @@ class ClearPersonalDataShell extends Shell
         }
 
         $scheduledTable = TableRegistry::getTableLocator()->get('ScheduledPersonalData');
+        $scheduledConfig = Configure::read('ClearPersonalData.scheduled');
 
-        $where['status'] = 'pending';
+        $where = [
+            'status' => 'pending',
+            'scheduled <=' => Time::now()
+        ];
         empty($list) ?: $where['module IN'] = $list;
 
         $entities = $scheduledTable->find()->where($where)->all();
