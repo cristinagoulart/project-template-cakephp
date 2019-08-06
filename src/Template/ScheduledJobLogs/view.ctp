@@ -71,7 +71,7 @@ if (!$this->request->query('embedded')) : ?>
         <div class="col-xs-12 col-md-6">
             <div class="pull-right">
             <div class="btn-group btn-group-sm" role="group">
-                <?= $this->element('Menu/view_top', [
+                <?= $this->element('Module/Menu/view_top', [
                     'options' => $options, 'displayField' => $table->getDisplayField()
                 ]); ?>
             </div>
