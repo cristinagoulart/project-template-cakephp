@@ -1,15 +1,15 @@
 <?php
 use Cake\ORM\Association;
+use Cake\Utility\Hash;
 use Qobo\Utils\ModuleConfig\ConfigType;
 use Qobo\Utils\ModuleConfig\ModuleConfig;
 use RolesCapabilities\Access\AccessFactory;
 
 $accessFactory = new AccessFactory();
 
-$mc = new ModuleConfig(ConfigType::MODULE(), $this->name);
-$config = $mc->parse();
+$config = (new ModuleConfig(ConfigType::MODULE(), $this->name))->parseToArray();
 
-$hiddenAssociations = (array)$config->associations->hide_associations;
+$hiddenAssociations = Hash::get($config, 'associations.hide_associations', []);
 
 $associations = [];
 foreach ($table->associations() as $association) {

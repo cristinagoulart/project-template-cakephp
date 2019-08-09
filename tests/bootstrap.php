@@ -1,6 +1,7 @@
 <?php
 use Cake\Console\ConsoleErrorHandler;
 use Cake\Core\Configure;
+use Cake\Log\Log;
 
 /**
  * Test runner bootstrap.
@@ -13,6 +14,25 @@ require dirname(__DIR__) . '/vendor/autoload.php';
 require dirname(__DIR__) . '/config/bootstrap.php';
 
 $_SERVER['PHP_SELF'] = '/';
+
+// reset logging configuration
+array_map([Log::class, 'drop'], Log::configured());
+
+// set logging configuration to file
+Log::setConfig([
+    'debug' => [
+        'engine' => \Cake\Log\Engine\FileLog::class,
+        'levels' => ['notice', 'info', 'debug'],
+        'file' => 'debug',
+        'path' => LOGS,
+    ],
+    'error' => [
+        'engine' => \Cake\Log\Engine\FileLog::class,
+        'levels' => ['warning', 'error', 'critical', 'alert', 'emergency'],
+        'file' => 'error',
+        'path' => LOGS,
+    ]
+]);
 
 restore_error_handler();
 // re-enable deprecation errors to be shown on the CLI during PHPunit execution.
