@@ -500,6 +500,12 @@ return [
     'Swagger' => [
         'crawl' => env('SWAGGER_CRAWL', true)
     ],
+    'Queuesadilla' => [
+        'default' => [
+            'url' => "mysql://$dbUser:$dbPass@$dbHost/$dbName?queue=default&timeout=1",
+            'maxRuntime' => 45,
+        ],
+    ],
     'Whoops' => [
         'editor' => true
     ]

@@ -47,6 +47,7 @@ use Cake\Log\Log;
 use Cake\Mailer\Email;
 use Cake\Utility\Inflector;
 use Cake\Utility\Security;
+use Josegonzalez\CakeQueuesadilla\Queue\Queue;
 
 /**
  * Uncomment block of code below if you want to use `.env` file during development.
@@ -273,6 +274,7 @@ if (Configure::read('Swagger.crawl')) {
     Plugin::load('Alt3/Swagger', ['bootstrap' => true, 'routes' => true]);
 }
 Plugin::load('AdminLTE', ['bootstrap' => true, 'routes' => true]);
+Plugin::load('Josegonzalez/CakeQueuesadilla');
 
 Plugin::load('ADmad/JwtAuth');
 
@@ -324,6 +326,9 @@ call_user_func(function () {
         EventManager::instance()->on(new $eventClassName);
     }
 });
+
+// Load Queue setting
+Queue::config(Configure::consume('Queuesadilla'));
 
 if (!is_null(env('API_AUTHENTICATION')) && (bool)env('API_AUTHENTICATION') === false) {
     Log::write('critical', "Non-authenticated API requests are deprecated");
