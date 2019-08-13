@@ -12,8 +12,6 @@ use Menu\Event\EventName as MenuEventName;
 use Menu\MenuBuilder\MenuInterface;
 use Menu\MenuBuilder\MenuItemFactory;
 use Menu\MenuBuilder\MenuItemInterface;
-use Qobo\Utils\ModuleConfig\ConfigType;
-use Qobo\Utils\ModuleConfig\ModuleConfig;
 use Webmozart\Assert\Assert;
 
 class ModuleViewListener implements EventListenerInterface
@@ -59,6 +57,9 @@ class ModuleViewListener implements EventListenerInterface
             return;
         }
 
+        /**
+         * @var \Cake\Http\ServerRequest $request
+         */
         $request = Router::getRequest();
         Assert::isInstanceOf($request, ServerRequest::class);
 
@@ -72,7 +73,6 @@ class ModuleViewListener implements EventListenerInterface
             'order' => 0,
         ]);
 
-        $moreActions->addMenuItem($this->getClearPersonalDataMenuItem($entity, $request));
         $moreActions->addMenuItem($this->getPermissionsMenuItem($entity, $request));
         $moreActions->addMenuItem($this->getChangelogMenuItem($entity, $request));
 
@@ -126,47 +126,5 @@ class ModuleViewListener implements EventListenerInterface
             'type' => 'link_button',
             'order' => 60
         ]);
-    }
-
-    /**
-     * Creates and returns the menu item for the clearPersonalData action
-     *
-     * @param EntityInterface $entity Entity to be deleted
-     * @param ServerRequest $request Current server request
-     * @return \Menu\MenuBuilder\MenuItemInterface
-     */
-    public function getClearPersonalDataMenuItem(EntityInterface $entity, ServerRequest $request): MenuItemInterface
-    {
-        $plugin = $request->getParam('plugin');
-        $controller = $request->getParam('controller');
-        $id = $entity->get('id');
-
-        // Check if in the module there is at least one field marked as personal.
-        $moduleConfig = (array)(new ModuleConfig(ConfigType::FIELDS(), $controller))->parseToArray();
-        $hasPersonal = false;
-        foreach ($moduleConfig as $key => $value) {
-            if (in_array('personal', array_keys($value))) {
-                if ($value['personal'] === true) {
-                    $hasPersonal = true;
-                    break;
-                }
-            }
-        }
-
-        $item = MenuItemFactory::createMenuItem([
-            'url' => ['plugin' => $plugin, 'controller' => $controller, 'action' => 'clearPersonalData', $id],
-            'attributes' => ['class' => ' '],
-            'label' => __('Clear Personal Data'),
-            'icon' => 'trash-o',
-            'type' => 'postlink_button',
-            'order' => 60,
-            'confirmMsg' => __('Are you sure you want to delete all personal data of this record?')
-        ]);
-
-        $item->disableIf(function () use ($hasPersonal) {
-            return !$hasPersonal;
-        });
-
-        return $item;
     }
 }

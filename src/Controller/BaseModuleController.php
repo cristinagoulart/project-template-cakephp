@@ -12,7 +12,6 @@
 namespace App\Controller;
 
 use App\Controller\AppController;
-use App\Controller\Traits\ClearPersonalDataTrait;
 use Cake\Datasource\EntityInterface;
 use Cake\Event\Event;
 use Cake\Http\Response;
@@ -36,7 +35,6 @@ use Webmozart\Assert\Assert;
 
 class BaseModuleController extends AppController
 {
-    use ClearPersonalDataTrait;
     use ImportTrait;
 
     /**
