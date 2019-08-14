@@ -1,6 +1,6 @@
 <?php
+// Scheduled log configuration
 return [
-    // Scheduled log configuration
    'ScheduledLog' => [
       'stats' => [
          'age' => '-1 month'
