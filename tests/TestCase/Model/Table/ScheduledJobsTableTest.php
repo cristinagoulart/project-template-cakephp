@@ -2,6 +2,8 @@
 namespace App\Test\TestCase\Model\Table;
 
 use App\Model\Table\ScheduledJobsTable;
+use Cake\Datasource\EntityInterface;
+use Cake\I18n\Time;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
 
@@ -103,7 +105,7 @@ class ScheduledJobsTableTest extends TestCase
 
     public function testTimeToInvoke(): void
     {
-        $time = new \Cake\I18n\Time('2018-01-18 09:00:00', 'UTC');
+        $time = new Time('2018-01-18 09:00:00', 'UTC');
 
         // in 1st scenario, the rule will be executed at the beginning of each hour.
         // Due to that dtstart won't fall in condition.
@@ -140,6 +142,14 @@ class ScheduledJobsTableTest extends TestCase
         }
     }
 
+    public function testGetRRuleWithoutRecurrence() : void
+    {
+        $entity = $this->ScheduledJobsTable->newEntity();
+
+        $result = $this->ScheduledJobsTable->getRRule($entity);
+        $this->assertSame(null, $result);
+    }
+
     /**
      * Return RRule data sets
      *
@@ -153,12 +163,34 @@ class ScheduledJobsTableTest extends TestCase
         ];
     }
 
+    public function testBeforeSave(): void
+    {
+        $startDate = new Time('+1 year');
+        $expected = $startDate->format('YmdHi');
+
+        $entity = $this->ScheduledJobsTable->newEntity(['start_date' => $startDate]);
+        $result = $this->ScheduledJobsTable->save($entity);
+
+        $this->assertInstanceOf(EntityInterface::class, $result);
+        $this->assertSame('00', $entity->get('start_date')->format('s'));
+        $this->assertSame($expected, $entity->get('start_date')->format('YmdHi'));
+    }
+
     public function testGetStartDate(): void
     {
-        $now = new \Cake\I18n\Time();
+        $now = new Time();
 
         $startDate = $this->ScheduledJobsTable->getStartDate($now);
 
-        $this->assertInstanceOf('\Cake\I18n\Time', $startDate);
+        $this->assertInstanceOf(Time::class, $startDate);
+        $this->assertSame('00', $startDate->format('s'));
+    }
+
+    public function testGetStartDateWithString(): void
+    {
+        $startDate = $this->ScheduledJobsTable->getStartDate('+1 year');
+
+        $this->assertInstanceOf(Time::class, $startDate);
+        $this->assertSame('00', $startDate->format('s'));
     }
 }
