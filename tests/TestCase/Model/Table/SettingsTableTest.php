@@ -415,4 +415,13 @@ class SettingsTableTest extends TestCase
         $newEntity = $this->Settings->patchEntity($entity, $params);
         $this->assertEquals('The provided value is invalid', $newEntity->getErrors()['context']['custom']);
     }
+
+    public function testFindDataApp() : void
+    {
+        $options = ['value' => 'huge'];
+
+        $list = $this->Settings->findDataApp($this->Settings->query(), $options);
+
+        $this->assertSame(['FileStorage.defaultImageSize' => $options['value']], $list);
+    }
 }
