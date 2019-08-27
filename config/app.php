@@ -299,7 +299,7 @@ return [
      * LDAP configuration.
      */
     'Ldap' => [
-        'enabled' => (bool)getenv('LDAP_ENABLED', false),
+        'enabled' => (bool)env('LDAP_ENABLED', false),
         'username' => env('LDAP_USERNAME', ''),
         'password' => env('LDAP_PASSWORD', ''),
         'host' => env('LDAP_HOST', ''),
