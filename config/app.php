@@ -260,11 +260,11 @@ return [
             'host' => env('SMTP_HOST', 'localhost'),
             'port' => env('SMTP_PORT', 25),
             'timeout' => env('SMTP_TIMEOUT', 30),
-            'username' => getenv('SMTP_USERNAME') ?: null,
-            'password' => getenv('SMTP_PASSWORD') ?: null,
+            'username' => env('SMTP_USERNAME', ''),
+            'password' => env('SMTP_PASSWORD', ''),
             'client' => null,
-            'tls' => env('SMTP_TLS', null),
-            'url' => env('EMAIL_TRANSPORT_DEFAULT_URL', null),
+            'tls' => env('SMTP_TLS', false),
+            'url' => env('EMAIL_TRANSPORT_DEFAULT_URL', ''),
         ],
     ],
 
@@ -299,20 +299,20 @@ return [
      * LDAP configuration.
      */
     'Ldap' => [
-        'enabled' => (bool)getenv('LDAP_ENABLED'),
-        'username' => env('LDAP_USERNAME'),
-        'password' => env('LDAP_PASSWORD'),
-        'host' => env('LDAP_HOST'),
+        'enabled' => (bool)env('LDAP_ENABLED', false),
+        'username' => env('LDAP_USERNAME', ''),
+        'password' => env('LDAP_PASSWORD', ''),
+        'host' => env('LDAP_HOST', ''),
         'port' => env('LDAP_PORT', 389),
         'version' => env('LDAP_VERSION', 3),
-        'domain' => env('LDAP_DOMAIN'),
-        'baseDn' => env('LDAP_BASE_DN'),
-        'groupsFilter' => env('LDAP_GROUPS_FILTER'),
+        'domain' => env('LDAP_DOMAIN', ''),
+        'baseDn' => env('LDAP_BASE_DN', ''),
+        'groupsFilter' => env('LDAP_GROUPS_FILTER', ''),
         'groupsAttributes' => explode(',', env('LDAP_GROUPS_ATTRIBUTES', '')),
-        'filter' => env('LDAP_FILTER'),
+        'filter' => env('LDAP_FILTER', ''),
         'attributes' => function () {
             $result = [];
-            $attributes = env('LDAP_ATTRIBUTES');
+            $attributes = env('LDAP_ATTRIBUTES', '');
             if (empty($attributes)) {
                 return $result;
             }
