@@ -1,5 +1,19 @@
 <?php
-// DB settings
+/**
+ * Database Settings
+ *
+ * The Settings configuration has four level that are being used to build the UI as per below:
+ * - Level 0 - Tab label
+ * - Level 1 - Column label
+ * - Level 2 - Section label
+ * - Level 3 - Field label
+ *
+ * For each field the following can be defined:
+ * - alias - Configuration key that will be stored in database.
+ * - type - Can be integer, string or boolean.
+ * - scope - Whether the settings can be applied on application level, on user level or both.
+ * - help - Text to be displayed as a help message under each field
+ */
 return [
     'Settings' => [
         'Communication' => [
