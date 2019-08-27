@@ -269,5 +269,7 @@ class ScheduledJobsTable extends AppTable
         if (is_string($time)) {
             return Time::parse($time)->second(0);
         }
+
+        throw new \InvalidArgumentException(is_object($time) ? get_class($time) : gettype($time));
     }
 }
