@@ -46,4 +46,3 @@ $config = Email::getConfigTransport('default');
 $config['className'] = DebugTransport::class;
 Email::dropTransport('default');
 Email::setConfigTransport('default', $config);
-
