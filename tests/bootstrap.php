@@ -2,6 +2,8 @@
 use Cake\Console\ConsoleErrorHandler;
 use Cake\Core\Configure;
 use Cake\Log\Log;
+use Cake\Mailer\Email;
+use Cake\Mailer\Transport\DebugTransport;
 
 /**
  * Test runner bootstrap.
@@ -39,3 +41,8 @@ restore_error_handler();
 Configure::write('Error.errorLevel', E_ALL);
 // re-register application error and exception handlers.
 (new ConsoleErrorHandler(Configure::read('Error')))->register();
+
+$config = Email::getConfigTransport('default');
+$config['className'] = DebugTransport::class;
+Email::dropTransport('default');
+Email::setConfigTransport('default', $config);
