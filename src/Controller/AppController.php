@@ -14,7 +14,8 @@
  */
 namespace App\Controller;
 
-use App\Controller\SearchTrait;
+use App\Controller\Traits\ChangelogTrait;
+use App\Controller\Traits\SearchTrait;
 use App\Event\Plugin\Search\Model\SearchableFieldsListener;
 use App\Feature\Factory as FeatureFactory;
 use App\Utility\Search;

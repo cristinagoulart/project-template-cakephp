@@ -1,6 +1,7 @@
 {
     "name" : {
-        "label" : "label name"
+        "label" : "label name",
+        "personal" : true
     },
     "description" : {
         "label" : "label description"
