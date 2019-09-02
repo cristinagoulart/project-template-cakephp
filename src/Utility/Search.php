@@ -44,6 +44,12 @@ final class Search
      */
     private static $associationLabels = [];
 
+    const SUPPORTED_ASSOCIATIONS = [
+        Association::MANY_TO_ONE,
+        Association::MANY_TO_MANY,
+        Association::ONE_TO_MANY
+    ];
+
     /**
      * Charts list.
      *
@@ -258,7 +264,7 @@ final class Search
 
         $result = [];
         foreach ($table->associations() as $association) {
-            if (! in_array($association->type(), [Association::MANY_TO_ONE])) {
+            if (! in_array($association->type(), self::SUPPORTED_ASSOCIATIONS)) {
                 continue;
             }
 
@@ -420,7 +426,7 @@ final class Search
 
         foreach ($table->associations() as $association) {
             // skip non-supported associations
-            if (! in_array($association->type(), [Association::MANY_TO_ONE])) {
+            if (! in_array($association->type(), self::SUPPORTED_ASSOCIATIONS)) {
                 continue;
             }
 
@@ -431,11 +437,16 @@ final class Search
                 continue;
             }
 
-            $result = array_merge(
-                $result,
-                // fetch associated model searchable fields
-                self::getSearchableFields($targetTable, false)
-            );
+            // fetch associated model searchable fields
+            $fields = self::getSearchableFields($targetTable, false);
+
+            $fields = array_map(function ($item) use ($association) {
+                $item['association'] = $association->type();
+
+                return $item;
+            }, $fields);
+
+            $result = array_merge($result, $fields);
         }
 
         return $result;
