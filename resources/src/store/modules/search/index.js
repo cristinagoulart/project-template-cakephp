@@ -119,7 +119,8 @@ export default {
 
       if (payload.action === 'add') {
         payload.available.map(function (column) {
-          if (displayColumns.indexOf(column) === -1) {
+          const found = state.filters.find(filter => filter.field === column)
+          if (displayColumns.indexOf(column) === -1 && found !== undefined) {
             displayColumns.push(column)
           }
         })
