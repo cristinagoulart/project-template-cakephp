@@ -2,9 +2,9 @@
 namespace App\Test\TestCase\Utility;
 
 use App\Utility\Search;
-use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
 use Qobo\Utils\Utility\User;
+use Search\Model\Entity\SavedSearch;
 
 class SearchTest extends TestCase
 {
@@ -59,8 +59,7 @@ class SearchTest extends TestCase
 
     public function testGetChartOptions() : void
     {
-        $table = TableRegistry::getTableLocator()->get('Search.SavedSearches');
-        $data = [
+        $savedSearch = new SavedSearch([
             'name' => 'Things grouped by created date',
             'model' => 'Things',
             'content' => [
@@ -68,10 +67,9 @@ class SearchTest extends TestCase
                     'group_by' => 'Things.created'
                 ]
             ]
-        ];
-        $entity = $table->newEntity($data);
+        ]);
 
-        $result = Search::getChartOptions($entity);
+        $result = Search::getChartOptions($savedSearch);
 
         $this->assertCount(3, $result);
         $this->assertSame([], array_diff(['pie', 'bar', 'funnelChart'], array_column($result, 'chart')));
@@ -79,18 +77,16 @@ class SearchTest extends TestCase
 
     public function testGetChartOptionsWithoutGroupBy() : void
     {
-        $table = TableRegistry::getTableLocator()->get('Search.SavedSearches');
-        $data = [
-            'name' => 'Things grouped by created date',
+        $savedSearch = new SavedSearch([
+            'name' => 'Things NOT grouped by',
             'model' => 'Things',
             'content' => [
                 'saved' => [
                     'group_by' => ''
                 ]
             ]
-        ];
-        $entity = $table->newEntity($data);
+        ]);
 
-        $this->assertSame([], Search::getChartOptions($entity));
+        $this->assertSame([], Search::getChartOptions($savedSearch));
     }
 }
