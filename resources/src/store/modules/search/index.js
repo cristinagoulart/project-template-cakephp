@@ -172,21 +172,6 @@ export default {
     result (state, value) {
       state.result = value
     },
-    savedSearch (state, value) {
-      if (Array.isArray(value.content.saved.criteria) && value.content.saved.criteria.length === 0) {
-        value.content.saved.criteria = {}
-      }
-
-      if (value.content.saved.criteria === undefined) {
-        value.content.saved.criteria = {}
-      }
-
-      if (!value.content.saved.hasOwnProperty('group_by')) {
-        value.content.saved.group_by = ''
-      }
-
-      Vue.set(state, 'savedSearch', value)
-    },
     savedSearches (state, value) {
       value.sort((a, b) => (a.name > b.name) ? -1 : 1)
       state.savedSearches = value
@@ -254,7 +239,28 @@ export default {
       return ApiSearch
         .getSearch(API_VIEW_SEARCH, id)
         .then(response => {
-          commit('savedSearch', response.data.data)
+          const data = response.data.data
+          commit('aggregator', data.content.saved.aggregator)
+          commit('displayColumns', { action: 'add', available: data.content.saved.display_columns })
+          if (data.content.saved.hasOwnProperty('group_by')) {
+            commit('groupBy', data.content.saved.group_by)
+          }
+          commit('name', data.name)
+          commit('savedSearchId', data.id)
+          commit('savedSearchModel', data.model)
+          commit('savedSearchUserId', data.user_id)
+          commit('sortByField', data.content.saved.sort_by_field)
+          commit('sortByOrder', data.content.saved.sort_by_order)
+
+          if (data.content.saved.hasOwnProperty('criteria')) {
+            const criteria = data.content.saved.criteria
+            Object.keys(criteria).forEach((item) => {
+              const index = Object.keys(criteria[item])[0]
+              const filter = criteria[item][index]
+              commit('criteriaCreate', { field: item, value: filter.value, operator: filter.operator })
+            })
+          }
+
           dispatch('setNotification', {
             'type': 'info',
             'msg': 'Successfully loaded search results'
