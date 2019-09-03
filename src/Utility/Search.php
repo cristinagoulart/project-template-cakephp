@@ -126,7 +126,7 @@ final class Search
      */
     public static function getChartOptions(SavedSearch $savedSearch) : array
     {
-        if (null === Hash::get($savedSearch->get('content'), 'saved.group_by')) {
+        if ('' === Hash::get($savedSearch->get('content'), 'saved.group_by', '')) {
             return [];
         }
 
