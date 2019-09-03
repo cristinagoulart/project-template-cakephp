@@ -13,6 +13,7 @@ class UsersShell extends BaseShell
      * @var \App\Model\Table\UsersTable $Users
      */
     public $Users;
+
     /**
      * Add a new superadmin user
      *
