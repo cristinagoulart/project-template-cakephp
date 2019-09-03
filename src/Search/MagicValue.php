@@ -99,6 +99,7 @@ final class MagicValue
     {
         return (new Time('yesterday'))->format('Y-m-d H:i:s');
     }
+
     /**
      * Tomorrow's date magic value getter.
      *
