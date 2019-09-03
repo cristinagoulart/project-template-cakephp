@@ -408,11 +408,9 @@ export default {
               this.filtersGroup[item][0].association :
               ''
 
-            if (-1 < ['oneToMany', 'manyToMany'].indexOf(association)) {
-              return
+            if (-1 === ['oneToMany', 'manyToMany'].indexOf(association)) {
+              result.push(item)
             }
-
-            result.push(item)
           })
 
           return result
