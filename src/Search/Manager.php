@@ -82,7 +82,10 @@ final class Manager
         }
 
         if (Hash::get($data, 'sort')) {
-            $result['order'] = [Hash::get($data, 'sort') => Hash::get($data, 'direction', Search::DEFAULT_SORT_BY_ORDER)];
+            $orderField = Hash::get($data, 'sort');
+            $orderField = Search::GROUP_BY_FIELD === pluginSplit($orderField)[1] ? Search::GROUP_BY_FIELD : $orderField;
+
+            $result['order'] = [$orderField => Hash::get($data, 'direction', Search::DEFAULT_SORT_BY_ORDER)];
         }
 
         if (Hash::get($data, 'group_by')) {
