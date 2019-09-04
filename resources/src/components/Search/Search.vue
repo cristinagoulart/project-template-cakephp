@@ -25,7 +25,7 @@
                                 <div class="col-xs-4">
                                     <div class="form-group">
                                         <select v-model="selectedModuleGroupBy" class="form-control input-sm">
-                                            <option v-for="item in filterModules">{{ item }}</option>
+                                            <option v-for="item in displayModules">{{ item }}</option>
                                         </select>
                                     </div>
                                 </div>
@@ -95,7 +95,7 @@
                                         <option v-for="filter in filtersGroup[selectedModuleAvailableColumns]" v-if="-1 === displayColumns.indexOf(filter.field)" :value="filter.field">{{ filter.label }}</option>
                                     </select>
                                     <select v-model="selectedModuleAvailableColumns" class="form-control input-sm" :disabled="isGroupByEnabled">
-                                        <option v-for="(group_filters, group) in filtersGroup">{{ group }}</option>
+                                        <option v-for="item in displayModules">{{ item }}</option>
                                     </select>
                                 </div>
                                 <div class="col-md-2">
@@ -392,6 +392,25 @@ export default {
 
           Object.keys(this.filtersGroup).forEach((item) => {
             result.push(item)
+          })
+
+          return result
+        },
+        displayModules () {
+          let result = []
+
+          if (!this.filtersGroup) {
+            return result
+          }
+
+          Object.keys(this.filtersGroup).forEach((item) => {
+            const association = this.filtersGroup[item].hasOwnProperty(0) ?
+              this.filtersGroup[item][0].association :
+              ''
+
+            if (-1 === ['oneToMany', 'manyToMany'].indexOf(association)) {
+              result.push(item)
+            }
           })
 
           return result
