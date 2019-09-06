@@ -127,7 +127,6 @@ export default {
         pageLength: 10,
         language: { processing: '<i class="fa fa-refresh fa-spin fa-fw"></i> Processing...' },
         order: [[orderColumn, this.orderDirection]],
-        columnDefs: [{ targets: [-1], orderable: false }],
         // ajax settings
         processing: true,
         serverSide: true,
@@ -166,6 +165,12 @@ export default {
             return JSON.stringify(d)
           }
         }
+      }
+
+      if (!this.isGroupByEnabled) {
+        Object.assign(settings, {
+          columnDefs: [{ targets: [-1], orderable: false }]
+        })
       }
 
       if (this.isBatchEnabled) {

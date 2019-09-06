@@ -67,7 +67,7 @@ export default {
 
       Vue.set(criteria[filter[0].field], guid, {
         type: filter[0].type,
-        operator: payload.operator !== '' ? payload.operator : state.operators.types[state.operators.map[filter[0].type]][0].text,
+        operator: payload.operator !== undefined ? payload.operator : state.operators.types[state.operators.map[filter[0].type]][0].text,
         value: payload.value !== '' ? payload.value : (filter[0].type === 'boolean' ? 0 : '')
       })
     },
