@@ -157,7 +157,7 @@ class AppController extends Controller
             }
         } catch (ForbiddenException $e) {
             $event->stopPropagation();
-            if (empty($this->Auth->user())) {
+            if (empty($this->Auth->user()) && ! $this->getRequest()->is('json')) {
                 $this->Auth->setConfig('authError', false);
 
                 return $this->redirect('/login');
