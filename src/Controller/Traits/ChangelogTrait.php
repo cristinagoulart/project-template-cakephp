@@ -34,6 +34,10 @@ trait ChangelogTrait
      */
     public function changelog(string $id)
     {
+        $this->paginate = [
+            'limit' => 15
+        ];
+
         /*
         ideally we want to group by user and timestamp, but having user in the meta information makes this non-trivial
         for now we are using just the timestamp assuming that different will edit the same record at the same time is
