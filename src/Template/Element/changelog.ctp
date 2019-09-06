@@ -159,5 +159,19 @@ $oldDate = $date;
 ?>
 <?php endforeach; ?>
         </ul>
+        <div class="box box-primary">
+            <div class="box-body">
+                <div class="paginator">
+                    <?= $this->Paginator->counter([
+                        'format' => __('Showing {{start}} to {{end}} of {{count}} entries')
+                    ]) ?>
+                    <ul class="pagination pagination-sm no-margin pull-right">
+                        <?= $this->Paginator->prev('&laquo;', ['escape' => false]) ?>
+                        <?= $this->Paginator->numbers() ?>
+                        <?= $this->Paginator->next('&raquo;', ['escape' => false]) ?>
+                    </ul>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
