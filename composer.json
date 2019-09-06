@@ -99,7 +99,7 @@
     },
     "extra": {
         "hooks": {
-            "pre-commit": "PHPCS_FILES=$(git diff-index --name-only --cached --diff-filter=ACMR HEAD 'tests/**.php' 'src/**.php' 'webroot/**.php'); if [ \"$PHPCS_FILES\" ]; then ./vendor/bin/phpcs $PHPCS_FILES; fi"
+            "pre-commit": "PHPCS_FILES=$(git diff-index --name-only --cached --diff-filter=ACMR HEAD 'tests/**.php' 'src/**.php' 'webroot/**.php'); if [ \"$PHPCS_FILES\" ]; then ./vendor/bin/phpcs $PHPCS_FILES; php -d memory_limit=-1 ./vendor/bin/phpstan analyse $PHPCS_FILES; fi;"
         }
     },
     "prefer-stable": true,
