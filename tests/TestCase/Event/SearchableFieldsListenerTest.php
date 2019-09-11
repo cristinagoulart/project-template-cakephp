@@ -98,7 +98,7 @@ class SearchableFieldsListenerTest extends TestCase
         // 6 searchable fields in AssignedTo (Users) +
         // 6 searchable fields in CreatedBy (Users) +
         // 6 searchable fields in Modified (Users)
-        $this->assertCount(31 + 3*6, $searchableFields);
+        $this->assertCount(31 + 3 * 6, $searchableFields);
         $this->assertEquals('string', $searchableFields['Things.name']['type']);
         $this->assertEquals('string', $searchableFields['ModifiedByUsers.modified']['type']);
     }
