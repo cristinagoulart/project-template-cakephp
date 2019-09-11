@@ -3,7 +3,7 @@
 namespace App\Test\TestCase\Event;
 
 use App\Event\Plugin\Search\Model\SearchableFieldsListener;
-use App\Test\Fixture\ThingsTable;
+use App\Model\Table\ThingsTable;
 use Cake\Event\Event;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
