@@ -208,5 +208,12 @@
         "required": false,
         "non-searchable": false,
         "unique": false
+    },
+    "non_searchable": {
+        "name": "name",
+        "type": "string",
+        "required": false,
+        "non-searchable": true,
+        "unique": false
     }
 }
