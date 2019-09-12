@@ -78,6 +78,7 @@ class PhpTest extends TestCase
         $result = Php::getUploadMaxFilesize();
         $this->assertTrue(is_int($result), "getUploadMaxFilesize() returned a non-integer result");
     }
+
     public function testGetPostMaxSize(): void
     {
         $result = Php::getPostMaxSize();
