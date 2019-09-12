@@ -101,21 +101,17 @@ class AccessMenuListener implements EventListenerInterface
             }
         }
 
-        return $this->_checkAccess($this->parseUrl($url), $user);
+        return $this->_checkAccess($this->parseUrl($stringUrl), $user);
     }
 
     /**
      * Parses menu item URL.
      *
-     * @param array|string $url Menu item URL
+     * @param string $url Menu item URL
      * @return mixed[]
      */
-    private function parseUrl($url): array
+    private function parseUrl(string $url): array
     {
-        if (!is_string($url)) {
-            return $url;
-        }
-
         $fullBaseUrl = Router::fullBaseUrl();
 
         // strip out full base URL from menu item's URL.

@@ -1,5 +1,9 @@
 <?php
+use Cake\Console\ConsoleErrorHandler;
 use Cake\Core\Configure;
+use Cake\Log\Log;
+use Cake\Mailer\Email;
+use Cake\Mailer\Transport\DebugTransport;
 
 /**
  * Test runner bootstrap.
@@ -12,5 +16,33 @@ require dirname(__DIR__) . '/vendor/autoload.php';
 require dirname(__DIR__) . '/config/bootstrap.php';
 
 $_SERVER['PHP_SELF'] = '/';
-// set Modules path to test configuration
-Configure::write('CsvMigrations.modules.path', TESTS . 'config' . DS . 'Modules' . DS);
+
+// reset logging configuration
+array_map([Log::class, 'drop'], Log::configured());
+
+// set logging configuration to file
+Log::setConfig([
+    'debug' => [
+        'engine' => \Cake\Log\Engine\FileLog::class,
+        'levels' => ['notice', 'info', 'debug'],
+        'file' => 'debug',
+        'path' => LOGS,
+    ],
+    'error' => [
+        'engine' => \Cake\Log\Engine\FileLog::class,
+        'levels' => ['warning', 'error', 'critical', 'alert', 'emergency'],
+        'file' => 'error',
+        'path' => LOGS,
+    ]
+]);
+
+restore_error_handler();
+// re-enable deprecation errors to be shown on the CLI during PHPunit execution.
+Configure::write('Error.errorLevel', E_ALL);
+// re-register application error and exception handlers.
+(new ConsoleErrorHandler(Configure::read('Error')))->register();
+
+$config = Email::getConfigTransport('default');
+$config['className'] = DebugTransport::class;
+Email::dropTransport('default');
+Email::setConfigTransport('default', $config);

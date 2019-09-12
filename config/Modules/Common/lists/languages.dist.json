@@ -3,3649 +3,3649 @@
         {
             "value": "ab",
             "label": "Abkhazian",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "ace",
             "label": "Achinese",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "ach",
             "label": "Acoli",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "ada",
             "label": "Adangme",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "ady",
             "label": "Adyghe",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "aa",
             "label": "Afar",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "afh",
             "label": "Afrihili",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "af",
             "label": "Afrikaans",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "agq",
             "label": "Aghem",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "ain",
             "label": "Ainu",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "ak",
             "label": "Akan",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "akk",
             "label": "Akkadian",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "bss",
             "label": "Akoose",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "akz",
             "label": "Alabama",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "sq",
             "label": "Albanian",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "ale",
             "label": "Aleut",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "arq",
             "label": "Algerian Arabic",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "en_US",
             "label": "American English",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "ase",
             "label": "American Sign Language",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "am",
             "label": "Amharic",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "egy",
             "label": "Ancient Egyptian",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "grc",
             "label": "Ancient Greek",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "anp",
             "label": "Angika",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "njo",
             "label": "Ao Naga",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "ar",
             "label": "Arabic",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "an",
             "label": "Aragonese",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "arc",
             "label": "Aramaic",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "aro",
             "label": "Araona",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "arp",
             "label": "Arapaho",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "arw",
             "label": "Arawak",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "hy",
             "label": "Armenian",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "rup",
             "label": "Aromanian",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "frp",
             "label": "Arpitan",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "as",
             "label": "Assamese",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "ast",
             "label": "Asturian",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "asa",
             "label": "Asu",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "cch",
             "label": "Atsam",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "en_AU",
             "label": "Australian English",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "de_AT",
             "label": "Austrian German",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "av",
             "label": "Avaric",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "ae",
             "label": "Avestan",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "awa",
             "label": "Awadhi",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "ay",
             "label": "Aymara",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "az",
             "label": "Azerbaijani",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "bfq",
             "label": "Badaga",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "ksf",
             "label": "Bafia",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "bfd",
             "label": "Bafut",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "bqi",
             "label": "Bakhtiari",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "ban",
             "label": "Balinese",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "bal",
             "label": "Baluchi",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "bm",
             "label": "Bambara",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "bax",
             "label": "Bamun",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "bjn",
             "label": "Banjar",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "bas",
             "label": "Basaa",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "ba",
             "label": "Bashkir",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "eu",
             "label": "Basque",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "bbc",
             "label": "Batak Toba",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "bar",
             "label": "Bavarian",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "bej",
             "label": "Beja",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "be",
             "label": "Belarusian",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "bem",
             "label": "Bemba",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "bez",
             "label": "Bena",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "bn",
             "label": "Bengali",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "bew",
             "label": "Betawi",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "bho",
             "label": "Bhojpuri",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "bik",
             "label": "Bikol",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "bin",
             "label": "Bini",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "bpy",
             "label": "Bishnupriya",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "bi",
             "label": "Bislama",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "byn",
             "label": "Blin",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "zbl",
             "label": "Blissymbols",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "brx",
             "label": "Bodo",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "bs",
             "label": "Bosnian",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "brh",
             "label": "Brahui",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "bra",
             "label": "Braj",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "pt_BR",
             "label": "Brazilian Portuguese",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "br",
             "label": "Breton",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "en_GB",
             "label": "British English",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "bug",
             "label": "Buginese",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "bg",
             "label": "Bulgarian",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "bum",
             "label": "Bulu",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "bua",
             "label": "Buriat",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "my",
             "label": "Burmese",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "cad",
             "label": "Caddo",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "frc",
             "label": "Cajun French",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "en_CA",
             "label": "Canadian English",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "fr_CA",
             "label": "Canadian French",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "yue",
             "label": "Cantonese",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "cps",
             "label": "Capiznon",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "car",
             "label": "Carib",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "ca",
             "label": "Catalan",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "cay",
             "label": "Cayuga",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "ceb",
             "label": "Cebuano",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "tzm",
             "label": "Central Atlas Tamazight",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "dtp",
             "label": "Central Dusun",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "esu",
             "label": "Central Yupik",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "shu",
             "label": "Chadian Arabic",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "chg",
             "label": "Chagatai",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "ch",
             "label": "Chamorro",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "ce",
             "label": "Chechen",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "chr",
             "label": "Cherokee",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "chy",
             "label": "Cheyenne",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "chb",
             "label": "Chibcha",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "cgg",
             "label": "Chiga",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "qug",
             "label": "Chimborazo Highland Quichua",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "zh",
             "label": "Chinese",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "chn",
             "label": "Chinook Jargon",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "chp",
             "label": "Chipewyan",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "cho",
             "label": "Choctaw",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "cu",
             "label": "Church Slavic",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "chk",
             "label": "Chuukese",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "cv",
             "label": "Chuvash",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "nwc",
             "label": "Classical Newari",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "syc",
             "label": "Classical Syriac",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "ksh",
             "label": "Colognian",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "swb",
             "label": "Comorian",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "swc",
             "label": "Congo Swahili",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "cop",
             "label": "Coptic",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "kw",
             "label": "Cornish",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "co",
             "label": "Corsican",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "cr",
             "label": "Cree",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "mus",
             "label": "Creek",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "crh",
             "label": "Crimean Turkish",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "hr",
             "label": "Croatian",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "cs",
             "label": "Czech",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "dak",
             "label": "Dakota",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "da",
             "label": "Danish",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "dar",
             "label": "Dargwa",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "dzg",
             "label": "Dazaga",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "del",
             "label": "Delaware",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "din",
             "label": "Dinka",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "dv",
             "label": "Divehi",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "doi",
             "label": "Dogri",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "dgr",
             "label": "Dogrib",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "dua",
             "label": "Duala",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "nl",
             "label": "Dutch",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "dyu",
             "label": "Dyula",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "dz",
             "label": "Dzongkha",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "frs",
             "label": "Eastern Frisian",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "efi",
             "label": "Efik",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "arz",
             "label": "Egyptian Arabic",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "eka",
             "label": "Ekajuk",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "elx",
             "label": "Elamite",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "ebu",
             "label": "Embu",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "egl",
             "label": "Emilian",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "en",
             "label": "English",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "myv",
             "label": "Erzya",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "eo",
             "label": "Esperanto",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "et",
             "label": "Estonian",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "pt_PT",
             "label": "European Portuguese",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "es_ES",
             "label": "European Spanish",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "ee",
             "label": "Ewe",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "ewo",
             "label": "Ewondo",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "ext",
             "label": "Extremaduran",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "fan",
             "label": "Fang",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "fat",
             "label": "Fanti",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "fo",
             "label": "Faroese",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "hif",
             "label": "Fiji Hindi",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "fj",
             "label": "Fijian",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "fil",
             "label": "Filipino",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "fi",
             "label": "Finnish",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "nl_BE",
             "label": "Flemish",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "fon",
             "label": "Fon",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "gur",
             "label": "Frafra",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "fr",
             "label": "French",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "fur",
             "label": "Friulian",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "ff",
             "label": "Fulah",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "gaa",
             "label": "Ga",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "gag",
             "label": "Gagauz",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "gl",
             "label": "Galician",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "gan",
             "label": "Gan Chinese",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "lg",
             "label": "Ganda",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "gay",
             "label": "Gayo",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "gba",
             "label": "Gbaya",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "gez",
             "label": "Geez",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "ka",
             "label": "Georgian",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "de",
             "label": "German",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "aln",
             "label": "Gheg Albanian",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "bbj",
             "label": "Ghomala",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "glk",
             "label": "Gilaki",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "gil",
             "label": "Gilbertese",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "gom",
             "label": "Goan Konkani",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "gon",
             "label": "Gondi",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "gor",
             "label": "Gorontalo",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "got",
             "label": "Gothic",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "grb",
             "label": "Grebo",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "el",
             "label": "Greek",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "gn",
             "label": "Guarani",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "gu",
             "label": "Gujarati",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "guz",
             "label": "Gusii",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "gwi",
             "label": "Gwich\u02bcin",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "hai",
             "label": "Haida",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "ht",
             "label": "Haitian",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "hak",
             "label": "Hakka Chinese",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "ha",
             "label": "Hausa",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "haw",
             "label": "Hawaiian",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "he",
             "label": "Hebrew",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "hz",
             "label": "Herero",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "hil",
             "label": "Hiligaynon",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "hi",
             "label": "Hindi",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "ho",
             "label": "Hiri Motu",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "hit",
             "label": "Hittite",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "hmn",
             "label": "Hmong",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "hu",
             "label": "Hungarian",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "hup",
             "label": "Hupa",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "iba",
             "label": "Iban",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "ibb",
             "label": "Ibibio",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "is",
             "label": "Icelandic",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "io",
             "label": "Ido",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "ig",
             "label": "Igbo",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "ilo",
             "label": "Iloko",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "smn",
             "label": "Inari Sami",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "id",
             "label": "Indonesian",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "izh",
             "label": "Ingrian",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "inh",
             "label": "Ingush",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "ia",
             "label": "Interlingua",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "ie",
             "label": "Interlingue",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "iu",
             "label": "Inuktitut",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "ik",
             "label": "Inupiaq",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "ga",
             "label": "Irish",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "it",
             "label": "Italian",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "jam",
             "label": "Jamaican Creole English",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "ja",
             "label": "Japanese",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "jv",
             "label": "Javanese",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "kaj",
             "label": "Jju",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "dyo",
             "label": "Jola-Fonyi",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "jrb",
             "label": "Judeo-Arabic",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "jpr",
             "label": "Judeo-Persian",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "jut",
             "label": "Jutish",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "kbd",
             "label": "Kabardian",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "kea",
             "label": "Kabuverdianu",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "kab",
             "label": "Kabyle",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "kac",
             "label": "Kachin",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "kgp",
             "label": "Kaingang",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "kkj",
             "label": "Kako",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "kl",
             "label": "Kalaallisut",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "kln",
             "label": "Kalenjin",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "xal",
             "label": "Kalmyk",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "kam",
             "label": "Kamba",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "kbl",
             "label": "Kanembu",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "kn",
             "label": "Kannada",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "kr",
             "label": "Kanuri",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "kaa",
             "label": "Kara-Kalpak",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "krc",
             "label": "Karachay-Balkar",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "krl",
             "label": "Karelian",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "ks",
             "label": "Kashmiri",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "csb",
             "label": "Kashubian",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "kaw",
             "label": "Kawi",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "kk",
             "label": "Kazakh",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "ken",
             "label": "Kenyang",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "kha",
             "label": "Khasi",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "km",
             "label": "Khmer",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "kho",
             "label": "Khotanese",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "khw",
             "label": "Khowar",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "ki",
             "label": "Kikuyu",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "kmb",
             "label": "Kimbundu",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "krj",
             "label": "Kinaray-a",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "rw",
             "label": "Kinyarwanda",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "kiu",
             "label": "Kirmanjki",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "tlh",
             "label": "Klingon",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "bkm",
             "label": "Kom",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "kv",
             "label": "Komi",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "koi",
             "label": "Komi-Permyak",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "kg",
             "label": "Kongo",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "kok",
             "label": "Konkani",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "ko",
             "label": "Korean",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "kfo",
             "label": "Koro",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "kos",
             "label": "Kosraean",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "avk",
             "label": "Kotava",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "khq",
             "label": "Koyra Chiini",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "ses",
             "label": "Koyraboro Senni",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "kpe",
             "label": "Kpelle",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "kri",
             "label": "Krio",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "kj",
             "label": "Kuanyama",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "kum",
             "label": "Kumyk",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "ku",
             "label": "Kurdish",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "kru",
             "label": "Kurukh",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "kut",
             "label": "Kutenai",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "nmg",
             "label": "Kwasio",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "ky",
             "label": "Kyrgyz",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "quc",
             "label": "K\u02bciche\u02bc",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "lad",
             "label": "Ladino",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "lah",
             "label": "Lahnda",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "lkt",
             "label": "Lakota",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "lam",
             "label": "Lamba",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "lag",
             "label": "Langi",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "lo",
             "label": "Lao",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "ltg",
             "label": "Latgalian",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "la",
             "label": "Latin",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "es_419",
             "label": "Latin American Spanish",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "lv",
             "label": "Latvian",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "lzz",
             "label": "Laz",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "lez",
             "label": "Lezghian",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "lij",
             "label": "Ligurian",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "li",
             "label": "Limburgish",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "ln",
             "label": "Lingala",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "lfn",
             "label": "Lingua Franca Nova",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "lzh",
             "label": "Literary Chinese",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "lt",
             "label": "Lithuanian",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "liv",
             "label": "Livonian",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "jbo",
             "label": "Lojban",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "lmo",
             "label": "Lombard",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "nds",
             "label": "Low German",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "sli",
             "label": "Lower Silesian",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "dsb",
             "label": "Lower Sorbian",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "loz",
             "label": "Lozi",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "lu",
             "label": "Luba-Katanga",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "lua",
             "label": "Luba-Lulua",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "lui",
             "label": "Luiseno",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "smj",
             "label": "Lule Sami",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "lun",
             "label": "Lunda",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "luo",
             "label": "Luo",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "lb",
             "label": "Luxembourgish",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "luy",
             "label": "Luyia",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "mde",
             "label": "Maba",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "mk",
             "label": "Macedonian",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "jmc",
             "label": "Machame",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "mad",
             "label": "Madurese",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "maf",
             "label": "Mafa",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "mag",
             "label": "Magahi",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "vmf",
             "label": "Main-Franconian",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "mai",
             "label": "Maithili",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "mak",
             "label": "Makasar",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "mgh",
             "label": "Makhuwa-Meetto",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "kde",
             "label": "Makonde",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "mg",
             "label": "Malagasy",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "ms",
             "label": "Malay",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "ml",
             "label": "Malayalam",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "mt",
             "label": "Maltese",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "mnc",
             "label": "Manchu",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "mdr",
             "label": "Mandar",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "man",
             "label": "Mandingo",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "mni",
             "label": "Manipuri",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "gv",
             "label": "Manx",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "mi",
             "label": "Maori",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "arn",
             "label": "Mapuche",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "mr",
             "label": "Marathi",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "chm",
             "label": "Mari",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "mh",
             "label": "Marshallese",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "mwr",
             "label": "Marwari",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "mas",
             "label": "Masai",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "mzn",
             "label": "Mazanderani",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "byv",
             "label": "Medumba",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "men",
             "label": "Mende",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "mwv",
             "label": "Mentawai",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "mer",
             "label": "Meru",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "mgo",
             "label": "Meta\u02bc",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "es_MX",
             "label": "Mexican Spanish",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "mic",
             "label": "Micmac",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "dum",
             "label": "Middle Dutch",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "enm",
             "label": "Middle English",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "frm",
             "label": "Middle French",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "gmh",
             "label": "Middle High German",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "mga",
             "label": "Middle Irish",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "nan",
             "label": "Min Nan Chinese",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "min",
             "label": "Minangkabau",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "xmf",
             "label": "Mingrelian",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "mwl",
             "label": "Mirandese",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "lus",
             "label": "Mizo",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "ar_001",
             "label": "Modern Standard Arabic",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "moh",
             "label": "Mohawk",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "mdf",
             "label": "Moksha",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "ro_MD",
             "label": "Moldavian",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "lol",
             "label": "Mongo",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "mn",
             "label": "Mongolian",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "mfe",
             "label": "Morisyen",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "ary",
             "label": "Moroccan Arabic",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "mos",
             "label": "Mossi",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "mul",
             "label": "Multiple Languages",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "mua",
             "label": "Mundang",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "ttt",
             "label": "Muslim Tat",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "mye",
             "label": "Myene",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "naq",
             "label": "Nama",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "na",
             "label": "Nauru",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "nv",
             "label": "Navajo",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "ng",
             "label": "Ndonga",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "nap",
             "label": "Neapolitan",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "ne",
             "label": "Nepali",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "new",
             "label": "Newari",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "sba",
             "label": "Ngambay",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "nnh",
             "label": "Ngiemboon",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "jgo",
             "label": "Ngomba",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "yrl",
             "label": "Nheengatu",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "nia",
             "label": "Nias",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "niu",
             "label": "Niuean",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "zxx",
             "label": "No linguistic content",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "nog",
             "label": "Nogai",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "nd",
             "label": "North Ndebele",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "frr",
             "label": "Northern Frisian",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "se",
             "label": "Northern Sami",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "nso",
             "label": "Northern Sotho",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "no",
             "label": "Norwegian",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "nb",
             "label": "Norwegian Bokm\u00e5l",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "nn",
             "label": "Norwegian Nynorsk",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "nov",
             "label": "Novial",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "nus",
             "label": "Nuer",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "nym",
             "label": "Nyamwezi",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "ny",
             "label": "Nyanja",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "nyn",
             "label": "Nyankole",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "tog",
             "label": "Nyasa Tonga",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "nyo",
             "label": "Nyoro",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "nzi",
             "label": "Nzima",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "nqo",
             "label": "N\u02bcKo",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "oc",
             "label": "Occitan",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "oj",
             "label": "Ojibwa",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "ang",
             "label": "Old English",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "fro",
             "label": "Old French",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "goh",
             "label": "Old High German",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "sga",
             "label": "Old Irish",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "non",
             "label": "Old Norse",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "peo",
             "label": "Old Persian",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "pro",
             "label": "Old Proven\u00e7al",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "or",
             "label": "Oriya",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "om",
             "label": "Oromo",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "osa",
             "label": "Osage",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "os",
             "label": "Ossetic",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "ota",
             "label": "Ottoman Turkish",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "pal",
             "label": "Pahlavi",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "pfl",
             "label": "Palatine German",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "pau",
             "label": "Palauan",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "pi",
             "label": "Pali",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "pam",
             "label": "Pampanga",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "pag",
             "label": "Pangasinan",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "pap",
             "label": "Papiamento",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "ps",
             "label": "Pashto",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "pdc",
             "label": "Pennsylvania German",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "fa",
             "label": "Persian",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "phn",
             "label": "Phoenician",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "pcd",
             "label": "Picard",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "pms",
             "label": "Piedmontese",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "pdt",
             "label": "Plautdietsch",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "pon",
             "label": "Pohnpeian",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "pl",
             "label": "Polish",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "pnt",
             "label": "Pontic",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "pt",
             "label": "Portuguese",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "prg",
             "label": "Prussian",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "pa",
             "label": "Punjabi",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "qu",
             "label": "Quechua",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "raj",
             "label": "Rajasthani",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "rap",
             "label": "Rapanui",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "rar",
             "label": "Rarotongan",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "rif",
             "label": "Riffian",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "rgn",
             "label": "Romagnol",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "ro",
             "label": "Romanian",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "rm",
             "label": "Romansh",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "rom",
             "label": "Romany",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "rof",
             "label": "Rombo",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "root",
             "label": "Root",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "rtm",
             "label": "Rotuman",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "rug",
             "label": "Roviana",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "rn",
             "label": "Rundi",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "ru",
             "label": "Russian",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "rue",
             "label": "Rusyn",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "rwk",
             "label": "Rwa",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "ssy",
             "label": "Saho",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "sah",
             "label": "Sakha",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "sam",
             "label": "Samaritan Aramaic",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "saq",
             "label": "Samburu",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "sm",
             "label": "Samoan",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "sgs",
             "label": "Samogitian",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "sad",
             "label": "Sandawe",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "sg",
             "label": "Sango",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "sbp",
             "label": "Sangu",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "sa",
             "label": "Sanskrit",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "sat",
             "label": "Santali",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "sc",
             "label": "Sardinian",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "sas",
             "label": "Sasak",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "sdc",
             "label": "Sassarese Sardinian",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "stq",
             "label": "Saterland Frisian",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "saz",
             "label": "Saurashtra",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "sco",
             "label": "Scots",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "gd",
             "label": "Scottish Gaelic",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "sly",
             "label": "Selayar",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "sel",
             "label": "Selkup",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "seh",
             "label": "Sena",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "see",
             "label": "Seneca",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "sr",
             "label": "Serbian",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "sh",
             "label": "Serbo-Croatian",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "srr",
             "label": "Serer",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "sei",
             "label": "Seri",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "ksb",
             "label": "Shambala",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "shn",
             "label": "Shan",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "sn",
             "label": "Shona",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "ii",
             "label": "Sichuan Yi",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "scn",
             "label": "Sicilian",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "sid",
             "label": "Sidamo",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "bla",
             "label": "Siksika",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "szl",
             "label": "Silesian",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "zh_Hans",
             "label": "Simplified Chinese",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "sd",
             "label": "Sindhi",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "si",
             "label": "Sinhala",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "sms",
             "label": "Skolt Sami",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "den",
             "label": "Slave",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "sk",
             "label": "Slovak",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "sl",
             "label": "Slovenian",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "xog",
             "label": "Soga",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "sog",
             "label": "Sogdien",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "so",
             "label": "Somali",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "snk",
             "label": "Soninke",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "ckb",
             "label": "Sorani Kurdish",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "azb",
             "label": "South Azerbaijani",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "nr",
             "label": "South Ndebele",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "alt",
             "label": "Southern Altai",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "sma",
             "label": "Southern Sami",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "st",
             "label": "Southern Sotho",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "es",
             "label": "Spanish",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "srn",
             "label": "Sranan Tongo",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "zgh",
             "label": "Standard Moroccan Tamazight",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "suk",
             "label": "Sukuma",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "sux",
             "label": "Sumerian",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "su",
             "label": "Sundanese",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "sus",
             "label": "Susu",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "sw",
             "label": "Swahili",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "ss",
             "label": "Swati",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "sv",
             "label": "Swedish",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "fr_CH",
             "label": "Swiss French",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "gsw",
             "label": "Swiss German",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "de_CH",
             "label": "Swiss High German",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "syr",
             "label": "Syriac",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "shi",
             "label": "Tachelhit",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "tl",
             "label": "Tagalog",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "ty",
             "label": "Tahitian",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "dav",
             "label": "Taita",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "tg",
             "label": "Tajik",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "tly",
             "label": "Talysh",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "tmh",
             "label": "Tamashek",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "ta",
             "label": "Tamil",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "trv",
             "label": "Taroko",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "twq",
             "label": "Tasawaq",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "tt",
             "label": "Tatar",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "te",
             "label": "Telugu",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "ter",
             "label": "Tereno",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "teo",
             "label": "Teso",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "tet",
             "label": "Tetum",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "th",
             "label": "Thai",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "bo",
             "label": "Tibetan",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "tig",
             "label": "Tigre",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "ti",
             "label": "Tigrinya",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "tem",
             "label": "Timne",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "tiv",
             "label": "Tiv",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "tli",
             "label": "Tlingit",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "tpi",
             "label": "Tok Pisin",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "tkl",
             "label": "Tokelau",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "to",
             "label": "Tongan",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "fit",
             "label": "Tornedalen Finnish",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "zh_Hant",
             "label": "Traditional Chinese",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "tkr",
             "label": "Tsakhur",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "tsd",
             "label": "Tsakonian",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "tsi",
             "label": "Tsimshian",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "ts",
             "label": "Tsonga",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "tn",
             "label": "Tswana",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "tcy",
             "label": "Tulu",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "tum",
             "label": "Tumbuka",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "aeb",
             "label": "Tunisian Arabic",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "tr",
             "label": "Turkish",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "tk",
             "label": "Turkmen",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "tru",
             "label": "Turoyo",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "tvl",
             "label": "Tuvalu",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "tyv",
             "label": "Tuvinian",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "tw",
             "label": "Twi",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "kcg",
             "label": "Tyap",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "udm",
             "label": "Udmurt",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "uga",
             "label": "Ugaritic",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "uk",
             "label": "Ukrainian",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "umb",
             "label": "Umbundu",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "und",
             "label": "Unknown Language",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "hsb",
             "label": "Upper Sorbian",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "ur",
             "label": "Urdu",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "ug",
             "label": "Uyghur",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "uz",
             "label": "Uzbek",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "vai",
             "label": "Vai",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "ve",
             "label": "Venda",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "vec",
             "label": "Venetian",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "vep",
             "label": "Veps",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "vi",
             "label": "Vietnamese",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "vo",
             "label": "Volap\u00fck",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "vro",
             "label": "V\u00f5ro",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "vot",
             "label": "Votic",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "vun",
             "label": "Vunjo",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "wa",
             "label": "Walloon",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "wae",
             "label": "Walser",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "war",
             "label": "Waray",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "was",
             "label": "Washo",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "guc",
             "label": "Wayuu",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "cy",
             "label": "Welsh",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "vls",
             "label": "West Flemish",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "fy",
             "label": "Western Frisian",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "mrj",
             "label": "Western Mari",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "wal",
             "label": "Wolaytta",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "wo",
             "label": "Wolof",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "wuu",
             "label": "Wu Chinese",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "xh",
             "label": "Xhosa",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "hsn",
             "label": "Xiang Chinese",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "yav",
             "label": "Yangben",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "yao",
             "label": "Yao",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "yap",
             "label": "Yapese",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "ybb",
             "label": "Yemba",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "yi",
             "label": "Yiddish",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "yo",
             "label": "Yoruba",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "zap",
             "label": "Zapotec",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "dje",
             "label": "Zarma",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "zza",
             "label": "Zaza",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "zea",
             "label": "Zeelandic",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "zen",
             "label": "Zenaga",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "za",
             "label": "Zhuang",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "gbz",
             "label": "Zoroastrian Dari",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "zu",
             "label": "Zulu",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         },
         {
             "value": "zun",
             "label": "Zuni",
-            "inactive": "0",
+            "inactive": false,
             "children": []
         }
     ]

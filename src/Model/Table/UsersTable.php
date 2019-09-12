@@ -7,8 +7,11 @@ use Cake\Core\Configure;
 use Cake\Database\Schema\TableSchema;
 use Cake\Datasource\EntityInterface;
 use Cake\Datasource\QueryInterface;
+use Cake\Utility\Hash;
 use Cake\Validation\Validator;
 use CsvMigrations\Model\AssociationsAwareTrait;
+use Qobo\Utils\ModuleConfig\ConfigType;
+use Qobo\Utils\ModuleConfig\ModuleConfig;
 
 /**
  * Users Model
@@ -32,6 +35,15 @@ class UsersTable extends Table
         $this->addBehavior('Qobo/Utils.Footprint');
 
         $this->setAssociations();
+
+        $tableConfig = (new ModuleConfig(ConfigType::MODULE(), $this->getAlias()))->parseToArray();
+        if (Hash::get($tableConfig, 'table.searchable')) {
+            $this->addBehavior('Search.Searchable', [
+                'fields' => ['first_name', 'last_name', 'username', 'email', 'created', 'modified']
+            ]);
+        }
+
+        $this->addBehavior('Lookup', ['lookupFields' => Hash::get($tableConfig, 'table.lookup_fields', [])]);
     }
 
     /**

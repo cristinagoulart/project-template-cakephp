@@ -1,0 +1,23 @@
+{
+    "table": {
+        "icon": "user",
+        "searchable": true,
+        "display_field": "name",
+        "typeahead_fields": [],
+        "basic_search_fields": [],
+        "lookup_fields": [],
+        "allow_reminders": [],
+        "translatable": false,
+        "permissions_parent_modules": [],
+        "type": "module"
+    },
+    "virtualFields": {},
+    "notifications": {
+        "enable": true,
+        "ignored_fields": []
+    },
+    "associations": {
+        "hide_associations": []
+    },
+    "associationLabels": {}
+}

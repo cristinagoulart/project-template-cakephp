@@ -68,6 +68,14 @@
             "order": 30,
             "children": [
                 {
+                    "label": "Swagger",
+                    "desc": "View swagger documentation",
+                    "url": "/swagger/",
+                    "icon": "exchange",
+                    "target": "_blank",
+                    "order": 50
+                },
+                {
                     "label": "Logs",
                     "desc": "View system logs",
                     "url": "/logs/",

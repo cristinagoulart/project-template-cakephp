@@ -20,10 +20,11 @@ class App extends AbstractCommand
      * Install a project
      *
      * @param string $env Custom env in KEY1=VALUE1,KEY2=VALUE2 format
-     *
+     * @param array $options Command options
+     * @option $skip-test-db Skip test database migrations
      * @return bool true on success or false on failure
      */
-    public function appInstall($env = '')
+    public function appInstall($env = '', array $options = ['skip-test-db' => false])
     {
         $env = $this->getDotenv($env);
 
@@ -31,7 +32,7 @@ class App extends AbstractCommand
             $this->exitError("Failed to do pre-install ");
         }
 
-        $result = $this->installCake($env);
+        $result = $this->installCake($env, $options);
 
         if (!$result) {
             $this->exitError("Failed to do app:install");
@@ -48,10 +49,11 @@ class App extends AbstractCommand
      * Update a project
      *
      * @param string $env Custom env in KEY1=VALUE1,KEY2=VALUE2 format
-     *
+     * @param array $options Command options
+     * @option $skip-test-db Skip test database migrations
      * @return bool true on success or false on failure
      */
-    public function appUpdate($env = '')
+    public function appUpdate($env = '', array $options = ['skip-test-db' => false])
     {
         $env = $this->getDotenv($env);
 
@@ -59,7 +61,7 @@ class App extends AbstractCommand
             $this->exitError("Failed to do app:update");
         }
 
-        $result = $this->updateCake($env);
+        $result = $this->updateCake($env, $options);
 
         if (!$result) {
             $this->exitError("Failed to do app:update");
@@ -121,9 +123,10 @@ class App extends AbstractCommand
      * Do CakePHP related install things
      *
      * @param array $env Environment
+     * @param array $options Command options
      * @return bool true on success or false on failure
      */
-    protected function installCake($env)
+    protected function installCake($env, array $options)
     {
         // Check DB connectivity and get server time
         $result = $this->taskMysqlBaseQuery()
@@ -182,32 +185,34 @@ class App extends AbstractCommand
         }
         $plugins = $result->getData()['data'];
 
-        // test plugin migrations
-        foreach ($plugins as $plugin) {
+        if (! (bool)$options['skip-test-db']) {
+            // test plugin migrations
+            foreach ($plugins as $plugin) {
+                $tasks[] = $this->taskCakephpMigration()
+                    ->connection('test')
+                    ->plugin($plugin);
+            }
+
+            // test app migration
             $tasks[] = $this->taskCakephpMigration()
-                ->connection('test')
-                ->plugin($plugin);
+                ->connection('test');
+
+            // drop test DB
+            $tasks[] = $this->taskMysqlDbDrop()
+                 ->db($this->getValue('DB_NAME', $env) . "_test")
+                 ->user($this->getValue('DB_ADMIN_USER', $env))
+                 ->pass($this->getValue('DB_ADMIN_PASS', $env))
+                 ->hide($this->getValue('DB_ADMIN_PASS', $env))
+                 ->host($this->getValue('DB_HOST', $env));
+
+            // create test DB
+            $tasks[] = $this->taskMysqlDbCreate()
+                ->db($this->getValue('DB_NAME', $env) . "_test")
+                ->user($this->getValue('DB_ADMIN_USER', $env))
+                ->pass($this->getValue('DB_ADMIN_PASS', $env))
+                ->hide($this->getValue('DB_ADMIN_PASS', $env))
+                ->host($this->getValue('DB_HOST', $env));
         }
-
-        // test app migration
-        $tasks[] = $this->taskCakephpMigration()
-            ->connection('test');
-
-        // drop test DB
-        $tasks[] = $this->taskMysqlDbDrop()
-             ->db($this->getValue('DB_NAME', $env) . "_test")
-             ->user($this->getValue('DB_ADMIN_USER', $env))
-             ->pass($this->getValue('DB_ADMIN_PASS', $env))
-             ->hide($this->getValue('DB_ADMIN_PASS', $env))
-             ->host($this->getValue('DB_HOST', $env));
-
-        // create test DB
-        $tasks[] = $this->taskMysqlDbCreate()
-            ->db($this->getValue('DB_NAME', $env) . "_test")
-            ->user($this->getValue('DB_ADMIN_USER', $env))
-            ->pass($this->getValue('DB_ADMIN_PASS', $env))
-            ->hide($this->getValue('DB_ADMIN_PASS', $env))
-            ->host($this->getValue('DB_HOST', $env));
 
         // cleanup database logs
         $tasks[] = $this->taskCakephpShellScript()->name('database_log')->param('gc');
@@ -233,7 +238,8 @@ class App extends AbstractCommand
             'role import',
             'capability assign',
             'menu import',
-            'validate' // run after dblists are populated
+            'validate', // run after dblists are populated
+            'settings'
         ];
 
         foreach ($shellScripts as $script) {
@@ -263,9 +269,10 @@ class App extends AbstractCommand
      * Do CakePHP related update things
      *
      * @param array $env Environment
+     * @param array $options Command options
      * @return bool true on success or false on failure
      */
-    protected function updateCake($env)
+    protected function updateCake($env, array $options)
     {
         // Check DB connectivity and get server time
         $result = $this->taskMysqlBaseQuery()
@@ -319,32 +326,34 @@ class App extends AbstractCommand
         }
         $plugins = $result->getData()['data'];
 
-        // test plugin migrations
-        foreach ($plugins as $plugin) {
+        if (! (bool)$options['skip-test-db']) {
+            // test plugin migrations
+            foreach ($plugins as $plugin) {
+                $tasks[] = $this->taskCakephpMigration()
+                    ->connection('test')
+                    ->plugin($plugin);
+            }
+
+            // test app migration
             $tasks[] = $this->taskCakephpMigration()
-                ->connection('test')
-                ->plugin($plugin);
+                ->connection('test');
+
+            // drop test DB
+            $tasks[] = $this->taskMysqlDbDrop()
+                 ->db($this->getValue('DB_NAME', $env) . "_test")
+                 ->user($this->getValue('DB_ADMIN_USER', $env))
+                 ->pass($this->getValue('DB_ADMIN_PASS', $env))
+                 ->hide($this->getValue('DB_ADMIN_PASS', $env))
+                 ->host($this->getValue('DB_HOST', $env));
+
+            // create test DB
+            $tasks[] = $this->taskMysqlDbCreate()
+                ->db($this->getValue('DB_NAME', $env) . "_test")
+                ->user($this->getValue('DB_ADMIN_USER', $env))
+                ->pass($this->getValue('DB_ADMIN_PASS', $env))
+                ->hide($this->getValue('DB_ADMIN_PASS', $env))
+                ->host($this->getValue('DB_HOST', $env));
         }
-
-        // test app migration
-        $tasks[] = $this->taskCakephpMigration()
-            ->connection('test');
-
-        // drop test DB
-        $tasks[] = $this->taskMysqlDbDrop()
-             ->db($this->getValue('DB_NAME', $env) . "_test")
-             ->user($this->getValue('DB_ADMIN_USER', $env))
-             ->pass($this->getValue('DB_ADMIN_PASS', $env))
-             ->hide($this->getValue('DB_ADMIN_PASS', $env))
-             ->host($this->getValue('DB_HOST', $env));
-
-        // create test DB
-        $tasks[] = $this->taskMysqlDbCreate()
-            ->db($this->getValue('DB_NAME', $env) . "_test")
-            ->user($this->getValue('DB_ADMIN_USER', $env))
-            ->pass($this->getValue('DB_ADMIN_PASS', $env))
-            ->hide($this->getValue('DB_ADMIN_PASS', $env))
-            ->host($this->getValue('DB_HOST', $env));
 
         // cleanup database logs
         $tasks[] = $this->taskCakephpShellScript()->name('database_log')->param('gc');
@@ -365,7 +374,8 @@ class App extends AbstractCommand
             'role import',
             'capability assign',
             'menu import',
-            'validate' // run after dblists are populated
+            'validate', // run after dblists are populated
+            'settings'
         ];
 
         foreach ($shellScripts as $script) {

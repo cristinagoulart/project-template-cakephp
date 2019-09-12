@@ -216,9 +216,11 @@ abstract class BaseActionListener implements EventListenerInterface
      */
     protected function attachRelatedMenu(EntityInterface $entity, Table $table, array $user, array $data) : void
     {
+        list($plugin, $controller) = pluginSplit($this->getControllerName($table));
+
         $data += [
             'plugin' => false,
-            'controller' => $this->getControllerName($table),
+            'controller' => $controller,
             'displayField' => $table->getDisplayField(),
             'entity' => $entity,
             'user' => $user

@@ -92,3 +92,16 @@
     margin-top: 24px;
     padding-top: 24px;
 }
+
+/** hr separator on menu dropdown */
+hr.separator {
+    margin: 5px;
+}
+.separatorTitle {
+    display: block;
+    padding: 3px 20px;
+    clear: both;
+    font-weight: 600;
+    color: #333;
+    white-space: nowrap;
+}

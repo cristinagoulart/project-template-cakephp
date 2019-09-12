@@ -1,4 +1,6 @@
 <?php
+deprecationWarning('"App.Search/Menu/search-view-options" element is deprecated.');
+
 use Cake\Core\Configure;
 use RolesCapabilities\Access\AccessFactory;
 

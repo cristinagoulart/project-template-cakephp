@@ -1,0 +1,9 @@
+{
+    "name" : {
+        "label" : "label name",
+        "personal" : true
+    },
+    "description" : {
+        "label" : "label description"
+    }
+}

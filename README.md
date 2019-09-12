@@ -78,6 +78,8 @@ git push origin project-template-update
 Usage
 -----
 
+### PHP
+
 Now that you have the project template installed, check that it works
 before you start working on your changes.  Fire up the PHP web server:
 
@@ -125,6 +127,34 @@ process.  By default, it is suggested that you have these:
 You can, of course, add your own, remove these, or change them any way you want.  Have a look at
 [Robo](http://robo.li) documentation for more information on how
 to use these targets and pass runtime configuration parameters.
+
+### JavaScript
+
+Template uses VueJS as main JS library. We're slowly abandoning jQuery codebase,
+transferring everything into Vue components.
+
+In order to run JS part of the code, especially if you want to check how module
+Search is working, you have to compile JS components first.
+
+Project will be relying on [LTS releases](https://github.com/nodejs/Release) of [NodeJS](https://nodejs.org/en/download/).
+You can follow this instruction to set [Node and npm](https://docs.npmjs.com/downloading-and-installing-node-js-and-npm) on your machine.
+
+You have to install all required modules from `package.json` with this command:
+
+```bash
+npm install
+```
+
+We provide `package-lock.json` in `project-template-cakephp` to ensure that the codebase
+is properly tested against these versions.
+
+Inside `package.json` you can find main script commands in order to run the following:
+
+* `npm run build:dev` - running HRM version of the JS
+* `npm run build:prod` - compile production ready code in `webroot/dist/` directory.
+* `npm run watch` - using `watch` option of webpack to keep development version of the code in `webroot/dist`. It's useful to check how the code will look inside PHP application.
+* `npm run lint` - run ESLint checks
+* `npm run test` - run unit tests with `jest`.
 
 
 Test

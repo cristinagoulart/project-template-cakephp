@@ -3,7 +3,7 @@
 namespace App\Test\TestCase\Event;
 
 use App\Event\Plugin\Search\Model\SearchableFieldsListener;
-use App\Test\Fixture\ThingsTable;
+use App\Model\Table\ThingsTable;
 use Cake\Event\Event;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
@@ -73,8 +73,9 @@ class SearchableFieldsListenerTest extends TestCase
             $user,
             false
         );
-        $this->assertCount(1, $searchableFields);
-        $this->assertEquals('string', $searchableFields['Things.searchable']['type']);
+
+        $this->assertCount(31, $searchableFields);
+        $this->assertEquals('string', $searchableFields['Things.name']['type']);
     }
 
     public function testGetSearchableFieldsWithAssociations(): void
@@ -92,9 +93,14 @@ class SearchableFieldsListenerTest extends TestCase
             $user,
             true
         );
-        $this->assertCount(7, $searchableFields);
-        $this->assertEquals('string', $searchableFields['Things.searchable']['type']);
-        $this->assertEquals('string', $searchableFields['Users.email']['type']);
+
+        // 31 searchable fields in Things +
+        // 6 searchable fields in AssignedTo (Users) +
+        // 6 searchable fields in CreatedBy (Users) +
+        // 6 searchable fields in Modified (Users)
+        $this->assertCount(31 + 3 * 6, $searchableFields);
+        $this->assertEquals('string', $searchableFields['Things.name']['type']);
+        $this->assertEquals('string', $searchableFields['ModifiedByUsers.modified']['type']);
     }
 
     public function testGetBasicSearchFieldsFromView(): void

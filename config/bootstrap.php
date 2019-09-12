@@ -30,6 +30,7 @@ require __DIR__ . '/paths.php';
 require CORE_PATH . 'config' . DS . 'bootstrap.php';
 
 use App\Feature\Factory as FeatureFactory;
+use App\Settings\DbConfig;
 use Burzum\FileStorage\Storage\Listener\LocalListener;
 use CakephpWhoops\Error\WhoopsHandler;
 use Cake\Cache\Cache;
@@ -72,6 +73,7 @@ if (file_exists(ROOT . DS . '.env')) {
 try {
     Configure::config('default', new PhpConfig());
     Configure::load('app', 'default', false);
+    Configure::load('settings', 'default');
     Configure::load('avatar', 'default');
     Configure::load('cron', 'default');
     Configure::load('csv_migrations', 'default');
@@ -84,6 +86,9 @@ try {
     Configure::load('menu', 'default');
     Configure::load('roles_capabilities', 'default');
     Configure::load('scheduled_log', 'default');
+    Configure::load('system_info', 'default');
+    Configure::load('admin_lte', 'default');
+    Configure::load('log_actions', 'default');
 } catch (\Exception $e) {
     exit($e->getMessage() . "\n");
 }
@@ -96,6 +101,19 @@ require_once __DIR__ . '/routes_filters.php';
  * shared configuration.
  */
 //Configure::load('app_local', 'default');
+
+Cache::setConfig(Configure::consume('Cache'));
+ConnectionManager::setConfig(Configure::consume('Datasources'));
+
+/**
+ * Load custom settings from the DB
+ */
+Configure::config('dbconfig', new DbConfig());
+Configure::load('Settings', 'dbconfig');
+/**
+ *  After this point, all the Configure::load() will overwrite
+ *  those from the DB, if exist.
+ */
 
 /*
  * When debug = true the metadata cache should only last
@@ -168,8 +186,6 @@ if (!Configure::read('App.fullBaseUrl')) {
 Log::drop('debug');
 Log::drop('error');
 
-Cache::setConfig(Configure::consume('Cache'));
-ConnectionManager::setConfig(Configure::consume('Datasources'));
 /*
  * Read, rather than consume, since we have some logic that
  * needs to know if email sending is enabled or not.
@@ -238,6 +254,10 @@ ServerRequest::addDetector('tablet', function ($request) {
  * Plugin::load('Migrations'); //Loads a single plugin named Migrations
  *
  */
+
+Configure::write('Users.config', ['users']);
+Plugin::load('CakeDC/Users', ['routes' => true, 'bootstrap' => true]);
+
 Plugin::load('Qobo/Utils', ['bootstrap' => true]);
 Plugin::load('CsvMigrations', ['bootstrap' => true, 'routes' => true]);
 Plugin::load('Crud');
@@ -255,14 +275,6 @@ if (Configure::read('Swagger.crawl')) {
 Plugin::load('AdminLTE', ['bootstrap' => true, 'routes' => true]);
 
 Plugin::load('ADmad/JwtAuth');
-
-/*
- * @todo seems like if CakeDC/Users plugin is loaded
- * before any of our plugins that use routes, it breaks
- * them, needs to be investigated further.
- */
-Configure::write('Users.config', ['users']);
-Plugin::load('CakeDC/Users', ['routes' => true, 'bootstrap' => true]);
 
 // @link https://github.com/burzum/cakephp-file-storage/blob/master/docs/Documentation/Included-Event-Listeners.md
 EventManager::instance()->on(new LocalListener([
@@ -312,16 +324,6 @@ call_user_func(function () {
         EventManager::instance()->on(new $eventClassName);
     }
 });
-
-/*
- * Load AdminLTE theme settings
- */
-Configure::load('admin_lte', 'default');
-
-/*
- * Load system information settings
- */
-Configure::load('system_info', 'default');
 
 if (!is_null(env('API_AUTHENTICATION')) && (bool)env('API_AUTHENTICATION') === false) {
     Log::write('critical', "Non-authenticated API requests are deprecated");

@@ -4,7 +4,6 @@ namespace App\Test\TestCase\Controller\Api\V1\V0;
 use App\Event\Controller\Api\EditActionListener;
 use App\Event\Controller\Api\IndexActionListener;
 use App\Event\Controller\Api\ViewActionListener;
-use App\Event\Model\LookupListener;
 use Cake\Event\EventManager;
 use Cake\Http\Client;
 use Cake\ORM\TableRegistry;
@@ -25,7 +24,7 @@ class UsersControllerTest extends IntegrationTestCase
     private $Users;
 
     public $fixtures = [
-        'plugin.CakeDC/Users.users',
+        'app.users',
         'plugin.Groups.groups',
         'plugin.Groups.groups_users',
     ];
@@ -57,7 +56,6 @@ class UsersControllerTest extends IntegrationTestCase
 
         EventManager::instance()->on(new EditActionListener());
         EventManager::instance()->on(new IndexActionListener());
-        EventManager::instance()->on(new LookupListener());
         EventManager::instance()->on(new ViewActionListener());
     }
 

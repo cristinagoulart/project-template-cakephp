@@ -1,6 +1,11 @@
 <?php
 namespace App\Event\Plugin\Search\Model;
 
+deprecationWarning(
+    '"App\Event\Plugin\Search\Model\SearchableFieldsListener" class is deprecated. This functionality is ' .
+    'now handled by "\App\Utility\Search"'
+);
+
 use App\Model\Table\UsersTable;
 use Cake\Core\App;
 use Cake\Datasource\RepositoryInterface;
@@ -262,7 +267,9 @@ class SearchableFieldsListener implements EventListenerInterface
 
         $result = [];
         if (!empty($config['table']['basic_search_fields'])) {
-            $result = array_filter(array_map('trim', $config['table']['basic_search_fields']), 'strlen');
+            $result = array_filter(array_map('trim', $config['table']['basic_search_fields']), function ($value) {
+                return (bool)strlen($value);
+            });
         }
 
         return $result;

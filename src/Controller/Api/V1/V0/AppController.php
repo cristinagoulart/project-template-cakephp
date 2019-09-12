@@ -4,9 +4,11 @@ namespace App\Controller\Api\V1\V0;
 use App\Event\EventName;
 use App\Feature\Factory as FeatureFactory;
 use App\Swagger\Annotation;
+use AuditStash\Meta\RequestMetadata;
 use Cake\Controller\Controller;
 use Cake\Core\Configure;
 use Cake\Event\Event;
+use Cake\Event\EventManager;
 use Cake\Http\Exception\ForbiddenException;
 use Cake\Http\Exception\NotFoundException;
 use Cake\ORM\Table;
@@ -42,7 +44,8 @@ class AppController extends Controller
                 'Crud.Delete',
                 'Crud.Lookup',
                 'related' => ['className' => '\App\Crud\Action\RelatedAction'],
-                'schema' => ['className' => '\App\Crud\Action\SchemaAction']
+                'schema' => ['className' => '\App\Crud\Action\SchemaAction'],
+                'search' => ['className' => '\App\Crud\Action\SearchAction']
             ],
             'listeners' => [
                 'Crud.Api',
@@ -138,6 +141,9 @@ class AppController extends Controller
 
         // set current user for access to all MVC layers
         User::setCurrentUser((array)$this->Auth->user());
+
+        // for audit-stash functionality
+        EventManager::instance()->on(new RequestMetadata($this->request, $this->Auth->user('id')));
     }
 
     /**

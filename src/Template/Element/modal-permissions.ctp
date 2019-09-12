@@ -1,5 +1,7 @@
 <?php
 use Cake\ORM\TableRegistry;
+use Cake\Utility\Inflector;
+use RolesCapabilities\Model\Table\PermissionsTable;
 
 $this->Html->script(
     [
@@ -38,7 +40,23 @@ $query = $table->find()
     ->where(['model' => $this->name, 'foreign_key' => $id])
     ->limit(100);
 $permissions = $query->all();
+
+// get controller permissions
+$controllerPermissions = ['' => ''];
+foreach (PermissionsTable::ALLOWED_ACTIONS as $action) {
+    $controllerPermissions[$action] = Inflector::humanize($action);
+}
 ?>
+
+<?php $this->Html->scriptStart(['block' => 'scriptBottom']); ?>
+    (function ($) {
+        $(document).ready(function () {
+            let parent = $('#permissions-modal-add').closest('.btn-group');
+            $('#permissions-modal-add').detach().appendTo(parent);
+        });
+    })(jQuery);
+<?= $this->Html->scriptEnd() ?>
+
 <div class="modal fade" id="permissions-modal-add" tabindex="-1" role="dialog" aria-labelledby="mySetsLabel">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
@@ -76,7 +94,7 @@ $permissions = $query->all();
                         <?= $this->Form->label(__('Permission')) ?>
                         <?= $this->Form->select(
                             'type',
-                            ['' => '', 'view' => 'View', 'edit' => 'Edit', 'delete' => 'Delete'],
+                            $controllerPermissions,
                             ['class' => 'select2', 'multiple' => false, 'required' => true]
                         ) ?>
                     </div>

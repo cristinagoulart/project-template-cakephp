@@ -47,7 +47,7 @@
         "qobo/cakephp-menu": "^16.0",
         "qobo/cakephp-roles-capabilities": "^18.0",
         "qobo/cakephp-search": "^20.0",
-        "qobo/cakephp-utils": "^12.0",
+        "qobo/cakephp-utils": "^13.0",
         "qobo/qobo-robo": "^2.0",
         "qobo/qobo-robo-cakephp": "^2.0"
     },
@@ -99,7 +99,7 @@
     },
     "extra": {
         "hooks": {
-            "pre-commit": "PHPCS_FILES=$(git diff-index --name-only --cached --diff-filter=ACMR HEAD 'tests/**.php' 'src/**.php' 'webroot/**.php'); if [ \"$PHPCS_FILES\" ]; then ./vendor/bin/phpcs $PHPCS_FILES; fi"
+            "pre-commit": "PHPCS_FILES=$(git diff-index --name-only --cached --diff-filter=ACMR HEAD 'tests/**.php' 'src/**.php' 'webroot/**.php'); if [ \"$PHPCS_FILES\" ]; then ./vendor/bin/phpcs $PHPCS_FILES; php -d memory_limit=-1 ./vendor/bin/phpstan analyse $PHPCS_FILES; fi;"
         }
     },
     "prefer-stable": true,

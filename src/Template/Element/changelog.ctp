@@ -46,6 +46,7 @@ $iconColors = [
         <ul class="timeline">
 <?php foreach ($changelog as $record) : ?>
     <?php
+
     $date = $record->timestamp->i18nFormat('d MMM. YYY');
 
     $url = '#';
@@ -71,9 +72,33 @@ $iconColors = [
         }
         ?>
     <?php endif; ?>
+    <?php if ($record->get('type') === 'read'): ?>
+        <li>
+            <i class="fa fa-eye bg-<?= current($iconColors) ?>"></i>
+            <?php
+            next($iconColors);
+            if (!current($iconColors)) {
+                reset($iconColors);
+            } ?>
+            <div class="timeline-item">
+                <span class="time"><i class="fa fa-clock-o"></i>
+                    <?= $record->timestamp->timeAgoInWords([
+                        'format' => 'MMM d, YYY | HH:mm:ss',
+                        'end' => '1 month'
+                    ]) ?>
+                </span>
+                <h3 class="timeline-header">
+                    <a href="<?= $url ?>"><?= $username; ?></a> Retrieved entity data
+                </h3>
+        </div>
+        </li>
+    <?php else: ?>
+
         <li>
             <i class="fa fa-book bg-<?= current($iconColors) ?>"></i>
             <?php
+            $changed = json_decode($record->changed);
+            $original = json_decode($record->original);
             next($iconColors);
             if (!current($iconColors)) {
                 reset($iconColors);
@@ -98,10 +123,6 @@ $iconColors = [
                             </tr>
                         </thead>
                         <tbody>
-    <?php
-    $changed = json_decode($record->changed);
-    $original = json_decode($record->original);
-    ?>
     <?php foreach ($changed as $k => $v) : ?>
     <?php
     $old = '';
@@ -111,31 +132,46 @@ $iconColors = [
         }
     }
     ?>
-    <tr>
-        <td><?= $factory->renderName($tableName, $k) ?></td>
-        <td><?= $factory->renderValue($tableName, $k, $old) ?></td>
-        <?php
-        if (is_object($v)) {
-            if (!empty($v->date) && !empty($v->timezone)) {
-                $v = new Time($v->date, $v->timezone);
-            } else {
-                $v = __('Unknown value');
-            }
-        }
-        ?>
-        <td><?= $factory->renderValue($tableName, $k, $v) ?></td>
-    </tr>
+                        <tr>
+                            <td><?= $factory->renderName($tableName, $k) ?></td>
+                            <td><?= $factory->renderValue($tableName, $k, $old) ?></td>
+                            <?php
+                            if (is_object($v)) {
+                                if (!empty($v->date) && !empty($v->timezone)) {
+                                    $v = new Time($v->date, $v->timezone);
+                                } else {
+                                    $v = __('Unknown value');
+                                }
+                            }
+                            ?>
+                            <td><?= $factory->renderValue($tableName, $k, $v) ?></td>
+                        </tr>
     <?php endforeach; ?>
                     </tbody>
                 </table>
             </div>
         </div>
     </li>
+    <?php endif; ?>
 <?php
 $oldUser = $username;
 $oldDate = $date;
 ?>
 <?php endforeach; ?>
         </ul>
+        <div class="box box-primary">
+            <div class="box-body">
+                <div class="paginator">
+                    <?= $this->Paginator->counter([
+                        'format' => __('Showing {{start}} to {{end}} of {{count}} entries')
+                    ]) ?>
+                    <ul class="pagination pagination-sm no-margin pull-right">
+                        <?= $this->Paginator->prev('&laquo;', ['escape' => false]) ?>
+                        <?= $this->Paginator->numbers() ?>
+                        <?= $this->Paginator->next('&raquo;', ['escape' => false]) ?>
+                    </ul>
+                </div>
+            </div>
+        </div>
     </div>
 </div>

@@ -9,6 +9,11 @@ use Qobo\Utils\ModuleConfig\ConfigType;
 use Qobo\Utils\ModuleConfig\ModuleConfig;
 use Search\Event\EventName;
 
+deprecationWarning(
+    '"App\Event\Plugin\Search\Model\ChildListItemsListener" class is deprecated. This functionality is ' .
+    'now handled in the UI'
+);
+
 class ChildListItemsListener implements EventListenerInterface
 {
     /**
@@ -19,7 +24,7 @@ class ChildListItemsListener implements EventListenerInterface
     /**
      * File list constant
      */
-    const LIST_TYPE_FILELIST = 'list';
+    const LIST_TYPE_FILELIST = ['list', 'sublist'];
 
     /**
      * Implemented Events
@@ -99,6 +104,7 @@ class ChildListItemsListener implements EventListenerInterface
      */
     private function getFileListChildren(string $parentValue, string $listName): array
     {
+        $module = '';
         if (strpos($listName, '.') !== false) {
             list($module, $name) = explode('.', $listName);
 
@@ -111,11 +117,11 @@ class ChildListItemsListener implements EventListenerInterface
             $listName = !empty($match[1]) ? $match[1] : null;
         }
 
-        $moduleConfig = new ModuleConfig(ConfigType::LISTS(), '', $listName);
+        $moduleConfig = new ModuleConfig(ConfigType::LISTS(), $module, $listName);
         $result = $moduleConfig->parseToArray();
 
         $list = [];
-        foreach ($result as $value => $item) {
+        foreach ($result['items'] as $value => $item) {
             if ($value !== $parentValue || empty($item['children'])) {
                 continue;
             }
@@ -150,7 +156,7 @@ class ChildListItemsListener implements EventListenerInterface
             $item = $query->first();
 
             $list = $this->getDbListChildren($item['id'], $table);
-        } elseif ($type == static::LIST_TYPE_FILELIST) {
+        } elseif (in_array($type, static::LIST_TYPE_FILELIST)) {
             $list = $this->getFileListChildren($value, $listName);
         }
 
