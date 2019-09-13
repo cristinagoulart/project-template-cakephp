@@ -147,10 +147,40 @@ abstract class BaseActionListener implements EventListenerInterface
          */
         $factory = $this->getFieldHandlerFactory();
 
+        //Find fields that has the following suffixes
+        $prettifySuffixesFields = preg_grep("/^.*\_(unit|amount|currency)$/", $fields);
+
         foreach ($fields as $field) {
             // Fix alias set by pagination hask
             $table->setAlias(Inflector::camelize($table->getTable()));
-            $entity->set($field, $factory->renderValue($table, $field, $entity->get($field), ['entity' => $entity]));
+
+            if (!in_array($field, $prettifySuffixesFields)) {
+                $entity->set($field, $factory->renderValue($table, $field, $entity->get($field), ['entity' => $entity]));
+                continue;
+            }
+
+            //Process prettified field
+            $unit = preg_match("/^.*\_unit$/", $field);
+            $amount = preg_match("/^.*\_amount$/", $field);
+            $currency = preg_match("/^.*\_currency$/", $field);
+
+            $fieldDefinitions = [];
+
+            if ($unit) {
+                $fieldDefinitions = [
+                    'type' => 'list(units_area)'
+                ];
+            } elseif ($amount) {
+                $fieldDefinitions = [
+                    'type' => 'decimal'
+                ];
+            } elseif ($currency) {
+                $fieldDefinitions = [
+                    'type' => 'currency(currencies)'
+                ];
+            }
+
+            $entity->set($field, $factory->renderValue($table, $field, $entity->get($field), ['entity' => $entity, 'fieldDefinitions' => $fieldDefinitions]));
         }
     }
 
