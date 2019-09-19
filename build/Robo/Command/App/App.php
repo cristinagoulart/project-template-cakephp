@@ -2,7 +2,6 @@
 
 namespace Qobo\Robo\Command\App;
 
-use Cake\Shell\SchemaCacheShell;
 use Qobo\Robo\AbstractCommand;
 use Qobo\Robo\Runner;
 
