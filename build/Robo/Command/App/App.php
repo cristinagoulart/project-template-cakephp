@@ -2,6 +2,7 @@
 
 namespace Qobo\Robo\Command\App;
 
+use Cake\Shell\SchemaCacheShell;
 use Qobo\Robo\AbstractCommand;
 use Qobo\Robo\Runner;
 
@@ -81,6 +82,8 @@ class App extends AbstractCommand
      */
     public function appRemove()
     {
+        // clear ORM cache
+        $this->taskCakephpShellScript()->name('orm_cache')->param('clear')->run();
         $env = $this->getDotenv();
 
         // drop test database
