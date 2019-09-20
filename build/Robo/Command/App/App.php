@@ -81,6 +81,10 @@ class App extends AbstractCommand
      */
     public function appRemove()
     {
+        // clear all the caches
+        $this->taskCakephpShellScript()->name('orm_cache')->param('clear')->run();
+        $this->taskCakephpShellScript()->name('cache')->param('clear_all')->run();
+
         $env = $this->getDotenv();
 
         // drop test database
