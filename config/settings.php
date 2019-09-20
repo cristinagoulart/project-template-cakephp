@@ -22,7 +22,7 @@ return [
                 'General' => [
                     'Transport' => [
                         'alias' => 'EmailTransport.default.className',
-                        'type' => 'string',
+                        'type' => 'list',
                         'selectOptions' => [
                             'mail' => 'Mail',
                             'smtp' => 'Smtp',
