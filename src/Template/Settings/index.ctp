@@ -5,11 +5,29 @@ use Cake\Utility\Inflector;
 use CsvMigrations\FieldHandlers\FieldHandlerFactory;
 
 $fhf = new FieldHandlerFactory($this);
+
+echo $this->Html->css(
+    [
+        'AdminLTE./bower_components/select2/dist/css/select2.min',
+        'Qobo/Utils.select2-bootstrap.min',
+        'Qobo/Utils.select2-style',
+    ],
+    ['block' => 'css']
+);
+
+echo $this->Html->script(
+    [
+        'AdminLTE./bower_components/select2/dist/js/select2.full.min',
+        'Qobo/Utils.select2.init',
+    ],
+    ['block' => 'scriptBottom']
+);
+
 $this->Html->scriptStart(array('block' => 'scriptBottom', 'inline' => false)); ?>
 
 $(document).ready(function(){
 	$('#settings-search').on('input',function(){
-		let search = $(this).val();	
+		let search = $(this).val();
 		let labels = $('.tab-content').find('label')
 		$('.tab-content').find("input").css("background-color","white")
 		if(!(search.length > 2)){
@@ -45,7 +63,7 @@ $(document).ready(function(){
 <section class="content-header">
 	<h1><?= __('Settings'); ?>
 		<?= isset($afterTitle) ? ' » '. $afterTitle : '' ?>
-		<?= isset($linkToGenerator) ? '<h4><a href=/settings/generator/>settings.php file builder utility</a></h4>' : '' ?>		
+		<?= isset($linkToGenerator) ? '<h4><a href=/settings/generator/>settings.php file builder utility</a></h4>' : '' ?>
 	</h1>
 </section>
 <section class="content">
@@ -123,14 +141,21 @@ $(document).ready(function(){
 												'value' => $value,
 												'name'  => $alias,
 											];
-											echo $fhf->renderInput('settings', $alias, $value, ['fieldDefinitions' => $definition , 'label' => $field]);
-											if(isset($fieldValue['help']) ):
+                                            $fieldDefinition = [
+                                                'fieldDefinitions' => $definition,
+                                                'label' => $field
+                                            ];
+                                            if ($fieldValue['type'] === 'list' && !empty($fieldValue['selectOptions'])) {
+                                                $fieldDefinition['selectOptions'] = $fieldValue['selectOptions'];
+                                            }
+                                            echo $fhf->renderInput('settings', $alias, $value, $fieldDefinition);
+                                            if(isset($fieldValue['help']) ):
 												?>
 													<span class="help-block"><?= $fieldValue['help'] ?></span>
 												<?php
 											endif;
 										endforeach;
-										?>	
+										?>
 										</div>
 										</div>
 									<?php
@@ -150,7 +175,7 @@ $(document).ready(function(){
 					?>
 				</div>
 			</div>
-			<?php 
+			<?php
 				echo $this->Form->button(__('Submit'), ['class' => 'btn btn-primary','value' => 'submit']);
 				echo $this->Form->end();
 			?>
