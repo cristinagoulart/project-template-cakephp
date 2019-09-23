@@ -42,13 +42,13 @@
         <div class="col-md-2">
           <ul class="nav nav-tabs nav-stacked">
             <li v-for="type in widgetTypes" v-bind:class="getActiveTab(type, widgetTypes[0], '')" class="widget-tab">
-              <a :href="'#' + type" data-toggle="tab">{{camelize(type)}}</a>
+              <a :href="'#' + type + '_tab'" data-toggle="tab">{{camelize(type)}}</a>
             </li>
           </ul>
         </div>
         <div class="col-md-10">
           <div class="tab-content">
-            <div role="tabpanel" v-bind:class="getActiveTab(type, widgetTypes[0], 'tab-pane')" v-for="type in widgetTypes" :id="type">
+            <div role="tabpanel" v-bind:class="getActiveTab(type, widgetTypes[0], 'tab-pane')" v-for="type in widgetTypes" :id="type + '_tab'">
               <div class="box-body">
                 <ul class="nav nav-tabs" v-if="type == 'saved_search'">
                   <li v-for="model in searchModules" v-bind:class="getActiveTab(model, searchModules[0], '')">
