@@ -26,6 +26,14 @@ export const FIELD_TYPE_MAP = {
   url: 'text'
 }
 
+export const AGGREGATES = [
+  { text: 'Average', value: 'AVG' },
+  { text: 'Count', value: 'COUNT' },
+  { text: 'Maximum', value: 'MAX' },
+  { text: 'Minimum', value: 'MIN' },
+  { text: 'Sum', value: 'SUM' }
+]
+
 export const CONJUNCTIONS = [
     { text: 'Match all filters', value: 'AND' },
     { text: 'Match any filter', value: 'OR' }

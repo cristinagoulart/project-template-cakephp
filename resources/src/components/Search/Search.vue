@@ -9,6 +9,7 @@
                             <div class="row">
                                 <FilterSelector />
                                 <GroupBySelector />
+                                <div class="col-xs-12"><AggregateSelector /></div>
                                 <div class="col-xs-12">
                                     <div class="form-group"><ConjunctionSelector /></div>
                                 </div>
@@ -100,6 +101,8 @@
 </template>
 <script>
 import axios from 'axios'
+import Aggregate from '@/utils/aggregate'
+import AggregateSelector from '@/components/Search/AggregateSelector.vue'
 import ConjunctionSelector from '@/components/Search/ConjunctionSelector.vue'
 import FieldsSelector from '@/components/Search/FieldsSelector.vue'
 import FilterSelector from '@/components/Search/FilterSelector.vue'
@@ -116,6 +119,7 @@ import { mapGetters, mapState, mapMutations } from 'vuex'
 export default {
     name: 'Search',
     components: {
+        AggregateSelector,
         ConjunctionSelector,
         FieldsSelector,
         FilterSelector,
@@ -321,6 +325,7 @@ export default {
             this.tableHeaders = []
             this.fields.forEach(function (field) {
                 const value = field
+                field = Aggregate.isAggregate(value) ? Aggregate.extractAggregateField(field) : field
                 const filter = self.filtersList.find(item => item.field === field)
                 if (filter === undefined) {
                     return
@@ -328,7 +333,7 @@ export default {
 
                 self.tableHeaders.push({
                     value: value,
-                    text: filter.label
+                    text: filter.label + (Aggregate.isAggregate(value) ?' (' + Aggregate.extractAggregateType(value) + ')' : '')
                 })
             })
 
