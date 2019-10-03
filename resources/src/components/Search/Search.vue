@@ -68,7 +68,8 @@
                   :headers="tableHeaders"
                   @sort-field-updated="sortFieldUpdated"
                   @sort-order-updated="sortOrderUpdated"
-                  :with-batch="withBatch">
+                  :with-batch-delete="!disableBatch && withBatchDelete"
+                  :with-batch-edit="!disableBatch && withBatchEdit"
                 </table-ajax>
             </div>
         </div>
@@ -163,7 +164,11 @@ export default {
             type: Boolean,
             default: true
         },
-        withBatch: {
+        withBatchDelete: {
+            type: Boolean,
+            default: true
+        },
+        withBatchEdit: {
             type: Boolean,
             default: true
         },
@@ -180,6 +185,7 @@ export default {
     data() {
         return {
             basic_types: FIELDS_BASIC_TYPES,
+            disableBatch: false,
             filter: '',
             loadResult: false,
             sets: {
@@ -319,6 +325,7 @@ export default {
             this.unwatchCriteria()
 
             this.loadResult = false
+            this.disableBatch = '' !== this.groupBy || Aggregate.hasAggregate(this.fields)
 
             this.tableData = JSON.parse(JSON.stringify({ criteria: this.criteria, group_by: this.groupBy, conjunction: this.conjunction }))
 

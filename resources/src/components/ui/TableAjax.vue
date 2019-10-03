@@ -2,11 +2,11 @@
     <div>
         <div class="row">
             <div class="col-xs-12 text-right">
-                <div class="btn-group btn-group-sm">
-                <button v-if="! data.group_by && withBatch" type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" :disabled="batchButton.disabled" aria-expanded="false"><i class="fa fa-bars"></i> Batch <span class="caret"></span></button>
-                <ul class="dropdown-menu">
-                    <li><a href="#" @click.prevent="batchEdit()"><i class="fa fa-pencil"></i> Edit</a></li>
-                    <li><a href="#" @click.prevent="batchDelete()"><i class="fa fa-trash"></i> Delete</a></li>
+                <div v-if="isBatchEnabled" class="btn-group btn-group-sm">
+                <button type="button" :disabled="!selected.length" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-bars"></i> Actions <span class="caret"></span></button>
+                <ul class="dropdown-menu dropdown-menu-right">
+                    <li v-if="withBatchEdit"><a href="#" @click.prevent="batchEdit()"><i class="fa fa-pencil"></i> Edit</a></li>
+                    <li v-if="withBatchDelete"><a href="#" @click.prevent="batchDelete()"><i class="fa fa-trash"></i> Delete</a></li>
                 </ul>
                 </div>
             </div>
@@ -17,7 +17,7 @@
                     <tr>
                         <th v-if="isBatchEnabled" class="dt-select-column"></th>
                         <th v-for="header in headers">{{ header.text }}</th>
-                        <th v-if="!isGroupByEnabled">Actions</th>
+                        <th v-if="isBatchEnabled">Actions</th>
                     </tr>
                 </thead>
             </table>
@@ -50,7 +50,7 @@ export default {
     },
     orderDirection: {
       type: String,
-      default: 'asc'
+      default: 'DESC'
     },
     orderField: {
       type: String,
@@ -68,7 +68,11 @@ export default {
       type: String,
       required: true
     },
-    withBatch: {
+    withBatchDelete: {
+      type: Boolean,
+      default: true
+    },
+    withBatchEdit: {
       type: Boolean,
       default: true
     }
@@ -76,10 +80,7 @@ export default {
 
   data () {
     return {
-      batchButton: {
-        disabled: true
-      },
-      table: {}
+      selected: []
     }
   },
 
@@ -88,26 +89,7 @@ export default {
   },
   computed: {
     isBatchEnabled () {
-      let result = false
-
-      if (!this.data.group_by) {
-        result = true
-      }
-
-      if (!this.withBatch) {
-        result = false
-      }
-
-      return result
-    },
-    isGroupByEnabled () {
-      let result = false
-
-      if (this.data.group_by) {
-        result = true
-      }
-
-      return result
+      return this.withBatchEdit || this.withBatchDelete
     }
   },
   methods: {
@@ -117,7 +99,8 @@ export default {
       let orderColumn = Array.from(this.headers, header => header.value).indexOf(this.orderField)
       // handle out-of-bounds
       orderColumn = -1 === orderColumn ? 0 : orderColumn
-      if (!this.data.group_by) {
+      // shift order column by one, since batch column is prepended
+      if (this.isBatchEnabled) {
         orderColumn += 1
       }
 
@@ -137,7 +120,7 @@ export default {
           headers: axios.defaults.headers.common,
           data: function (d) {
             let fields = Array.from(self.headers, header => header.value)
-            if (!self.isGroupByEnabled) {
+            if (self.isBatchEnabled) {
                 fields.unshift(self.primaryKey)
             }
 
@@ -167,67 +150,41 @@ export default {
         }
       }
 
-      if (!this.isGroupByEnabled) {
+      if (this.isBatchEnabled) {
         Object.assign(settings, {
-          columnDefs: [{ targets: [-1], orderable: false }]
+          // disable sorting by first and last columns (select, actions)
+          columnDefs: [
+            { targets: [0, -1], orderable: false },
+            { targets: [0], className: 'select-checkbox' }
+          ],
+          // add first column with hidden record id, for batch selection
+          createdRow: function (row, data, index) {
+            $(row).attr('data-id', data[0])
+            $('td', row).eq(0).text('')
+          },
+          // enable select functionality on first column
+          select: { style: 'multi', selector: 'td:first-child' }
         })
       }
 
-      if (this.isBatchEnabled) {
-        if (!this.isGroupByEnabled) {
-          Object.assign(settings, {
-            createdRow: function ( row, data, index ) {
-              $(row).attr('data-id', data[0])
-              $('td', row).eq(0).text('')
-            },
-            select: {
-              style: 'multi',
-              selector: 'td:first-child'
-            }
-          })
-
-          settings.columnDefs[0].targets.push(0)
-          settings.columnDefs.push({targets: [0], className: 'select-checkbox'})
-        }
-      }
       // Fetching alerted errors into callback
       $.fn.dataTable.ext.errMode = function (settings, techNote, message) {
         console.log(message)
       }
 
-      this.table = $(this.$el.querySelector('table')).DataTable(settings)
+      const table = $(this.$el.querySelector('table')).DataTable(settings)
 
-      if (!this.data.group_by) {
-        this.table.on('select', function () {
-          self.batchButton.disabled = false
-        })
-
-        this.table.on('deselect', function (e, dt, type, indexes) {
-          if (null === self.$el.querySelector('table tr.selected')) {
-            self.batchButton.disabled = true
-          }
-        })
-      }
-
-      this.table.on('order.dt', function () {
-        const order = self.table.order()
-        let orderBy = ''
-        let orderIndex = order[0][0]
-        let orderDirection = order[0][1]
-
-        if (self.isBatchEnabled) {
-          orderBy = self.headers[orderIndex - 1].value
-        }
-
-        if (self.isGroupByEnabled) {
-          orderBy = self.headers[orderIndex].value
-        }
+      table.on('order.dt', function () {
+        const order = table.order()
+        const orderBy = self.isBatchEnabled ?
+          (self.headers.length ? self.headers[order[0][0] - 1].value : '') :
+          self.headers[order[0][0]].value
 
         self.$emit('sort-field-updated', orderBy)
-        self.$emit('sort-order-updated', orderDirection)
+        self.$emit('sort-order-updated', order[0][1])
       })
 
-      this.table.on('click', 'a[data-delete="1"]', function(e) {
+      table.on('click', 'a[data-delete="1"]', function(e) {
         e.preventDefault()
 
         if (! confirm('Are you sure you want to delete this record?')) {
@@ -239,33 +196,37 @@ export default {
           url: $(this).attr('href'),
         }).then(response => {
           if (true === response.data.success) {
-            self.table.ajax.reload()
+            table.ajax.reload()
           }
         }).catch(error => console.log(error))
       })
 
       // select/deselect all table rows
       // @link https://stackoverflow.com/questions/42570465/datatables-select-all-checkbox?answertab=active#tab-top
-      this.table.on('click', 'th.select-checkbox', function () {
+      table.on('click', 'th.select-checkbox', function () {
         let element = $(this)
         if (element.hasClass('selected')) {
-          self.table.rows().deselect()
+          table.rows().deselect()
           element.removeClass('selected')
         } else {
-          self.table.rows().select()
+          table.rows().select()
           element.addClass('selected')
         }
+
+        self.batchSetSelected()
       })
 
       // check/uncheck select-all checkbox based on rows select/deselect triggering
       // @link https://stackoverflow.com/questions/42570465/datatables-select-all-checkbox?answertab=active#tab-top
-      this.table.on('select deselect', function () {
+      table.on('select deselect', function () {
         let element = $(this).find('th.select-checkbox')
-        if (self.table.rows({ selected: true }).count() !== self.table.rows().count()) {
+        if (table.rows({ selected: true }).count() !== table.rows().count()) {
           element.removeClass('selected')
         } else {
           element.addClass('selected')
         }
+
+        self.batchSetSelected()
       })
     },
 
@@ -273,12 +234,9 @@ export default {
       const result = []
 
       const combinedColumns = []
-      //this.options.ajax.hasOwnProperty('combinedColumns') ? this.options.ajax.combinedColumns : []
       const headers = Array.from(this.headers, header => header.value)
       if (this.isBatchEnabled) {
-        if (! this.data.group_by) {
-          headers.unshift(this.primaryKey)
-        }
+        headers.unshift(this.primaryKey)
       }
 
       const length = headers.length
@@ -310,7 +268,8 @@ export default {
         }
       }
 
-      if (!this.data.group_by) {
+      // create action buttons for each record
+      if (this.isBatchEnabled) {
         for (const index in data) {
           if (! data[index].hasOwnProperty('_permissions')) {
             return
@@ -339,40 +298,29 @@ export default {
       return result
     },
 
+    batchSetSelected () {
+      const self = this
+      // reset batch selected IDs
+      this.selected = []
+      this.$el.querySelectorAll('table tr.selected').forEach(function (row) {
+        self.selected.push(row.getAttribute('data-id'))
+      })
+    },
+
     /**
      * {@link} https://stackoverflow.com/questions/19064352/how-to-redirect-through-post-method-using-javascript/27766998
      * @return {undefined}
      */
     batchEdit () {
-      if (this.data.group_by || !this.withBatch) {
+      if (!this.withBatchEdit || !this.selected.length) {
         return
       }
 
-      const form = document.createElement('form')
-      document.body.appendChild(form)
-
-      form.method = 'post'
-      form.action = '/' + this.model + '/batch/edit'
-      this.$el.querySelectorAll('table tr.selected').forEach(function (row) {
-        const input = document.createElement('input')
-        input.type = 'hidden'
-        input.name = 'batch[ids][]'
-        input.value = row.getAttribute('data-id')
-        form.appendChild(input)
-      })
-
-      const input = document.createElement('input')
-      input.type = 'hidden'
-      input.name = '_csrfToken'
-      input.value = axios.defaults.headers.common['X-CSRF-Token']
-
-      form.appendChild(input)
-
-      form.submit()
+      this.generateBatchForm('/' + this.model + '/batch/' + 'edit').submit()
     },
 
     batchDelete () {
-      if (this.data.group_by || !this.withBatch) {
+      if (!this.withBatchDelete || !this.selected.length) {
         return
       }
 
@@ -380,16 +328,20 @@ export default {
         return
       }
 
+      this.generateBatchForm('/' + this.model + '/batch/' + 'delete').submit()
+    },
+
+    generateBatchForm (action) {
       const form = document.createElement('form')
       document.body.appendChild(form)
 
       form.method = 'post'
-      form.action = '/' + this.model + '/batch/delete'
-      this.$el.querySelectorAll('table tr.selected').forEach(function (row) {
+      form.action = action
+      this.selected.forEach(function (id) {
         const input = document.createElement('input')
         input.type = 'hidden'
         input.name = 'batch[ids][]'
-        input.value = row.getAttribute('data-id')
+        input.value = id
         form.appendChild(input)
       })
 
@@ -400,7 +352,7 @@ export default {
 
       form.appendChild(input)
 
-      form.submit()
+      return form
     }
   }
 
