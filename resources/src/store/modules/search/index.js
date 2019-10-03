@@ -9,22 +9,26 @@ import {
   API_EDIT_SEARCH,
   API_DELETE_SEARCH,
   FIELD_TYPE_MAP,
-  FIELD_OPERATOR_TYPES,
-  SEARCH_INSTANCE
+  FIELD_OPERATOR_TYPES
 } from '@/utils/search'
 
 export default {
   namespaced: true,
-
   state: {
+    conjunction: 'AND',
+    criteria: {},
+    default_fields: [],
     exportId: '',
+    id: '',
+    fields: [],
     filters: [],
-    operators: {
-      map: FIELD_TYPE_MAP,
-      types: FIELD_OPERATOR_TYPES
-    },
-    savedSearch: SEARCH_INSTANCE,
-    savedSearches: []
+    group_by: '',
+    model: '',
+    name: '',
+    order_by_field: '',
+    order_by_direction: 'DESC',
+    savedSearches: [],
+    user_id: ''
   },
 
   getters: {
@@ -40,7 +44,6 @@ export default {
 
       return result
     },
-
     filtersFlat (state) {
       const result = {}
       for (var index in state.filters) {
@@ -49,32 +52,49 @@ export default {
       }
 
       return result
+    },
+    filterModels (state, getters) {
+      const models = Object.keys(getters.filtersGroup)
+
+      return models.sort()
+    },
+    displayableModels (state, getters) {
+      const filters = getters.filtersGroup
+      const models = Object.keys(getters.filtersGroup)
+
+      let result = models.filter((model) => {
+        return -1 === ['oneToMany', 'manyToMany'].indexOf(filters[model][0].association)
+      })
+
+      return result.sort()
     }
   },
 
   mutations: {
-    aggregator (state, value) {
-      state.savedSearch.content.saved.aggregator = value
+    conjunction (state, value) {
+      state.conjunction = value
     },
     criteriaCreate (state, payload) {
-      const filter = state.filters.filter(filter => filter.field === payload.field)
-
-      const guid = uuid.v4()
-
-      const criteria = state.savedSearch.content.saved.criteria
-      if (!criteria.hasOwnProperty(filter[0].field)) {
-        Vue.set(criteria, filter[0].field, {})
+      if (!payload.field) {
+        return
       }
 
-      Vue.set(criteria[filter[0].field], guid, {
-        type: filter[0].type,
-        operator: payload.operator !== undefined ? payload.operator : state.operators.types[state.operators.map[filter[0].type]][0].text,
-        value: payload.value !== '' ? payload.value : (filter[0].type === 'boolean' ? 0 : '')
+      const type = payload.type ? payload.type : state.filters.find(item => item.field === payload.field).type
+      const guid = payload.guid ? payload.guid : uuid.v4()
+      const criteria = state.criteria
+      if (!criteria.hasOwnProperty(payload.field)) {
+        Vue.set(criteria, payload.field, {})
+      }
+
+      Vue.set(criteria[payload.field], guid, {
+        type: type,
+        operator: payload.operator !== undefined ? payload.operator : FIELD_OPERATOR_TYPES[FIELD_TYPE_MAP[type]][0].text,
+        value: payload.value !== undefined ? payload.value : (type === 'boolean' ? 0 : '')
       })
     },
     criteriaCopy (state, value) {
       const newGuid = uuid.v4()
-      const criteria = state.savedSearch.content.saved.criteria
+      const criteria = state.criteria
 
       for (const field in criteria) {
         for (const guid in criteria[field]) {
@@ -89,7 +109,7 @@ export default {
       }
     },
     criteriaRemove (state, value) {
-      const criteria = state.savedSearch.content.saved.criteria
+      const criteria = state.criteria
 
       for (const field in criteria) {
         for (const guid in criteria[field]) {
@@ -106,75 +126,40 @@ export default {
       }
     },
     criteriaOperator (state, payload) {
-      Vue.set(state.savedSearch.content.saved.criteria[payload.field][payload.guid], 'operator', payload.value)
+      Vue.set(state.criteria[payload.field][payload.guid], 'operator', payload.operator)
     },
     criteriaValue (state, { field, guid, value }) {
-      Vue.set(state.savedSearch.content.saved.criteria[field][guid], 'value', value)
+      Vue.set(state.criteria[field][guid], 'value', value)
     },
-    displayColumns (state, payload) {
-      if (['add', 'remove'].indexOf(payload.action) === -1) {
-        return
-      }
-
-      const displayColumns = state.savedSearch.content.saved.display_columns
-
-      if (payload.action === 'add') {
-        payload.available.map(function (column) {
-          const found = state.filters.find(filter => filter.field === column)
-          if (displayColumns.indexOf(column) === -1 && found !== undefined) {
-            displayColumns.push(column)
-          }
-        })
-      }
-
-      if (payload.action === 'remove') {
-        payload.display.map(function (column) {
-          const index = displayColumns.indexOf(column)
-          if (index > -1) {
-            displayColumns.splice(index, 1)
-          }
-        })
-      }
-    },
-    displayColumnsSort (state, payload) {
-      if (['up', 'down'].indexOf(payload.direction) === -1) {
-        return
-      }
-
-      const displayColumns = state.savedSearch.content.saved.display_columns
-      const selection = 'up' === payload.direction ? payload.columns : payload.columns.reverse()
-      let previous = -1
-      selection.forEach(function (column) {
-        const length = 'up' === payload.direction ? 0 : displayColumns.length - 1
-        const index = displayColumns.indexOf(column)
-        const start = index + ('up' === payload.direction ? - 1 : 1)
-
-        if (length === index || start === previous) {
-          previous = index
-
-          return
-        }
-
-        displayColumns.splice(start, 0, displayColumns.splice(index, 1)[0])
-      })
+    defaultFields (state, value) {
+      state.default_fields = value
     },
     exportId (state, value) {
       state.exportId = value
+    },
+    fields (state, value) {
+      state.fields = value.length ? value : state.default_fields
     },
     filters (state, value) {
       state.filters = value
     },
     groupBy (state, value) {
-      state.savedSearch.content.saved.group_by = value
+      state.group_by = value
     },
     name(state, value) {
-      state.savedSearch.name = value
+      state.name = value
+    },
+    orderByDirection (state, value) {
+      state.order_by_direction = value
+    },
+    orderByField (state, value) {
+      state.order_by_field = value
     },
     result (state, value) {
       state.result = value
     },
     savedSearches (state, value) {
-      value.sort((a, b) => (a.name > b.name) ? -1 : 1)
+      value.sort((a, b) => a.name.toLowerCase() < b.name.toLowerCase() ? -1 : ((a.name.toLowerCase() > b.name.toLowerCase()) ? 1 : 0))
       state.savedSearches = value
     },
     savedSearchId (state, value) {
@@ -182,20 +167,29 @@ export default {
       history.pushState({}, document.title, '/' + dasherize(underscore(state.model)) + '/search/' + value)
     },
     savedSearchModel (state, value) {
-      state.savedSearch.model = value
+      state.model = value
     },
     savedSearchUserId (state, value) {
-      state.savedSearch.user_id = value
-    },
-    sortByField (state, value) {
-      state.savedSearch.content.saved.sort_by_field = value
-    },
-    sortByOrder (state, value) {
-      state.savedSearch.content.saved.sort_by_order = value
+      state.user_id = value
     }
   },
 
   actions: {
+    reset ({ commit, state }) {
+      commit('conjunction', 'AND')
+      commit('fields', state.default_fields)
+      commit('groupBy', '')
+      commit('name', '')
+      commit('savedSearchId', '')
+      commit('orderByField', '')
+      commit('orderByDirection', 'DESC')
+
+      Object.keys(state.criteria).map(
+        (key) => Object.keys(state.criteria[key]).map(
+          (guid) => commit('criteriaRemove', guid)
+        )
+      )
+    },
     savedSearchCopy ({ commit, state, dispatch }, payload) {
       return ApiSearch
         .getSearch(API_VIEW_SEARCH, payload.id)
@@ -242,24 +236,28 @@ export default {
         .getSearch(API_VIEW_SEARCH, id)
         .then(response => {
           const data = response.data.data
-          commit('aggregator', data.content.saved.aggregator)
-          commit('displayColumns', { action: 'add', available: data.content.saved.display_columns })
-          if (data.content.saved.hasOwnProperty('group_by')) {
-            commit('groupBy', data.content.saved.group_by)
-          }
+
+          dispatch('reset')
+          commit('conjunction', data.conjunction)
+          commit('groupBy', data.group_by)
+          commit('fields', data.fields)
           commit('name', data.name)
           commit('savedSearchId', data.id)
           commit('savedSearchModel', data.model)
           commit('savedSearchUserId', data.user_id)
-          commit('sortByField', data.content.saved.sort_by_field)
-          commit('sortByOrder', data.content.saved.sort_by_order)
-
-          if (data.content.saved.hasOwnProperty('criteria')) {
-            const criteria = data.content.saved.criteria
-            Object.keys(criteria).forEach((item) => {
-              const index = Object.keys(criteria[item])[0]
-              const filter = criteria[item][index]
-              commit('criteriaCreate', { field: item, value: filter.value, operator: filter.operator })
+          commit('orderByField', data.order_by_field)
+          commit('orderByDirection', data.order_by_direction)
+          if (data.hasOwnProperty('criteria')) {
+            Object.keys(data.criteria).forEach((item) => {
+              const guid = Object.keys(data.criteria[item])[0]
+              const filter = data.criteria[item][guid]
+              commit('criteriaCreate', {
+                field: item,
+                value: filter.value,
+                operator: filter.operator,
+                guid: guid,
+                type: filter.type
+              })
             })
           }
 
@@ -270,33 +268,41 @@ export default {
         })
     },
     savedSearchSave ({ commit, state, dispatch }) {
-      const create = state.savedSearch.id === ''
-      let url = API_STORE_SEARCH
+      const create = state.id === ''
+      const url = create ? API_STORE_SEARCH : `${API_EDIT_SEARCH}/${state.id}`
 
-      if (!create) {
-        url = `${API_EDIT_SEARCH}/${state.savedSearch.id}`
+      const payload = {
+        id: state.id,
+        name: state.name,
+        user_id: state.user_id,
+        model: state.model,
+        conjunction: 'AND',
+        criteria: JSON.parse(JSON.stringify(state.criteria)),
+        fields: state.fields,
+        group_by: state.group_by,
+        order_by_field: state.order_by_field,
+        order_by_direction: state.order_by_direction
       }
 
       if (create) {
         return ApiSearch
-          .addSearch(url, state.savedSearch)
+          .addSearch(url, payload)
           .then(response => {
             commit('savedSearchId', response.data.data.id)
             dispatch('savedSearchesGet')
             dispatch('setNotification', {
               'type': 'info',
-              'msg': 'Search successfully saved'
+              'msg': 'Search successfully created'
             })
           })
       } else {
         return ApiSearch
-          .editSearch(url, state.savedSearch)
+          .editSearch(url, payload)
           .then(response => {
-            commit('savedSearchId', response.data.data.id)
             dispatch('savedSearchesGet')
             dispatch('setNotification', {
               'type': 'info',
-              'msg': 'Search successfully saved'
+              'msg': 'Search successfully updated'
             })
           })
       }
@@ -304,9 +310,9 @@ export default {
     savedSearchesGet ({ commit, state }) {
       return ApiSearch
         .getSearches(API_LIST_SEARCHES, {
-          'model': state.savedSearch.model,
+          'model': state.model,
           'system': 0,
-          'user_id': state.savedSearch.user_id
+          'user_id': state.user_id
         })
         .then(response => {
           commit('savedSearches', response.data.data)

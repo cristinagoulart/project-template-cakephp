@@ -26,7 +26,7 @@ export const FIELD_TYPE_MAP = {
   url: 'text'
 }
 
-export const FIELD_AGGREGATOR_TYPES = [
+export const CONJUNCTIONS = [
     { text: 'Match all filters', value: 'AND' },
     { text: 'Match any filter', value: 'OR' }
 ]
@@ -59,21 +59,4 @@ export const FIELD_OPERATOR_TYPES = {
     { value: 'starts_with', text: 'starts with' },
     { value: 'ends_with', text: 'ends with' }
   ]
-}
-
-export const SEARCH_INSTANCE = {
-  id: '',
-  name: '',
-  user_id: '',
-  model: '',
-  content: {
-    saved: {
-      aggregator: 'AND',
-      criteria: {},
-      display_columns: [],
-      sort_by_field: '',
-      sort_by_order: 'asc',
-      group_by: ''
-    }
-  }
 }
