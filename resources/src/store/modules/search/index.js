@@ -1,5 +1,6 @@
 import ApiSearch from '@/ApiService/ApiSearch'
 import Vue from 'vue'
+import { dasherize, underscore } from 'inflected'
 import { uuid } from 'vue-uuid'
 import {
   API_STORE_SEARCH,
@@ -177,7 +178,8 @@ export default {
       state.savedSearches = value
     },
     savedSearchId (state, value) {
-      state.savedSearch.id = value
+      state.id = value
+      history.pushState({}, document.title, '/' + dasherize(underscore(state.model)) + '/search/' + value)
     },
     savedSearchModel (state, value) {
       state.savedSearch.model = value
