@@ -445,26 +445,7 @@ export default {
             })
         },
         searchReset() {
-            this.$store.commit('search/aggregator', 'AND')
-            this.$store.commit('search/groupBy', '')
-            this.$store.commit('search/name', '')
-            this.$store.commit('search/savedSearchId', '')
-            this.$store.commit('search/sortByField', '')
-            this.$store.commit('search/sortByOrder', 'asc')
-
-            Object.keys(this.criteria).map(
-                (key) => Object.keys(this.criteria[key]).map(
-                    (guid) => this.$store.commit('search/criteriaRemove', guid)
-                )
-            )
-
-            this.$store.commit('search/displayColumns', { action: 'remove', display: this.displayColumns })
-            this.$store.commit('search/displayColumns', { action: 'add', available: this.displayFields })
-            this.selectedColumns.available = []
-            this.selectedColumns.display = []
-            this.selectedModuleAvailableColumns = this.model
-            this.selectedModuleFilter = this.model
-            this.selectedModuleGroupBy = this.model
+            this.$store.dispatch('search/reset')
 
             this.search()
         }
