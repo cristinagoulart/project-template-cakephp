@@ -90,7 +90,7 @@ export default {
   created() {
     this.$watch(vm => [vm.aggregate, vm.field, vm.filter, vm.model, vm.value], (newValue, oldValue) => {
       this.$store.commit('search/criteriaRemove', this.guid)
-      if (this.aggregate && this.field && this.filter && this.value) {
+      if (this.shouldCreateCriteria()) {
         this.$store.commit('search/criteriaCreate', {
           field:  Aggregate.getExpression(this.aggregate, this.field),
           guid: this.guid,
@@ -145,6 +145,11 @@ export default {
         this.$store.commit('search/fields', fields)
       }
     })
+  },
+  methods: {
+    shouldCreateCriteria() {
+      return '' !== this.aggregate && '' !== this.field && '' !== this.filter && '' !== this.value
+    }
   }
 }
 </script>
