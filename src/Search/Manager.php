@@ -13,29 +13,9 @@ namespace App\Search;
 
 use Cake\Utility\Hash;
 use Qobo\Utils\Utility\User;
-use Search\Filter\Contains;
-use Search\Filter\EndsWith;
-use Search\Filter\Equal;
-use Search\Filter\Greater;
-use Search\Filter\Less;
-use Search\Filter\NotContains;
-use Search\Filter\NotEqual;
-use Search\Filter\StartsWith;
-use Search\Service\Search;
 
 final class Manager
 {
-    private const FILTER_MAP = [
-        'is' => Equal::class,
-        'is_not' => NotEqual::class,
-        'greater' => Greater::class,
-        'less' => Less::class,
-        'contains' => Contains::class,
-        'not_contains' => NotContains::class,
-        'starts_with' => StartsWith::class,
-        'ends_with' => EndsWith::class
-    ];
-
     /**
      * Retrieve search options from HTTP request.
      *
@@ -47,45 +27,20 @@ final class Manager
     {
         $result = [];
 
-        foreach (Hash::get($data, 'criteria', []) as $field => $fieldCriteria) {
-            foreach ($fieldCriteria as $criteria) {
-                if (! array_key_exists($criteria['operator'], self::FILTER_MAP)) {
-                    throw new \RuntimeException(sprintf('Unsupported filter provided: %s', $criteria['operator']));
-                }
-
-                switch (gettype($criteria['value'])) {
-                    case 'string':
-                        $value = self::applyMagicValue($criteria['value']);
-                        break;
-
-                    case 'array':
-                        $value = self::applyMagicValues($criteria['value']);
-                        break;
-
-                    default:
-                        $value = $criteria['value'];
-                        break;
-                }
-
-                $result['data'][] = [
-                    'field' => $field,
-                    'operator' => self::FILTER_MAP[$criteria['operator']],
-                    'value' => $value
-                ];
-            }
+        if (Hash::get($data, 'criteria')) {
+            $result['data'] = self::getCriteria(Hash::get($data, 'criteria', []));
         }
-
-        $result['conjunction'] = Hash::get($data, 'aggregator', Search::DEFAULT_CONJUNCTION);
 
         if (Hash::get($data, 'fields')) {
             $result['fields'] = Hash::get($data, 'fields');
         }
 
-        if (Hash::get($data, 'sort')) {
-            $orderField = Hash::get($data, 'sort');
-            $orderField = Search::GROUP_BY_FIELD === pluginSplit($orderField)[1] ? Search::GROUP_BY_FIELD : $orderField;
+        if (Hash::get($data, 'conjunction')) {
+            $result['conjunction'] = Hash::get($data, 'conjunction', \Search\Criteria\Conjunction::DEFAULT_CONJUNCTION);
+        }
 
-            $result['order'] = [$orderField => Hash::get($data, 'direction', Search::DEFAULT_SORT_BY_ORDER)];
+        if (Hash::get($data, 'sort')) {
+            $result['order'] = [Hash::get($data, 'sort') => Hash::get($data, 'direction', \Search\Criteria\Direction::DEFAULT_DIRECTION)];
         }
 
         if (Hash::get($data, 'group_by')) {
@@ -96,29 +51,60 @@ final class Manager
     }
 
     /**
-     * Magic value handler.
+     * Criteria getter.
      *
-     * @param string $value Field value
-     * @return string
+     * @param mixed[] $criteria Search criteria
+     * @return mixed[]
      */
-    private static function applyMagicValue(string $value) : string
-    {
-        return (new MagicValue($value, User::getCurrentUser()))->get();
-    }
-
-    /**
-     * Magic values handler.
-     *
-     * @param string[] $values Field values
-     * @return string[]
-     */
-    private static function applyMagicValues(array $values) : array
+    private static function getCriteria(array $criteria) : array
     {
         $result = [];
-        foreach ($values as $value) {
-            $result[] = (new MagicValue($value, User::getCurrentUser()))->get();
+        foreach ($criteria as $field => $items) {
+            $result = array_merge($result, self::getFieldCriteria($field, $items));
         }
 
         return $result;
+    }
+
+    /**
+     * Field criteria getter.
+     *
+     * @param string $field Field name
+     * @param mixed[] $criteria Field search criteria
+     * @return mixed[]
+     */
+    private static function getFieldCriteria(string $field, array $criteria) : array
+    {
+        $result = [];
+        foreach ($criteria as $item) {
+            $result[] = [
+                'field' => $field,
+                'operator' => $item['operator'],
+                'value' => self::applyMagicValue($item['value'])
+            ];
+        }
+
+        return $result;
+    }
+
+    /**
+     * Magic value handler.
+     *
+     * @param mixed $value Field value
+     * @return mixed
+     */
+    private static function applyMagicValue($value)
+    {
+        if (is_string($value)) {
+            return (new MagicValue($value, User::getCurrentUser()))->get();
+        }
+
+        if (is_array($value)) {
+            return array_map(function ($item) {
+                return self::applyMagicValue($item);
+            }, $value);
+        }
+
+        return $value;
     }
 }
