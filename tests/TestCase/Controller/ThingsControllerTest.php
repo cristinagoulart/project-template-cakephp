@@ -113,7 +113,10 @@ class ThingsControllerTest extends IntegrationTestCase
 
         $data = [
             'type' => 'a',
-            'name' => 'test'
+            'name' => 'test',
+            'country' => 'CY',
+            'gender' => 'm',
+            'email' => 'name@domain.com'
         ];
 
         $this->post('/things/add', $data);
