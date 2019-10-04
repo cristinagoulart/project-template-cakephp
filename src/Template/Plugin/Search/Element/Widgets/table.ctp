@@ -4,6 +4,8 @@ use Cake\ORM\TableRegistry;
 use Cake\Utility\Hash;
 use Cake\Utility\Inflector;
 use Qobo\Utils\Utility\User;
+use RolesCapabilities\Access\AccessFactory;
+use Search\Aggregate\AggregateInterface;
 use Search\Model\Entity\SavedSearch;
 
 $savedSearch = $widget->getData();
@@ -15,28 +17,30 @@ $this->Html->script(['/dist/vendor', '/dist/app'], ['block' => 'scriptBottom']);
 $this->Html->css('/dist/style', ['block' => 'css']);
 
 $table = TableRegistry::get($savedSearch->get('model'));
-$groupBy = Hash::get($savedSearch->get('content'), 'saved.group_by', '');
 $filters = $this->Search->getFilters($savedSearch->get('model'));
 
+$hasAggregate = false;
 $headers = [];
-if ('' !== $groupBy) {
-    $key = array_search($groupBy, array_column($filters, 'field'));
-    $headers[] = ['value' => $groupBy, 'text' => $filters[$key]['label']];
-    $headers[] = ['value' => $savedSearch->get('model') . '.total', 'text' => 'Total'];
-}
-
-if ('' === $groupBy) {
-    foreach (Hash::get($savedSearch->get('content'), 'saved.display_columns', []) as $item) {
+foreach ((array)$savedSearch->get('fields') as $item) {
+    if (1 === preg_match(AggregateInterface::AGGREGATE_PATTERN, $item)) {
+        $hasAggregate = true;
+        preg_match(AggregateInterface::AGGREGATE_PATTERN, $item, $matches);
+        list(, $aggregateField) = pluginSplit($matches[2]);
+        $key = array_search($matches[2], array_column($filters, 'field'));
+        $label = sprintf('%s (%s)', $filters[$key]['label'], $matches[1]);
+    } else {
         $key = array_search($item, array_column($filters, 'field'));
-        $headers[] = ['value' => $filters[$key]['field'], 'text' => $filters[$key]['label']];
+        $label = $filters[$key]['label'];
     }
+    $headers[] = ['value' => $item, 'text' => $label];
 }
 
+$accessFactory = new AccessFactory();
 list($plugin, $controller) = pluginSplit($savedSearch->get('model'));
-$url = ['plugin' => $plugin, 'controller' => $controller, 'action' => 'search', $savedSearch->get('id')];
-$charts = '' !== $groupBy ? $this->Search->getChartOptions($savedSearch) : [];
+$urlBatch = ['plugin' => $plugin, 'controller' => $controller, 'action' => 'batch'];
 
-if (! empty($charts)) {
+$charts = $this->Search->getChartOptions($savedSearch);
+if ([] !== $charts) {
     echo $this->Html->css('AdminLTE./bower_components/morris.js/morris', ['block' => 'css']);
 
     echo $this->Html->scriptBlock('
@@ -55,6 +59,8 @@ if (! empty($charts)) {
         ['block' => 'scriptBottom']
     );
 }
+
+$url = ['plugin' => $plugin, 'controller' => $controller, 'action' => 'search', $savedSearch->get('id')];
 $uniqid = uniqid();
 ?>
 <div class="dashboard-widget-saved-search nav-tabs-custom">
@@ -77,16 +83,18 @@ $uniqid = uniqid();
         <div id="table_<?= $uniqid ?>" class="tab-pane <?= empty($charts) ? 'active' : '' ?>">
             <table-ajax
                 :data='<?= json_encode([
-                    'criteria' => Hash::get($savedSearch->get('content'), 'saved.criteria', []),
-                    'group_by' => $groupBy
+                    'criteria' => $savedSearch->get('criteria'),
+                    'group_by' => (string)$savedSearch->get('group_by')
                 ]) ?>'
                 :headers='<?= json_encode($headers) ?>'
                 model="<?= Inflector::dasherize($savedSearch->get('model')) ?>"
-                order-direction="<?= Hash::get($savedSearch->get('content'), 'saved.sort_by_order', '') ?>"
-                order-field="<?= Hash::get($savedSearch->get('content'), 'saved.sort_by_field', '') ?>"
+                order-direction="<?= (string)$savedSearch->get('order_by_direction') ?>"
+                order-field="<?= (string)$savedSearch->get('order_by_field') ?>"
                 primary-key="<?= $table->aliasField($table->getPrimaryKey()) ?>"
                 request-type="POST"
                 url="/api/<?= Inflector::dasherize($savedSearch->get('model')) ?>/search"
+                :with-batch-delete="<?= '' === (string)$savedSearch->get('group_by') && ! $hasAggregate && $accessFactory->hasAccess($urlBatch, $user) ? 'true' : 'false' ?>"
+                :with-batch-edit="<?= '' === (string)$savedSearch->get('group_by') && ! $hasAggregate && $accessFactory->hasAccess($urlBatch, $user) ? 'true' : 'false' ?>"
             ></table-ajax>
         </div>
         <?php foreach ($charts as $key => $chart) : ?>
