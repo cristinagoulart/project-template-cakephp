@@ -17,6 +17,7 @@ use Qobo\Utils\ModuleConfig\ConfigType;
 use Qobo\Utils\ModuleConfig\ModuleConfig;
 use Qobo\Utils\Utility\User;
 use RolesCapabilities\Access\AccessFactory;
+use Search\Aggregate\AggregateInterface;
 use Search\Model\Entity\SavedSearch;
 use Search\Service\Search as SearchService;
 use Webmozart\Assert\Assert;
@@ -126,36 +127,44 @@ final class Search
      */
     public static function getChartOptions(SavedSearch $savedSearch) : array
     {
-        if ('' === Hash::get($savedSearch->get('content'), 'saved.group_by', '')) {
+        $aggregate = array_filter((array)$savedSearch->get('fields'), function ($item) {
+            return 1 === preg_match(AggregateInterface::AGGREGATE_PATTERN, $item);
+        });
+
+        if ([] === $aggregate) {
             return [];
         }
+
+        preg_match(AggregateInterface::AGGREGATE_PATTERN, array_values($aggregate)[0], $matches);
+        $aggregate = $matches[0];
+        $aggregateType = $matches[1];
+        $aggregateFieldAliased = $matches[2];
+        list(, $aggregateField) = pluginSplit($aggregateFieldAliased);
 
         $table = TableRegistry::getTableLocator()->get($savedSearch->get('model'));
         $factory = new FieldHandlerFactory();
 
-        list(, $groupBy) = pluginSplit(Hash::get($savedSearch->get('content'), 'saved.group_by'));
+        $query = $table->find('search', Manager::getOptionsFromRequest([
+            'criteria' => $savedSearch->get('criteria'),
+            'fields' => $savedSearch->get('fields'),
+            'conjunction' => $savedSearch->get('conjunction'),
+            'sort' => $savedSearch->get('order_by_field'),
+            'direction' => $savedSearch->get('order_by_direction'),
+            'group_by' => $savedSearch->get('group_by')
+        ], []));
 
-        $resultSet = $table->find('search', Manager::getOptionsFromRequest([
-            'criteria' => Hash::get($savedSearch->get('content'), 'saved.criteria', []),
-            'fields' => array_merge((array)$table->getPrimaryKey(), [
-                Hash::get($savedSearch->get('content'), 'saved.group_by'),
-                $savedSearch->get('model') . '.' . SearchService::GROUP_BY_FIELD
-            ]),
-            'aggregator' => Hash::get($savedSearch->get('content'), 'saved.aggregator', SearchService::DEFAULT_CONJUNCTION),
-            'sort' => Hash::get($savedSearch->get('content'), 'saved.sort_by_field', false),
-            'direction' => Hash::get($savedSearch->get('content'), 'saved.sort_by_order', SearchService::DEFAULT_SORT_BY_ORDER),
-            'group_by' => Hash::get($savedSearch->get('content'), 'saved.group_by'),
-        ], []))->all();
+        $rowLabel = sprintf('%s (%s)', $aggregateField, $aggregateType);
+        list(, $rowValue) = $savedSearch->get('group_by') ? pluginSplit($savedSearch->get('group_by')) : ['', $aggregateField];
+        $filters = self::getFilters($savedSearch->get('model'));
+        $rows = [];
+        foreach ($query->all() as $entity) {
+            $formatted = self::formatEntity($entity, $table, $factory);
 
-        $entities = [];
-        foreach ($resultSet as $entity) {
-            // prettify data
-            $row = self::formatEntity($entity, $table, $factory);
+            $row = [$rowLabel => $formatted[$aggregate]];
+            $key = array_search($aggregateFieldAliased, array_column($filters, 'field'));
+            $row[$rowValue] = $savedSearch->get('group_by') ? $formatted[$savedSearch->get('group_by')] : $filters[$key]['label'];
 
-            $entities[] = [
-                SearchService::GROUP_BY_FIELD => $row[$savedSearch->get('model') . '.' . SearchService::GROUP_BY_FIELD],
-                $groupBy => $row[Hash::get($savedSearch->get('content'), 'saved.group_by')]
-            ];
+            $rows[] = $row;
         }
 
         $result = [];
@@ -174,21 +183,21 @@ final class Search
                     $widget->setConfig([
                         'modelName' => $savedSearch->get('model'),
                         'info' => [
-                            'columns' => implode(',', [SearchService::GROUP_BY_FIELD, $groupBy]),
-                            'x_axis' => $groupBy,
-                            'y_axis' => SearchService::GROUP_BY_FIELD,
+                            'columns' => implode(',', [$rowLabel, $rowValue]),
+                            'x_axis' => $rowValue,
+                            'y_axis' => $rowLabel
                         ]
                     ]);
 
                     $widget->setContainerId($options);
-                    $options += $widget->getChartData($entities);
+                    $options += $widget->getChartData($rows);
                     break;
                 case 'funnelChart':
                     $data = [];
-                    foreach ($entities as $entity) {
+                    foreach ($rows as $row) {
                         $data[] = [
-                            'value' => Hash::get($entity, SearchService::GROUP_BY_FIELD),
-                            'label' => Hash::get($entity, $groupBy)
+                            'value' => Hash::get($row, $rowLabel),
+                            'label' => Hash::get($row, $rowValue)
                         ];
                     }
 
@@ -197,11 +206,11 @@ final class Search
                             'resize' => true,
                             'hideHover' => true,
                             'labels' => [
-                                Inflector::humanize(SearchService::GROUP_BY_FIELD),
-                                Inflector::humanize($groupBy)
+                                Inflector::humanize($rowLabel),
+                                Inflector::humanize($rowValue)
                             ],
-                            'xkey' => [$groupBy],
-                            'ykeys' => [SearchService::GROUP_BY_FIELD],
+                            'xkey' => [$rowValue],
+                            'ykeys' => [$rowLabel],
                             'dataChart' => [
                                 'type' => $chart['type'],
                                 'data' => $data
@@ -232,7 +241,7 @@ final class Search
         foreach (array_diff($entity->visibleProperties(), $entity->getVirtual()) as $field) {
             // current table field
             if ('_matchingData' !== $field) {
-                $result[$table->aliasField($field)] = SearchService::GROUP_BY_FIELD === $field ?
+                $result[$table->aliasField($field)] = 1 === preg_match(AggregateInterface::AGGREGATE_PATTERN, $field) ?
                     $entity->get($field) :
                     $factory->renderValue($table, $field, $entity->get($field));
                 continue;
@@ -331,7 +340,7 @@ final class Search
             return [];
         }
 
-        return (array)Hash::get($entity->get('content'), 'saved.display_columns', []);
+        return (array)$entity->get('fields');
     }
 
     /**
