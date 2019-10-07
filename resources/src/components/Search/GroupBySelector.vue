@@ -23,6 +23,11 @@ import { mapGetters, mapState } from 'vuex'
 
 export default {
   name: 'GroupBySelector',
+  data() {
+    return {
+      model: this.$store.state.search.model
+    }
+  },
   computed: {
     ...mapGetters({
       models: 'search/displayableModels'
@@ -50,9 +55,11 @@ export default {
 
         this.$store.commit('search/fields', fields)
       }
-    },
-    model() {
-      return this.groupBy ?
+    }
+  },
+  watch: {
+    groupBy(value) {
+      this.model = value ?
         this.fieldsList.find(item => item.field === this.groupBy).group :
         this.$store.state.search.model
     }
