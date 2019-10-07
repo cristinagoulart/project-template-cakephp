@@ -214,7 +214,6 @@ export default {
           sortByField: state => state.search.order_by_field,
           sortByOrder: state => state.search.order_by_direction
         }),
-        },
         groupBy: {
             get () {
                 return this.$store.state.search.group_by
