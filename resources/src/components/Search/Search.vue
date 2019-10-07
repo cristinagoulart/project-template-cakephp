@@ -69,7 +69,7 @@
                   @sort-field-updated="sortFieldUpdated"
                   @sort-order-updated="sortOrderUpdated"
                   :with-batch-delete="!disableBatch && withBatchDelete"
-                  :with-batch-edit="!disableBatch && withBatchEdit"
+                  :with-batch-edit="!disableBatch && withBatchEdit">
                 </table-ajax>
             </div>
         </div>
@@ -269,7 +269,6 @@ export default {
         this.$store.commit('search/filters', JSON.parse(this.filters))
         this.$store.commit('search/defaultFields', this.displayFields)
         this.$store.commit('search/savedSearchModel', this.model)
-        this.$store.dispatch('model/schema', this.modelName)
         this.$store.commit('search/savedSearchUserId', this.userId)
         if ('' !== this.id) {
             this.$store.commit('search/savedSearchId', this.id)
