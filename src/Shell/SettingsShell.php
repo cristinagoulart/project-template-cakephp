@@ -88,7 +88,14 @@ class SettingsShell extends Shell
             if ($query->saveMany($entities)) {
                 $this->out('Settings successfully updated');
             } else {
-                $this->out('Failed or nothing to update.');
+                $gotErrors = false;
+                foreach ($entities as $key => $value) {
+                    if (!empty($value->getErrors())) {
+                        $gotErrors = true;
+                        $this->out("Error on saving " . $value->get('key'));
+                    }
+                }
+                $gotErrors ? $this->out('Failed to update.') : $this->out('Nothing to update.');
             }
         } catch (RuntimeException $e) {
             throw new RuntimeException($e);
