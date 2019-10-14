@@ -122,6 +122,8 @@ class SettingsTable extends Table
     public function valueValidator(string $value, array $context): bool
     {
         $type = $context['data']['type'];
+        $type !== 'list' ?: $type = 'string';
+
         $config = ConfigFactory::getByType($type, 'value');
         $validationClass = $config->getProvider('validationRules');
         $validationRules = new $validationClass($config);
@@ -166,6 +168,7 @@ class SettingsTable extends Table
 
             return;
         }
+        $type !== 'list' ?: $type = 'string';
 
         $params = [
             'key' => $key,
