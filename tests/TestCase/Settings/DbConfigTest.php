@@ -3,6 +3,7 @@ namespace App\Test\TestCase\Settings;
 
 use App\Model\Table\SettingsTable;
 use App\Settings\DbConfig;
+use Cake\Cache\Cache;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
 
@@ -49,6 +50,8 @@ class DbConfigTest extends TestCase
      */
     public function testGetArray(): void
     {
+        Cache::delete('Settings');
+
         $array = $this->configure->read('Settings');
         $this->assertInternalType('array', $array);
     }
@@ -59,6 +62,8 @@ class DbConfigTest extends TestCase
      */
     public function testGetEmptyArray(): void
     {
+        Cache::delete('Settings');
+
         $array = $this->configure->read('SettingsWrong');
         $this->assertEquals([], $array);
     }
