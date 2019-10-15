@@ -162,6 +162,8 @@ class SettingsController extends AppController
 
             $set = [];
             foreach ($dataPut as $key => $value) {
+                $type[$key] !== 'list' ?: $type[$key] = 'string';
+
                 $entity = $this->query->createEntity($key, $value, $type[$key], $this->scope, $this->context);
                 if (!empty($entity)) {
                     $set[] = $entity;

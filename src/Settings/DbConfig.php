@@ -1,6 +1,7 @@
 <?php
 namespace App\Settings;
 
+use Cake\Cache\Cache;
 use Cake\Core\Configure\ConfigEngineInterface;
 use Cake\ORM\TableRegistry;
 use Cake\Utility\Hash;
@@ -31,15 +32,21 @@ class DbConfig implements ConfigEngineInterface
     {
         $query = TableRegistry::get($key);
         // App level costum settings
-        try {
-            $data = $query->find('list', ['keyField' => 'key', 'valueField' => 'value'])
-                          ->where(['scope' => $this->scope, 'context' => $this->context])
-                          ->toArray();
-        } catch (\Cake\Database\Exception $e) {
-            return [];
-        }
 
-        $config = Hash::expand($data);
+        $config = Cache::read('Settings');
+
+        if (!$config) {
+            try {
+                $data = $query->find('list', ['keyField' => 'key', 'valueField' => 'value'])
+                              ->where(['scope' => $this->scope, 'context' => $this->context])
+                              ->toArray();
+            } catch (\Cake\Database\Exception $e) {
+                return [];
+            }
+
+            $config = Hash::expand($data);
+            Cache::write('Settings', $config);
+        }
 
         return $config;
     }

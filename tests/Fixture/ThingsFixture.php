@@ -34,6 +34,10 @@ class ThingsFixture extends TestFixture
             'modified' => '2018-01-18 15:47:16',
             'created_by' => '00000000-0000-0000-0000-000000000001',
             'modified_by' => '00000000-0000-0000-0000-000000000001',
+            'area_amount' => '25',
+            'area_unit' => 'm',
+            'salary_amount' => '1000',
+            'salary_currency' => 'EUR',
             'trashed' => null
         ],
         [

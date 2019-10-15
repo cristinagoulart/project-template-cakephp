@@ -10,7 +10,8 @@
  *
  * For each field the following can be defined:
  * - alias - Configuration key that will be stored in database.
- * - type - Can be integer, string or boolean.
+ * - type - Can be integer, string, list or boolean.
+ * - (optional) selectOptions - Array with [value => label] in case of type list.
  * - scope - Whether the settings can be applied on application level, on user level or both.
  * - help - Text to be displayed as a help message under each field
  */
@@ -21,8 +22,12 @@ return [
                 'General' => [
                     'Transport' => [
                         'alias' => 'EmailTransport.default.className',
-                        'type' => 'string',
-                        'help' => 'Valid options are Mail, Smtp and Debug',
+                        'type' => 'list',
+                        'selectOptions' => [
+                            'mail' => 'Mail',
+                            'smtp' => 'Smtp',
+                            'debug' => 'Debug'
+                        ],
                         'scope' => [
                             'app',
                         ],
