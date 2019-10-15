@@ -55,42 +55,6 @@ class ControllerApiTest extends JsonIntegrationTestCase
     /**
      * @dataProvider modulesProvider
      */
-    public function testFormatPrettyAmount(string $module): void
-    {
-        $this->get('/api/' . Inflector::dasherize($module) . '?format=pretty');
-        $response = $this->getParsedResponse();
-        $data = $response->data[1];
-        $this->assertEquals($data->area_amount, '25.00');
-        $this->assertJsonResponseOk();
-    }
-
-    /**
-     * @dataProvider modulesProvider
-     */
-    public function testFormatPrettyUnit(string $module): void
-    {
-        $this->get('/api/' . Inflector::dasherize($module) . '?format=pretty');
-        $response = $this->getParsedResponse();
-        $data = $response->data[1];
-        $this->assertEquals($data->area_unit, 'm²');
-        $this->assertJsonResponseOk();
-    }
-
-    /**
-     * @dataProvider modulesProvider
-     */
-    public function testFormatPrettyCurrency(string $module): void
-    {
-        $this->get('/api/' . Inflector::dasherize($module) . '?format=pretty');
-        $response = $this->getParsedResponse();
-        $data = $response->data[1];
-        $this->assertEquals($data->salary_currency, '<span title="Euro">€&nbsp;(EUR)</span>');
-        $this->assertJsonResponseOk();
-    }
-
-    /**
-     * @dataProvider modulesProvider
-     */
     public function testIndex(string $module): void
     {
         $this->get('/api/' . Inflector::dasherize($module));
