@@ -2,12 +2,10 @@
 namespace App\Test\TestCase\Controller\Api;
 
 use App\Crud\Action\SchemaAction;
-use App\Event\Controller\Api\IndexActionListener;
 use App\Feature\Factory;
 use Cake\Controller\Controller;
 use Cake\Core\App;
 use Cake\Core\Configure;
-use Cake\Event\EventManager;
 use Cake\Filesystem\Folder;
 use Cake\ORM\TableRegistry;
 use Cake\Utility\Hash;
@@ -35,7 +33,6 @@ class ControllerApiTest extends JsonIntegrationTestCase
         parent::setUp();
 
         $this->setRequestHeaders([], '00000000-0000-0000-0000-000000000002');
-        EventManager::instance()->on(new IndexActionListener());
     }
 
     public function testApiFilesPlacedCorrectly(): void
