@@ -1,6 +1,7 @@
 <?php
 namespace App\Model\Table;
 
+use Cake\Cache\Cache;
 use Cake\Core\Configure;
 use Cake\ORM\Query;
 use Cake\ORM\RulesChecker;
@@ -252,5 +253,14 @@ class SettingsTable extends Table
         return $this->find('list', ['keyField' => 'key', 'valueField' => 'value'])
               ->where($options)
               ->toArray();
+    }
+
+    /**
+     * Reset the Cache after a value is changed
+     * @return void
+     */
+    public function afterSave() : void
+    {
+        Cache::delete('Settings');
     }
 }
