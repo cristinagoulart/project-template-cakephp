@@ -1,6 +1,7 @@
 <?php
 namespace App\Shell\Task;
 
+use App\Search\Manager;
 use App\Utility\Search;
 use Cake\Console\Shell;
 use Cake\Core\Configure;
@@ -52,11 +53,11 @@ class Upgrade20180404000000Task extends Shell
                 continue;
             }
 
-            if ($this->hasSearch($module)) {
+            if (null !== Manager::getSystemSearch($module)) {
                 continue;
             }
 
-            $this->createSearch($module);
+            Manager::createSystemSearch($module);
         }
 
         $this->success(sprintf('%s completed.', $this->getOptionParser()->getDescription()));
@@ -87,85 +88,5 @@ class Upgrade20180404000000Task extends Shell
         }
 
         return true;
-    }
-
-    /**
-     * Validates if provided module has a system search.
-     *
-     * @param string $module Module name
-     * @return bool
-     */
-    private function hasSearch(string $module): bool
-    {
-        $table = TableRegistry::getTableLocator()->get('Search.SavedSearches');
-
-        $query = $table->find()
-            ->where(['SavedSearches.model' => $module, 'SavedSearches.system' => true])
-            ->limit(1);
-
-        return ! $query->isEmpty();
-    }
-
-    /**
-     * Creates system search for provided module.
-     *
-     * @param string $module Module name
-     *
-     * @throws \RuntimeException when failed to create system search
-     *
-     * @return \Cake\Datasource\EntityInterface
-     */
-    private function createSearch(string $module): EntityInterface
-    {
-        $table = TableRegistry::getTableLocator()->get('Search.SavedSearches');
-
-        $user = TableRegistry::getTableLocator()->get('CakeDC/Users.Users')
-            ->find()
-            ->where(['is_superuser' => true])
-            ->enableHydration(true)
-            ->firstOrFail();
-
-        Assert::isInstanceOf($user, EntityInterface::class);
-
-        $displayFields = Search::getDisplayFields($module);
-
-        $entity = $table->newEntity([
-            'name' => sprintf('Default %s search', Inflector::humanize(Inflector::underscore($module))),
-            'model' => $module,
-            'system' => true,
-            'user_id' => $user->get('id'),
-            'conjunction' => \Search\Criteria\Conjunction::DEFAULT_CONJUNCTION,
-            'fields' => $displayFields,
-            'order_by_direction' => \Search\Criteria\Direction::DEFAULT_DIRECTION,
-            'order_by_field' => current($displayFields)
-        ]);
-
-        if (! $table->save($entity)) {
-            throw new \RuntimeException(sprintf('Failed to create "%s" system search', $module));
-        }
-
-        return $entity;
-    }
-
-    /**
-     * Get user to attach to system search.
-     *
-     * @todo We might have multiple superusers, so it's better to get the .env DEV_USER
-     * @return mixed[]
-     */
-    private function getUser(): array
-    {
-        $result = [];
-        $table = TableRegistry::getTableLocator()->get('CakeDC/Users.Users');
-        $query = $table->find()->where(['is_superuser' => true]);
-
-        /**
-         * @var \Cake\Datasource\EntityInterface
-         */
-        $entity = $query->firstOrFail();
-
-        $result = $entity->toArray();
-
-        return $result;
     }
 }

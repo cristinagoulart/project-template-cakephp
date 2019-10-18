@@ -11,13 +11,17 @@
  */
 namespace App\Search;
 
+use App\Utility\Search;
 use Cake\Datasource\EntityInterface;
 use Cake\Datasource\ResultSetInterface;
 use Cake\ORM\Table;
+use Cake\ORM\TableRegistry;
 use Cake\Utility\Hash;
+use Cake\Utility\Inflector;
 use CsvMigrations\FieldHandlers\FieldHandlerFactory;
 use Qobo\Utils\Utility\User;
 use RolesCapabilities\Access\AccessFactory;
+use Search\Model\Entity\SavedSearch;
 use Webmozart\Assert\Assert;
 
 final class Manager
@@ -201,5 +205,61 @@ final class Manager
         });
 
         return $urls;
+    }
+
+    /**
+     * System search getter.
+     *
+     * @param string $model Model name
+     * @return \Search\Model\Entity\SavedSearch|null
+     */
+    public static function getSystemSearch(string $model) : ?SavedSearch
+    {
+        $table = TableRegistry::getTableLocator()->get('Search.SavedSearches');
+
+        $savedSearch = $table->find()
+            ->enableHydration(true)
+            ->where(['SavedSearches.model' => $model, 'SavedSearches.system' => true])
+            ->first();
+
+        Assert::nullOrIsInstanceOf($savedSearch, SavedSearch::class);
+
+        return $savedSearch;
+    }
+
+    /**
+     * Creates system search for provided model.
+     *
+     * @param string $model Model name
+     * @return \Search\Model\Entity\SavedSearch
+     */
+    public static function createSystemSearch(string $model) : SavedSearch
+    {
+        $user = TableRegistry::getTableLocator()->get('Users')
+            ->find()
+            ->where(['is_superuser' => true])
+            ->enableHydration(true)
+            ->firstOrFail();
+        Assert::isInstanceOf($user, \App\Model\Entity\User::class);
+
+        $table = TableRegistry::getTableLocator()->get('Search.SavedSearches');
+        $displayFields = Search::getDisplayFields($model);
+        $savedSearch = $table->newEntity([
+            'name' => sprintf('Default %s search', Inflector::humanize(Inflector::underscore($model))),
+            'model' => $model,
+            'system' => true,
+            'user_id' => $user->get('id'),
+            'criteria' => [],
+            'conjunction' => \Search\Criteria\Conjunction::DEFAULT_CONJUNCTION,
+            'fields' => $displayFields,
+            'order_by_direction' => \Search\Criteria\Direction::DEFAULT_DIRECTION,
+            'order_by_field' => current($displayFields)
+        ]);
+
+        $table->saveOrFail($savedSearch);
+
+        Assert::isInstanceOf($savedSearch, SavedSearch::class);
+
+        return $savedSearch;
     }
 }
