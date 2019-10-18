@@ -394,51 +394,45 @@ final class Search
      */
     private static function getSearchableFieldsByTable(Table $table) : array
     {
-        $fields = self::getFieldsDefinitionsByTable($table);
-        if (empty($fields)) {
-            return [];
-        }
-
-        $factory = new FieldHandlerFactory();
+        $moduleName = App::shortName(get_class($table), 'Model/Table', 'Table');
 
         $result = [];
-        foreach ($fields as $field) {
-            $searchOptions = $factory->getSearchOptions($table, $field);
-            if (empty($searchOptions)) {
+        foreach (Model::fields($moduleName) as $field) {
+            if (in_array($field['type'], ['uuid', 'files', 'base64'])) {
                 continue;
             }
 
-            foreach ($searchOptions as $searchFieldName => $searchFieldOptions) {
-                $searchFieldName = $table->aliasField((string)$searchFieldName);
-                $searchFieldOptions['field'] = $searchFieldName;
-                $result[$searchFieldName] = $searchFieldOptions;
+            if (in_array($field['name'], ['trashed'])) {
+                continue;
             }
+
+            if (in_array('non-searchable', $field['meta'])) {
+                continue;
+            }
+
+            $item = [
+                'type' => $field['type'],
+                'label' => $field['label'],
+            ];
+
+            if (array_key_exists('options', $field)) {
+                $item['options'] = $field['options'];
+            }
+
+            if (array_key_exists('display_field', $field)) {
+                $item['display_field'] = $field['display_field'];
+            }
+
+            if (array_key_exists('source', $field)) {
+                $item['source'] = $field['source'];
+            }
+
+            $item['field'] = $table->aliasField($field['name']);
+
+            $result[] = $item;
         }
 
         return $result;
-    }
-
-    /**
-     * Returns the fields definitions for the provided table.
-     *
-     * @param \Cake\ORM\Table $table Table instance
-     * @return mixed[]
-     */
-    private static function getFieldsDefinitionsByTable(Table $table) : array
-    {
-        if ($table instanceof UsersTable) {
-            return ['first_name', 'last_name', 'username', 'email', 'created', 'modified'];
-        }
-
-        if ($table instanceof DatabaseLogsTable) {
-            return ['hostname', 'ip', 'uri', 'message', 'type', 'created'];
-        }
-
-        list(, $module) = pluginSplit(App::shortName(get_class($table), 'Model/Table', 'Table'));
-
-        $config = (new ModuleConfig(ConfigType::MIGRATION(), $module))->parseToArray();
-
-        return array_keys($config);
     }
 
     /**
