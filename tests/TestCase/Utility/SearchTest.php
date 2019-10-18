@@ -9,9 +9,9 @@ use Search\Model\Entity\SavedSearch;
 class SearchTest extends TestCase
 {
     public $fixtures = [
+        'app.saved_searches',
         'app.things',
-        'app.users',
-        'plugin.Search.saved_searches'
+        'app.users'
     ];
 
     public function setUp() : void
