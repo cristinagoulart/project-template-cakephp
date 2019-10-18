@@ -195,10 +195,11 @@ final class Manager
             'delete' => ['prefix' => false, 'plugin' => $plugin, 'controller' => $controller, 'action' => 'delete', $id]
         ];
 
-        return [
-            'view' => $factory->hasAccess($urls['view'], User::getCurrentUser()),
-            'edit' => $factory->hasAccess($urls['edit'], User::getCurrentUser()),
-            'delete' => $factory->hasAccess($urls['delete'], User::getCurrentUser())
-        ];
+        array_walk($urls, function (&$item, $key) use ($factory) {
+            $className = sprintf('\App\Controller\%sController', $item['controller']);
+            $item = $factory->hasAccess($item, User::getCurrentUser()) && method_exists($className, $item['action']);
+        });
+
+        return $urls;
     }
 }
