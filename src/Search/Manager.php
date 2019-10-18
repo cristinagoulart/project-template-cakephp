@@ -11,8 +11,14 @@
  */
 namespace App\Search;
 
+use Cake\Datasource\EntityInterface;
+use Cake\Datasource\ResultSetInterface;
+use Cake\ORM\Table;
 use Cake\Utility\Hash;
+use CsvMigrations\FieldHandlers\FieldHandlerFactory;
 use Qobo\Utils\Utility\User;
+use RolesCapabilities\Access\AccessFactory;
+use Webmozart\Assert\Assert;
 
 final class Manager
 {
@@ -106,5 +112,93 @@ final class Manager
         }
 
         return $value;
+    }
+
+    /**
+     * Method that formats search result-set.
+     *
+     * @param \Cake\Datasource\ResultSetInterface $entities Search result-set
+     * @param \Cake\ORM\Table $table Table instance
+     * @param bool $withPermissions Whether to include access permissions
+     * @return mixed[]
+     */
+    public static function formatEntities(ResultSetInterface $entities, Table $table, bool $withPermissions = false) : array
+    {
+        $result = [];
+        foreach ($entities as $entity) {
+            $result[] = self::formatEntity($entity, $table, $withPermissions);
+        }
+
+        return $result;
+    }
+
+    /**
+     * Method that formats search result-set entity.
+     *
+     * @param \Cake\Datasource\EntityInterface $entity Entity instance
+     * @param \Cake\ORM\Table $table Table instance
+     * @param bool $withPermissions Whether to include access permissions
+     * @return mixed[]
+     */
+    private static function formatEntity(EntityInterface $entity, Table $table, bool $withPermissions = false) : array
+    {
+        static $factory = null;
+        if (null === $factory) {
+            $factory = new FieldHandlerFactory();
+        }
+
+        $result = [];
+        foreach (array_diff($entity->visibleProperties(), $entity->getVirtual()) as $field) {
+            // current table field
+            if ('_matchingData' !== $field) {
+                $result[$table->aliasField($field)] = $factory->renderValue($table, $field, $entity->get($field));
+                continue;
+            }
+
+            foreach ($entity->get('_matchingData') as $associationName => $relatedEntity) {
+                $result = array_merge($result, self::formatEntity(
+                    $relatedEntity,
+                    $table->getAssociation($associationName)->getTarget(),
+                    false
+                ));
+            }
+        }
+
+        if ($withPermissions) {
+            $primaryKey = $table->getPrimaryKey();
+            Assert::string($primaryKey);
+            $result['_permissions'] = self::getPermissions($entity->get($primaryKey), $table);
+        }
+
+        return $result;
+    }
+
+    /**
+     * Returns entity access permissions.
+     *
+     * @param string $id Entity ID
+     * @param \Cake\ORM\Table $table Table instance
+     * @return mixed[]
+     */
+    private static function getPermissions(string $id, Table $table) : array
+    {
+        static $factory = null;
+        if (null === $factory) {
+            $factory = new AccessFactory();
+        }
+
+        list($plugin, $controller) = pluginSplit($table->getAlias());
+
+        $urls = [
+            'view' => ['prefix' => false, 'plugin' => $plugin, 'controller' => $controller, 'action' => 'view', $id],
+            'edit' => ['prefix' => false, 'plugin' => $plugin, 'controller' => $controller, 'action' => 'edit', $id],
+            'delete' => ['prefix' => false, 'plugin' => $plugin, 'controller' => $controller, 'action' => 'delete', $id]
+        ];
+
+        return [
+            'view' => $factory->hasAccess($urls['view'], User::getCurrentUser()),
+            'edit' => $factory->hasAccess($urls['edit'], User::getCurrentUser()),
+            'delete' => $factory->hasAccess($urls['delete'], User::getCurrentUser())
+        ];
     }
 }
