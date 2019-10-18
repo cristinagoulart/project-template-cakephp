@@ -1,20 +1,18 @@
 <?php
 namespace App\Shell\Task;
 
-use App\Event\Plugin\Search\Model\SearchableFieldsListener;
+use App\Utility\Search;
 use Cake\Console\Shell;
 use Cake\Core\Configure;
 use Cake\Core\Plugin;
 use Cake\Datasource\EntityInterface;
-use Cake\Event\EventManager;
 use Cake\ORM\TableRegistry;
 use Cake\Utility\Hash;
 use Cake\Utility\Inflector;
 use Qobo\Utils\ModuleConfig\ConfigType;
 use Qobo\Utils\ModuleConfig\ModuleConfig;
 use Qobo\Utils\Utility;
-use RuntimeException;
-use Search\Utility\Search;
+use Webmozart\Assert\Assert;
 
 /**
  *  This class is responsible for creating system searches for all system Modules.
@@ -44,8 +42,6 @@ class Upgrade20180404000000Task extends Shell
         if (! Plugin::loaded('Search')) {
             return false;
         }
-
-        EventManager::instance()->on(new SearchableFieldsListener());
 
         $path = Configure::readOrFail('CsvMigrations.modules.path');
         Utility::validatePath($path);
@@ -123,17 +119,29 @@ class Upgrade20180404000000Task extends Shell
     {
         $table = TableRegistry::getTableLocator()->get('Search.SavedSearches');
 
-        $search = new Search(TableRegistry::getTableLocator()->get($module), $this->getUser());
-        $id = $search->create(['system' => true]);
+        $user = TableRegistry::getTableLocator()->get('CakeDC/Users.Users')
+            ->find()
+            ->where(['is_superuser' => true])
+            ->enableHydration(true)
+            ->firstOrFail();
 
-        $entity = $table->get($id);
-        $entity = $table->patchEntity($entity, [
+        Assert::isInstanceOf($user, EntityInterface::class);
+
+        $displayFields = Search::getDisplayFields($module);
+
+        $entity = $table->newEntity([
             'name' => sprintf('Default %s search', Inflector::humanize(Inflector::underscore($module))),
-            'system' => true
+            'model' => $module,
+            'system' => true,
+            'user_id' => $user->get('id'),
+            'conjunction' => \Search\Criteria\Conjunction::DEFAULT_CONJUNCTION,
+            'fields' => $displayFields,
+            'order_by_direction' => \Search\Criteria\Direction::DEFAULT_DIRECTION,
+            'order_by_field' => current($displayFields)
         ]);
 
         if (! $table->save($entity)) {
-            throw new RuntimeException(sprintf('Failed to create "%s" system search', $module));
+            throw new \RuntimeException(sprintf('Failed to create "%s" system search', $module));
         }
 
         return $entity;
