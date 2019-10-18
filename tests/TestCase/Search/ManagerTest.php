@@ -21,7 +21,7 @@ class ManagerTest extends TestCase
     {
         parent::setUp();
 
-        User::setCurrentUser(['id' => '123']);
+        User::setCurrentUser(['id' => '00000000-0000-0000-0000-000000000001']);
     }
 
     public function testGetOptionsFromRequest() : void
@@ -60,14 +60,14 @@ class ManagerTest extends TestCase
         $data = [
             'criteria' => [
                 'assigned_to' => [
-                    '123' => ['operator' => 'is_not', 'value' => '%%me%%']
+                    ['operator' => 'is_not', 'value' => '%%me%%']
                 ]
             ]
         ];
 
         $expected = [
             'data' => [
-                ['field' => 'assigned_to', 'operator' => 'is_not', 'value' => '123']
+                ['field' => 'assigned_to', 'operator' => 'is_not', 'value' => User::getCurrentUser()['id']]
             ]
         ];
 
@@ -79,14 +79,14 @@ class ManagerTest extends TestCase
         $data = [
             'criteria' => [
                 'assigned_to' => [
-                    '123' => ['operator' => 'is_not', 'value' => ['%%me%%', '%%me%%']]
+                    ['operator' => 'is_not', 'value' => ['%%me%%', '%%me%%']]
                 ]
             ]
         ];
 
         $expected = [
             'data' => [
-                ['field' => 'assigned_to', 'operator' => 'is_not', 'value' => ['123', '123']]
+                ['field' => 'assigned_to', 'operator' => 'is_not', 'value' => [User::getCurrentUser()['id'], User::getCurrentUser()['id']]]
             ]
         ];
 
