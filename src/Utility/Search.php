@@ -104,14 +104,17 @@ final class Search
      */
     public static function getDisplayFields(string $tableName) : array
     {
-        $table = TableRegistry::getTableLocator()->get($tableName);
-
         $result = self::getDisplayFieldsFromSystemSearch($tableName);
 
-        if (empty($result)) {
+        if ([] === $result) {
             $result = self::getDisplayFieldsFromView($tableName);
         }
 
+        if ([] === $result) {
+            $result = self::getDisplayFieldsFromDatabaseColumns($tableName);
+        }
+
+        $table = TableRegistry::getTableLocator()->get($tableName);
         foreach ($result as $key => $value) {
             $result[$key] = $table->aliasField($value);
         }
@@ -327,20 +330,16 @@ final class Search
      */
     private static function getDisplayFieldsFromSystemSearch(string $tableName) : array
     {
-        $table = TableRegistry::getTableLocator()->get('Search.SavedSearches');
-
-        $entity = $table->find('all')
+        $entity = TableRegistry::getTableLocator()
+            ->get('Search.SavedSearches')
+            ->find('all')
             ->where(['SavedSearches.model' => $tableName, 'SavedSearches.system' => true])
             ->enableHydration(true)
             ->first();
 
         Assert::nullOrIsInstanceOf($entity, SavedSearch::class);
 
-        if (null === $entity) {
-            return [];
-        }
-
-        return (array)$entity->get('fields');
+        return null !== $entity ? (array)$entity->get('fields') : [];
     }
 
     /**
@@ -351,21 +350,40 @@ final class Search
      */
     private static function getDisplayFieldsFromView(string $tableName) : array
     {
-        $config = [];
-
         list($plugin, $module) = pluginSplit($tableName);
-        $mc = new ModuleConfig(ConfigType::VIEW(), $module, 'index');
-
         try {
-            $config = $mc->parseToArray();
+            $config = (new ModuleConfig(ConfigType::VIEW(), $module, 'index'))->parseToArray();
             $config = ! empty($config['items']) ? $config['items'] : [];
         } catch (\InvalidArgumentException $e) {
+            $config = [];
             Log::error($e->getMessage());
         }
 
         return array_map(function ($value) {
             return $value[0];
         }, $config);
+    }
+
+    /**
+     * Returns display fields from provided table's database columns.
+     *
+     * @param string $tableName Table name
+     * @return string[]
+     */
+    private static function getDisplayFieldsFromDatabaseColumns(string $tableName) : array
+    {
+        $table = TableRegistry::getTableLocator()->get($tableName);
+
+        $result = array_keys(
+            array_filter(
+                $table->getSchema()->typeMap(),
+                function ($item) {
+                    return 'string' === $item;
+                }
+            )
+        );
+
+        return array_slice($result, 0, 6);
     }
 
     /**
