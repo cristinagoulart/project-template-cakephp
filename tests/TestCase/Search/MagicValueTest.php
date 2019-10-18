@@ -58,4 +58,30 @@ class MagicValueTest extends TestCase
             (new MagicValue('%%tomorrow%%', $this->user))->get()
         );
     }
+
+    /**
+     * @dataProvider validMagicValues
+     */
+    public function testShouldAcceptValidMagicValue(string $value) : void
+    {
+        $this->assertTrue(MagicValue::is($value));
+    }
+
+    public function testShouldRequireValidMagicValue() : void
+    {
+        $this->assertFalse(MagicValue::is('%%foobar%%'));
+    }
+
+    /**
+     * @return string[][]
+     */
+    public function validMagicValues() : array
+    {
+        return [
+            ['%%me%%'],
+            ['%%today%%'],
+            ['%%yesterday%%'],
+            ['%%tomorrow%%']
+        ];
+    }
 }

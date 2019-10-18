@@ -53,6 +53,19 @@ final class MagicValue
     }
 
     /**
+     * Valid magic value detector.
+     *
+     * @param string $value Value
+     * @return bool
+     */
+    public static function is(string $value) : bool
+    {
+        $value = str_replace(static::WRAPPER, '', $value);
+
+        return method_exists(MagicValue::class, $value);
+    }
+
+    /**
      * Magic value getter.
      *
      * @return string
