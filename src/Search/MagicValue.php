@@ -11,8 +11,6 @@
  */
 namespace App\Search;
 
-use Cake\I18n\Time;
-
 /**
  * Class responsible for generating Magic values.
  */
@@ -87,7 +85,7 @@ final class MagicValue
      */
     private function today(): string
     {
-        return (new Time('today'))->format('Y-m-d H:i:s');
+        return (new \DateTimeImmutable('today'))->format('Y-m-d');
     }
 
     /**
@@ -97,7 +95,7 @@ final class MagicValue
      */
     private function yesterday(): string
     {
-        return (new Time('yesterday'))->format('Y-m-d H:i:s');
+        return (new \DateTimeImmutable('yesterday'))->format('Y-m-d');
     }
 
     /**
@@ -107,6 +105,6 @@ final class MagicValue
      */
     private function tomorrow(): string
     {
-        return (new Time('tomorrow'))->format('Y-m-d H:i:s');
+        return (new \DateTimeImmutable('tomorrow'))->format('Y-m-d');
     }
 }
