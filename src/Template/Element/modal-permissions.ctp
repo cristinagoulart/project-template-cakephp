@@ -145,7 +145,8 @@ foreach (PermissionsTable::ALLOWED_ACTIONS as $action) {
                         <?php $table = TableRegistry::get($permission->get('owner_model')) ?>
                         <?php $displayField = $table->getDisplayField() ?>
                         <?php $primaryKey = $table->getPrimaryKey() ?>
-                        <?php $entity = $table->get($permission->get('owner_foreign_key')) ?>
+                        <?php $entity = $table->find()->where(['id' => $permission->get('owner_foreign_key')])->first(); ?>
+                        <?php if(!empty($entity)): ?>
                         <tr>
                             <td><?= $entity->get($displayField) ?></td>
                             <td><?= $permission->get('owner_model') ?></td>
@@ -167,6 +168,7 @@ foreach (PermissionsTable::ALLOWED_ACTIONS as $action) {
                                 ) ?>
                             </td>
                         </tr>
+                        <?php endif; ?>
                     <?php endforeach; ?>
                     </tbody>
                 </table>

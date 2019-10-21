@@ -44,6 +44,7 @@ class UsersTable extends Table
         }
 
         $this->addBehavior('Lookup', ['lookupFields' => Hash::get($tableConfig, 'table.lookup_fields', [])]);
+        $this->addBehavior('Muffin/Trash.Trash', ['field' => 'trashed']);
     }
 
     /**

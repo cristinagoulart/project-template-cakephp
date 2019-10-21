@@ -16,9 +16,9 @@ class SettingsTableTest extends TestCase
     /**
      * Test subject
      *
-     * @var \App\Model\Table\SettingsTable $Settings
+     * @var \App\Model\Table\SettingsTable $settings
      */
-    public $Settings;
+    public $settings;
 
     /**
      * Fixtures
@@ -37,12 +37,14 @@ class SettingsTableTest extends TestCase
     public function setUp()
     {
         parent::setUp();
-        $config = TableRegistry::exists('Settings') ? [] : ['className' => SettingsTable::class];
+
+        TableRegistry::clear();
         /**
          * @var \App\Model\Table\SettingsTable $table
          */
-        $table = TableRegistry::get('Settings', $config);
-        $this->Settings = $table;
+        $table = TableRegistry::getTableLocator()->get('Settings');
+
+        $this->settings = $table;
     }
 
     /**
@@ -52,7 +54,7 @@ class SettingsTableTest extends TestCase
      */
     public function tearDown()
     {
-        unset($this->Settings);
+        unset($this->settings);
 
         parent::tearDown();
     }
@@ -64,7 +66,7 @@ class SettingsTableTest extends TestCase
     public function testCreateEntityNoKey(): void
     {
         $this->expectException('Cake\Datasource\Exception\RecordNotFoundException');
-        $en = $this->Settings->createEntity('invalid.key', '1234', 'integer', 'app', 'app');
+        $en = $this->settings->createEntity('invalid.key', '1234', 'integer', 'app', 'app');
     }
 
     /**
@@ -76,7 +78,7 @@ class SettingsTableTest extends TestCase
         /**
          * @var \Cake\ORM\Entity $existEntity
          */
-        $existEntity = $this->Settings->createEntity('FileStorage.defaultImageSize', '1234', 'integer', 'app', 'app');
+        $existEntity = $this->settings->createEntity('FileStorage.defaultImageSize', '1234', 'integer', 'app', 'app');
         $this->assertEquals(false, $existEntity->isNew());
     }
 
@@ -94,8 +96,22 @@ class SettingsTableTest extends TestCase
             'type' => 'integer'
         ];
 
-        $entity = $this->Settings->newEntity($params);
-        $myEntity = $this->Settings->createEntity('FileStorage.defaultImageSize', '1234', 'integer', 'user', 'bb697cd7-c869-491d-8696-805b1af8c08f');
+        $entity = $this->settings->newEntity($params);
+        $myEntity = $this->settings->createEntity('FileStorage.defaultImageSize', '1234', 'integer', 'user', 'bb697cd7-c869-491d-8696-805b1af8c08f');
+
+        $this->assertEquals($entity, $myEntity);
+
+        // test list type
+        $params = [
+            'key' => 'FileStorage.defaultImageSize',
+            'value' => 'large',
+            'scope' => 'user',
+            'context' => 'bb697cd7-c869-491d-8696-805b1af8c08f',
+            'type' => 'string',
+        ];
+
+        $entity = $this->settings->newEntity($params);
+        $myEntity = $this->settings->createEntity('FileStorage.defaultImageSize', 'large', 'list', 'user', 'bb697cd7-c869-491d-8696-805b1af8c08f');
 
         $this->assertEquals($entity, $myEntity);
     }
@@ -116,8 +132,8 @@ class SettingsTableTest extends TestCase
         /**
          * @var \Cake\Datasource\EntityInterface $oldEntity
          */
-        $oldEntity = $this->Settings->find('all')->where(['key' => 'ScheduledLog.stats.age'])->first();
-        $patchEntity = $this->Settings->patchEntity($oldEntity, $params);
+        $oldEntity = $this->settings->find('all')->where(['key' => 'ScheduledLog.stats.age'])->first();
+        $patchEntity = $this->settings->patchEntity($oldEntity, $params);
         $oldEntityValues = [
             'key' => 'ScheduledLog.stats.age',
             'value' => $oldEntity['value'],
@@ -170,7 +186,7 @@ class SettingsTableTest extends TestCase
          ],
         ];
 
-        $filterData = $this->Settings->filterSettings($configSettings, $userRoles);
+        $filterData = $this->settings->filterSettings($configSettings, $userRoles);
         $this->assertEquals($configSettingsFilter, $filterData);
     }
 
@@ -195,7 +211,7 @@ class SettingsTableTest extends TestCase
         ];
 
         $this->expectException('\RuntimeException');
-        $filterData = $this->Settings->filterSettings($configSettings, $userRoles);
+        $filterData = $this->settings->filterSettings($configSettings, $userRoles);
     }
 
     /**
@@ -205,7 +221,7 @@ class SettingsTableTest extends TestCase
     public function testUpdateValidationNoErrors(): void
     {
         $key = 'FileStorage.defaultImageSize';
-        $entity = $this->Settings->find('all')->where(['key' => $key])->firstOrFail();
+        $entity = $this->settings->find('all')->where(['key' => $key])->firstOrFail();
         if (is_array($entity)) {
             return;
         }
@@ -214,7 +230,7 @@ class SettingsTableTest extends TestCase
             'value' => '300',
             'type' => 'integer' // dynamic field to pass type to the validator
         ];
-        $newEntity = $this->Settings->patchEntity($entity, $params);
+        $newEntity = $this->settings->patchEntity($entity, $params);
         $this->assertEmpty($newEntity->getErrors());
     }
 
@@ -234,7 +250,7 @@ class SettingsTableTest extends TestCase
         if (is_array($entity) || is_null($entity)) {
             return;
         }
-        $newEntity = $this->Settings->patchEntity($entity, $params);
+        $newEntity = $this->settings->patchEntity($entity, $params);
         $this->assertEquals('The provided value is invalid', $newEntity->getErrors()['value']['custom']);
     }
 
@@ -258,7 +274,7 @@ class SettingsTableTest extends TestCase
         ];
 
         $alias = (array)Hash::extract($configSettings, '{s}.{s}.{s}.{s}.alias');
-        $this->assertEmpty($this->Settings->getAliasDiff($alias));
+        $this->assertEmpty($this->settings->getAliasDiff($alias));
     }
 
     /**
@@ -291,7 +307,7 @@ class SettingsTableTest extends TestCase
         ];
 
         $alias = (array)Hash::extract($configSettings, '{s}.{s}.{s}.{s}.alias');
-        $this->assertEquals(['Avatar.defaultImage'], $this->Settings->getAliasDiff($alias));
+        $this->assertEquals(['Avatar.defaultImage'], $this->settings->getAliasDiff($alias));
     }
 
     /**
@@ -325,7 +341,7 @@ class SettingsTableTest extends TestCase
 
         $alias = (array)Hash::extract($configSettings, '{s}.{s}.{s}.{s}.alias');
         $this->expectException('RuntimeException');
-        $this->Settings->getAliasDiff($alias);
+        $this->settings->getAliasDiff($alias);
     }
 
     /**
@@ -346,7 +362,7 @@ class SettingsTableTest extends TestCase
         if (is_array($entity) || is_null($entity)) {
             return;
         }
-        $newEntity = $this->Settings->patchEntity($entity, $params);
+        $newEntity = $this->settings->patchEntity($entity, $params);
         $this->assertEquals([], $newEntity->getErrors());
     }
 
@@ -368,7 +384,7 @@ class SettingsTableTest extends TestCase
         if (is_array($entity) || is_null($entity)) {
             return;
         }
-        $newEntity = $this->Settings->patchEntity($entity, $params);
+        $newEntity = $this->settings->patchEntity($entity, $params);
         $this->assertEquals('The provided value is invalid', $newEntity->getErrors()['context']['custom']);
     }
 
@@ -390,7 +406,7 @@ class SettingsTableTest extends TestCase
         if (is_array($entity) || is_null($entity)) {
             return;
         }
-        $newEntity = $this->Settings->patchEntity($entity, $params);
+        $newEntity = $this->settings->patchEntity($entity, $params);
         $this->assertEquals([], $newEntity->getErrors());
     }
 
@@ -412,7 +428,7 @@ class SettingsTableTest extends TestCase
         if (is_array($entity) || is_null($entity)) {
             return;
         }
-        $newEntity = $this->Settings->patchEntity($entity, $params);
+        $newEntity = $this->settings->patchEntity($entity, $params);
         $this->assertEquals('The provided value is invalid', $newEntity->getErrors()['context']['custom']);
     }
 
@@ -420,7 +436,7 @@ class SettingsTableTest extends TestCase
     {
         $options = ['value' => 'huge'];
 
-        $list = $this->Settings->findDataApp($this->Settings->query(), $options);
+        $list = $this->settings->findDataApp($this->settings->query(), $options);
 
         $this->assertSame(['FileStorage.defaultImageSize' => $options['value']], $list);
     }

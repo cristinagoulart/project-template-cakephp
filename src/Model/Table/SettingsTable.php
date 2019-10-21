@@ -1,6 +1,7 @@
 <?php
 namespace App\Model\Table;
 
+use Cake\Cache\Cache;
 use Cake\Core\Configure;
 use Cake\ORM\Query;
 use Cake\ORM\RulesChecker;
@@ -122,6 +123,8 @@ class SettingsTable extends Table
     public function valueValidator(string $value, array $context): bool
     {
         $type = $context['data']['type'];
+        $type !== 'list' ?: $type = 'string';
+
         $config = ConfigFactory::getByType($type, 'value');
         $validationClass = $config->getProvider('validationRules');
         $validationRules = new $validationClass($config);
@@ -166,6 +169,7 @@ class SettingsTable extends Table
 
             return;
         }
+        $type !== 'list' ?: $type = 'string';
 
         $params = [
             'key' => $key,
@@ -249,5 +253,14 @@ class SettingsTable extends Table
         return $this->find('list', ['keyField' => 'key', 'valueField' => 'value'])
               ->where($options)
               ->toArray();
+    }
+
+    /**
+     * Reset the Cache after a value is changed
+     * @return void
+     */
+    public function afterSave() : void
+    {
+        Cache::delete('Settings');
     }
 }

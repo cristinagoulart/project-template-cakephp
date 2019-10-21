@@ -122,9 +122,11 @@ class AppController extends Controller
         // and should not be used in production. You should instead set "_serialize"
         // in each action as required.
         // TODO: Adding warning logs and then remove later
-        if (!array_key_exists('_serialize', $this->viewVars) &&
+        if (!is_array($this->request->getParam('action')) &&
+            'login' !== $this->request->getParam('action') &&
+            !array_key_exists('_serialize', $this->viewVars) &&
             in_array($this->response->getType(), ['application/json', 'application/xml'])
-        ) {
+         ) {
             $this->set('_serialize', true);
         }
 

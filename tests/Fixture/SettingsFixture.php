@@ -9,16 +9,14 @@ use Cake\TestSuite\Fixture\TestFixture;
  */
 class SettingsFixture extends TestFixture
 {
-    public $import = ['table' => 'settings'];
+    public $import = ['model' => 'Settings'];
 
     /**
-     * Init method
+     * Records
      *
-     * @return void
+     * @var array
      */
-    public function init()
-    {
-        $this->records = [
+    public $records = [
             [
                 'id' => 1,
                 'key' => 'FileStorage.defaultImageSize',
@@ -34,6 +32,4 @@ class SettingsFixture extends TestFixture
                 'context' => 'bb697cd7-c869-491d-8696-805b1af8c08f',
             ]
         ];
-        parent::init();
-    }
 }

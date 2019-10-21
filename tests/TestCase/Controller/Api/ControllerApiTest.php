@@ -24,12 +24,14 @@ class ControllerApiTest extends JsonIntegrationTestCase
         'plugin.CsvMigrations.dblist_items',
         'app.things',
         'app.log_audit',
-        'app.users'
+        'app.users',
+        'app.file_storage'
     ];
 
     public function setUp()
     {
         parent::setUp();
+
         $this->setRequestHeaders([], '00000000-0000-0000-0000-000000000002');
     }
 
