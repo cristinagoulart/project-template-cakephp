@@ -116,9 +116,15 @@ final class Search
 
         $table = TableRegistry::getTableLocator()->get($tableName);
 
-        return array_values(array_map(function ($item) use ($table) {
+        $result = array_map(function ($item) use ($table) {
             return $table->aliasField($item);
-        }, $result));
+        }, $result);
+
+        $result = array_filter($result, function ($item) use ($tableName) {
+            return array_search($item, array_column(self::getFilters($tableName), 'field'));
+        });
+
+        return array_values($result);
     }
 
     /**
