@@ -21,31 +21,35 @@ class ManagerTest extends TestCase
     {
         parent::setUp();
 
-        User::setCurrentUser(['id' => '123']);
+        User::setCurrentUser(['id' => '00000000-0000-0000-0000-000000000001']);
     }
 
     public function testGetOptionsFromRequest() : void
     {
+        $expected = [
+            'data' => [
+                ['field' => 'country', 'operator' => 'is', 'value' => ['CY']],
+                ['field' => 'avg(budget)', 'operator' => 'greater', 'value' => 1000]
+            ],
+            'fields' => ['created', 'modified', 'avg(budget)', 'count(status)'],
+            'order' => ['created' => 'asc'],
+            'group' => 'status'
+        ];
+
         $data = [
             'direction' => 'asc',
             'sort' => 'created',
-            'fields' => ['created', 'modified'],
+            'fields' => ['created', 'modified', 'avg(budget)', 'count(status)'],
             'criteria' => [
                 'country' => [
-                    '123' => ['operator' => 'is', 'value' => ['CY']]
+                    ['operator' => 'is', 'value' => ['CY']]
+                ],
+                'avg(budget)' => [
+                    ['operator' => 'greater', 'value' => 1000]
                 ]
             ],
-            'group_by' => '',
+            'group_by' => 'status',
             'aggregator' => 'AND'
-        ];
-
-        $expected = [
-            'data' => [
-                ['field' => 'country', 'operator' => 'Search\Filter\Equal', 'value' => ['CY']]
-            ],
-            'conjunction' => 'AND',
-            'fields' => ['created', 'modified'],
-            'order' => ['created' => 'asc']
         ];
 
         $this->assertSame($expected, Manager::getOptionsFromRequest($data, []));
@@ -56,16 +60,34 @@ class ManagerTest extends TestCase
         $data = [
             'criteria' => [
                 'assigned_to' => [
-                    '123' => ['operator' => 'is_not', 'value' => '%%me%%']
+                    ['operator' => 'is_not', 'value' => '%%me%%']
                 ]
             ]
         ];
 
         $expected = [
             'data' => [
-                ['field' => 'assigned_to', 'operator' => 'Search\Filter\NotEqual', 'value' => '123']
-            ],
-            'conjunction' => 'AND'
+                ['field' => 'assigned_to', 'operator' => 'is_not', 'value' => User::getCurrentUser()['id']]
+            ]
+        ];
+
+        $this->assertSame($expected, Manager::getOptionsFromRequest($data, []));
+    }
+
+    public function testGetOptionsFromRequestWithMagicValues() : void
+    {
+        $data = [
+            'criteria' => [
+                'assigned_to' => [
+                    ['operator' => 'is_not', 'value' => ['%%me%%', '%%me%%']]
+                ]
+            ]
+        ];
+
+        $expected = [
+            'data' => [
+                ['field' => 'assigned_to', 'operator' => 'is_not', 'value' => [User::getCurrentUser()['id'], User::getCurrentUser()['id']]]
+            ]
         ];
 
         $this->assertSame($expected, Manager::getOptionsFromRequest($data, []));
@@ -73,23 +95,8 @@ class ManagerTest extends TestCase
 
     public function testGetOptionsFromRequestWithGoupBy() : void
     {
-        $expected = ['conjunction' => 'AND', 'group' => 'foo'];
+        $expected = ['group' => 'foo'];
 
         $this->assertSame($expected, Manager::getOptionsFromRequest(['group_by' => 'foo'], []));
-    }
-
-    public function testGetOptionsFromRequestWithInvalidOperator() : void
-    {
-        $this->expectException(\RuntimeException::class);
-
-        $data = [
-            'criteria' => [
-                'assigned_to' => [
-                    '123' => ['operator' => 'INVALID OPERATOR']
-                ]
-            ]
-        ];
-
-        Manager::getOptionsFromRequest($data, []);
     }
 }

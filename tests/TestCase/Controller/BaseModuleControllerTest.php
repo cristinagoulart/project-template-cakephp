@@ -19,9 +19,9 @@ class BaseModuleControllerTest extends IntegrationTestCase
         'plugin.CsvMigrations.dblist_items',
         'plugin.Menu.menus',
         'plugin.Menu.menu_items',
-        'plugin.Search.saved_searches',
         'app.file_storage',
         'app.log_audit',
+        'app.saved_searches',
         'app.things',
         'app.users',
     ];

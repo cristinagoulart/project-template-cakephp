@@ -5,30 +5,37 @@ use Cake\Utility\Inflector;
 use Qobo\Utils\ModuleConfig\ConfigType;
 use Qobo\Utils\ModuleConfig\ModuleConfig;
 use Qobo\Utils\Utility\User;
+use RolesCapabilities\Access\AccessFactory;
+use Search\Aggregate\AggregateInterface;
 
 $this->Html->script(['/dist/vendor', '/dist/app'], ['block' => 'scriptBottom']);
 $this->Html->css('/dist/style', ['block' => 'css']);
 
-$config = (new ModuleConfig(ConfigType::MODULE(), $this->name))->parse();
-$title = isset($config->table->alias) ? $config->table->alias : Inflector::humanize(Inflector::underscore($this->name));
 $table = TableRegistry::get($savedSearch->get('model'));
-
-$groupBy = Hash::get($savedSearch->get('content'), 'saved.group_by', '');
 $filters = $this->Search->getFilters($savedSearch->get('model'));
 
+$hasAggregate = false;
 $headers = [];
-if ('' !== $groupBy) {
-    $key = array_search($groupBy, array_column($filters, 'field'));
-    $headers[] = ['value' => $groupBy, 'text' => $filters[$key]['label']];
-    $headers[] = ['value' => $savedSearch->get('model') . '.total', 'text' => 'Total'];
+foreach ((array)$savedSearch->get('fields') as $item) {
+    if (1 === preg_match(AggregateInterface::AGGREGATE_PATTERN, $item)) {
+        $hasAggregate = true;
+        preg_match(AggregateInterface::AGGREGATE_PATTERN, $item, $matches);
+        list(, $aggregateField) = pluginSplit($matches[2]);
+        $key = array_search($matches[2], array_column($filters, 'field'));
+        $label = sprintf('%s (%s)', $filters[$key]['label'], $matches[1]);
+    } else {
+        $key = array_search($item, array_column($filters, 'field'));
+        $label = $filters[$key]['label'];
+    }
+    $headers[] = ['value' => $item, 'text' => $label];
 }
 
-if ('' === $groupBy) {
-    foreach (Hash::get($savedSearch->get('content'), 'saved.display_columns', []) as $item) {
-        $key = array_search($item, array_column($filters, 'field'));
-        $headers[] = ['value' => $filters[$key]['field'], 'text' => $filters[$key]['label']];
-    }
-}
+$accessFactory = new AccessFactory();
+list($plugin, $controller) = pluginSplit($savedSearch->get('model'));
+$urlBatch = ['plugin' => $plugin, 'controller' => $controller, 'action' => 'batch'];
+
+$config = (new ModuleConfig(ConfigType::MODULE(), $controller))->parse();
+$title = isset($config->table->alias) ? $config->table->alias : Inflector::humanize(Inflector::underscore($controller));
 ?>
 <section class="content-header">
     <div class="row">
@@ -47,16 +54,18 @@ if ('' === $groupBy) {
         <div class="box-body">
             <table-ajax
                 :data='<?= json_encode([
-                    'criteria' => Hash::get($savedSearch->get('content'), 'saved.criteria', []),
-                    'group_by' => $groupBy
+                    'criteria' => $savedSearch->get('criteria'),
+                    'group_by' => (string)$savedSearch->get('group_by')
                 ]) ?>'
                 :headers='<?= json_encode($headers) ?>'
                 model="<?= Inflector::dasherize($savedSearch->get('model')) ?>"
-                order-direction="<?= Hash::get($savedSearch->get('content'), 'saved.sort_by_order', '') ?>"
-                order-field="<?= Hash::get($savedSearch->get('content'), 'saved.sort_by_field', '') ?>"
+                order-direction="<?= (string)$savedSearch->get('order_by_direction') ?>"
+                order-field="<?= (string)$savedSearch->get('order_by_field') ?>"
                 primary-key="<?= $table->aliasField($table->getPrimaryKey()) ?>"
                 request-type="POST"
                 url="/api/<?= Inflector::dasherize($savedSearch->get('model')) ?>/search"
+                :with-batch-delete="<?= '' === (string)$savedSearch->get('group_by') && ! $hasAggregate && $accessFactory->hasAccess($urlBatch, $user) ? 'true' : 'false' ?>"
+                :with-batch-edit="<?= '' === (string)$savedSearch->get('group_by') && ! $hasAggregate && $accessFactory->hasAccess($urlBatch, $user) ? 'true' : 'false' ?>"
             ></table-ajax>
         </div>
     </div>
