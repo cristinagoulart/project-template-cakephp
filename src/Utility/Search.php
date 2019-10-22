@@ -461,6 +461,9 @@ final class Search
             }
 
             $targetTable = $association->getTarget();
+            if ($targetTable instanceof \Burzum\FileStorage\Model\Table\FileStorageTable) {
+                continue;
+            }
 
             // skip associations with itself
             if ($targetTable->getTable() === $table->getTable()) {
