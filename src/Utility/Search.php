@@ -115,11 +115,10 @@ final class Search
         }
 
         $table = TableRegistry::getTableLocator()->get($tableName);
-        foreach ($result as $key => $value) {
-            $result[$key] = $table->aliasField($value);
-        }
 
-        return $result;
+        return array_values(array_map(function ($item) use ($table) {
+            return $table->aliasField($item);
+        }, $result));
     }
 
     /**
