@@ -16,6 +16,7 @@ class Upgrade20190315152328Task extends Shell
     public function getOptionParser()
     {
         $parser = new ConsoleOptionParser('console');
+        $parser->setDescription('Adding scheduled job for running pre-saved searches cleanup once a day.');
 
         return $parser;
     }

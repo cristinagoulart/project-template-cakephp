@@ -14,7 +14,7 @@ class Upgrade20180511135300Task extends Shell
     public function getOptionParser()
     {
         $parser = new ConsoleOptionParser('console');
-        $parser->setDescription('Adding default scheduled jobs to db, if not added before.');
+        $parser->setDescription('Adding default scheduled jobs to database');
 
         return $parser;
     }
