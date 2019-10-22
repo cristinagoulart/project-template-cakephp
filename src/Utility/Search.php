@@ -352,15 +352,25 @@ final class Search
         list($plugin, $module) = pluginSplit($tableName);
         try {
             $config = (new ModuleConfig(ConfigType::VIEW(), $module, 'index'))->parseToArray();
-            $config = ! empty($config['items']) ? $config['items'] : [];
+            $fields = ! empty($config['items']) ? $config['items'] : [];
         } catch (\InvalidArgumentException $e) {
-            $config = [];
+            $fields = [];
             Log::error($e->getMessage());
         }
 
-        return array_map(function ($value) {
-            return $value[0];
-        }, $config);
+        $columns = TableRegistry::getTableLocator()
+            ->get($tableName)
+            ->getSchema()
+            ->columns();
+
+        return array_filter(
+            array_map(function ($field) {
+                return $field[0];
+            }, $fields),
+            function ($item) use ($columns) {
+                return in_array($item, $columns, true);
+            }
+        );
     }
 
     /**
