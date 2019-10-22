@@ -18,6 +18,7 @@ use App\Controller\Traits\ChangelogTrait;
 use App\Controller\Traits\SearchTrait;
 use App\Event\Plugin\Search\Model\SearchableFieldsListener;
 use App\Feature\Factory as FeatureFactory;
+use App\Search\Manager as SearchManager;
 use App\Utility\Search;
 use AuditStash\Meta\ApplicationMetadata;
 use AuditStash\Meta\RequestMetadata;
@@ -37,7 +38,6 @@ use Qobo\Utils\ModuleConfig\ModuleConfig;
 use Qobo\Utils\Utility\User;
 use RolesCapabilities\CapabilityTrait;
 use RuntimeException;
-use Search\Service\Search as SearchService;
 use Webmozart\Assert\Assert;
 
 /**
@@ -191,75 +191,13 @@ class AppController extends Controller
      */
     public function index()
     {
-        $this->set('savedSearch', $this->getSystemSearch());
+        $savedSearch = SearchManager::getSystemSearch($this->name);
+        if (null === $savedSearch) {
+            $savedSearch = SearchManager::createSystemSearch($this->name);
+        }
 
+        $this->set('savedSearch', $savedSearch);
         $this->render('/Module/index');
-    }
-
-    /**
-     * System search getter.
-     *
-     * @return \Cake\Datasource\EntityInterface
-     */
-    protected function getSystemSearch(): EntityInterface
-    {
-        $table = TableRegistry::getTableLocator()->get('Search.SavedSearches');
-
-        $entity = $table->find()
-            ->enableHydration(true)
-            ->where(['SavedSearches.model' => $this->name, 'SavedSearches.system' => true])
-            ->first();
-
-        Assert::nullOrIsInstanceOf($entity, EntityInterface::class);
-
-        if (null !== $entity) {
-            return $entity;
-        }
-
-        return $this->createSystemSearch();
-    }
-
-    /**
-     * Creates system search for provided module.
-     *
-     * @throws \RuntimeException when failed to create system search
-     *
-     * @return \Cake\Datasource\EntityInterface
-     */
-    protected function createSystemSearch(): EntityInterface
-    {
-        $table = TableRegistry::getTableLocator()->get('Search.SavedSearches');
-
-        $user = TableRegistry::getTableLocator()->get('CakeDC/Users.Users')
-            ->find()
-            ->where(['is_superuser' => true])
-            ->enableHydration(true)
-            ->firstOrFail();
-
-        Assert::isInstanceOf($user, EntityInterface::class);
-
-        $displayFields = Search::getDisplayFields($this->loadModel()->getRegistryAlias());
-
-        $entity = $table->newEntity([
-            'name' => sprintf('Default %s search', Inflector::humanize(Inflector::underscore($this->name))),
-            'model' => $this->loadModel()->getRegistryAlias(),
-            'system' => true,
-            'user_id' => $user->get('id'),
-            'content' => [
-                'saved' => [
-                    'display_columns' => $displayFields,
-                    'sort_by_field' => current($displayFields),
-                    'sort_by_order' => SearchService::DEFAULT_SORT_BY_ORDER,
-                    'aggregator' => SearchService::DEFAULT_CONJUNCTION
-                ]
-            ]
-        ]);
-
-        if (! $table->save($entity)) {
-            throw new RuntimeException(sprintf('Failed to create "%s" system search', $this->name));
-        }
-
-        return $entity;
     }
 
     /**

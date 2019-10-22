@@ -21,8 +21,6 @@ class SearchAction extends BaseAction
     use FindMethodTrait;
     use ViewVarTrait;
 
-    private $factory = null;
-
     /**
      * Default settings for 'related' actions
      *
@@ -70,77 +68,18 @@ class SearchAction extends BaseAction
         }
 
         $this->_trigger('beforePaginate', $subject);
-        $items = $this->_controller()->paginate($subject->query, [
+        $resultSet = $this->_controller()->paginate($subject->query, [
             'limit' => $this->_request()->getData('limit', 10),
             'page' => $this->_request()->getData('page', 1)
         ]);
 
-        $result = [];
-        foreach ($items as $entity) {
-            $row = $this->formatEntity($entity, $this->_table());
-            if (! array_key_exists('group', $options)) {
-                $row['_permissions'] = $this->getPermissions($entity->get($this->_table()->getPrimaryKey()));
-            }
-            $result[] = $row;
-        }
-
-        $subject->set(['entities' => $result]);
+        $subject->set(['entities' => SearchManager::formatEntities(
+            $resultSet,
+            $this->_table(),
+            ! array_key_exists('group', $options)
+        )]);
 
         $this->_trigger('afterPaginate', $subject);
         $this->_trigger('beforeRender', $subject);
-    }
-
-    /**
-     * Method that formats search result-set entity.
-     *
-     * @param \Cake\Datasource\EntityInterface $entity Entity instance
-     * @param \Cake\ORM\Table $table Table instance
-     * @return mixed[]
-     */
-    private function formatEntity(EntityInterface $entity, Table $table) : array
-    {
-        if (null === $this->factory) {
-            $this->factory = new FieldHandlerFactory();
-        }
-
-        $result = [];
-        foreach (array_diff($entity->visibleProperties(), $entity->getVirtual()) as $field) {
-            // current table field
-            if ('_matchingData' !== $field) {
-                $result[$table->aliasField($field)] = $this->factory->renderValue($table, $field, $entity->get($field));
-                continue;
-            }
-
-            foreach ($entity->get('_matchingData') as $associationName => $relatedEntity) {
-                $result = array_merge($result, $this->formatEntity(
-                    $relatedEntity,
-                    $table->getAssociation($associationName)->getTarget()
-                ));
-            }
-        }
-
-        return $result;
-    }
-
-    /**
-     * Returns entity access permissions.
-     *
-     * @param string $id Entity ID
-     * @return mixed[]
-     */
-    private function getPermissions(string $id) : array
-    {
-        list($plugin, $controller) = pluginSplit($this->_table()->getAlias());
-
-        $url = ['prefix' => false, 'plugin' => $plugin, 'controller' => $controller, 'action' => 'view', $id];
-        $result['view'] = (new AccessFactory())->hasAccess($url, User::getCurrentUser());
-
-        $url = ['prefix' => false, 'plugin' => $plugin, 'controller' => $controller, 'action' => 'edit', $id];
-        $result['edit'] = (new AccessFactory())->hasAccess($url, User::getCurrentUser());
-
-        $url = ['plugin' => $plugin, 'controller' => $controller, 'action' => 'delete', $id];
-        $result['delete'] = (new AccessFactory())->hasAccess($url, User::getCurrentUser());
-
-        return $result;
     }
 }

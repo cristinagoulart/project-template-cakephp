@@ -1,27 +1,18 @@
 <?php
-use Cake\Core\Configure;
+use Cake\Utility\Hash;
 use Qobo\Utils\ModuleConfig\ConfigType;
 use Qobo\Utils\ModuleConfig\ModuleConfig;
-use Qobo\Utils\Utility;
 use RolesCapabilities\Access\AccessFactory;
 
-// skip non-csv modules
-if (! in_array($this->name, Utility::findDirs(Configure::read('CsvMigrations.modules.path')))) {
+$config = (new ModuleConfig(ConfigType::MODULE(), $this->name))->parseToArray();
+
+if (! Hash::get($config, 'table.searchable')) {
     return;
 }
 
-$config = (new ModuleConfig(ConfigType::MODULE(), $this->name))->parse();
-
-// skip non-searchable modules
-if (! (bool)$config->table->searchable) {
+$url = ['plugin' => $this->plugin, 'controller' => $this->name, 'action' => 'search'];
+if (! (new AccessFactory())->hasAccess($url, $user)) {
     return;
 }
 
-if (! (new AccessFactory())->hasAccess(
-    ['plugin' => $this->plugin, 'controller' => $this->name, 'action' => 'search'],
-    $user
-)) {
-    return;
-}
-
-echo $this->element('search-form', ['name' => isset($config->table->alias) ? $config->table->alias : $this->name]);
+echo $this->element('search-form', ['name' => Hash::get($config, 'table.alias', $this->name)]);

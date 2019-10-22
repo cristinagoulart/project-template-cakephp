@@ -11,31 +11,21 @@
  */
 namespace App\Search;
 
+use App\Utility\Search;
+use Cake\Datasource\EntityInterface;
+use Cake\Datasource\ResultSetInterface;
+use Cake\ORM\Table;
+use Cake\ORM\TableRegistry;
 use Cake\Utility\Hash;
+use Cake\Utility\Inflector;
+use CsvMigrations\FieldHandlers\FieldHandlerFactory;
 use Qobo\Utils\Utility\User;
-use Search\Filter\Contains;
-use Search\Filter\EndsWith;
-use Search\Filter\Equal;
-use Search\Filter\Greater;
-use Search\Filter\Less;
-use Search\Filter\NotContains;
-use Search\Filter\NotEqual;
-use Search\Filter\StartsWith;
-use Search\Service\Search;
+use RolesCapabilities\Access\AccessFactory;
+use Search\Model\Entity\SavedSearch;
+use Webmozart\Assert\Assert;
 
 final class Manager
 {
-    private const FILTER_MAP = [
-        'is' => Equal::class,
-        'is_not' => NotEqual::class,
-        'greater' => Greater::class,
-        'less' => Less::class,
-        'contains' => Contains::class,
-        'not_contains' => NotContains::class,
-        'starts_with' => StartsWith::class,
-        'ends_with' => EndsWith::class
-    ];
-
     /**
      * Retrieve search options from HTTP request.
      *
@@ -47,45 +37,20 @@ final class Manager
     {
         $result = [];
 
-        foreach (Hash::get($data, 'criteria', []) as $field => $fieldCriteria) {
-            foreach ($fieldCriteria as $criteria) {
-                if (! array_key_exists($criteria['operator'], self::FILTER_MAP)) {
-                    throw new \RuntimeException(sprintf('Unsupported filter provided: %s', $criteria['operator']));
-                }
-
-                switch (gettype($criteria['value'])) {
-                    case 'string':
-                        $value = self::applyMagicValue($criteria['value']);
-                        break;
-
-                    case 'array':
-                        $value = self::applyMagicValues($criteria['value']);
-                        break;
-
-                    default:
-                        $value = $criteria['value'];
-                        break;
-                }
-
-                $result['data'][] = [
-                    'field' => $field,
-                    'operator' => self::FILTER_MAP[$criteria['operator']],
-                    'value' => $value
-                ];
-            }
+        if (Hash::get($data, 'criteria')) {
+            $result['data'] = self::getCriteria(Hash::get($data, 'criteria', []));
         }
-
-        $result['conjunction'] = Hash::get($data, 'aggregator', Search::DEFAULT_CONJUNCTION);
 
         if (Hash::get($data, 'fields')) {
             $result['fields'] = Hash::get($data, 'fields');
         }
 
-        if (Hash::get($data, 'sort')) {
-            $orderField = Hash::get($data, 'sort');
-            $orderField = Search::GROUP_BY_FIELD === pluginSplit($orderField)[1] ? Search::GROUP_BY_FIELD : $orderField;
+        if (Hash::get($data, 'conjunction')) {
+            $result['conjunction'] = Hash::get($data, 'conjunction', \Search\Criteria\Conjunction::DEFAULT_CONJUNCTION);
+        }
 
-            $result['order'] = [$orderField => Hash::get($data, 'direction', Search::DEFAULT_SORT_BY_ORDER)];
+        if (Hash::get($data, 'sort')) {
+            $result['order'] = [Hash::get($data, 'sort') => Hash::get($data, 'direction', \Search\Criteria\Direction::DEFAULT_DIRECTION)];
         }
 
         if (Hash::get($data, 'group_by')) {
@@ -96,29 +61,205 @@ final class Manager
     }
 
     /**
-     * Magic value handler.
+     * Criteria getter.
      *
-     * @param string $value Field value
-     * @return string
+     * @param mixed[] $criteria Search criteria
+     * @return mixed[]
      */
-    private static function applyMagicValue(string $value) : string
-    {
-        return (new MagicValue($value, User::getCurrentUser()))->get();
-    }
-
-    /**
-     * Magic values handler.
-     *
-     * @param string[] $values Field values
-     * @return string[]
-     */
-    private static function applyMagicValues(array $values) : array
+    private static function getCriteria(array $criteria) : array
     {
         $result = [];
-        foreach ($values as $value) {
-            $result[] = (new MagicValue($value, User::getCurrentUser()))->get();
+        foreach ($criteria as $field => $items) {
+            $result = array_merge($result, self::getFieldCriteria($field, $items));
         }
 
         return $result;
+    }
+
+    /**
+     * Field criteria getter.
+     *
+     * @param string $field Field name
+     * @param mixed[] $criteria Field search criteria
+     * @return mixed[]
+     */
+    private static function getFieldCriteria(string $field, array $criteria) : array
+    {
+        $result = [];
+        foreach ($criteria as $item) {
+            $result[] = [
+                'field' => $field,
+                'operator' => $item['operator'],
+                'value' => self::applyMagicValue($item['value'])
+            ];
+        }
+
+        return $result;
+    }
+
+    /**
+     * Magic value handler.
+     *
+     * @param mixed $value Field value
+     * @return mixed
+     */
+    private static function applyMagicValue($value)
+    {
+        if (is_string($value)) {
+            return (new MagicValue($value, User::getCurrentUser()))->get();
+        }
+
+        if (is_array($value)) {
+            return array_map(function ($item) {
+                return self::applyMagicValue($item);
+            }, $value);
+        }
+
+        return $value;
+    }
+
+    /**
+     * Method that formats search result-set.
+     *
+     * @param \Cake\Datasource\ResultSetInterface $entities Search result-set
+     * @param \Cake\ORM\Table $table Table instance
+     * @param bool $withPermissions Whether to include access permissions
+     * @return mixed[]
+     */
+    public static function formatEntities(ResultSetInterface $entities, Table $table, bool $withPermissions = false) : array
+    {
+        $result = [];
+        foreach ($entities as $entity) {
+            $result[] = self::formatEntity($entity, $table, $withPermissions);
+        }
+
+        return $result;
+    }
+
+    /**
+     * Method that formats search result-set entity.
+     *
+     * @param \Cake\Datasource\EntityInterface $entity Entity instance
+     * @param \Cake\ORM\Table $table Table instance
+     * @param bool $withPermissions Whether to include access permissions
+     * @return mixed[]
+     */
+    private static function formatEntity(EntityInterface $entity, Table $table, bool $withPermissions = false) : array
+    {
+        static $factory = null;
+        if (null === $factory) {
+            $factory = new FieldHandlerFactory();
+        }
+
+        $result = [];
+        foreach (array_diff($entity->visibleProperties(), $entity->getVirtual()) as $field) {
+            // current table field
+            if ('_matchingData' !== $field) {
+                $result[$table->aliasField($field)] = $factory->renderValue($table, $field, $entity->get($field));
+                continue;
+            }
+
+            foreach ($entity->get('_matchingData') as $associationName => $relatedEntity) {
+                $result = array_merge($result, self::formatEntity(
+                    $relatedEntity,
+                    $table->getAssociation($associationName)->getTarget(),
+                    false
+                ));
+            }
+        }
+
+        if ($withPermissions) {
+            $primaryKey = $table->getPrimaryKey();
+            Assert::string($primaryKey);
+            $result['_permissions'] = self::getPermissions($entity->get($primaryKey), $table);
+        }
+
+        return $result;
+    }
+
+    /**
+     * Returns entity access permissions.
+     *
+     * @param string $id Entity ID
+     * @param \Cake\ORM\Table $table Table instance
+     * @return mixed[]
+     */
+    private static function getPermissions(string $id, Table $table) : array
+    {
+        static $factory = null;
+        if (null === $factory) {
+            $factory = new AccessFactory();
+        }
+
+        list($plugin, $controller) = pluginSplit($table->getAlias());
+
+        $urls = [
+            'view' => ['prefix' => false, 'plugin' => $plugin, 'controller' => $controller, 'action' => 'view', $id],
+            'edit' => ['prefix' => false, 'plugin' => $plugin, 'controller' => $controller, 'action' => 'edit', $id],
+            'delete' => ['prefix' => false, 'plugin' => $plugin, 'controller' => $controller, 'action' => 'delete', $id]
+        ];
+
+        array_walk($urls, function (&$item, $key) use ($factory) {
+            $className = sprintf('\App\Controller\%sController', $item['controller']);
+            $item = $factory->hasAccess($item, User::getCurrentUser()) && method_exists($className, $item['action']);
+        });
+
+        return $urls;
+    }
+
+    /**
+     * System search getter.
+     *
+     * @param string $model Model name
+     * @return \Search\Model\Entity\SavedSearch|null
+     */
+    public static function getSystemSearch(string $model) : ?SavedSearch
+    {
+        $table = TableRegistry::getTableLocator()->get('Search.SavedSearches');
+
+        $savedSearch = $table->find()
+            ->enableHydration(true)
+            ->where(['SavedSearches.model' => $model, 'SavedSearches.system' => true])
+            ->first();
+
+        Assert::nullOrIsInstanceOf($savedSearch, SavedSearch::class);
+
+        return $savedSearch;
+    }
+
+    /**
+     * Creates system search for provided model.
+     *
+     * @param string $model Model name
+     * @return \Search\Model\Entity\SavedSearch
+     */
+    public static function createSystemSearch(string $model) : SavedSearch
+    {
+        $user = TableRegistry::getTableLocator()->get('Users')
+            ->find()
+            ->where(['is_superuser' => true])
+            ->enableHydration(true)
+            ->firstOrFail();
+        Assert::isInstanceOf($user, \App\Model\Entity\User::class);
+
+        $table = TableRegistry::getTableLocator()->get('Search.SavedSearches');
+        $displayFields = Search::getDisplayFields($model);
+        $savedSearch = $table->newEntity([
+            'name' => sprintf('Default %s search', Inflector::humanize(Inflector::underscore($model))),
+            'model' => $model,
+            'system' => true,
+            'user_id' => $user->get('id'),
+            'criteria' => [],
+            'conjunction' => \Search\Criteria\Conjunction::DEFAULT_CONJUNCTION,
+            'fields' => $displayFields,
+            'order_by_direction' => \Search\Criteria\Direction::DEFAULT_DIRECTION,
+            'order_by_field' => current($displayFields)
+        ]);
+
+        $table->saveOrFail($savedSearch);
+
+        Assert::isInstanceOf($savedSearch, SavedSearch::class);
+
+        return $savedSearch;
     }
 }
