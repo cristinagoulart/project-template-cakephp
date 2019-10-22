@@ -93,6 +93,7 @@ class SchemaAction extends BaseAction
                     $data['db_type'] = 'string';
                     break;
                 case "list":
+                case "sublist":
                     $list = new ModuleConfig(ConfigType::LISTS(), $this->_controller()->getName(), (string)$csvField->getLimit());
                     $data['options'] = $this->getOptionList($list->parseToArray()['items']);
                     break;
