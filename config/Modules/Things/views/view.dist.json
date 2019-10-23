@@ -52,6 +52,13 @@
             "created",
             "modified_by",
             "modified"
+        ],
+        [
+            "Details",
+            "sample_date",
+            "",
+            "",
+            ""
         ]
     ]
 }

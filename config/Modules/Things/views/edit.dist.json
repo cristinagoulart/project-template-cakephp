@@ -45,6 +45,13 @@
             "test_list",
             "testmetric",
             "testmoney"
+        ],
+        [
+            "Details",
+            "sample_date",
+            "",
+            "",
+            ""
         ]
     ]
 }

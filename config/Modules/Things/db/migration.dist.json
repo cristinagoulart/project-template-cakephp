@@ -162,7 +162,7 @@
     },
     "test_list": {
         "name": "test_list",
-        "type": "list(test_list)",
+        "type": "sublist(test_list)",
         "required": false,
         "non-searchable": false,
         "unique": false
@@ -214,6 +214,13 @@
         "type": "string",
         "required": false,
         "non-searchable": true,
+        "unique": false
+    },
+    "sample_date": {
+        "name": "sample_date",
+        "type": "datetime",
+        "required": false,
+        "non-searchable": false,
         "unique": false
     }
 }
