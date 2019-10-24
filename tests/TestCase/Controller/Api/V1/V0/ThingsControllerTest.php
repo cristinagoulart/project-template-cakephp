@@ -3,6 +3,7 @@
 namespace App\Test\TestCase\Controller\Api\V1\V0;
 
 use App\Event\Controller\Api\IndexActionListener;
+use App\Event\Controller\Api\ViewActionListener;
 use App\Feature\Factory;
 use Cake\Event\EventManager;
 use Cake\Utility\Inflector;
@@ -31,32 +32,36 @@ class ThingsControllerTest extends JsonIntegrationTestCase
 
         $this->setRequestHeaders([], '00000000-0000-0000-0000-000000000002');
         EventManager::instance()->on(new IndexActionListener());
+        EventManager::instance()->on(new ViewActionListener());
     }
 
     public function testFormatPrettyAmount(): void
     {
-        $this->get('/api/' . Inflector::dasherize($this->moduleName) . '/?format=pretty');
+        $this->get('/api/' . Inflector::dasherize($this->moduleName) . '/view/00000000-0000-0000-0000-000000000002?format=pretty');
         $response = $this->getParsedResponse();
-        $data = $response->data[1];
-        $this->assertEquals('25.00', $data->area_amount);
         $this->assertJsonResponseOk();
+
+        $data = $response->data;
+        $this->assertEquals('25.00', $data->area_amount);
     }
 
     public function testFormatPrettyUnit(): void
     {
-        $this->get('/api/' . Inflector::dasherize($this->moduleName) . '?format=pretty');
+        $this->get('/api/' . Inflector::dasherize($this->moduleName) . '/view/00000000-0000-0000-0000-000000000002?format=pretty');
         $response = $this->getParsedResponse();
-        $data = $response->data[1];
-        $this->assertEquals('m²', $data->area_unit);
         $this->assertJsonResponseOk();
+
+        $data = $response->data;
+        $this->assertEquals('m²', $data->area_unit);
     }
 
     public function testFormatPrettyCurrency(): void
     {
-        $this->get('/api/' . Inflector::dasherize($this->moduleName) . '?format=pretty');
+        $this->get('/api/' . Inflector::dasherize($this->moduleName) . '/view/00000000-0000-0000-0000-000000000002?format=pretty');
         $response = $this->getParsedResponse();
-        $data = $response->data[1];
-        $this->assertEquals('<span title="Euro">€&nbsp;(EUR)</span>', $data->salary_currency);
         $this->assertJsonResponseOk();
+
+        $data = $response->data;
+        $this->assertEquals('<span title="Euro">€&nbsp;(EUR)</span>', $data->salary_currency);
     }
 }
