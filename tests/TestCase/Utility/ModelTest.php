@@ -12,8 +12,8 @@ class ModelTest extends TestCase
     {
         $fields = Model::fields('Things');
 
-        // 32 migration.json fields, +4 from combined fields, +1 trashed field
-        $this->assertCount(37, $fields);
+        // 31 migration.json fields, +4 from combined fields, +1 trashed field
+        $this->assertCount(36, $fields);
 
         foreach ($fields as $field) {
             $this->assertArrayHasKey('name', $field);
