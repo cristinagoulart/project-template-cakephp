@@ -445,8 +445,9 @@ class BaseModuleController extends AppController
             }
 
             $conditions = [$primaryKey . ' IN' => $batchIds];
+            $deleteMethod = $table->hasBehavior('Trash') ? 'trashAll' : 'deleteAll';
             // execute batch delete
-            if ($table->deleteAll($conditions)) {
+            if ($table->{$deleteMethod}($conditions)) {
                 $this->Flash->success(
                     (string)__(count($batchIds) . ' of ' . $batchIdsCount . ' selected records have been deleted.')
                 );
