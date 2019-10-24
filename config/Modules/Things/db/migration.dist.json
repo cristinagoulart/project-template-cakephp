@@ -162,7 +162,7 @@
     },
     "test_list": {
         "name": "test_list",
-        "type": "list(test_list)",
+        "type": "sublist(test_list)",
         "required": false,
         "non-searchable": false,
         "unique": false

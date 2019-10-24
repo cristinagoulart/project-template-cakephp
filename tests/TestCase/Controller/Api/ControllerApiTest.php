@@ -175,7 +175,8 @@ class ControllerApiTest extends JsonIntegrationTestCase
             ],
             [
                 'name' => 'test_list',
-                'type' => 'list',
+                'type' => 'sublist',
+                'db_type' => 'string',
                 'options' => [
                     [
                         'label' => 'first',

@@ -115,11 +115,16 @@ final class Search
         }
 
         $table = TableRegistry::getTableLocator()->get($tableName);
-        foreach ($result as $key => $value) {
-            $result[$key] = $table->aliasField($value);
-        }
 
-        return $result;
+        $result = array_map(function ($item) use ($table) {
+            return $table->aliasField($item);
+        }, $result);
+
+        $result = array_filter($result, function ($item) use ($tableName) {
+            return array_search($item, array_column(self::getFilters($tableName), 'field'));
+        });
+
+        return array_values($result);
     }
 
     /**
@@ -353,15 +358,25 @@ final class Search
         list($plugin, $module) = pluginSplit($tableName);
         try {
             $config = (new ModuleConfig(ConfigType::VIEW(), $module, 'index'))->parseToArray();
-            $config = ! empty($config['items']) ? $config['items'] : [];
+            $fields = ! empty($config['items']) ? $config['items'] : [];
         } catch (\InvalidArgumentException $e) {
-            $config = [];
+            $fields = [];
             Log::error($e->getMessage());
         }
 
-        return array_map(function ($value) {
-            return $value[0];
-        }, $config);
+        $columns = TableRegistry::getTableLocator()
+            ->get($tableName)
+            ->getSchema()
+            ->columns();
+
+        return array_filter(
+            array_map(function ($field) {
+                return $field[0];
+            }, $fields),
+            function ($item) use ($columns) {
+                return in_array($item, $columns, true);
+            }
+        );
     }
 
     /**
@@ -452,6 +467,9 @@ final class Search
             }
 
             $targetTable = $association->getTarget();
+            if ($targetTable instanceof \Burzum\FileStorage\Model\Table\FileStorageTable) {
+                continue;
+            }
 
             // skip associations with itself
             if ($targetTable->getTable() === $table->getTable()) {

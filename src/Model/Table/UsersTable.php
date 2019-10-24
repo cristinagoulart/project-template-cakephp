@@ -139,6 +139,14 @@ class UsersTable extends Table
         $directory = WWW_ROOT . Configure::read('Avatar.directory');
         $customDir = WWW_ROOT . Configure::read('Avatar.customDirectory');
 
+        if (! file_exists($customDir . $filename)) {
+            return false;
+        }
+
+        if (! file_exists($directory)) {
+            return false;
+        }
+
         $result = copy($customDir . $filename, $directory . $filename);
 
         return $result;
