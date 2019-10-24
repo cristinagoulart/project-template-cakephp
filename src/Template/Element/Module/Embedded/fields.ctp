@@ -12,9 +12,14 @@
 
 use Cake\Datasource\Exception\RecordNotFoundException;
 use Cake\Http\Exception\ForbiddenException;
+use Cake\ORM\TableRegistry;
+use Cake\Utility\Hash;
 use Cake\Utility\Inflector;
+use CsvMigrations\Utility\Field;
+use Qobo\Utils\ModuleConfig\ConfigType;
+use Qobo\Utils\ModuleConfig\ModuleConfig;
 
-// Fetch embedded module(s) using CakePHP's requestAction() method
+// Fetch embedded module(s)
 foreach ($fields as $field) {
     $fieldName = substr($field, strrpos($field, '.') + 1);
 
@@ -34,23 +39,29 @@ foreach ($fields as $field) {
         $associationName = Inflector::underscore(Inflector::singularize($association->getName()));
     }
 
-    if (empty($associationName)) {
+    if ('' === $associationName) {
         continue;
     }
 
     $tableName = substr($field, 0, strrpos($field, '.'));
-    list($plugin, $controller) = pluginSplit($tableName);
-    try {
-        echo $this->requestAction(
-            ['plugin' => $plugin, 'controller' => $controller, 'action' => $this->request->getParam('action')],
-            [
-                'query' => ['embedded' => $this->name . '.' . $associationName],
-                'pass' => [$options['entity']->get($fieldName)]
-            ]
-        );
-    } catch (RecordNotFoundException $e) {
-        // just don't display anything if embedded record was not found
-    } catch (ForbiddenException $e) {
-        // just don't display anything if current user has no access to embedded record
+    list(, $relatedModule) = pluginSplit($tableName);
+    $relatedTable = TableRegistry::getTableLocator()->get($tableName);
+    $relatedEntity = $relatedTable->find()
+        ->where([$relatedTable->getPrimaryKey() => $options['entity']->get($fieldName)])
+        ->first();
+
+    if (null === $relatedEntity) {
+        continue;
     }
+
+    $config = (new ModuleConfig(ConfigType::MODULE(), $relatedModule))->parseToArray();
+
+    echo $this->element('Module/View/fields', [
+        'table' => $relatedTable,
+        'panelPrefix' => Hash::get($config, 'table.alias', Inflector::singularize(Inflector::humanize($relatedModule))) . ': ',
+        'options' => [
+            'entity' => $relatedEntity,
+            'fields' => Field::getCsvView($relatedTable, 'view', true, true)
+        ]
+    ]);
 }

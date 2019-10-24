@@ -1,4 +1,5 @@
 <?php
+use Cake\ORM\TableRegistry;
 use Cake\Utility\Hash;
 use Cake\Utility\Inflector;
 use Qobo\Utils\ModuleConfig\ConfigType;
@@ -35,7 +36,7 @@ echo $this->Html->link(
     '#translations_translate_id_modal',
     [
         'data-toggle' => 'modal',
-        'data-record' => $options['entity']->get('id'),
+        'data-record' => $options['entity']->get(TableRegistry::getTableLocator()->get($tableName)->getPrimaryKey()),
         'data-model' => $tableName,
         'data-field' => $field['name'],
         'data-value' => $options['entity']->get($field['name']),
