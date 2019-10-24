@@ -12,7 +12,7 @@ class ModelTest extends TestCase
     {
         $fields = Model::fields('Things');
 
-        // 37 migration.json fields, +4 from combined fields, +1 trashed field
+        // 32 migration.json fields, +4 from combined fields, +1 trashed field
         $this->assertCount(37, $fields);
 
         foreach ($fields as $field) {
