@@ -7,7 +7,7 @@
         "basic_search_fields": [],
         "lookup_fields": [],
         "allow_reminders": [],
-        "translatable": false,
+        "translatable": true,
         "permissions_parent_modules": [],
         "type": "module"
     },
