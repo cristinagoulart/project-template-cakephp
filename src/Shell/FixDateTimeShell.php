@@ -7,13 +7,19 @@ use Cake\Console\ConsoleOptionParser;
 use Cake\Console\Shell;
 use Cake\Core\Configure;
 use Cake\Core\Plugin;
+use Cake\Database\Schema\TableSchema;
+use Cake\Datasource\ConnectionManager;
 use Cake\Datasource\EntityInterface;
 use Cake\I18n\Time;
 use Cake\ORM\Entity;
 use Cake\ORM\TableRegistry;
 use Cake\Utility\Inflector;
 use CsvMigrations\Utility\Validate\Utility;
+use Exception;
 use InvalidArgumentException;
+use Migrations\AbstractMigration;
+use PDOException;
+use Phinx\Db\Adapter\MysqlAdapter;
 use Qobo\Utils\ModuleConfig\ConfigType;
 use Qobo\Utils\ModuleConfig\ModuleConfig;
 use Qobo\Utils\ModuleConfig\Parser\Parser;
@@ -43,6 +49,7 @@ class FixDateTimeShell extends BaseShell
 
         $parser->addOption('timezonefrom', ['short' => 'f', 'help' => 'Select the current timezone', 'default' => '']);
         $parser->addOption('timezoneto', ['short' => 't', 'help' => 'Select the new timezone', 'default' => '']);
+        $parser->addOption('limit', ['short' => 'l', 'help' => 'Select number of records per/table', 'default' => '100']);
 
         return $parser;
     }
@@ -62,7 +69,8 @@ class FixDateTimeShell extends BaseShell
 
         if (empty($this->modules)) {
             $this->warn('Did not find any modules');
-            exit();
+
+            return false;
         }
 
         $modules = '' === $modules ? $this->modules : explode(',', $modules);
@@ -75,28 +83,26 @@ class FixDateTimeShell extends BaseShell
         }
 
         foreach ($modules as $module) {
-            $this->checkFields((string)$module);
+            $this->updateFields((string)$module);
         }
     }
 
     /**
      * Execute a check
-     *
      * @param string $module Module name
-     * @return int Number of encountered errors
      */
-    public function checkFields(string $module) : int
+    public function updateFields(string $module) : void
     {
         $mc = $this->getModuleConfig($module, []);
 
         $fields = [];
         $config = json_encode($mc->parse());
-        $fields = false === $config ? [] : json_decode($config, true);
+        $fields = $mc->parseToArray();
 
-        // Check fields
-        $this->checkDateTimeFields($module, $fields);
-
-        return count($fields);
+        // Update fields if exist
+        if (!empty($fields)) {
+            $this->updateDateTimeFields($module, $fields);
+        }
     }
 
     /**
@@ -125,15 +131,17 @@ class FixDateTimeShell extends BaseShell
      * @param mixed[] $fields List of field definitions.
      * @return void
      */
-    public function checkDateTimeFields(string $module, array $fields = []): void
+    public function updateDateTimeFields(string $module, array $fields = []): void
     {
+        $dateTimeFixTable = TableRegistry::getTableLocator()->get('datetime_fix');
+
         $skipfields = ['created', 'modified', 'trashed'];
         $fieldsToUpdate = [];
 
         $this->info('Trying to update datetime fields for ' . $module);
-
         $table = TableRegistry::getTableLocator()->get($module);
-        $entities = $table->find();
+        $tableQuery = $table->query();
+        $entities = $table->find()->limit($this->params['limit']);
 
         // Check each field one by one
         foreach ($fields as $field) {
@@ -155,19 +163,49 @@ class FixDateTimeShell extends BaseShell
         $updatedRecords = 0;
 
         foreach ($entities as $entity) {
+
+            //Find if the record to be updated has already been updated and skip the update
+            $recordInDateTimeFixTable = $dateTimeFixTable->find()
+                ->where(['record_id = ' => $entity->get('id'), 'updated = ' => true])
+                ->first();
+
+            //Skip record if it is already updated
+            if (!empty($recordInDateTimeFixTable)) {
+                $this->info('Skipping record [' . $entity->get('id') . '] as it has already been updated.');
+                continue;
+            }
+
             foreach ($fieldsToUpdate as $fieldToUpdate) {
                 if (empty($entity->get($fieldToUpdate))) {
                     continue;
                 }
-                $message = 'Record [' . $entity->get('id') . ']. Value of ' . $fieldToUpdate . ' changed from ' . $entity->get($fieldToUpdate);
 
+                $message = 'Record [' . $entity->get('id') . ']. Value of ' . $fieldToUpdate . ' changed from ' . $entity->get($fieldToUpdate);
                 $datetime = new \Cake\I18n\Time($entity->get($fieldToUpdate)->format('Y-m-d H:i:s'), $this->params['timezonefrom']);
                 $datetime = $datetime->setTimezone($this->params['timezoneto']);
-                $entity->set($fieldToUpdate, $datetime);
-                $table->saveOrFail($entity);
-                $message .= ' to ' . $entity->get($fieldToUpdate);
-                $this->warn($message);
+
+                /*
+                 Updating records with the query builder will not trigger events such as Model.afterSave.
+                 */
+                $tableQuery->update()
+                ->set([$fieldToUpdate => $datetime])
+                ->where(['id' => $entity->get('id')])->limit(1)
+                ->execute();
+
+                $message .= ' to ' . $datetime;
+                $this->info($message);
                 $updatedRecords++;
+
+                //Proceed updating the datetime_fix table
+                $dateTimeFixData = [
+                    'module' => $module,
+                    'record_id' => $entity->get('id'),
+                    'updated' => true
+                ];
+
+                $createDateTimeFixRecord = $dateTimeFixTable->newEntity();
+                $createDateTimeFixRecord = $dateTimeFixTable->patchEntity($createDateTimeFixRecord, $dateTimeFixData);
+                $dateTimeFixTable->saveOrFail($createDateTimeFixRecord);
             }
         }
         $this->success($updatedRecords . ' record(s) Updated');
