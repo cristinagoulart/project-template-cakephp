@@ -90,6 +90,7 @@ class FixDateTimeShell extends BaseShell
     /**
      * Execute a check
      * @param string $module Module name
+     * @return void
      */
     public function updateFields(string $module) : void
     {
@@ -206,6 +207,7 @@ class FixDateTimeShell extends BaseShell
                 $createDateTimeFixRecord = $dateTimeFixTable->patchEntity($createDateTimeFixRecord, $dateTimeFixData);
                 $dateTimeFixTable->saveOrFail($createDateTimeFixRecord);
             }
+            unset($recordInDateTimeFixTable);
         }
         $this->success($updatedRecords . ' record(s) Updated');
         unset($entities);
