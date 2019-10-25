@@ -160,18 +160,18 @@ class FixDateTimeShell extends BaseShell
                     break;
             }
         }
-
+        $primaryKey = $table->getPrimaryKey();
         $updatedRecords = 0;
 
         foreach ($entities as $entity) {
             //Find if the record to be updated has already been updated and skip the update
             $recordInDateTimeFixTable = $dateTimeFixTable->find()
-                ->where(['record_id = ' => $entity->get('id'), 'updated = ' => true])
+                ->where(['record_id = ' => $entity->get($primaryKey), 'updated = ' => true])
                 ->first();
 
             //Skip record if it is already updated
             if (!empty($recordInDateTimeFixTable)) {
-                $this->info('Skipping record [' . $entity->get('id') . '] as it has already been updated.');
+                $this->info('Skipping record [' . $entity->get($primaryKey) . '] as it has already been updated.');
                 continue;
             }
 
@@ -180,7 +180,7 @@ class FixDateTimeShell extends BaseShell
                     continue;
                 }
 
-                $message = 'Record [' . $entity->get('id') . ']. Value of ' . $fieldToUpdate . ' changed from ' . $entity->get($fieldToUpdate);
+                $message = 'Record [' . $entity->get($primaryKey) . ']. Value of ' . $fieldToUpdate . ' changed from ' . $entity->get($fieldToUpdate);
                 $datetime = new \Cake\I18n\Time($entity->get($fieldToUpdate)->format('Y-m-d H:i:s'), $this->params['timezonefrom']);
                 $datetime = $datetime->setTimezone($this->params['timezoneto']);
 
@@ -189,7 +189,7 @@ class FixDateTimeShell extends BaseShell
                  */
                 $tableQuery->update()
                 ->set([$fieldToUpdate => $datetime])
-                ->where(['id' => $entity->get('id')])->limit(1)
+                ->where(['id' => $entity->get($primaryKey)])->limit(1)
                 ->execute();
 
                 $message .= ' to ' . $datetime;
@@ -199,7 +199,7 @@ class FixDateTimeShell extends BaseShell
                 //Proceed updating the datetime_fix table
                 $dateTimeFixData = [
                     'module' => $module,
-                    'record_id' => $entity->get('id'),
+                    'record_id' => $entity->get($primaryKey),
                     'updated' => true
                 ];
 
