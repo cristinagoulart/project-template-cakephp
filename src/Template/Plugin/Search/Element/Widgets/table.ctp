@@ -30,7 +30,7 @@ foreach ((array)$savedSearch->get('fields') as $item) {
         $label = sprintf('%s (%s)', $filters[$key]['label'], $matches[1]);
     } else {
         $key = array_search($item, array_column($filters, 'field'));
-        $label = $filters[$key]['label'];
+        $label = $key ? $filters[$key]['label'] : $item;
     }
     $headers[] = ['value' => $item, 'text' => $label];
 }

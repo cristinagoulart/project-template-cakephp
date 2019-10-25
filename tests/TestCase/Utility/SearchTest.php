@@ -48,7 +48,6 @@ class SearchTest extends TestCase
     public function testGetDisplayFields() : void
     {
         $expected = [
-            'Things.id',
             'Things.name',
             'Things.gender',
             'Things.assigned_to',
