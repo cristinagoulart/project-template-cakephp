@@ -163,7 +163,6 @@ class FixDateTimeShell extends BaseShell
         $updatedRecords = 0;
 
         foreach ($entities as $entity) {
-
             //Find if the record to be updated has already been updated and skip the update
             $recordInDateTimeFixTable = $dateTimeFixTable->find()
                 ->where(['record_id = ' => $entity->get('id'), 'updated = ' => true])
