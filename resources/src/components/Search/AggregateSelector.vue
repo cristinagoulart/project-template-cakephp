@@ -6,8 +6,8 @@
     </select>
     <div class="row form-group" v-if="aggregate">
       <div class="col-xs-4">
-        <select v-model="model" class="form-control input-sm">
-          <option v-for="item in models">{{ item }}</option>
+        <select v-model="model" class="form-control input-sm" readonly>
+          <option v-for="item in models" v-if="item === model">{{ item }}</option>
         </select>
       </div>
       <div class="col-xs-8">
