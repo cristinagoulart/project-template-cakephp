@@ -107,7 +107,7 @@ class FixDateTimeShell extends BaseShell
     }
 
     /**
-     * Execute a check
+     * Check fields and their types.
      * @param string $module Module name
      * @return void
      */
@@ -123,7 +123,7 @@ class FixDateTimeShell extends BaseShell
 
         $fieldsToUpdate = [];
 
-        // Check each field one by one
+        // Check each field one by one to find datetime type fields
         foreach ($fields as $field) {
             if (in_array($field['name'], $skipfields)) {
                 continue;
@@ -157,62 +157,82 @@ class FixDateTimeShell extends BaseShell
     {
         $this->info('Trying to update datetime fields for ' . $module);
 
-        $dateTimeFixTable = TableRegistry::getTableLocator()->get('datetime_fix');
-
         $table = TableRegistry::getTableLocator()->get($module);
-        $tableQuery = $table->query();
         $entities = $table->find()->limit($this->params['limit']);
 
-        $primaryKey = $table->getPrimaryKey();
         $updatedRecords = 0;
 
         foreach ($entities as $entity) {
-            //Find if the record to be updated has already been updated and skip the update
-            $recordInDateTimeFixTable = $dateTimeFixTable->find()
-                ->where(['record_id = ' => $entity->get($primaryKey), 'updated = ' => true])
-                ->first();
+            $updatedRecords = $updatedRecords + (int)$this->updateEntity($entity, $table, $fieldsToUpdate, $module);
+        }
+        $this->success($updatedRecords . ' record(s) updated for ' . $module);
+        unset($entities);
+    }
 
-            //Skip record if it is already updated
-            if (!empty($recordInDateTimeFixTable)) {
-                $this->info('Skipping record [' . $entity->get($primaryKey) . '] as it has already been updated.');
+    /**
+     * [updateEntity description]
+     * @param  [type] $entity         [description]
+     * @param  [type] $table          [description]
+     * @param  [type] $fieldsToUpdate [description]
+     * @param  [type] $module         [description]
+     * @return [type]                 [description]
+     */
+    private function updateEntity($entity, $table, $fieldsToUpdate, $module) : int
+    {
+        $primaryKey = $table->getPrimaryKey();
+        $tableQuery = $table->query();
+
+        $updatedRecord = false;
+
+        $dateTimeFixTable = TableRegistry::getTableLocator()->get('datetime_fix');
+
+        //Find if the record to be updated has already been updated and skip the update
+        $recordInDateTimeFixTable = $dateTimeFixTable->find()
+            ->where(['record_id = ' => $entity->get($primaryKey), 'updated = ' => true, 'module = ' => $module])
+            ->first();
+
+        //Skip record if it is already updated
+        if (!empty($recordInDateTimeFixTable)) {
+            $this->info('Skipping record [' . $entity->get($primaryKey) . '] as it has already been updated.');
+            return (int)$updatedRecord;
+        }
+
+        foreach ($fieldsToUpdate as $fieldToUpdate) {
+            if (empty($entity->get($fieldToUpdate))) {
                 continue;
             }
 
-            foreach ($fieldsToUpdate as $fieldToUpdate) {
-                if (empty($entity->get($fieldToUpdate))) {
-                    continue;
-                }
+            $message = 'Record [' . $entity->get($primaryKey) . ']. Value of ' . $fieldToUpdate . ' changed from ' . $entity->get($fieldToUpdate);
+            $datetime = new \Cake\I18n\Time($entity->get($fieldToUpdate)->format('Y-m-d H:i:s'), $this->params['timezonefrom']);
+            $datetime = $datetime->setTimezone($this->params['timezoneto']);
 
-                $message = 'Record [' . $entity->get($primaryKey) . ']. Value of ' . $fieldToUpdate . ' changed from ' . $entity->get($fieldToUpdate);
-                $datetime = new \Cake\I18n\Time($entity->get($fieldToUpdate)->format('Y-m-d H:i:s'), $this->params['timezonefrom']);
-                $datetime = $datetime->setTimezone($this->params['timezoneto']);
+            /*
+             Updating records with the query builder will not trigger events such as Model.afterSave.
+             */
+            $tableQuery->update()
+            ->set([$fieldToUpdate => $datetime])
+            ->where(['id' => $entity->get($primaryKey)])->limit(1)
+            ->execute();
 
-                /*
-                 Updating records with the query builder will not trigger events such as Model.afterSave.
-                 */
-                $tableQuery->update()
-                ->set([$fieldToUpdate => $datetime])
-                ->where(['id' => $entity->get($primaryKey)])->limit(1)
-                ->execute();
+            $message .= ' to ' . $datetime;
+            $this->info($message);
 
-                $message .= ' to ' . $datetime;
-                $this->info($message);
-                $updatedRecords++;
+            //Proceed updating the datetime_fix table
+            $dateTimeFixData = [
+                'module' => $module,
+                'record_id' => $entity->get($primaryKey),
+                'updated' => true
+            ];
 
-                //Proceed updating the datetime_fix table
-                $dateTimeFixData = [
-                    'module' => $module,
-                    'record_id' => $entity->get($primaryKey),
-                    'updated' => true
-                ];
+            $createDateTimeFixRecord = $dateTimeFixTable->newEntity();
+            $createDateTimeFixRecord = $dateTimeFixTable->patchEntity($createDateTimeFixRecord, $dateTimeFixData);
+            $dateTimeFixTable->saveOrFail($createDateTimeFixRecord);
 
-                $createDateTimeFixRecord = $dateTimeFixTable->newEntity();
-                $createDateTimeFixRecord = $dateTimeFixTable->patchEntity($createDateTimeFixRecord, $dateTimeFixData);
-                $dateTimeFixTable->saveOrFail($createDateTimeFixRecord);
-            }
-            unset($recordInDateTimeFixTable);
+            $updatedRecord = true;
         }
-        $this->success($updatedRecords . ' record(s) Updated');
-        unset($entities);
+
+        unset($recordInDateTimeFixTable);
+
+        return (int)$updatedRecord;
     }
 }
