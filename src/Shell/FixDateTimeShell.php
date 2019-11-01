@@ -1,29 +1,14 @@
 <?php
 namespace App\Shell;
 
-use CakeDC\Users\Model\Behavior\SocialBehavior;
 use CakeDC\Users\Shell\UsersShell as BaseShell;
 use Cake\Console\ConsoleOptionParser;
-use Cake\Console\Shell;
-use Cake\Core\Configure;
-use Cake\Core\Plugin;
-use Cake\Database\Schema\TableSchema;
-use Cake\Datasource\ConnectionManager;
-use Cake\Datasource\EntityInterface;
-use Cake\I18n\Time;
-use Cake\ORM\Entity;
 use Cake\ORM\TableRegistry;
-use Cake\Utility\Inflector;
+use CsvMigrations\Exception\UnsupportedPrimaryKeyException;
 use CsvMigrations\Utility\Validate\Utility;
-use Exception;
-use InvalidArgumentException;
-use Migrations\AbstractMigration;
-use PDOException;
-use Phinx\Db\Adapter\MysqlAdapter;
 use Qobo\Utils\ModuleConfig\ConfigType;
 use Qobo\Utils\ModuleConfig\ModuleConfig;
 use Qobo\Utils\ModuleConfig\Parser\Parser;
-use Webmozart\Assert\Assert;
 
 class FixDateTimeShell extends BaseShell
 {
@@ -88,25 +73,6 @@ class FixDateTimeShell extends BaseShell
     }
 
     /**
-     * Creates a custom instance of `ModuleConfig` with a parser, schema and
-     * extra validation.
-     *
-     * @param string $module Module.
-     * @param string[] $options Options.
-     * @return ModuleConfig Module Config.
-     */
-    protected function getModuleConfig(string $module, array $options = []): ModuleConfig
-    {
-        $configFile = empty($options['configFile']) ? null : $options['configFile'];
-        $mc = new ModuleConfig(ConfigType::MIGRATION(), $module, $configFile, ['cacheSkip' => true]);
-
-        $schema = $mc->createSchema(['lint' => true]);
-        $mc->setParser(new Parser($schema, ['lint' => true, 'validate' => true]));
-
-        return $mc;
-    }
-
-    /**
      * Check fields and their types.
      * @param string $module Module name
      * @return void
@@ -159,27 +125,37 @@ class FixDateTimeShell extends BaseShell
 
         $table = TableRegistry::getTableLocator()->get($module);
         $entities = $table->find()->limit($this->params['limit']);
+        $primaryKey = $table->getPrimaryKey();
 
         $updatedRecords = 0;
 
-        foreach ($entities as $entity) {
-            $updatedRecords = $updatedRecords + (int)$this->updateEntity($entity, $table, $fieldsToUpdate, $module);
+        try {
+            foreach ($entities as $entity) {
+                $updatedRecords = $updatedRecords + (int)$this->updateEntity($entity, $table, $fieldsToUpdate, $module);
+            }
+        } catch (UnsupportedPrimaryKeyException $e) {
+            return;
         }
         $this->success($updatedRecords . ' record(s) updated for ' . $module);
         unset($entities);
     }
 
     /**
-     * [updateEntity description]
-     * @param  [type] $entity         [description]
-     * @param  [type] $table          [description]
-     * @param  [type] $fieldsToUpdate [description]
-     * @param  [type] $module         [description]
-     * @return [type]                 [description]
+     * Update Specific entity
+     * @param  \Cake\Datasource\EntityInterface $entity Entity to be modified
+     * @param  \Cake\ORM\Table $table Currently selected module table
+     * @param  mixed[] $fieldsToUpdate Fields to update
+     * @param  string $module Module to update
+     * @return int
      */
-    private function updateEntity($entity, $table, $fieldsToUpdate, $module) : int
+    private function updateEntity(\Cake\Datasource\EntityInterface $entity, \Cake\ORM\Table $table, array $fieldsToUpdate, string $module) : int
     {
         $primaryKey = $table->getPrimaryKey();
+
+        if (! is_string($primaryKey)) {
+            throw new UnsupportedPrimaryKeyException();
+        }
+
         $tableQuery = $table->query();
 
         $updatedRecord = false;
@@ -194,6 +170,7 @@ class FixDateTimeShell extends BaseShell
         //Skip record if it is already updated
         if (!empty($recordInDateTimeFixTable)) {
             $this->info('Skipping record [' . $entity->get($primaryKey) . '] as it has already been updated.');
+
             return (int)$updatedRecord;
         }
 
@@ -234,5 +211,24 @@ class FixDateTimeShell extends BaseShell
         unset($recordInDateTimeFixTable);
 
         return (int)$updatedRecord;
+    }
+
+    /**
+     * Creates a custom instance of `ModuleConfig` with a parser, schema and
+     * extra validation.
+     *
+     * @param string $module Module.
+     * @param string[] $options Options.
+     * @return ModuleConfig Module Config.
+     */
+    protected function getModuleConfig(string $module, array $options = []): ModuleConfig
+    {
+        $configFile = empty($options['configFile']) ? null : $options['configFile'];
+        $mc = new ModuleConfig(ConfigType::MIGRATION(), $module, $configFile, ['cacheSkip' => true]);
+
+        $schema = $mc->createSchema(['lint' => true]);
+        $mc->setParser(new Parser($schema, ['lint' => true, 'validate' => true]));
+
+        return $mc;
     }
 }
