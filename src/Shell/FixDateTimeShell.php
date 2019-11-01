@@ -88,25 +88,6 @@ class FixDateTimeShell extends BaseShell
     }
 
     /**
-     * Execute a check
-     * @param string $module Module name
-     * @return void
-     */
-    public function updateFields(string $module) : void
-    {
-        $mc = $this->getModuleConfig($module, []);
-
-        $fields = [];
-        $config = json_encode($mc->parse());
-        $fields = $mc->parseToArray();
-
-        // Update fields if exist
-        if (!empty($fields)) {
-            $this->updateDateTimeFields($module, $fields);
-        }
-    }
-
-    /**
      * Creates a custom instance of `ModuleConfig` with a parser, schema and
      * extra validation.
      *
@@ -126,23 +107,21 @@ class FixDateTimeShell extends BaseShell
     }
 
     /**
-     * Check fields and their types.
-     *
-     * @param string $module Module name.
-     * @param mixed[] $fields List of field definitions.
+     * Execute a check
+     * @param string $module Module name
      * @return void
      */
-    public function updateDateTimeFields(string $module, array $fields = []): void
+    public function updateFields(string $module) : void
     {
-        $dateTimeFixTable = TableRegistry::getTableLocator()->get('datetime_fix');
+        $mc = $this->getModuleConfig($module, []);
+
+        $fields = [];
+        $config = json_encode($mc->parse());
+        $fields = $mc->parseToArray();
 
         $skipfields = ['created', 'modified', 'trashed'];
-        $fieldsToUpdate = [];
 
-        $this->info('Trying to update datetime fields for ' . $module);
-        $table = TableRegistry::getTableLocator()->get($module);
-        $tableQuery = $table->query();
-        $entities = $table->find()->limit($this->params['limit']);
+        $fieldsToUpdate = [];
 
         // Check each field one by one
         foreach ($fields as $field) {
@@ -160,6 +139,30 @@ class FixDateTimeShell extends BaseShell
                     break;
             }
         }
+
+        // Update fields if exist
+        if (!empty($fieldsToUpdate)) {
+            $this->updateDateTimeFields($module, $fieldsToUpdate);
+        }
+    }
+
+    /**
+     * Check fields and their types.
+     *
+     * @param string $module Module name.
+     * @param mixed[] $fieldsToUpdate List of field definitions.
+     * @return void
+     */
+    public function updateDateTimeFields(string $module, array $fieldsToUpdate = []): void
+    {
+        $this->info('Trying to update datetime fields for ' . $module);
+
+        $dateTimeFixTable = TableRegistry::getTableLocator()->get('datetime_fix');
+
+        $table = TableRegistry::getTableLocator()->get($module);
+        $tableQuery = $table->query();
+        $entities = $table->find()->limit($this->params['limit']);
+
         $primaryKey = $table->getPrimaryKey();
         $updatedRecords = 0;
 
