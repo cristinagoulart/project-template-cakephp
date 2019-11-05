@@ -65,7 +65,7 @@ $title = isset($config->table->alias) ? $config->table->alias : Inflector::human
                 primary-key="<?= $table->aliasField($table->getPrimaryKey()) ?>"
                 request-type="POST"
                 url="/api/<?= Inflector::dasherize($savedSearch->get('model')) ?>/search"
-                :with-actions="<?= ! $disableBatch ?>"
+                :with-actions="<?= ! $disableBatch ? 'true' : 'false' ?>"
                 :with-batch-delete="<?= ! $disableBatch && $accessFactory->hasAccess($urlBatch, $user) ? 'true' : 'false' ?>"
                 :with-batch-edit="<?= ! $disableBatch && $accessFactory->hasAccess($urlBatch, $user) ? 'true' : 'false' ?>"
             ></table-ajax>
