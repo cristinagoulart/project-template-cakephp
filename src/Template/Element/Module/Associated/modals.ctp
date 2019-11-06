@@ -31,20 +31,15 @@ $fieldName = '';
 
     foreach ($associations as $association) {
         if ($association->getName() == $field['name']) {
-            list($plugin, $controller) = pluginSplit($association->className());
             $fieldName = Inflector::underscore($association->className() . '_' . $association->getForeignKey());
 
-            $modalBody = $this->requestAction(
-                ['plugin' => $plugin, 'controller' => $controller, 'action' => 'add'],
-                [
-                    'query' => [
-                        'embedded' => $association->getName(),
-                        'foreign_key' => $association->getForeignKey(),
-                        'related_model' => Inflector::delimit($this->request->getParam('controller'), '-'),
-                        'related_id' => $this->request->getParam('pass.0'),
-                    ]
-                ]
-            );
+            $modalBody = $this->element('Module/Embedded/form', [
+                'model' => $association->className(),
+                'field' => $association->getForeignKey(),
+                'associationName' => $association->getName(),
+                'relatedModel' => Inflector::delimit($this->request->getParam('controller'), '-'),
+                'relatedId' => $this->request->getParam('pass.0')
+            ]);
 
             break;
         }

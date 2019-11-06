@@ -48,23 +48,6 @@ if ($options['hasPanels']) {
         ]);
 }
 
-if (!empty($this->request->getQuery('embedded'))) {
-    $formOptions['url']['prefix'] = 'api';
-
-    $embeddedTableName = $this->request->getParam('controller');
-    if (!empty($this->request->getParam('plugin'))) {
-        $embeddedTableName = $this->request->getParam('plugin') . '.' . $embeddedTableName;
-    }
-    $formOptions['data-embedded-display-field'] = TableRegistry::get($embeddedTableName)->getDisplayField();
-    $formOptions['data-embedded-field-id'] = $this->request->getQuery('foreign_key');
-    $formOptions['data-embedded'] = true;
-    $formOptions['data-embedded-association-name'] = $this->request->getQuery('embedded');
-    if ($this->request->getQuery('related_model') && $this->request->getQuery('related_id')) {
-        $formOptions['data-embedded-related-model'] = $this->request->getQuery('related_model');
-        $formOptions['data-embedded-related-id'] = $this->request->getQuery('related_id');
-    }
-}
-
 $linkTitle = is_array($options['title']) ? $this->Html->link(
             $options['title']['alias'],
             [
@@ -102,13 +85,10 @@ $linkTitle = is_array($options['title']) ? $this->Html->link(
             'name' => 'btn_operation', 'value' => 'submit', 'class' => 'btn btn-primary'
         ]);
 
-        echo $this->Html->link(__('Cancel'), ['action' => 'index'], array_merge(
-            ['class' => 'btn btn-link', 'role' => 'button'],
-            $this->request->getQuery('embedded') ? ['aria-label' => 'Close', 'data-dismiss' => 'modal'] : []
-        ));
+        echo $this->Html->link(__('Cancel'), ['action' => 'index'], ['class' => 'btn btn-link', 'role' => 'button']);
         echo $this->Form->end();
 
-        // Fetch embedded module(s) using CakePHP's requestAction() method, if request is not coming from requestAction()
+        // Fetch embedded module(s)
         echo $this->element('Module/Form/fields_embedded', ['fields' => $options['fields']]);
     }
     ?>

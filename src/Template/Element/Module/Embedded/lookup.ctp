@@ -18,21 +18,13 @@ $factory = new FieldHandlerFactory($this);
 // Loading Linking Element (typeahead, link, plus components) only for many-to-many relationship, as for others
 // we don't do the linkage - they would have hidden ID by default.
 $dataTarget = Inflector::underscore($association->className() . '_' . $association->getForeignKey());
-$modalId = $dataTarget . '_modal';
-
-list($plugin, $controller) = pluginSplit($association->className());
-
-$modalBody = $this->requestAction(
-    ['plugin' => $plugin, 'controller' => $controller, 'action' => 'add'],
-    [
-        'query' => [
-            'embedded' => $association->getName(),
-            'foreign_key' => $association->getForeignKey(),
-            'related_model' => Inflector::delimit($this->request->getParam('controller'), '-'),
-            'related_id' => $this->request->getParam('pass.0'),
-        ]
-    ]
-);
+$modalBody = $this->element('Module/Embedded/form', [
+    'model' => $association->className(),
+    'field' => $association->getForeignKey(),
+    'associationName' => $association->getName(),
+    'relatedModel' => Inflector::delimit($this->request->getParam('controller'), '-'),
+    'relatedId' => $this->request->getParam('pass.0')
+]);
 ?>
 <?php if (isset($modalBody)) : ?>
     <div class="row">
@@ -73,7 +65,7 @@ $modalBody = $this->requestAction(
         ?>
         </div>
     </div>
-    <div id="<?= $modalId ?>" class="modal fade" tabindex="-1" role="dialog">
+    <div id="<?= $dataTarget ?>_modal" class="modal fade" tabindex="-1" role="dialog">
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
                 <div class="modal-body">

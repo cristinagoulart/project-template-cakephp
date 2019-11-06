@@ -20,6 +20,7 @@ class ThingsControllerTest extends IntegrationTestCase
         'plugin.Menu.menus',
         'plugin.Menu.menu_items',
         'plugin.RolesCapabilities.roles',
+        'plugin.Translations.languages',
     ];
 
     public function setUp() : void
@@ -65,6 +66,34 @@ class ThingsControllerTest extends IntegrationTestCase
         $this->get('/things/view/00000000-0000-0000-0000-000000000001');
 
         $this->assertResponseOk();
+
+        $this->assertResponseContains('<a href="#translations_translate_id_modal" data-toggle="modal" data-record="00000000-0000-0000-0000-000000000001" data-model="Things" data-field="description" data-value="Long description goes here">');
+        $this->assertResponseContains('<textarea name="orig_for_translate"');
+        $this->assertResponseContains(' id="orig_for_translate"');
+        $this->assertResponseContains('<input type="hidden" name="object_model"');
+        $this->assertResponseContains('<input type="hidden" name="object_field"');
+        $this->assertResponseContains('<input type="hidden" name="object_foreign_key"');
+
+        $this->assertResponseContains('id="form_translation_ru"');
+        $this->assertResponseContains('<input type="hidden" name="id" id="translation_id_ru"');
+        $this->assertResponseContains('<input type="hidden" name="language_id" value="00000000-0000-0000-0000-000000000001"');
+        $this->assertResponseContains('<input type="hidden" name="code" value="ru"');
+        $this->assertResponseContains('<div id="result_ru"');
+        $this->assertResponseContains('<button id="btn_translate_ru" name="btn_translation" data-lang="ru"');
+
+        $this->assertResponseContains('id="form_translation_de"');
+        $this->assertResponseContains('<input type="hidden" name="id" id="translation_id_de"');
+        $this->assertResponseContains('<input type="hidden" name="language_id" value="00000000-0000-0000-0000-000000000002"');
+        $this->assertResponseContains('<input type="hidden" name="code" value="de"');
+        $this->assertResponseContains('<div id="result_de"');
+        $this->assertResponseContains('<button id="btn_translate_ru" name="btn_translation" data-lang="de"');
+
+        $this->assertResponseContains('id="form_translation_cn"');
+        $this->assertResponseContains('<input type="hidden" name="id" id="translation_id_cn"');
+        $this->assertResponseContains('<input type="hidden" name="language_id" value="00000000-0000-0000-0000-000000000003"');
+        $this->assertResponseContains('<input type="hidden" name="code" value="cn"');
+        $this->assertResponseContains('<div id="result_cn"');
+        $this->assertResponseContains('<button id="btn_translate_ru" name="btn_translation" data-lang="cn"');
     }
 
     public function testAddUnauthenticatedFails() : void

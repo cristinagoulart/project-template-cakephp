@@ -4,6 +4,7 @@
         "personal" : true
     },
     "description" : {
-        "label" : "label description"
+        "label" : "label description",
+        "translatable": true
     }
 }
