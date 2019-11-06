@@ -17,6 +17,22 @@ class FixDateTimeShell extends BaseShell
      * @var array $modules List of known modules
      */
     protected $modules;
+    /**
+     * @var string
+     */
+    private $module;
+    /**
+     * @var string
+     */
+    private $timezonefrom;
+    /**
+     * @var string
+     */
+    private $timezoneto;
+    /**
+     * @var string
+     */
+    private $limit;
 
     /**
      * Set shell description and command line options
@@ -47,10 +63,15 @@ class FixDateTimeShell extends BaseShell
      */
     public function main(string $modules = '')
     {
+        $this->setModule();
+        $this->setTimezoneFrom();
+        $this->setTimezoneTo();
+        $this->setLimit();
+
         $this->info('Checking for datetime fields to be updated');
         $this->hr();
 
-        $this->modules = !empty($this->param('module')) ? (array)$this->param('module') : Utility::getModules();
+        $this->modules = !empty($this->getModule()) ? (array)$this->getModule() : Utility::getModules();
 
         if (empty($this->modules)) {
             $this->warn('Did not find any modules');
@@ -60,8 +81,8 @@ class FixDateTimeShell extends BaseShell
 
         $modules = '' === $modules ? $this->modules : explode(',', $modules);
 
-        $timezoneFrom = $this->params['timezonefrom'];
-        $timezoneTo = $this->params['timezoneto'];
+        $timezoneFrom = $this->getTimezoneFrom();
+        $timezoneTo = $this->getTimezoneTo();
 
         if (empty($timezoneFrom) || empty($timezoneTo)) {
             $this->abort('Invalid Timezones entered');
@@ -124,7 +145,7 @@ class FixDateTimeShell extends BaseShell
         $this->info('Trying to update datetime fields for ' . $module);
 
         $table = TableRegistry::getTableLocator()->get($module);
-        $entities = $table->find()->limit($this->params['limit']);
+        $entities = $table->find()->limit((int)$this->getLimit());
         $primaryKey = $table->getPrimaryKey();
 
         $updatedRecords = 0;
@@ -180,8 +201,8 @@ class FixDateTimeShell extends BaseShell
             }
 
             $message = 'Record [' . $entity->get($primaryKey) . ']. Value of ' . $fieldToUpdate . ' changed from ' . $entity->get($fieldToUpdate);
-            $datetime = new \Cake\I18n\Time($entity->get($fieldToUpdate)->format('Y-m-d H:i:s'), $this->params['timezonefrom']);
-            $datetime = $datetime->setTimezone($this->params['timezoneto']);
+            $datetime = new \Cake\I18n\Time($entity->get($fieldToUpdate)->format('Y-m-d H:i:s'), $this->getTimezoneFrom());
+            $datetime = $datetime->setTimezone($this->getTimezoneTo());
 
             /*
              Updating records with the query builder will not trigger events such as Model.afterSave.
@@ -230,5 +251,89 @@ class FixDateTimeShell extends BaseShell
         $mc->setParser(new Parser($schema, ['lint' => true, 'validate' => true]));
 
         return $mc;
+    }
+
+    /**
+     * @param string $module Module Name
+     * @return void|null|int
+     */
+    public function setModule(string $module = '')
+    {
+        if (isset($this->params['module'])) {
+            $this->module = $this->params['module'];
+        } else {
+            $this->module = $module;
+        }
+    }
+
+    /**
+     * @param string $timezone Timezone from
+     * @return void|null|int
+     */
+    public function setTimezoneFrom(string $timezone = '')
+    {
+        if (isset($this->params['timezonefrom'])) {
+            $this->timezonefrom = $this->params['timezonefrom'];
+        } else {
+            $this->timezonefrom = $timezone;
+        }
+    }
+
+    /**
+     * @param string $timezone Timezone To
+     * @return void|null|int
+     */
+    public function setTimezoneTo(string $timezone = '')
+    {
+        if (isset($this->params['timezoneto'])) {
+            $this->timezoneto = $this->params['timezoneto'];
+        } else {
+            $this->timezoneto = $timezone;
+        }
+    }
+
+    /**
+     * @param string $limit Limit Records to update
+     * @return void|null|int
+     */
+    public function setLimit(string $limit = '')
+    {
+        if (isset($this->params['limit'])) {
+            $this->limit = $this->params['limit'];
+        } else {
+            $this->limit = $limit;
+        }
+    }
+
+    /**
+     * @return string
+     */
+    private function getModule() : string
+    {
+        return $this->module;
+    }
+
+    /**
+     * @return string
+     */
+    private function getTimezoneFrom() : string
+    {
+        return $this->timezonefrom;
+    }
+
+    /**
+     * @return string
+     */
+    private function getTimezoneTo() : string
+    {
+        return $this->timezoneto;
+    }
+
+    /**
+     * @return string
+     */
+    private function getLimit() : string
+    {
+        return $this->limit;
     }
 }

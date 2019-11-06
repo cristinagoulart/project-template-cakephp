@@ -51,5 +51,17 @@ class ThingsFixture extends TestFixture
             'modified_by' => '00000000-0000-0000-0000-000000000001',
             'trashed' => '2018-01-18 15:47:16',
         ],
+        [
+            'id' => '00000000-0000-0000-0000-000000000004',
+            'name' => 'Sample Date change',
+            'email' => 'sampledate@thing.com',
+            'description' => 'Long description goes here',
+            'created' => '2018-01-18 15:47:16',
+            'modified' => '2018-01-18 15:47:16',
+            'sample_date' => '2018-01-18 15:47:16',
+            'created_by' => '00000000-0000-0000-0000-000000000001',
+            'modified_by' => '00000000-0000-0000-0000-000000000001',
+            'trashed' => null
+        ]
     ];
 }
