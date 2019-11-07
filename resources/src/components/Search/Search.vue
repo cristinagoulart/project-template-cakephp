@@ -68,6 +68,7 @@
                   :headers="tableHeaders"
                   @sort-field-updated="sortFieldUpdated"
                   @sort-order-updated="sortOrderUpdated"
+                  :with-actions="!disableBatch"
                   :with-batch-delete="!disableBatch && withBatchDelete"
                   :with-batch-edit="!disableBatch && withBatchEdit">
                 </table-ajax>

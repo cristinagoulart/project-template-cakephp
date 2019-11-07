@@ -17,7 +17,7 @@
                     <tr>
                         <th v-if="isBatchEnabled" class="dt-select-column"></th>
                         <th v-for="header in headers">{{ header.text }}</th>
-                        <th v-if="isBatchEnabled">Actions</th>
+                        <th v-if="withActions">Actions</th>
                     </tr>
                 </thead>
             </table>
@@ -67,6 +67,10 @@ export default {
     url: {
       type: String,
       required: true
+    },
+    withActions: {
+      type: Boolean,
+      default: true
     },
     withBatchDelete: {
       type: Boolean,
@@ -269,7 +273,7 @@ export default {
       }
 
       // create action buttons for each record
-      if (this.isBatchEnabled) {
+      if (this.withActions) {
         for (const index in data) {
           if (! data[index].hasOwnProperty('_permissions')) {
             return
