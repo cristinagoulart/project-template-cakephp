@@ -336,9 +336,18 @@ export default {
                     return
                 }
 
+                let extras = ''
+                if (Aggregate.isAggregate(value)) {
+                    extras = ' (' + Aggregate.extractAggregateType(value) + ')'
+                }
+
+                if (filter.group !== self.model) {
+                    extras = ' - ' + filter.group
+                }
+
                 self.tableHeaders.push({
                     value: value,
-                    text: filter.label + (Aggregate.isAggregate(value) ?' (' + Aggregate.extractAggregateType(value) + ')' : '')
+                    text: filter.label + extras
                 })
             })
 
