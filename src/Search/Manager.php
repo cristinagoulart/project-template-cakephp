@@ -21,6 +21,7 @@ use Cake\Utility\Inflector;
 use CsvMigrations\FieldHandlers\FieldHandlerFactory;
 use Qobo\Utils\Utility\User;
 use RolesCapabilities\Access\AccessFactory;
+use Search\Aggregate\AggregateInterface;
 use Search\Model\Entity\SavedSearch;
 use Webmozart\Assert\Assert;
 
@@ -58,6 +59,27 @@ final class Manager
         }
 
         return $result;
+    }
+
+    /**
+     * Checks whether the primary key must be included in the search fields.
+     *
+     * @param mixed[] $options Search options
+     * @return bool
+     */
+    public static function includePrimaryKey(array $options) : bool
+    {
+        if (array_key_exists('group', $options)) {
+            return false;
+        }
+
+        foreach ((array)Hash::get($options, 'fields', []) as $item) {
+            if (1 === preg_match(AggregateInterface::AGGREGATE_PATTERN, $item)) {
+                return false;
+            }
+        }
+
+        return true;
     }
 
     /**

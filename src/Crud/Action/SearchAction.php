@@ -57,8 +57,9 @@ class SearchAction extends BaseAction
             $this->_request()->getQueryParams()
         );
 
-        // always include primary key into the fields
-        $options['fields'] = array_merge((array)$this->_table()->getPrimaryKey(), Hash::get($options, 'fields', []));
+        if (SearchManager::includePrimaryKey($options)) {
+            $options['fields'] = array_merge((array)$this->_table()->getPrimaryKey(), Hash::get($options, 'fields', []));
+        }
         $query = $this->_table()->find($finder, $options);
 
         $subject = $this->_subject(['success' => true, 'query' => $query]);
