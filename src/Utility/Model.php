@@ -4,6 +4,7 @@ namespace App\Utility;
 
 use Cake\Core\App;
 use Cake\Core\Configure;
+use Cake\ORM\Association;
 use Cake\ORM\TableRegistry;
 use Cake\Utility\Hash;
 use Cake\Utility\Inflector;
@@ -51,6 +52,17 @@ final class Model
     }
 
     /**
+     * Model associations getter.
+     *
+     * @param string $model Model name
+     * @return mixed[]
+     */
+    public static function associations(string $model): array
+    {
+        return (new self($model))->getAssociations();
+    }
+
+    /**
      * Fields getter.
      *
      * @return mixed[]
@@ -82,11 +94,11 @@ final class Model
         ];
 
         if (in_array($result['type'], self::LIST_TYPES, true)) {
-            $listName = $this->getListName($column);
+            $listName = self::getListName($this->getModelName(), $column);
             if ('' !== $listName) {
                 $result['options'] = 'dblist' === $result['type'] ?
-                    $this->getDatabaseListOptions($listName) :
-                    $this->getListOptions($listName);
+                    self::getDatabaseListOptions($listName) :
+                    self::getListOptions($this->getModelName(), $listName);
             }
         }
 
@@ -97,6 +109,44 @@ final class Model
         }
 
         return $result;
+    }
+
+    /**
+     * Associations getter.
+     *
+     * @return mixed[]
+     */
+    private function getAssociations(): array
+    {
+        $result = [];
+
+        foreach ($this->table->associations() as $association) {
+            $result[] = [
+                'name' => $association->getName(),
+                'label' => self::getAssociationLabel($association),
+                'model' => App::shortName(get_class($association->getTarget()), 'Model/Table', 'Table'),
+                'type' => $association->type(),
+                'primary_key' => $association->getBindingKey(),
+                'foreign_key' => $association->getForeignKey()
+            ];
+        }
+
+        return $result;
+    }
+
+    /**
+     * Association label getter.
+     *
+     * @param \Cake\ORM\Association $association Association instance
+     * @return string
+     */
+    private static function getAssociationLabel(Association $association): string
+    {
+        return sprintf(
+            '%s (%s)',
+            App::shortName(get_class($association->getTarget()), 'Model/Table', 'Table'),
+            Inflector::humanize(implode(', ', (array)$association->getForeignKey()))
+        );
     }
 
     /**
@@ -211,10 +261,11 @@ final class Model
     /**
      * List name getter.
      *
+     * @param string $modelName Model name
      * @param string $column Column name
      * @return string
      */
-    private function getListName(string $column): string
+    public static function getListName(string $modelName, string $column): string
     {
         /**
          * Handles the special cases of combined fields, this will go away once we properly separate database column and UI field definitions.
@@ -227,7 +278,7 @@ final class Model
             }
         }
 
-        $config = (new ModuleConfig(ConfigType::MIGRATION(), $this->getModelName()))->parseToArray();
+        $config = (new ModuleConfig(ConfigType::MIGRATION(), $modelName))->parseToArray();
 
         $type = (string)Hash::get($config, $column . '.type');
 
@@ -240,7 +291,7 @@ final class Model
      * @param string $listName List name
      * @return mixed[]
      */
-    private function getDatabaseListOptions(string $listName): array
+    public static function getDatabaseListOptions(string $listName): array
     {
         $table = TableRegistry::getTableLocator()->get('CsvMigrations.Dblists');
         Assert::isInstanceOf($table, \CsvMigrations\Model\Table\DblistsTable::class);
@@ -256,14 +307,15 @@ final class Model
     /**
      * List options getter.
      *
+     * @param string $modelName Model name
      * @param string $listName List name
      * @return mixed[]
      */
-    private function getListOptions(string $listName): array
+    public static function getListOptions(string $modelName, string $listName): array
     {
         list($module, $listName) = false !== strpos($listName, '.') ?
             explode('.', $listName, 2) :
-            [$this->getModelName(), $listName];
+            [$modelName, $listName];
 
         try {
             $options = (new ModuleConfig(ConfigType::LISTS(), $module, $listName))->parseToArray();
@@ -275,8 +327,8 @@ final class Model
             return [];
         }
 
-        return $this->formatListOptions(
-            $this->flattenListOptions($this->filterListOptions($options['items'])),
+        return self::formatListOptions(
+            self::flattenListOptions(self::filterListOptions($options['items'])),
             $listName
         );
     }
@@ -287,7 +339,7 @@ final class Model
      * @param mixed[] $options List options
      * @return mixed[]
      */
-    private function filterListOptions(array $options): array
+    private static function filterListOptions(array $options): array
     {
         return array_filter($options, function ($item) {
             return $item['inactive'] !== true;
@@ -300,7 +352,7 @@ final class Model
      * @param mixed[] $options List options
      * @return mixed[]
      */
-    private function flattenListOptions(array $options): array
+    private static function flattenListOptions(array $options): array
     {
         $result = [];
         foreach ($options as $value => $extras) {
@@ -308,7 +360,7 @@ final class Model
             $result[$value] = $item;
 
             if (array_key_exists('children', $extras)) {
-                $result = array_merge($result, $this->flattenListOptions($extras['children']));
+                $result = array_merge($result, self::flattenListOptions($extras['children']));
             }
         }
 
@@ -322,7 +374,7 @@ final class Model
      * @param string $listName List name
      * @return mixed[]
      */
-    private function formatListOptions(array $options, string $listName): array
+    private static function formatListOptions(array $options, string $listName): array
     {
         if ('currencies' === $listName) {
             $result = [];
@@ -341,6 +393,7 @@ final class Model
 
             return $result;
         }
+
         if ('countries' === $listName) {
             return array_map(function ($item) {
                 $item['label'] = sprintf(
