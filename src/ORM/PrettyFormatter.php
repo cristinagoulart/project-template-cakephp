@@ -1,4 +1,5 @@
 <?php
+
 namespace App\ORM;
 
 use Cake\Collection\CollectionInterface;
@@ -16,7 +17,7 @@ final class PrettyFormatter
      * @param \Cake\Collection\CollectionInterface $results ResultSet
      * @return \Cake\Collection\CollectionInterface
      */
-    public function __invoke(CollectionInterface $results) : CollectionInterface
+    public function __invoke(CollectionInterface $results): CollectionInterface
     {
         return $results->map(function (EntityInterface $entity) {
             static $table = null;
@@ -35,7 +36,7 @@ final class PrettyFormatter
      * @param \Cake\ORM\Table $table Table instance
      * @return \Cake\Datasource\EntityInterface
      */
-    private static function format(EntityInterface $entity, Table $table) : EntityInterface
+    private static function format(EntityInterface $entity, Table $table): EntityInterface
     {
         static $factory = null;
         if (null === $factory) {

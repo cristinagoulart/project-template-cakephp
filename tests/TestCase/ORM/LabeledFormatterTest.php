@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Test\TestCase\ORM;
 
 use App\ORM\LabeledFormatter;
@@ -15,21 +16,21 @@ class LabeledFormatterTest extends TestCase
 
     private $table;
 
-    public function setUp() : void
+    public function setUp(): void
     {
         parent::setUp();
 
         $this->table = TableRegistry::getTableLocator()->get('Things');
     }
 
-    public function tearDown() : void
+    public function tearDown(): void
     {
         unset($this->table);
 
         parent::tearDown();
     }
 
-    public function testFormatResults() : void
+    public function testFormatResults(): void
     {
         $expected = [
             'appointment' => '2019-10-29 15:47:16',
@@ -82,7 +83,7 @@ class LabeledFormatterTest extends TestCase
         $this->assertSame($expected, $result);
     }
 
-    public function testFormatResultsWithContain() : void
+    public function testFormatResultsWithContain(): void
     {
         $expected = [
             'appointment' => '2019-10-29 15:47:16',
@@ -174,7 +175,7 @@ class LabeledFormatterTest extends TestCase
         $this->assertSame($expected, $result);
     }
 
-    public function testFormatResultsWithMatching() : void
+    public function testFormatResultsWithMatching(): void
     {
         $expected = [
             '_matchingData' => [
@@ -268,7 +269,7 @@ class LabeledFormatterTest extends TestCase
         $this->assertSame($expected, $result);
     }
 
-    public function testFormatResultsWithPermissions() : void
+    public function testFormatResultsWithPermissions(): void
     {
         $query = $this->table
             ->find()
@@ -280,7 +281,7 @@ class LabeledFormatterTest extends TestCase
         $this->assertTrue(in_array('_permissions', $keys, true));
     }
 
-    public function testFormatResultsWithEmptyRelatedField() : void
+    public function testFormatResultsWithEmptyRelatedField(): void
     {
         // remove related field value
         $thing = $this->table->get('00000000-0000-0000-0000-000000000001');
@@ -295,7 +296,7 @@ class LabeledFormatterTest extends TestCase
         $this->assertSame('a-non-uuid-string', $query->first()->get('primary_thing'));
     }
 
-    public function testFormatResultsWithNestedRelationAsDisplayField() : void
+    public function testFormatResultsWithNestedRelationAsDisplayField(): void
     {
         // adjust association's target table display-field to a foreign-key
         $this->table->getAssociation('Thingsprimary_thing')

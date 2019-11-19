@@ -1,4 +1,5 @@
 <?php
+
 namespace App\ORM;
 
 use Cake\Collection\CollectionInterface;
@@ -15,7 +16,7 @@ final class FlatFormatter
      * @param \Cake\Collection\CollectionInterface $results ResultSet
      * @return \Cake\Collection\CollectionInterface
      */
-    public function __invoke(CollectionInterface $results) : CollectionInterface
+    public function __invoke(CollectionInterface $results): CollectionInterface
     {
         return $results->map(function (EntityInterface $entity) {
             static $table = null;
@@ -40,7 +41,7 @@ final class FlatFormatter
      * @param \Cake\ORM\Table $table Table instance
      * @return mixed[]
      */
-    private static function flatten(EntityInterface $entity, Table $table) : array
+    private static function flatten(EntityInterface $entity, Table $table): array
     {
         $result = [];
         foreach (array_diff($entity->visibleProperties(), $entity->getVirtual()) as $field) {

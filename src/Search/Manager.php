@@ -69,7 +69,7 @@ final class Manager
      * @param mixed[] $options Search options
      * @return bool
      */
-    public static function includePrimaryKey(array $options) : bool
+    public static function includePrimaryKey(array $options): bool
     {
         if (array_key_exists('group', $options)) {
             return false;

@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Test\TestCase\ORM;
 
 use App\ORM\FlatFormatter;
@@ -15,21 +16,21 @@ class FlatFormatterTest extends TestCase
 
     private $table;
 
-    public function setUp() : void
+    public function setUp(): void
     {
         parent::setUp();
 
         $this->table = TableRegistry::getTableLocator()->get('Things');
     }
 
-    public function tearDown() : void
+    public function tearDown(): void
     {
         unset($this->table);
 
         parent::tearDown();
     }
 
-    public function testFormatResults() : void
+    public function testFormatResults(): void
     {
         $query = $this->table
             ->find()
@@ -46,7 +47,7 @@ class FlatFormatterTest extends TestCase
         $this->assertSame(['Things' => ''], $result);
     }
 
-    public function testFormatResultsWithContain() : void
+    public function testFormatResultsWithContain(): void
     {
         $query = $this->table
             ->find()
@@ -66,7 +67,7 @@ class FlatFormatterTest extends TestCase
         $this->assertSame(['AssignedToUsers' => '', 'Things' => ''], $result);
     }
 
-    public function testFormatResultsWithMatching() : void
+    public function testFormatResultsWithMatching(): void
     {
         $query = $this->table
             ->find()
@@ -86,7 +87,7 @@ class FlatFormatterTest extends TestCase
         $this->assertSame(['AssignedToUsers' => '', 'Things' => ''], $result);
     }
 
-    public function testFormatResultsWithPermissions() : void
+    public function testFormatResultsWithPermissions(): void
     {
         $query = $this->table
             ->find()

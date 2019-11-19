@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Test\TestCase\ORM;
 
 use App\ORM\PrettyFormatter;
@@ -14,21 +15,21 @@ class PrettyFormatterTest extends TestCase
 
     private $table;
 
-    public function setUp() : void
+    public function setUp(): void
     {
         parent::setUp();
 
         $this->table = TableRegistry::getTableLocator()->get('Things');
     }
 
-    public function tearDown() : void
+    public function tearDown(): void
     {
         unset($this->table);
 
         parent::tearDown();
     }
 
-    public function testFormatResults() : void
+    public function testFormatResults(): void
     {
         $expected = [
             'appointment' => '2019-10-29 15:47',
@@ -81,7 +82,7 @@ class PrettyFormatterTest extends TestCase
         $this->assertSame($expected, $result);
     }
 
-    public function testFormatResultsWithContain() : void
+    public function testFormatResultsWithContain(): void
     {
         $expected = [
             'appointment' => '2019-10-29 15:47',
@@ -173,7 +174,7 @@ class PrettyFormatterTest extends TestCase
         $this->assertSame($expected, $result);
     }
 
-    public function testFormatResultsWithMatching() : void
+    public function testFormatResultsWithMatching(): void
     {
         $expected = [
             '_matchingData' => [
@@ -267,7 +268,7 @@ class PrettyFormatterTest extends TestCase
         $this->assertSame($expected, $result);
     }
 
-    public function testFormatResultsWithPermissions() : void
+    public function testFormatResultsWithPermissions(): void
     {
         $query = $this->table
             ->find()

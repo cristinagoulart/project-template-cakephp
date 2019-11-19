@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Test\TestCase\ORM;
 
 use App\ORM\PermissionsFormatter;
@@ -16,7 +17,7 @@ class PermissionsFormatterTest extends TestCase
     private $table;
     private $user;
 
-    public function setUp() : void
+    public function setUp(): void
     {
         parent::setUp();
 
@@ -28,7 +29,7 @@ class PermissionsFormatterTest extends TestCase
             ->firstOrFail();
     }
 
-    public function tearDown() : void
+    public function tearDown(): void
     {
         unset($this->user);
         unset($this->table);
@@ -36,7 +37,7 @@ class PermissionsFormatterTest extends TestCase
         parent::tearDown();
     }
 
-    public function testFormatResults() : void
+    public function testFormatResults(): void
     {
         $expected = [
             'view' => true,
@@ -54,7 +55,7 @@ class PermissionsFormatterTest extends TestCase
         $this->assertSame($expected, $query->first()->get('_permissions'));
     }
 
-    public function testFormatResultsWithoutPrimaryKey() : void
+    public function testFormatResultsWithoutPrimaryKey(): void
     {
         User::setCurrentUser($this->user->toArray());
 
@@ -67,7 +68,7 @@ class PermissionsFormatterTest extends TestCase
         $this->assertFalse($query->first()->has('_permissions'));
     }
 
-    public function testFormatResultsWithoutCurrentUser() : void
+    public function testFormatResultsWithoutCurrentUser(): void
     {
         $expected = [
             'view' => false,

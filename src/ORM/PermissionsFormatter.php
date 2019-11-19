@@ -1,4 +1,5 @@
 <?php
+
 namespace App\ORM;
 
 use Cake\Collection\CollectionInterface;
@@ -17,7 +18,7 @@ final class PermissionsFormatter
      * @param \Cake\Collection\CollectionInterface $results ResultSet
      * @return \Cake\Collection\CollectionInterface
      */
-    public function __invoke(CollectionInterface $results) : CollectionInterface
+    public function __invoke(CollectionInterface $results): CollectionInterface
     {
         return $results->map(function (EntityInterface $entity) {
             static $table = null;
@@ -51,7 +52,7 @@ final class PermissionsFormatter
      * @param \Cake\ORM\Table $table Table instance
      * @return mixed[]
      */
-    private static function getPermissions(string $id, Table $table) : array
+    private static function getPermissions(string $id, Table $table): array
     {
         static $factory = null;
         if (null === $factory) {
