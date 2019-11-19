@@ -1,4 +1,5 @@
 <?php
+
 namespace App\ScheduledJobs\Jobs;
 
 abstract class AbstractShellJob implements JobInterface

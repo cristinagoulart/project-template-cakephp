@@ -1,4 +1,5 @@
 <?php
+
 namespace App\View\Helper;
 
 use App\Utility\Search;
@@ -13,7 +14,7 @@ final class SearchHelper extends Helper
      * @param string $tableName Table name
      * @return mixed[]
      */
-    public function getFilters(string $tableName) : array
+    public function getFilters(string $tableName): array
     {
         return Search::getFilters($tableName);
     }
@@ -24,7 +25,7 @@ final class SearchHelper extends Helper
      * @param string $tableName Table name
      * @return string[]
      */
-    public function getDisplayFields(string $tableName) : array
+    public function getDisplayFields(string $tableName): array
     {
         return Search::getDisplayFields($tableName);
     }
@@ -35,7 +36,7 @@ final class SearchHelper extends Helper
      * @param \Search\Model\Entity\SavedSearch $entity Saved search entity
      * @return mixed[]
      */
-    public function getChartOptions(SavedSearch $entity) : array
+    public function getChartOptions(SavedSearch $entity): array
     {
         return Search::getChartOptions($entity);
     }

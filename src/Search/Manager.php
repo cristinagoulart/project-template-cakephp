@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Copyright (c) Qobo Ltd. (https://www.qobo.biz)
  *
@@ -9,6 +10,7 @@
  * @copyright     Copyright (c) Qobo Ltd. (https://www.qobo.biz)
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
+
 namespace App\Search;
 
 use App\Utility\Search;
@@ -34,7 +36,7 @@ final class Manager
      * @param mixed[] $params Request params
      * @return mixed[]
      */
-    public static function getOptionsFromRequest(array $data, array $params) : array
+    public static function getOptionsFromRequest(array $data, array $params): array
     {
         $result = [];
 
@@ -88,7 +90,7 @@ final class Manager
      * @param mixed[] $criteria Search criteria
      * @return mixed[]
      */
-    private static function getCriteria(array $criteria) : array
+    private static function getCriteria(array $criteria): array
     {
         $result = [];
         foreach ($criteria as $field => $items) {
@@ -105,7 +107,7 @@ final class Manager
      * @param mixed[] $criteria Field search criteria
      * @return mixed[]
      */
-    private static function getFieldCriteria(string $field, array $criteria) : array
+    private static function getFieldCriteria(string $field, array $criteria): array
     {
         $result = [];
         foreach ($criteria as $item) {
@@ -146,7 +148,7 @@ final class Manager
      * @param string $model Model name
      * @return \Search\Model\Entity\SavedSearch|null
      */
-    public static function getSystemSearch(string $model) : ?SavedSearch
+    public static function getSystemSearch(string $model): ?SavedSearch
     {
         $table = TableRegistry::getTableLocator()->get('Search.SavedSearches');
 
@@ -166,7 +168,7 @@ final class Manager
      * @param string $model Model name
      * @return \Search\Model\Entity\SavedSearch
      */
-    public static function createSystemSearch(string $model) : SavedSearch
+    public static function createSystemSearch(string $model): SavedSearch
     {
         $user = TableRegistry::getTableLocator()->get('Users')
             ->find()

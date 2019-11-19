@@ -1,4 +1,5 @@
 <?php
+
 namespace App\ScheduledJobs\Handlers;
 
 abstract class AbstractHandler
@@ -13,5 +14,5 @@ abstract class AbstractHandler
      *
      * @return mixed[] $result containing list of jobs
      */
-    abstract public function getList(array $options = []) : array;
+    abstract public function getList(array $options = []): array;
 }

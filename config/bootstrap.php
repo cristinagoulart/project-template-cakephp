@@ -1,4 +1,5 @@
 <?php
+
 /**
  * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
  * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
@@ -321,7 +322,7 @@ call_user_func(function () {
             continue;
         }
 
-        EventManager::instance()->on(new $eventClassName);
+        EventManager::instance()->on(new $eventClassName());
     }
 });
 

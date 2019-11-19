@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This script allows for dynamic robots.txt rules,
  * based on the ALLOW_ROBOTS setting in the .env
@@ -13,6 +14,7 @@
  * disable indexing for any server hostname that matches
  * the pattern.
  */
+
 require_once dirname(__DIR__) . DIRECTORY_SEPARATOR . 'vendor' . DIRECTORY_SEPARATOR . 'autoload.php';
 
 try {

@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Test\TestCase\Utility;
 
 use App\Utility\Search;
@@ -14,14 +15,14 @@ class SearchTest extends TestCase
         'app.users'
     ];
 
-    public function setUp() : void
+    public function setUp(): void
     {
         parent::setUp();
 
         User::setCurrentUser(['is_superuser' => true]);
     }
 
-    public function testGetFilters() : void
+    public function testGetFilters(): void
     {
         $result = Search::getFilters('Things');
 
@@ -45,7 +46,7 @@ class SearchTest extends TestCase
         $this->assertSame($expected, $result[$index]);
     }
 
-    public function testGetDisplayFields() : void
+    public function testGetDisplayFields(): void
     {
         $expected = [
             'Things.name',
@@ -58,7 +59,7 @@ class SearchTest extends TestCase
         $this->assertSame($expected, Search::getDisplayFields('Things'));
     }
 
-    public function testGetChartOptions() : void
+    public function testGetChartOptions(): void
     {
         $savedSearch = new SavedSearch([
             'name' => 'Things grouped by created date',
@@ -94,7 +95,7 @@ class SearchTest extends TestCase
         $this->assertSame([2], $result[2]['options']['dataChart']['data']['datasets'][0]['data']);
     }
 
-    public function testGetChartOptionsWithoutGroupByOrAggregate() : void
+    public function testGetChartOptionsWithoutGroupByOrAggregate(): void
     {
         $savedSearch = new SavedSearch([
             'name' => 'Things NOT grouped by',
@@ -104,7 +105,7 @@ class SearchTest extends TestCase
         $this->assertSame([], Search::getChartOptions($savedSearch));
     }
 
-    public function testGetChartOptionsWithGroupByButNotAggregate() : void
+    public function testGetChartOptionsWithGroupByButNotAggregate(): void
     {
         $savedSearch = new SavedSearch([
             'name' => 'Things NOT grouped by',
@@ -116,7 +117,7 @@ class SearchTest extends TestCase
         $this->assertSame([], Search::getChartOptions($savedSearch));
     }
 
-    public function testGetChartOptionsWithAggregateButNotGroupBy() : void
+    public function testGetChartOptionsWithAggregateButNotGroupBy(): void
     {
         $savedSearch = new SavedSearch([
             'name' => 'Things NOT grouped by',

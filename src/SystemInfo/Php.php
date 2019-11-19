@@ -1,4 +1,5 @@
 <?php
+
 namespace App\SystemInfo;
 
 use Qobo\Utils\Utility\Convert;

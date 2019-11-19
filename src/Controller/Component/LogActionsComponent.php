@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Controller\Component;
 
 use App\Event\AuditReadEvent;
@@ -23,7 +24,7 @@ class LogActionsComponent extends Component
      * @param \Cake\Event\Event $event The beforeRender event.
      * @return void
      */
-    public function beforeFilter(Event $event) : void
+    public function beforeFilter(Event $event): void
     {
         if (!$this->request->is('get')) {
             return;

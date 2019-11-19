@@ -1,4 +1,5 @@
 <?php
+
 use Qobo\Utils\Utility\Salt;
 
 $debug = (bool)env('DEBUG', false);

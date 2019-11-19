@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Test\TestCase\Log\Engine;
 
 use App\Log\Engine\LevelAwareDatabaseLog;

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * AdminLTE plugin configuration
  *

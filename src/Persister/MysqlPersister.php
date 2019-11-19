@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Persister;
 
 use AuditStash\PersisterInterface;

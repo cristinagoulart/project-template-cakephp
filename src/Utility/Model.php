@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Utility;
 
 use Cake\Core\App;
@@ -44,7 +45,7 @@ final class Model
      * @param string $model Model name
      * @return mixed[]
      */
-    public static function fields(string $model) : array
+    public static function fields(string $model): array
     {
         return (new self($model))->getFields();
     }
@@ -54,7 +55,7 @@ final class Model
      *
      * @return mixed[]
      */
-    private function getFields() : array
+    private function getFields(): array
     {
         $result = [];
         foreach ($this->table->getSchema()->columns() as $column) {
@@ -70,7 +71,7 @@ final class Model
      * @param string $column Column name
      * @return mixed[]
      */
-    private function getField(string $column) : array
+    private function getField(string $column): array
     {
         $result = [
             'name' => $column,
@@ -104,7 +105,7 @@ final class Model
      * @param string $column Column name
      * @return string
      */
-    private function getLabel(string $column) : string
+    private function getLabel(string $column): string
     {
         $config = (new ModuleConfig(ConfigType::FIELDS(), $this->getModelName()))->parseToArray();
 
@@ -120,7 +121,7 @@ final class Model
      * @param string $column Column name
      * @return string
      */
-    private function getType(string $column) : string
+    private function getType(string $column): string
     {
         $type = $this->getTypeFromMigration($column);
 
@@ -133,7 +134,7 @@ final class Model
      * @param string $column Column name
      * @return string
      */
-    private function getTypeFromMigration(string $column) : string
+    private function getTypeFromMigration(string $column): string
     {
         $combinedFields = [
             ['_amount', 'decimal'],
@@ -167,7 +168,7 @@ final class Model
      * @param string $column Column name
      * @return string[]
      */
-    private function getMeta(string $column) : array
+    private function getMeta(string $column): array
     {
         $result = [];
         $config = (new ModuleConfig(ConfigType::MIGRATION(), $this->getModelName()))->parseToArray();
@@ -193,7 +194,7 @@ final class Model
      * @param string $column Column name
      * @return string
      */
-    private function getRelatedTableName(string $column) : string
+    private function getRelatedTableName(string $column): string
     {
         $config = (new ModuleConfig(ConfigType::MIGRATION(), $this->getModelName()))->parseToArray();
 
@@ -213,7 +214,7 @@ final class Model
      * @param string $column Column name
      * @return string
      */
-    private function getListName(string $column) : string
+    private function getListName(string $column): string
     {
         /**
          * Handles the special cases of combined fields, this will go away once we properly separate database column and UI field definitions.
@@ -239,7 +240,7 @@ final class Model
      * @param string $listName List name
      * @return mixed[]
      */
-    private function getDatabaseListOptions(string $listName) : array
+    private function getDatabaseListOptions(string $listName): array
     {
         $table = TableRegistry::getTableLocator()->get('CsvMigrations.Dblists');
         Assert::isInstanceOf($table, \CsvMigrations\Model\Table\DblistsTable::class);
@@ -258,7 +259,7 @@ final class Model
      * @param string $listName List name
      * @return mixed[]
      */
-    private function getListOptions(string $listName) : array
+    private function getListOptions(string $listName): array
     {
         list($module, $listName) = false !== strpos($listName, '.') ?
             explode('.', $listName, 2) :
@@ -286,7 +287,7 @@ final class Model
      * @param mixed[] $options List options
      * @return mixed[]
      */
-    private function filterListOptions(array $options) : array
+    private function filterListOptions(array $options): array
     {
         return array_filter($options, function ($item) {
             return $item['inactive'] !== true;
@@ -299,7 +300,7 @@ final class Model
      * @param mixed[] $options List options
      * @return mixed[]
      */
-    private function flattenListOptions(array $options) : array
+    private function flattenListOptions(array $options): array
     {
         $result = [];
         foreach ($options as $value => $extras) {
@@ -321,7 +322,7 @@ final class Model
      * @param string $listName List name
      * @return mixed[]
      */
-    private function formatListOptions(array $options, string $listName) : array
+    private function formatListOptions(array $options, string $listName): array
     {
         if ('currencies' === $listName) {
             $result = [];
@@ -364,7 +365,7 @@ final class Model
      *
      * @return string
      */
-    private function getModelName() : string
+    private function getModelName(): string
     {
         $result = pluginSplit(App::shortName(get_class($this->table), 'Model/Table', 'Table'));
 

@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Test\TestCase\Avatar\Type;
 
 use App\Avatar\Type\Gravatar;

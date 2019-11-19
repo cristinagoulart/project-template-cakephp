@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Shell;
 
 use App\Feature\Factory as FeatureFactory;

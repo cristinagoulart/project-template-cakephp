@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Event\Plugin\CsvMigrations\Model;
 
 use ArrayObject;

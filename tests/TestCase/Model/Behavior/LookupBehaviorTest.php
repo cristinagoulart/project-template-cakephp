@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Test\TestCase\Model\Behavior;
 
 use App\Model\Behavior\LookupBehavior;
@@ -51,7 +52,7 @@ class LookupBehaviorTest extends TestCase
      *
      * @return void
      */
-    public function setUp() : void
+    public function setUp(): void
     {
         parent::setUp();
 
@@ -72,7 +73,7 @@ class LookupBehaviorTest extends TestCase
      *
      * @return void
      */
-    public function tearDown() : void
+    public function tearDown(): void
     {
         unset($this->Lookup);
         unset($this->things);
@@ -86,7 +87,7 @@ class LookupBehaviorTest extends TestCase
      *
      * @return void
      */
-    public function testBeforeFind() : void
+    public function testBeforeFind(): void
     {
         $query = $this->things->find();
         $event = new Event('Model.beforeFind', $this->things, [
@@ -108,7 +109,7 @@ class LookupBehaviorTest extends TestCase
         $this->assertRegExp('/`Things`.`name` = :c0/', $query->sql());
     }
 
-    public function testBeforeFindWithoutPrimaryQuery() : void
+    public function testBeforeFindWithoutPrimaryQuery(): void
     {
         $query = $this->things->query();
 
@@ -125,7 +126,7 @@ class LookupBehaviorTest extends TestCase
         $this->assertEquals('00000000-0000-0000-0000-000000000001', $entity->get('id'));
     }
 
-    public function testBeforeFindWithoutLookupValue() : void
+    public function testBeforeFindWithoutLookupValue(): void
     {
         $query = $this->things->query();
 
@@ -142,7 +143,7 @@ class LookupBehaviorTest extends TestCase
         $this->assertEquals('00000000-0000-0000-0000-000000000001', $entity->get('id'));
     }
 
-    public function testBeforeFindWithoutLookupFields() : void
+    public function testBeforeFindWithoutLookupFields(): void
     {
         $query = $this->things->query();
 
@@ -162,7 +163,7 @@ class LookupBehaviorTest extends TestCase
         $this->assertEquals(['uuid'], Hash::extract($query->getValueBinder()->bindings(), '{s}.type'));
     }
 
-    public function testBeforeMarshal() : void
+    public function testBeforeMarshal(): void
     {
         $table = TableRegistry::getTableLocator()->get('Users');
         $table->deleteAll([]);
@@ -182,7 +183,7 @@ class LookupBehaviorTest extends TestCase
         $this->assertSame($entity->get('id'), $data['assigned_to']);
     }
 
-    public function testBeforeMarshalWithNonExistingRecord() : void
+    public function testBeforeMarshalWithNonExistingRecord(): void
     {
         $table = TableRegistry::getTableLocator()->get('Users');
         $table->deleteAll([]);
@@ -201,7 +202,7 @@ class LookupBehaviorTest extends TestCase
         $this->assertSame('non_existing_record', $data['assigned_to']);
     }
 
-    public function testBeforeMarshalWithValidId() : void
+    public function testBeforeMarshalWithValidId(): void
     {
         $table = TableRegistry::getTableLocator()->get('Users');
         $table->deleteAll([]);
@@ -220,7 +221,7 @@ class LookupBehaviorTest extends TestCase
         $this->assertSame($entity->get('id'), $data['assigned_to']);
     }
 
-    public function testBeforeMarshalWithoutLookupFields() : void
+    public function testBeforeMarshalWithoutLookupFields(): void
     {
         $this->things->deleteAll([]);
 
@@ -241,7 +242,7 @@ class LookupBehaviorTest extends TestCase
         $this->assertSame(['primary_thing' => $name], $data->getArrayCopy());
     }
 
-    public function testUsersLookup() : void
+    public function testUsersLookup(): void
     {
         $query = $this->users->find('all')->applyOptions(['lookup' => true, 'value' => 'user-1@test.com'])->firstOrFail();
 
@@ -250,37 +251,37 @@ class LookupBehaviorTest extends TestCase
         $this->assertSame('user-1@test.com', $email);
     }
 
-    public function testfindLookup() : void
+    public function testfindLookup(): void
     {
         $query = $this->users->find('lookup', ['value' => 'user-1@test.com'])->first();
         $this->assertInstanceOf('App\Model\Entity\User', $query);
     }
 
-    public function testfindLookupWithWhere() : void
+    public function testfindLookupWithWhere(): void
     {
         $query = $this->users->find('lookup', ['value' => 'user-1@test.com'])->where(['username' => 'user-1'])->first();
         $this->assertInstanceOf('App\Model\Entity\User', $query);
     }
 
-    public function testfindLookupWithWhereFailed() : void
+    public function testfindLookupWithWhereFailed(): void
     {
         $query = $this->users->find('lookup', ['value' => 'user-2@test.com'])->where(['username' => 'user-1'])->first();
         $this->assertNull($query);
     }
 
-    public function testfindLookupWithoutValueInOptions() : void
+    public function testfindLookupWithoutValueInOptions(): void
     {
         $query = $this->users->find('lookup')->firstOrFail();
         $this->assertInstanceOf('App\Model\Entity\User', $query);
     }
 
-    public function testfindLookupWithNonExistentRecord() : void
+    public function testfindLookupWithNonExistentRecord(): void
     {
         $query = $this->users->find('lookup', ['value' => '00000000-0000-0000-0000-000000000002'])->first();
         $this->assertNull($query);
     }
 
-    public function testFindLookupWithoutLookupFields() : void
+    public function testFindLookupWithoutLookupFields(): void
     {
         $query = $this->things->query();
 

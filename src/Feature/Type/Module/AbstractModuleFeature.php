@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Feature\Type\Module;
 
 use App\Feature\Type\BaseFeature;

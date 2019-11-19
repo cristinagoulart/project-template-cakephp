@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Test\TestCase\Search;
 
 use App\Search\MagicValue;
@@ -62,12 +63,12 @@ class MagicValueTest extends TestCase
     /**
      * @dataProvider validMagicValues
      */
-    public function testShouldAcceptValidMagicValue(string $value) : void
+    public function testShouldAcceptValidMagicValue(string $value): void
     {
         $this->assertTrue(MagicValue::is($value));
     }
 
-    public function testShouldRequireValidMagicValue() : void
+    public function testShouldRequireValidMagicValue(): void
     {
         $this->assertFalse(MagicValue::is('%%foobar%%'));
     }
@@ -75,7 +76,7 @@ class MagicValueTest extends TestCase
     /**
      * @return string[][]
      */
-    public function validMagicValues() : array
+    public function validMagicValues(): array
     {
         return [
             ['%%me%%'],

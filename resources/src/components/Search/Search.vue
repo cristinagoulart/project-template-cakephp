@@ -305,8 +305,8 @@ export default {
             this.$store.commit('search/conjunction', 'OR')
             this.displayFields.map(function(field) {
                 const filter = self.filtersList.find(filter => filter.field === field)
-                if (-1 !== self.basic_types.indexOf(filter[0].type)) {
-                    self.criteriaCreate(filter[0].field, query)
+                if (-1 !== self.basic_types.indexOf(filter.type)) {
+                    self.criteriaCreate(filter.field, query)
                 }
             })
         },

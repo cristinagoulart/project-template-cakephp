@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Test\TestCase\ScheduledJobs\Jobs;
 
 use App\ScheduledJobs\Jobs\CakeShellJob;

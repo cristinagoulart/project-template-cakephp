@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Avatar\Type;
 
 use App\Avatar\AbstractAvatar;
