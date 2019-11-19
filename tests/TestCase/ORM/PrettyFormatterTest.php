@@ -58,7 +58,6 @@ class PrettyFormatterTest extends TestCase
             'rate' => '25.13',
             'salary_amount' => '1000',
             'salary_currency' => 'EUR',
-            'sample_date' => '',
             'test_list' => '',
             'testmetric_amount' => '33.18',
             'testmetric_unit' => 'ft',
@@ -79,7 +78,9 @@ class PrettyFormatterTest extends TestCase
         $result = $query->first()->toArray();
         ksort($result);
 
-        $this->assertSame($expected, $result);
+        foreach ($expected as $key => $value) {
+            $this->assertSame($value, $result[$key]);
+        }
     }
 
     public function testFormatResultsWithContain(): void
@@ -149,7 +150,6 @@ class PrettyFormatterTest extends TestCase
             'rate' => '25.13',
             'salary_amount' => '1000',
             'salary_currency' => 'EUR',
-            'sample_date' => '',
             'test_list' => '',
             'testmetric_amount' => '33.18',
             'testmetric_unit' => 'ft',
@@ -171,7 +171,9 @@ class PrettyFormatterTest extends TestCase
         $result = $query->first()->toArray();
         ksort($result);
 
-        $this->assertSame($expected, $result);
+        foreach ($expected as $key => $value) {
+            $this->assertSame($value, $result[$key]);
+        }
     }
 
     public function testFormatResultsWithMatching(): void
@@ -243,7 +245,6 @@ class PrettyFormatterTest extends TestCase
             'rate' => '25.13',
             'salary_amount' => '1000',
             'salary_currency' => 'EUR',
-            'sample_date' => '',
             'test_list' => '',
             'testmetric_amount' => '33.18',
             'testmetric_unit' => 'ft',
@@ -265,7 +266,9 @@ class PrettyFormatterTest extends TestCase
         $result = $query->first()->toArray();
         ksort($result);
 
-        $this->assertSame($expected, $result);
+        foreach ($expected as $key => $value) {
+            $this->assertSame($value, $result[$key]);
+        }
     }
 
     public function testFormatResultsWithPermissions(): void

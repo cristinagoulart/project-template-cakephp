@@ -59,7 +59,6 @@ class LabeledFormatterTest extends TestCase
             'rate' => 25.13,
             'salary_amount' => 1000.0,
             'salary_currency' => '<span title="Euro">€&nbsp;(EUR)</span>',
-            'sample_date' => null,
             'test_list' => '',
             'testmetric_amount' => 33.18,
             'testmetric_unit' => 'ft²',
@@ -80,7 +79,9 @@ class LabeledFormatterTest extends TestCase
         $result = $query->first()->toArray();
         ksort($result);
 
-        $this->assertSame($expected, $result);
+        foreach ($expected as $key => $value) {
+            $this->assertSame($value, $result[$key]);
+        }
     }
 
     public function testFormatResultsWithContain(): void
@@ -150,7 +151,6 @@ class LabeledFormatterTest extends TestCase
             'rate' => 25.13,
             'salary_amount' => 1000.0,
             'salary_currency' => '<span title="Euro">€&nbsp;(EUR)</span>',
-            'sample_date' => null,
             'test_list' => '',
             'testmetric_amount' => 33.18,
             'testmetric_unit' => 'ft²',
@@ -172,7 +172,9 @@ class LabeledFormatterTest extends TestCase
         $result = $query->first()->toArray();
         ksort($result);
 
-        $this->assertSame($expected, $result);
+        foreach ($expected as $key => $value) {
+            $this->assertSame($value, $result[$key]);
+        }
     }
 
     public function testFormatResultsWithMatching(): void
@@ -244,7 +246,6 @@ class LabeledFormatterTest extends TestCase
             'rate' => 25.13,
             'salary_amount' => 1000.0,
             'salary_currency' => '<span title="Euro">€&nbsp;(EUR)</span>',
-            'sample_date' => null,
             'test_list' => '',
             'testmetric_amount' => 33.18,
             'testmetric_unit' => 'ft²',
@@ -266,7 +267,9 @@ class LabeledFormatterTest extends TestCase
         $result = $query->first()->toArray();
         ksort($result);
 
-        $this->assertSame($expected, $result);
+        foreach ($expected as $key => $value) {
+            $this->assertSame($value, $result[$key]);
+        }
     }
 
     public function testFormatResultsWithPermissions(): void
