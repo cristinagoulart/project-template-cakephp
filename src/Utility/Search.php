@@ -46,7 +46,7 @@ final class Search
      */
     private static $associationLabels = [];
 
-    const SUPPORTED_ASSOCIATIONS = [
+    private const SUPPORTED_ASSOCIATIONS = [
         Association::MANY_TO_ONE,
         Association::MANY_TO_MANY,
         Association::ONE_TO_MANY
@@ -57,7 +57,7 @@ final class Search
      *
      * @var array
      */
-    const CHARTS = [
+    private const CHARTS = [
         ['type' => 'funnelChart', 'icon' => 'filter', 'class' => '\Search\Widgets\Reports\DonutChartReportWidget'],
         ['type' => 'pie', 'icon' => 'pie-chart', 'class' => '\Search\Widgets\Reports\PieChartReportWidget'],
         ['type' => 'bar', 'icon' => 'bar-chart', 'class' => '\Search\Widgets\Reports\BarChartReportWidget']
