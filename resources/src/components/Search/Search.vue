@@ -68,6 +68,7 @@
                   :headers="tableHeaders"
                   @sort-field-updated="sortFieldUpdated"
                   @sort-order-updated="sortOrderUpdated"
+                  :with-actions="!disableBatch"
                   :with-batch-delete="!disableBatch && withBatchDelete"
                   :with-batch-edit="!disableBatch && withBatchEdit">
                 </table-ajax>
@@ -304,8 +305,8 @@ export default {
             this.$store.commit('search/conjunction', 'OR')
             this.displayFields.map(function(field) {
                 const filter = self.filtersList.find(filter => filter.field === field)
-                if (-1 !== self.basic_types.indexOf(filter[0].type)) {
-                    self.criteriaCreate(filter[0].field, query)
+                if (-1 !== self.basic_types.indexOf(filter.type)) {
+                    self.criteriaCreate(filter.field, query)
                 }
             })
         },
@@ -336,9 +337,18 @@ export default {
                     return
                 }
 
+                let extras = ''
+                if (Aggregate.isAggregate(value)) {
+                    extras = ' (' + Aggregate.extractAggregateType(value) + ')'
+                }
+
+                if (filter.group !== self.model) {
+                    extras = ' - ' + filter.group
+                }
+
                 self.tableHeaders.push({
                     value: value,
-                    text: filter.label + (Aggregate.isAggregate(value) ?' (' + Aggregate.extractAggregateType(value) + ')' : '')
+                    text: filter.label + extras
                 })
             })
 

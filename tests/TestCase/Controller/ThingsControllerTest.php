@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Test\TestCase\Controller;
 
 use App\Feature\Factory;
@@ -20,9 +21,10 @@ class ThingsControllerTest extends IntegrationTestCase
         'plugin.Menu.menus',
         'plugin.Menu.menu_items',
         'plugin.RolesCapabilities.roles',
+        'plugin.Translations.languages',
     ];
 
-    public function setUp() : void
+    public function setUp(): void
     {
         parent::setUp();
 
@@ -39,7 +41,7 @@ class ThingsControllerTest extends IntegrationTestCase
         ]);
     }
 
-    public function testViewUnauthenticatedFails() : void
+    public function testViewUnauthenticatedFails(): void
     {
         $feature = Factory::get('Module' . DS . 'Things');
 
@@ -54,7 +56,7 @@ class ThingsControllerTest extends IntegrationTestCase
         $this->assertRedirectContains('/login');
     }
 
-    public function testView() : void
+    public function testView(): void
     {
         $feature = Factory::get('Module' . DS . 'Things');
 
@@ -65,9 +67,37 @@ class ThingsControllerTest extends IntegrationTestCase
         $this->get('/things/view/00000000-0000-0000-0000-000000000001');
 
         $this->assertResponseOk();
+
+        $this->assertResponseContains('<a href="#translations_translate_id_modal" data-toggle="modal" data-record="00000000-0000-0000-0000-000000000001" data-model="Things" data-field="description" data-value="Long description goes here">');
+        $this->assertResponseContains('<textarea name="orig_for_translate"');
+        $this->assertResponseContains(' id="orig_for_translate"');
+        $this->assertResponseContains('<input type="hidden" name="object_model"');
+        $this->assertResponseContains('<input type="hidden" name="object_field"');
+        $this->assertResponseContains('<input type="hidden" name="object_foreign_key"');
+
+        $this->assertResponseContains('id="form_translation_ru"');
+        $this->assertResponseContains('<input type="hidden" name="id" id="translation_id_ru"');
+        $this->assertResponseContains('<input type="hidden" name="language_id" value="00000000-0000-0000-0000-000000000001"');
+        $this->assertResponseContains('<input type="hidden" name="code" value="ru"');
+        $this->assertResponseContains('<div id="result_ru"');
+        $this->assertResponseContains('<button id="btn_translate_ru" name="btn_translation" data-lang="ru"');
+
+        $this->assertResponseContains('id="form_translation_de"');
+        $this->assertResponseContains('<input type="hidden" name="id" id="translation_id_de"');
+        $this->assertResponseContains('<input type="hidden" name="language_id" value="00000000-0000-0000-0000-000000000002"');
+        $this->assertResponseContains('<input type="hidden" name="code" value="de"');
+        $this->assertResponseContains('<div id="result_de"');
+        $this->assertResponseContains('<button id="btn_translate_ru" name="btn_translation" data-lang="de"');
+
+        $this->assertResponseContains('id="form_translation_cn"');
+        $this->assertResponseContains('<input type="hidden" name="id" id="translation_id_cn"');
+        $this->assertResponseContains('<input type="hidden" name="language_id" value="00000000-0000-0000-0000-000000000003"');
+        $this->assertResponseContains('<input type="hidden" name="code" value="cn"');
+        $this->assertResponseContains('<div id="result_cn"');
+        $this->assertResponseContains('<button id="btn_translate_ru" name="btn_translation" data-lang="cn"');
     }
 
-    public function testAddUnauthenticatedFails() : void
+    public function testAddUnauthenticatedFails(): void
     {
         $feature = Factory::get('Module' . DS . 'Things');
 
@@ -83,7 +113,7 @@ class ThingsControllerTest extends IntegrationTestCase
         $this->assertRedirectContains('/login');
     }
 
-    public function testAdd() : void
+    public function testAdd(): void
     {
         $feature = Factory::get('Module' . DS . 'Things');
 
@@ -103,7 +133,7 @@ class ThingsControllerTest extends IntegrationTestCase
         $this->assertResponseContains('name="Things[name]"');
     }
 
-    public function testAddPostData() : void
+    public function testAddPostData(): void
     {
         $feature = Factory::get('Module' . DS . 'Things');
 
@@ -128,7 +158,7 @@ class ThingsControllerTest extends IntegrationTestCase
         $this->assertEquals(1, $query->count());
     }
 
-    public function testEditUnauthenticatedFails() : void
+    public function testEditUnauthenticatedFails(): void
     {
         $feature = Factory::get('Module' . DS . 'Things');
 
@@ -144,7 +174,7 @@ class ThingsControllerTest extends IntegrationTestCase
         $this->assertRedirectContains('/login');
     }
 
-    public function testEdit() : void
+    public function testEdit(): void
     {
         $feature = Factory::get('Module' . DS . 'Things');
 
@@ -165,7 +195,7 @@ class ThingsControllerTest extends IntegrationTestCase
         $this->assertResponseContains('name="Things[name]"');
     }
 
-    public function testEditPostData() : void
+    public function testEditPostData(): void
     {
         $feature = Factory::get('Module' . DS . 'Things');
 
@@ -189,7 +219,7 @@ class ThingsControllerTest extends IntegrationTestCase
         $this->assertEquals($data['name'], $entity->get('name'));
     }
 
-    public function testEditPutData() : void
+    public function testEditPutData(): void
     {
         $feature = Factory::get('Module' . DS . 'Things');
 
@@ -213,7 +243,7 @@ class ThingsControllerTest extends IntegrationTestCase
         $this->assertEquals($data['name'], $entity->get('name'));
     }
 
-    public function testDeleteUnauthenticatedFails() : void
+    public function testDeleteUnauthenticatedFails(): void
     {
         $feature = Factory::get('Module' . DS . 'Things');
 
@@ -229,7 +259,7 @@ class ThingsControllerTest extends IntegrationTestCase
         $this->assertRedirect(['controller' => 'Users', 'action' => 'login']);
     }
 
-    public function testDeleteGetRequest() : void
+    public function testDeleteGetRequest(): void
     {
         $feature = Factory::get('Module' . DS . 'Things');
 
@@ -241,7 +271,7 @@ class ThingsControllerTest extends IntegrationTestCase
         Configure::read("debug") ? $this->assertResponseError() : $this->assertRedirect();
     }
 
-    public function testDeleteData() : void
+    public function testDeleteData(): void
     {
         $feature = Factory::get('Module' . DS . 'Things');
 
@@ -259,7 +289,7 @@ class ThingsControllerTest extends IntegrationTestCase
         $this->assertEquals(0, $query->count());
     }
 
-    public function testDeletePostData() : void
+    public function testDeletePostData(): void
     {
         $feature = Factory::get('Module' . DS . 'Things');
 
@@ -277,7 +307,7 @@ class ThingsControllerTest extends IntegrationTestCase
         $this->assertEquals(0, $query->count());
     }
 
-    public function testBatchGetRequest() : void
+    public function testBatchGetRequest(): void
     {
         $feature = Factory::get('Module' . DS . 'Things');
 
@@ -289,7 +319,7 @@ class ThingsControllerTest extends IntegrationTestCase
         Configure::read("debug") ? $this->assertResponseError() : $this->assertRedirect();
     }
 
-    public function testBatchDelete() : void
+    public function testBatchDelete(): void
     {
         $feature = Factory::get('Module' . DS . 'Things');
 
@@ -316,7 +346,7 @@ class ThingsControllerTest extends IntegrationTestCase
         $this->assertSame($initialCount - 2, $table->find('all')->count());
     }
 
-    public function testBatchDeleteNoIds() : void
+    public function testBatchDeleteNoIds(): void
     {
         $feature = Factory::get('Module' . DS . 'Things');
 
@@ -329,7 +359,7 @@ class ThingsControllerTest extends IntegrationTestCase
         $this->assertSession('No records selected.', 'Flash.flash.0.message');
     }
 
-    public function testBatchEdit() : void
+    public function testBatchEdit(): void
     {
         $feature = Factory::get('Module' . DS . 'Things');
 
@@ -354,7 +384,7 @@ class ThingsControllerTest extends IntegrationTestCase
         $this->assertTrue($entity->isNew());
     }
 
-    public function testBatchEditNoIds() : void
+    public function testBatchEditNoIds(): void
     {
         $feature = Factory::get('Module' . DS . 'Things');
 
@@ -367,7 +397,7 @@ class ThingsControllerTest extends IntegrationTestCase
         $this->assertSession('No records selected.', 'Flash.flash.0.message');
     }
 
-    public function testBatchEditExecuteNoIds() : void
+    public function testBatchEditExecuteNoIds(): void
     {
         $feature = Factory::get('Module' . DS . 'Things');
 
@@ -386,7 +416,7 @@ class ThingsControllerTest extends IntegrationTestCase
         $this->assertSession('No records selected.', 'Flash.flash.0.message');
     }
 
-    public function testBatchEditExecuteNoData() : void
+    public function testBatchEditExecuteNoData(): void
     {
         $feature = Factory::get('Module' . DS . 'Things');
 

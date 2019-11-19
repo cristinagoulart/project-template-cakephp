@@ -34,6 +34,7 @@ foreach ((array)$savedSearch->get('fields') as $item) {
     }
     $headers[] = ['value' => $item, 'text' => $label];
 }
+$disableBatch = '' !== (string)$savedSearch->get('group_by') || $hasAggregate;
 
 $accessFactory = new AccessFactory();
 list($plugin, $controller) = pluginSplit($savedSearch->get('model'));
@@ -93,8 +94,9 @@ $uniqid = uniqid();
                 primary-key="<?= $table->aliasField($table->getPrimaryKey()) ?>"
                 request-type="POST"
                 url="/api/<?= Inflector::dasherize($savedSearch->get('model')) ?>/search"
-                :with-batch-delete="<?= '' === (string)$savedSearch->get('group_by') && ! $hasAggregate && $accessFactory->hasAccess($urlBatch, $user) ? 'true' : 'false' ?>"
-                :with-batch-edit="<?= '' === (string)$savedSearch->get('group_by') && ! $hasAggregate && $accessFactory->hasAccess($urlBatch, $user) ? 'true' : 'false' ?>"
+                :with-actions="<?= ! $disableBatch ? 'true' : 'false' ?>"
+                :with-batch-delete="<?= ! $disableBatch && $accessFactory->hasAccess($urlBatch, $user) ? 'true' : 'false' ?>"
+                :with-batch-edit="<?= ! $disableBatch && $accessFactory->hasAccess($urlBatch, $user) ? 'true' : 'false' ?>"
             ></table-ajax>
         </div>
         <?php foreach ($charts as $key => $chart) : ?>

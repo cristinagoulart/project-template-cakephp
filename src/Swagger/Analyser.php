@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Swagger;
 
 use App\Feature\Factory as FeatureFactory;

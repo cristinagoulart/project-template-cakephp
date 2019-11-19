@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Test\TestCase\Utility;
 
 use App\Utility\Model;
@@ -8,7 +9,7 @@ class ModelTest extends TestCase
 {
     public $fixtures = ['app.things'];
 
-    public function testFields() : void
+    public function testFields(): void
     {
         $fields = Model::fields('Things');
 

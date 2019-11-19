@@ -1,9 +1,4 @@
 <?php
-use Cake\Console\ConsoleErrorHandler;
-use Cake\Core\Configure;
-use Cake\Log\Log;
-use Cake\Mailer\Email;
-use Cake\Mailer\Transport\DebugTransport;
 
 /**
  * Test runner bootstrap.
@@ -11,6 +6,13 @@ use Cake\Mailer\Transport\DebugTransport;
  * Add additional configuration/setup your application needs when running
  * unit tests in this file.
  */
+
+use Cake\Console\ConsoleErrorHandler;
+use Cake\Core\Configure;
+use Cake\Log\Log;
+use Cake\Mailer\Email;
+use Cake\Mailer\Transport\DebugTransport;
+
 require dirname(__DIR__) . '/vendor/autoload.php';
 
 require dirname(__DIR__) . '/config/bootstrap.php';

@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Test\TestCase\Model\Table;
 
 use App\Model\Table\UsersTable;
@@ -17,21 +18,21 @@ class UsersTableTest extends TestCase
 
     private $table;
 
-    public function setUp() : void
+    public function setUp(): void
     {
         parent::setUp();
 
         $this->table = TableRegistry::getTableLocator()->get('Users');
     }
 
-    public function tearDown() : void
+    public function tearDown(): void
     {
         unset($this->table);
 
         parent::tearDown();
     }
 
-    public function testInitialize() : void
+    public function testInitialize(): void
     {
         $this->assertInstanceOf(UsersTable::class, $this->table);
         $this->assertSame(true, $this->table->hasBehavior('Searchable'));
@@ -39,7 +40,7 @@ class UsersTableTest extends TestCase
         $this->assertSame(true, $this->table->hasBehavior('Lookup'));
     }
 
-    public function testValidationDefault() : void
+    public function testValidationDefault(): void
     {
         $validator = $this->table->validationDefault(new Validator());
 
@@ -58,7 +59,7 @@ class UsersTableTest extends TestCase
         $this->assertNotNull($entity->get('id'));
     }
 
-    public function testValidationInvalidUsername() : void
+    public function testValidationInvalidUsername(): void
     {
         $entity = $this->table->newEntity(['username' => 'foobar!', 'password' => 'foobar']);
 
@@ -66,7 +67,7 @@ class UsersTableTest extends TestCase
         $this->assertSame(false, $this->table->save($entity));
     }
 
-    public function testValidationInvalidFirstName() : void
+    public function testValidationInvalidFirstName(): void
     {
         $entity = $this->table->newEntity(['username' => 'foobar', 'password' => 'foobar', 'first_name' => 'john=']);
 
@@ -74,7 +75,7 @@ class UsersTableTest extends TestCase
         $this->assertSame(false, $this->table->save($entity));
     }
 
-    public function testValidationInvalidLastName() : void
+    public function testValidationInvalidLastName(): void
     {
         $entity = $this->table->newEntity(['username' => 'foobar', 'password' => 'foobar', 'last_name' => 'snow!']);
 
@@ -82,7 +83,7 @@ class UsersTableTest extends TestCase
         $this->assertSame(false, $this->table->save($entity));
     }
 
-    public function testFindAuth() : void
+    public function testFindAuth(): void
     {
         $query = $this->table->query();
 
@@ -93,7 +94,7 @@ class UsersTableTest extends TestCase
         $this->assertSame(['boolean'], Hash::extract($query->getValueBinder()->bindings(), '{s}.type'));
     }
 
-    public function testIsCustomAvatarExists() : void
+    public function testIsCustomAvatarExists(): void
     {
         $entity = $this->table->newEntity(['username' => 'foobar', 'password' => 'foobar']);
 
@@ -105,7 +106,7 @@ class UsersTableTest extends TestCase
         $this->deleteCustomAvatar($entity->get('id'));
     }
 
-    public function testCopyCustomAvatar() : void
+    public function testCopyCustomAvatar(): void
     {
         $entity = $this->table->newEntity(['username' => 'foobar', 'password' => 'foobar']);
 
@@ -118,7 +119,7 @@ class UsersTableTest extends TestCase
         $this->deleteCustomAvatar($entity->get('id'));
     }
 
-    public function testSaveCustomAvatar() : void
+    public function testSaveCustomAvatar(): void
     {
         $entity = $this->table->newEntity(['username' => 'foobar', 'password' => 'foobar']);
 
@@ -129,7 +130,7 @@ class UsersTableTest extends TestCase
         $this->deleteCustomAvatar($entity->get('id'));
     }
 
-    private function createCustomAvatar(string $id) : void
+    private function createCustomAvatar(string $id): void
     {
         Assert::uuid($id);
         $path = WWW_ROOT . 'img' . DS . 'cake-logo.png';
@@ -138,7 +139,7 @@ class UsersTableTest extends TestCase
         Assert::true(copy($path, $this->getAvatarCustomDirectory() . $id . '.png'));
     }
 
-    private function deleteAvatar(string $id) : void
+    private function deleteAvatar(string $id): void
     {
         Assert::uuid($id);
         $path = $this->getAvatarDirectory() . $id . '.png';
@@ -146,7 +147,7 @@ class UsersTableTest extends TestCase
         Assert::true(unlink($path));
     }
 
-    private function deleteCustomAvatar(string $id) : void
+    private function deleteCustomAvatar(string $id): void
     {
         Assert::uuid($id);
         $path = $this->getAvatarCustomDirectory() . $id . '.png';
@@ -154,7 +155,7 @@ class UsersTableTest extends TestCase
         Assert::true(unlink($path));
     }
 
-    private function getAvatarCustomDirectory() : string
+    private function getAvatarCustomDirectory(): string
     {
         $result = WWW_ROOT . Configure::readOrFail('Avatar.customDirectory');
         Assert::string($result);
@@ -165,7 +166,7 @@ class UsersTableTest extends TestCase
         return $result;
     }
 
-    private function getAvatarDirectory() : string
+    private function getAvatarDirectory(): string
     {
         $result = WWW_ROOT . Configure::readOrFail('Avatar.directory');
         Assert::string($result);

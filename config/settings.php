@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Database Settings
  *
@@ -15,6 +16,7 @@
  * - scope - Whether the settings can be applied on application level, on user level or both.
  * - help - Text to be displayed as a help message under each field
  */
+
 return [
     'Settings' => [
         'Communication' => [

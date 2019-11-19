@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Avatar;
 
 interface AvatarInterface

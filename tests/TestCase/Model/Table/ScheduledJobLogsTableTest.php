@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Test\TestCase\Model\Table;
 
 use App\Model\Entity\ScheduledJobLog;
@@ -20,21 +21,21 @@ class ScheduledJobLogsTableTest extends TestCase
 
     private $table;
 
-    public function setUp() : void
+    public function setUp(): void
     {
         parent::setUp();
 
         $this->table = TableRegistry::getTableLocator()->get('ScheduledJobLogs');
     }
 
-    public function tearDown() : void
+    public function tearDown(): void
     {
         unset($this->table);
 
         parent::tearDown();
     }
 
-    public function testInitialize() : void
+    public function testInitialize(): void
     {
         $this->assertInstanceOf(ScheduledJobLogsTable::class, $this->table);
         $this->assertSame('scheduled_job_logs', $this->table->getTable());
@@ -48,7 +49,7 @@ class ScheduledJobLogsTableTest extends TestCase
         $this->assertSame('INNER', $association->getJoinType());
     }
 
-    public function testValidationDefault() : void
+    public function testValidationDefault(): void
     {
         $validator = $this->table->validationDefault(new Validator());
 
@@ -84,7 +85,7 @@ class ScheduledJobLogsTableTest extends TestCase
         $this->assertNotNull($entity->get('id'));
     }
 
-    public function testBuildRules() : void
+    public function testBuildRules(): void
     {
         $table = TableRegistry::getTableLocator()->get('ScheduledJobs');
         $scheduledJob = $table->newEntity(['start_date' => new \Cake\I18n\Time()]);
@@ -95,13 +96,13 @@ class ScheduledJobLogsTableTest extends TestCase
         $this->assertNotNull($entity->get('id'));
     }
 
-    public function testBuildRulesWithInvalidScheduledJobId() : void
+    public function testBuildRulesWithInvalidScheduledJobId(): void
     {
         $entity = $this->table->newEntity(['scheduled_job_id' => Text::uuid()], ['validate' => false]);
         $this->assertSame(false, $this->table->save($entity));
     }
 
-    public function testLogJob() : void
+    public function testLogJob(): void
     {
         $table = TableRegistry::getTableLocator()->get('ScheduledJobs');
         $time = new Time();
@@ -120,7 +121,7 @@ class ScheduledJobLogsTableTest extends TestCase
         $this->assertSame(json_encode($state), $result->get('extra'));
     }
 
-    public function testLogJobWithMissingState() : void
+    public function testLogJobWithMissingState(): void
     {
         $table = TableRegistry::getTableLocator()->get('ScheduledJobs');
         $entity = $table->newEntity(['start_date' => new Time()]);

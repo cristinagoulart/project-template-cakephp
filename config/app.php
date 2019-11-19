@@ -1,13 +1,14 @@
 <?php
+
 use Qobo\Utils\Utility\Salt;
 
 $debug = (bool)env('DEBUG', false);
 // NOTE, there is special treatment of 'HTTPS' key in vendor/cakephp/cakephp/src/Core/funtions.php
 $https = (bool)env('HTTPS', false);
 
-$logLevels = ['notice', 'info', 'warning', 'error', 'critical', 'alert', 'emergency'];
+$logLevels = ['error', 'critical', 'alert', 'emergency'];
 if ($debug) {
-    $logLevels[] = 'debug';
+    $logLevels = array_merge($logLevels, ['notice', 'info', 'warning', 'debug']);
 }
 
 $dbHost = env('DB_HOST', 'localhost');

@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Test\TestCase\Avatar;
 
 use App\Avatar\Service;

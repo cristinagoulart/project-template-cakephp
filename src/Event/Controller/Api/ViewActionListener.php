@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Event\Controller\Api;
 
 use App\Event\EventName;
@@ -16,7 +17,7 @@ class ViewActionListener extends BaseActionListener
      *
      * @return array
      */
-    public function implementedEvents() : array
+    public function implementedEvents(): array
     {
         return [
             (string)EventName::API_VIEW_BEFORE_FIND() => 'beforeFind',
@@ -31,7 +32,7 @@ class ViewActionListener extends BaseActionListener
      * @param \Cake\Datasource\QueryInterface $query Query instance
      * @return void
      */
-    public function beforeFind(Event $event, QueryInterface $query) : void
+    public function beforeFind(Event $event, QueryInterface $query): void
     {
         //
     }
@@ -48,7 +49,7 @@ class ViewActionListener extends BaseActionListener
      * @param \Cake\Datasource\EntityInterface $entity Entity instance
      * @return void
      */
-    public function afterFind(Event $event, EntityInterface $entity) : void
+    public function afterFind(Event $event, EntityInterface $entity): void
     {
         $controller = $event->getSubject();
         Assert::isInstanceOf($controller, Controller::class);
