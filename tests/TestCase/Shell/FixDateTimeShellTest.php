@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Test\TestCase\Entity;
 
 use App\Shell\FixDateTimeShell;
@@ -17,7 +18,7 @@ class FixDateTimeShellTest extends TestCase
     private $table;
     private $primaryKey;
 
-    public function setUp() : void
+    public function setUp(): void
     {
         parent::setUp();
 
@@ -26,14 +27,14 @@ class FixDateTimeShellTest extends TestCase
         Assert::string($this->primaryKey);
     }
 
-    public function tearDown() : void
+    public function tearDown(): void
     {
         unset($this->table);
 
         parent::tearDown();
     }
 
-    public function testUpdateFields() : void
+    public function testUpdateFields(): void
     {
         $entity = $this->table->deleteAll([]);
         $data = [

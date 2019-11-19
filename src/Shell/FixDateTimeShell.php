@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Shell;
 
 use CakeDC\Users\Shell\UsersShell as BaseShell;
@@ -98,7 +99,7 @@ class FixDateTimeShell extends BaseShell
      * @param string $module Module name
      * @return void
      */
-    public function updateFields(string $module) : void
+    public function updateFields(string $module): void
     {
         $mc = $this->getModuleConfig($module, []);
 
@@ -169,7 +170,7 @@ class FixDateTimeShell extends BaseShell
      * @param  string $module Module to update
      * @return int
      */
-    private function updateEntity(\Cake\Datasource\EntityInterface $entity, \Cake\ORM\Table $table, array $fieldsToUpdate, string $module) : int
+    private function updateEntity(\Cake\Datasource\EntityInterface $entity, \Cake\ORM\Table $table, array $fieldsToUpdate, string $module): int
     {
         $primaryKey = $table->getPrimaryKey();
 
@@ -308,7 +309,7 @@ class FixDateTimeShell extends BaseShell
     /**
      * @return string
      */
-    private function getModule() : string
+    private function getModule(): string
     {
         return $this->module;
     }
@@ -316,7 +317,7 @@ class FixDateTimeShell extends BaseShell
     /**
      * @return string
      */
-    private function getTimezoneFrom() : string
+    private function getTimezoneFrom(): string
     {
         return $this->timezonefrom;
     }
@@ -324,7 +325,7 @@ class FixDateTimeShell extends BaseShell
     /**
      * @return string
      */
-    private function getTimezoneTo() : string
+    private function getTimezoneTo(): string
     {
         return $this->timezoneto;
     }
@@ -332,7 +333,7 @@ class FixDateTimeShell extends BaseShell
     /**
      * @return string
      */
-    private function getLimit() : string
+    private function getLimit(): string
     {
         return $this->limit;
     }
