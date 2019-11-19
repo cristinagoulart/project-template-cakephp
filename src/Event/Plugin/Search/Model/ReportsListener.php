@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Event\Plugin\Search\Model;
 
 use Cake\Core\Configure;

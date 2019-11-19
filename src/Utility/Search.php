@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Utility;
 
 use App\Model\Table\UsersTable;
@@ -68,7 +69,7 @@ final class Search
      * @param string $tableName Table name
      * @return mixed[]
      */
-    public static function getFilters(string $tableName) : array
+    public static function getFilters(string $tableName): array
     {
         if (! empty(static::$filters[$tableName])) {
             return static::$filters[$tableName];
@@ -102,7 +103,7 @@ final class Search
      * @param string $tableName Table name
      * @return string[]
      */
-    public static function getDisplayFields(string $tableName) : array
+    public static function getDisplayFields(string $tableName): array
     {
         $result = self::getDisplayFieldsFromSystemSearch($tableName);
 
@@ -133,7 +134,7 @@ final class Search
      * @param \Search\Model\Entity\SavedSearch $savedSearch Saved search entity
      * @return mixed[]
      */
-    public static function getChartOptions(SavedSearch $savedSearch) : array
+    public static function getChartOptions(SavedSearch $savedSearch): array
     {
         $aggregate = array_filter((array)$savedSearch->get('fields'), function ($item) {
             return 1 === preg_match(AggregateInterface::AGGREGATE_PATTERN, $item);
@@ -187,7 +188,7 @@ final class Search
             switch ($chart['type']) {
                 case 'bar':
                 case 'pie':
-                    $widget = new $chart['class'];
+                    $widget = new $chart['class']();
                     $widget->setConfig([
                         'modelName' => $savedSearch->get('model'),
                         'info' => [
@@ -243,7 +244,7 @@ final class Search
      * @param \CsvMigrations\FieldHandlers\FieldHandlerFactory $factory Field handler factory instance
      * @return mixed[]
      */
-    private static function formatEntity(EntityInterface $entity, Table $table, FieldHandlerFactory $factory) : array
+    private static function formatEntity(EntityInterface $entity, Table $table, FieldHandlerFactory $factory): array
     {
         $result = [];
         foreach (array_diff($entity->visibleProperties(), $entity->getVirtual()) as $field) {
@@ -273,7 +274,7 @@ final class Search
      * @param \Cake\ORM\Table $table Table instance
      * @return mixed[]
      */
-    private static function getAssociationLabels(Table $table) : array
+    private static function getAssociationLabels(Table $table): array
     {
         if (! empty(self::$associationLabels[$table->getRegistryAlias()])) {
             return self::$associationLabels[$table->getRegistryAlias()];
@@ -304,7 +305,7 @@ final class Search
      * @param bool $withAssociated flag for including associations fields
      * @return mixed[]
      */
-    private static function getSearchableFields(Table $table, bool $withAssociated = true) : array
+    private static function getSearchableFields(Table $table, bool $withAssociated = true): array
     {
         list($plugin, $controller) = pluginSplit(App::shortName(get_class($table), 'Model/Table', 'Table'));
         $url = ['plugin' => $plugin, 'controller' => $controller, 'action' => 'search'];
@@ -333,7 +334,7 @@ final class Search
      * @param string $tableName Table name
      * @return string[]
      */
-    private static function getDisplayFieldsFromSystemSearch(string $tableName) : array
+    private static function getDisplayFieldsFromSystemSearch(string $tableName): array
     {
         $entity = TableRegistry::getTableLocator()
             ->get('Search.SavedSearches')
@@ -353,7 +354,7 @@ final class Search
      * @param string $tableName Table name
      * @return string[]
      */
-    private static function getDisplayFieldsFromView(string $tableName) : array
+    private static function getDisplayFieldsFromView(string $tableName): array
     {
         list($plugin, $module) = pluginSplit($tableName);
         try {
@@ -385,7 +386,7 @@ final class Search
      * @param string $tableName Table name
      * @return string[]
      */
-    private static function getDisplayFieldsFromDatabaseColumns(string $tableName) : array
+    private static function getDisplayFieldsFromDatabaseColumns(string $tableName): array
     {
         $table = TableRegistry::getTableLocator()->get($tableName);
 
@@ -407,7 +408,7 @@ final class Search
      * @param \Cake\ORM\Table $table Table instance
      * @return mixed[]
      */
-    private static function getSearchableFieldsByTable(Table $table) : array
+    private static function getSearchableFieldsByTable(Table $table): array
     {
         $moduleName = App::shortName(get_class($table), 'Model/Table', 'Table');
 
@@ -456,7 +457,7 @@ final class Search
      * @param \Cake\ORM\Table $table Table instance
      * @return mixed[]
      */
-    private static function includeAssociated(Table $table) : array
+    private static function includeAssociated(Table $table): array
     {
         $result = [];
 

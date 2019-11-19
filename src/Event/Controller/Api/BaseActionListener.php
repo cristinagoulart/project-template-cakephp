@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Event\Controller\Api;
 
 use Cake\Core\App;
@@ -67,7 +68,7 @@ abstract class BaseActionListener implements EventListenerInterface
      * @param \Cake\ORM\Table $table Table instance
      * @return void
      */
-    protected function attachFiles(EntityInterface $entity, Table $table) : void
+    protected function attachFiles(EntityInterface $entity, Table $table): void
     {
         $primaryKey = $table->getPrimaryKey();
         if (! is_string($primaryKey)) {
@@ -99,7 +100,7 @@ abstract class BaseActionListener implements EventListenerInterface
      * @param \Cake\ORM\Table $table Table instance
      * @return \Cake\ORM\Association[]
      */
-    protected function getFileAssociations(Table $table) : array
+    protected function getFileAssociations(Table $table): array
     {
         $result = [];
         foreach ($table->associations() as $association) {
@@ -121,7 +122,7 @@ abstract class BaseActionListener implements EventListenerInterface
      * @return void
      * @link https://github.com/cakephp/cakephp/issues/9658
      */
-    protected function resourceToString(EntityInterface $entity) : void
+    protected function resourceToString(EntityInterface $entity): void
     {
         foreach (array_keys($entity->toArray()) as $field) {
             if (is_resource($entity->get($field))) {
@@ -138,9 +139,9 @@ abstract class BaseActionListener implements EventListenerInterface
      * @param string[] $fields Fields to prettify
      * @return void
      */
-    protected function prettify(EntityInterface $entity, Table $table, array $fields = []) : void
+    protected function prettify(EntityInterface $entity, Table $table, array $fields = []): void
     {
-        $fields = empty($fields) ? array_keys($entity->toArray()): $fields;
+        $fields = empty($fields) ? array_keys($entity->toArray()) : $fields;
 
         /**
          * @var \CsvMigrations\FieldHandlers\FieldHandlerFactory
@@ -196,7 +197,7 @@ abstract class BaseActionListener implements EventListenerInterface
      * @param \Cake\ORM\Table $table Table instance
      * @return mixed[]
      */
-    protected function getOrderClause(ServerRequestInterface $request, Table $table) : array
+    protected function getOrderClause(ServerRequestInterface $request, Table $table): array
     {
         $sortParam = Hash::get($request->getQueryParams(), 'sort', '');
         $directionParam = Hash::get($request->getQueryParams(), 'direction', 'ASC');
@@ -222,7 +223,7 @@ abstract class BaseActionListener implements EventListenerInterface
      * @param mixed[] $user User info
      * @return void
      */
-    protected function attachMenu(EntityInterface $entity, Table $table, array $user) : void
+    protected function attachMenu(EntityInterface $entity, Table $table, array $user): void
     {
         $data = [
             'plugin' => false,
@@ -244,7 +245,7 @@ abstract class BaseActionListener implements EventListenerInterface
      * @param mixed[] $data for extra fields like origin Id
      * @return void
      */
-    protected function attachRelatedMenu(EntityInterface $entity, Table $table, array $user, array $data) : void
+    protected function attachRelatedMenu(EntityInterface $entity, Table $table, array $user, array $data): void
     {
         list($plugin, $controller) = pluginSplit($this->getControllerName($table));
 
@@ -264,7 +265,7 @@ abstract class BaseActionListener implements EventListenerInterface
      *
      * @return \CsvMigrations\FieldHandlers\FieldHandlerFactory
      */
-    private function getFieldHandlerFactory() : FieldHandlerFactory
+    private function getFieldHandlerFactory(): FieldHandlerFactory
     {
         if (null === $this->factory) {
             $this->factory = new FieldHandlerFactory();
@@ -278,7 +279,7 @@ abstract class BaseActionListener implements EventListenerInterface
      *
      * @return \Cake\View\View
      */
-    private function getView() : View
+    private function getView(): View
     {
         if (null === $this->view) {
             $this->view = new View();
@@ -293,7 +294,7 @@ abstract class BaseActionListener implements EventListenerInterface
      * @param \Cake\Datasource\RepositoryInterface $table Table instance
      * @return \CsvMigrations\Utility\FileUpload
      */
-    private function getFileUpload(RepositoryInterface $table) : FileUpload
+    private function getFileUpload(RepositoryInterface $table): FileUpload
     {
         if (null === $this->fileUpload) {
             Assert::isInstanceOf($table, Table::class);
@@ -310,7 +311,7 @@ abstract class BaseActionListener implements EventListenerInterface
      * @param \Cake\Datasource\RepositoryInterface $table Table instance
      * @return string
      */
-    private function getControllerName(RepositoryInterface $table) : string
+    private function getControllerName(RepositoryInterface $table): string
     {
         if ('' === $this->controllerName) {
             $this->controllerName = App::shortName(get_class($table), 'Model/Table', 'Table');

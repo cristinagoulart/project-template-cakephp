@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Test\Fixture;
 
 use Search\Test\Fixture\SavedSearchesFixture as BaseFixture;

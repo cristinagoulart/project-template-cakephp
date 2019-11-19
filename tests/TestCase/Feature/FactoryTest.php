@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Test\TestCase\Feature;
 
 use App\Feature\Factory;

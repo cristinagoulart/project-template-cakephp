@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Test\Unit;
 
 use InvalidArgumentException;

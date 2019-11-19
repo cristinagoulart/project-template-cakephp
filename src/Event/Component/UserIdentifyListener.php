@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Event\Component;
 
 use Cake\Auth\BaseAuthenticate;

@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Shell\Task;
 
 use App\Search\Manager;

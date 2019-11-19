@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Test\TestCase\View;
 
 use App\View\AppView;

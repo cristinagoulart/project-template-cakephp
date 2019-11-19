@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Settings;
 
 use Cake\Cache\Cache;
@@ -57,7 +58,7 @@ class DbConfig implements ConfigEngineInterface
      * @return bool
      * @throws \Exception
      */
-    public function dump($key, array $data) : bool
+    public function dump($key, array $data): bool
     {
         if ($key || $data) {
             throw new RuntimeException('Not implemented');

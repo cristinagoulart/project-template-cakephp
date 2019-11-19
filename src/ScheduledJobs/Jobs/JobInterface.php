@@ -1,4 +1,5 @@
 <?php
+
 namespace App\ScheduledJobs\Jobs;
 
 interface JobInterface

@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Test\External;
 
 use Cake\Http\Client;

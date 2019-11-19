@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Avatar;
 
 use Cake\Core\Configure;

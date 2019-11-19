@@ -1,4 +1,5 @@
 <?php
+
 /**
  * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
  * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
@@ -12,6 +13,7 @@
  * @since     0.2.9
  * @license   https://opensource.org/licenses/mit-license.php MIT License
  */
+
 namespace App\Controller;
 
 use App\Controller\Traits\ChangelogTrait;
@@ -122,13 +124,16 @@ class AppController extends Controller
         // and should not be used in production. You should instead set "_serialize"
         // in each action as required.
         // TODO: Adding warning logs and then remove later
-        if (!is_array($this->request->getParam('action')) &&
+        // @codingStandardsIgnoreStart
+        if (
+            !is_array($this->request->getParam('action')) &&
             'login' !== $this->request->getParam('action') &&
             !array_key_exists('_serialize', $this->viewVars) &&
             in_array($this->response->getType(), ['application/json', 'application/xml'])
-         ) {
+        ) {
             $this->set('_serialize', true);
         }
+        // @codingStandardsIgnoreEnd
 
         $this->set('user', $this->Auth->user());
     }

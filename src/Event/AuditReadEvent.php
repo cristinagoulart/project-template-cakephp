@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Event;
 
 use AuditStash\Event\BaseEvent;

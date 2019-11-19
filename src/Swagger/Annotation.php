@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Swagger;
 
 use Cake\Core\App;
@@ -634,7 +635,7 @@ class Annotation
      *
      * @return string
      */
-    protected function getPaths() : string
+    protected function getPaths(): string
     {
         $table = TableRegistry::getTableLocator()->get($this->className);
 

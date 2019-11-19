@@ -1,4 +1,5 @@
 <?php
+
 namespace App\ScheduledJobs\Handlers;
 
 use Cake\Core\App;
