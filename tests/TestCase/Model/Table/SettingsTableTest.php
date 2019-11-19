@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Test\TestCase\Model\Table;
 
 use App\Model\Table\SettingsTable;
@@ -432,7 +433,7 @@ class SettingsTableTest extends TestCase
         $this->assertEquals('The provided value is invalid', $newEntity->getErrors()['context']['custom']);
     }
 
-    public function testFindDataApp() : void
+    public function testFindDataApp(): void
     {
         $options = ['value' => 'huge'];
 

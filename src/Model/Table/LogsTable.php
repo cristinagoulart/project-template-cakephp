@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Model\Table;
 
 use DatabaseLog\Model\Table\DatabaseLogsTable;

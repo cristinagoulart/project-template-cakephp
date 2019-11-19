@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Event\Component;
 
 use App\Feature\Factory as FeatureFactory;

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Event Listeners configuration
  *
@@ -9,6 +10,7 @@
  * Example: 'blacklist' => ['App\Event\MyCustomListener']
  *
  */
+
 return [
     'EventListeners' => [
         'blacklist' => []

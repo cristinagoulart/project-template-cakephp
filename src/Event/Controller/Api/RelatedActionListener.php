@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Event\Controller\Api;
 
 use App\Event\EventName;
@@ -17,7 +18,7 @@ class RelatedActionListener extends BaseActionListener
      *
      * @return array
      */
-    public function implementedEvents() : array
+    public function implementedEvents(): array
     {
         return [
             (string)EventName::API_RELATED_BEFORE_PAGINATE() => 'beforePaginate',
@@ -29,7 +30,7 @@ class RelatedActionListener extends BaseActionListener
     /**
      * {@inheritDoc}
      */
-    public function beforePaginate(Event $event, QueryInterface $query) : void
+    public function beforePaginate(Event $event, QueryInterface $query): void
     {
         $controller = $event->getSubject();
         Assert::isInstanceOf($controller, Controller::class);
@@ -45,7 +46,7 @@ class RelatedActionListener extends BaseActionListener
     /**
      * {@inheritDoc}
      */
-    public function afterPaginate(Event $event, ResultSetInterface $resultSet) : void
+    public function afterPaginate(Event $event, ResultSetInterface $resultSet): void
     {
         //
     }
@@ -53,7 +54,7 @@ class RelatedActionListener extends BaseActionListener
     /**
      * {@inheritDoc}
      */
-    public function beforeRender(Event $event, ResultSetInterface $resultSet) : void
+    public function beforeRender(Event $event, ResultSetInterface $resultSet): void
     {
         if ($resultSet->isEmpty()) {
             return;

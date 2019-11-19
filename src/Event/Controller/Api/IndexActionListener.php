@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Event\Controller\Api;
 
 use App\Event\EventName;
@@ -17,7 +18,7 @@ class IndexActionListener extends BaseActionListener
      *
      * @return array
      */
-    public function implementedEvents() : array
+    public function implementedEvents(): array
     {
         return [
             (string)EventName::API_INDEX_BEFORE_PAGINATE() => 'beforePaginate',
@@ -29,7 +30,7 @@ class IndexActionListener extends BaseActionListener
     /**
      * {@inheritDoc}
      */
-    public function beforePaginate(Event $event, QueryInterface $query) : void
+    public function beforePaginate(Event $event, QueryInterface $query): void
     {
         $controller = $event->getSubject();
         Assert::isInstanceOf($controller, Controller::class);
@@ -47,7 +48,7 @@ class IndexActionListener extends BaseActionListener
     /**
      * {@inheritDoc}
      */
-    public function afterPaginate(Event $event, ResultSetInterface $resultSet) : void
+    public function afterPaginate(Event $event, ResultSetInterface $resultSet): void
     {
         //
     }
@@ -55,7 +56,7 @@ class IndexActionListener extends BaseActionListener
     /**
      * {@inheritDoc}
      */
-    public function beforeRender(Event $event, ResultSetInterface $resultSet) : void
+    public function beforeRender(Event $event, ResultSetInterface $resultSet): void
     {
         if ($resultSet->isEmpty()) {
             return;
@@ -89,7 +90,7 @@ class IndexActionListener extends BaseActionListener
      * @param \Cake\Event\Event $event The event
      * @return void
      */
-    private function filterByConditions(QueryInterface $query, Event $event) : void
+    private function filterByConditions(QueryInterface $query, Event $event): void
     {
         $controller = $event->getSubject();
         Assert::isInstanceOf($controller, Controller::class);

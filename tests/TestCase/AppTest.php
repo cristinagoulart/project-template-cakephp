@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Test\TestCase;
 
 use Cake\Core\Configure;

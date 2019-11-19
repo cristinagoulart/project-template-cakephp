@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Event\Plugin\Menu\View;
 
 use App\Menu\MenuName;

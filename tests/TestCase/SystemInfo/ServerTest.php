@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Test\TestCase\SystemInfo;
 
 use App\SystemInfo\Server;

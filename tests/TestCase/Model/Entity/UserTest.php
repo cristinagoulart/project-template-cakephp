@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Test\TestCase\Entity;
 
 use Cake\Core\Configure;
@@ -15,7 +16,7 @@ class ContactTest extends TestCase
     private $table;
     private $primaryKey;
 
-    public function setUp() : void
+    public function setUp(): void
     {
         parent::setUp();
 
@@ -24,14 +25,14 @@ class ContactTest extends TestCase
         Assert::string($this->primaryKey);
     }
 
-    public function tearDown() : void
+    public function tearDown(): void
     {
         unset($this->table);
 
         parent::tearDown();
     }
 
-    public function testVirtualFieldName() : void
+    public function testVirtualFieldName(): void
     {
         $entity = $this->table->newEntity(['first_name' => 'John', 'last_name' => 'Snow', 'username' => 'john_snow', 'password' => 'foobar']);
         $this->table->save($entity);
@@ -41,7 +42,7 @@ class ContactTest extends TestCase
         $this->assertSame('John Snow', $entity->get('name'));
     }
 
-    public function testVirtualFieldNameWithoutFirstName() : void
+    public function testVirtualFieldNameWithoutFirstName(): void
     {
         $entity = $this->table->newEntity(['last_name' => 'Snow', 'username' => 'john_snow', 'password' => 'foobar']);
         $this->table->save($entity);
@@ -51,7 +52,7 @@ class ContactTest extends TestCase
         $this->assertSame('Snow', $entity->get('name'));
     }
 
-    public function testVirtualFieldNameWithoutLastName() : void
+    public function testVirtualFieldNameWithoutLastName(): void
     {
         $entity = $this->table->newEntity(['first_name' => 'John', 'username' => 'john_snow', 'password' => 'foobar']);
         $this->table->save($entity);
@@ -61,7 +62,7 @@ class ContactTest extends TestCase
         $this->assertSame('John', $entity->get('name'));
     }
 
-    public function testVirtualFieldNameWithoutFirstNameLastName() : void
+    public function testVirtualFieldNameWithoutFirstNameLastName(): void
     {
         $entity = $this->table->newEntity(['username' => 'john_snow', 'password' => 'foobar']);
         $this->table->save($entity);
@@ -71,7 +72,7 @@ class ContactTest extends TestCase
         $this->assertSame('john_snow', $entity->get('name'));
     }
 
-    public function testVirtualFieldImageSrc() : void
+    public function testVirtualFieldImageSrc(): void
     {
         $entity = $this->table->newEntity(['username' => 'john_snow', 'password' => 'foobar']);
         $this->table->save($entity);
@@ -81,7 +82,7 @@ class ContactTest extends TestCase
         $this->assertSame(sprintf('/uploads/avatars/%s.png', $entity->get('id')), $entity->get('image_src'));
     }
 
-    public function testVirtualFieldIsAdmin() : void
+    public function testVirtualFieldIsAdmin(): void
     {
         $entity = $this->table->newEntity(['username' => 'john_snow', 'password' => 'foobar']);
         $this->table->save($entity);
@@ -91,7 +92,7 @@ class ContactTest extends TestCase
         $this->assertSame(false, $entity->get('is_admin'));
     }
 
-    public function testVirtualFieldIsAdminWithIsSuperuser() : void
+    public function testVirtualFieldIsAdminWithIsSuperuser(): void
     {
         $entity = $this->table->newEntity(['username' => 'john_snow', 'password' => 'foobar']);
         $entity->set('is_superuser', true);
@@ -102,7 +103,7 @@ class ContactTest extends TestCase
         $this->assertSame(true, $entity->get('is_admin'));
     }
 
-    public function testVirtualFieldIsAdminWithInvalidConfiguration() : void
+    public function testVirtualFieldIsAdminWithInvalidConfiguration(): void
     {
         Configure::write('RolesCapabilities.Roles.Admin.name', ['invalid configuration']);
         $entity = $this->table->newEntity(['username' => 'john_snow', 'password' => 'foobar']);

@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Model\Table;
 
 use App\Feature\Factory as FeatureFactory;

@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Test\TestCase\Model\Table;
 
 use App\Model\Table\ScheduledJobsTable;
@@ -142,7 +143,7 @@ class ScheduledJobsTableTest extends TestCase
         }
     }
 
-    public function testGetRRuleWithoutRecurrence() : void
+    public function testGetRRuleWithoutRecurrence(): void
     {
         $entity = $this->ScheduledJobsTable->newEntity();
 
