@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Event\Controller\Api;
 
 use App\Event\EventName;

@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Test\Fixture;
 
 use CakeDC\Users\Test\Fixture\UsersFixture as BaseFixture;

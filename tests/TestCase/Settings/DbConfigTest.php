@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Test\TestCase\Settings;
 
 use App\Model\Table\SettingsTable;

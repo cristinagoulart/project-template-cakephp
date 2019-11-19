@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Test\TestCase\Model\Table;
 
 use App\Model\Table\ThingsTable;
@@ -9,21 +10,21 @@ class ThingsTableTest extends TestCase
 {
     private $table;
 
-    public function setUp() : void
+    public function setUp(): void
     {
         parent::setUp();
 
         $this->table = TableRegistry::getTableLocator()->get('Things');
     }
 
-    public function tearDown() : void
+    public function tearDown(): void
     {
         unset($this->table);
 
         parent::tearDown();
     }
 
-    public function testInitialize() : void
+    public function testInitialize(): void
     {
         $this->assertInstanceOf(ThingsTable::class, $this->table);
         $this->assertSame('things', $this->table->getTable());

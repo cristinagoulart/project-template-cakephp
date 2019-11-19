@@ -1,4 +1,5 @@
 <?php
+
 use App\Swagger\Analyser;
 use Cake\Core\Configure;
 

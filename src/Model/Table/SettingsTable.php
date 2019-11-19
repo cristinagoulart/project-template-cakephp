@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Model\Table;
 
 use Cake\Cache\Cache;
@@ -248,7 +249,7 @@ class SettingsTable extends Table
      * @param mixed[] $options where options
      * @return mixed[]
      */
-    public function findDataApp(Query $query, array $options) : array
+    public function findDataApp(Query $query, array $options): array
     {
         return $this->find('list', ['keyField' => 'key', 'valueField' => 'value'])
               ->where($options)
@@ -259,7 +260,7 @@ class SettingsTable extends Table
      * Reset the Cache after a value is changed
      * @return void
      */
-    public function afterSave() : void
+    public function afterSave(): void
     {
         Cache::delete('Settings');
     }

@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Model\Entity;
 
 use App\Avatar\Service as AvatarService;

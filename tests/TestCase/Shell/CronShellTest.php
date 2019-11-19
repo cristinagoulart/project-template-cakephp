@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Test\TestCase\Shell;
 
 use App\Shell\CronShell;
@@ -69,7 +70,7 @@ class CronShellTest extends ConsoleIntegrationTestCase
      * @param string $normalized Normalized name
      * @return void
      */
-    public function testLock(string $file, $class, string $normalized) : void
+    public function testLock(string $file, $class, string $normalized): void
     {
         $this->exec(sprintf('cron lock %s %s', $file, $class));
 
@@ -80,7 +81,7 @@ class CronShellTest extends ConsoleIntegrationTestCase
     /**
      * @return mixed[]
      */
-    public function fileAndClassNamesProvider() : array
+    public function fileAndClassNamesProvider(): array
     {
         return [
             ['foo', 'bar', 'bar'],

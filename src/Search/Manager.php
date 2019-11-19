@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Copyright (c) Qobo Ltd. (https://www.qobo.biz)
  *
@@ -9,6 +10,7 @@
  * @copyright     Copyright (c) Qobo Ltd. (https://www.qobo.biz)
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
+
 namespace App\Search;
 
 use App\Utility\Search;
@@ -33,7 +35,7 @@ final class Manager
      * @param mixed[] $params Request params
      * @return mixed[]
      */
-    public static function getOptionsFromRequest(array $data, array $params) : array
+    public static function getOptionsFromRequest(array $data, array $params): array
     {
         $result = [];
 
@@ -66,7 +68,7 @@ final class Manager
      * @param mixed[] $criteria Search criteria
      * @return mixed[]
      */
-    private static function getCriteria(array $criteria) : array
+    private static function getCriteria(array $criteria): array
     {
         $result = [];
         foreach ($criteria as $field => $items) {
@@ -83,7 +85,7 @@ final class Manager
      * @param mixed[] $criteria Field search criteria
      * @return mixed[]
      */
-    private static function getFieldCriteria(string $field, array $criteria) : array
+    private static function getFieldCriteria(string $field, array $criteria): array
     {
         $result = [];
         foreach ($criteria as $item) {
@@ -126,7 +128,7 @@ final class Manager
      * @param bool $withPermissions Whether to include access permissions
      * @return mixed[]
      */
-    public static function formatEntities(ResultSetInterface $entities, Table $table, bool $withPermissions = false) : array
+    public static function formatEntities(ResultSetInterface $entities, Table $table, bool $withPermissions = false): array
     {
         $result = [];
         foreach ($entities as $entity) {
@@ -144,7 +146,7 @@ final class Manager
      * @param bool $withPermissions Whether to include access permissions
      * @return mixed[]
      */
-    private static function formatEntity(EntityInterface $entity, Table $table, bool $withPermissions = false) : array
+    private static function formatEntity(EntityInterface $entity, Table $table, bool $withPermissions = false): array
     {
         static $factory = null;
         if (null === $factory) {
@@ -184,7 +186,7 @@ final class Manager
      * @param \Cake\ORM\Table $table Table instance
      * @return mixed[]
      */
-    private static function getPermissions(string $id, Table $table) : array
+    private static function getPermissions(string $id, Table $table): array
     {
         static $factory = null;
         if (null === $factory) {
@@ -213,7 +215,7 @@ final class Manager
      * @param string $model Model name
      * @return \Search\Model\Entity\SavedSearch|null
      */
-    public static function getSystemSearch(string $model) : ?SavedSearch
+    public static function getSystemSearch(string $model): ?SavedSearch
     {
         $table = TableRegistry::getTableLocator()->get('Search.SavedSearches');
 
@@ -233,7 +235,7 @@ final class Manager
      * @param string $model Model name
      * @return \Search\Model\Entity\SavedSearch
      */
-    public static function createSystemSearch(string $model) : SavedSearch
+    public static function createSystemSearch(string $model): SavedSearch
     {
         $user = TableRegistry::getTableLocator()->get('Users')
             ->find()

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Copyright (c) Qobo Ltd. (https://www.qobo.biz)
  *
@@ -9,6 +10,7 @@
  * @copyright     Copyright (c) Qobo Ltd. (https://www.qobo.biz)
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
+
 namespace App\Search;
 
 /**
@@ -58,7 +60,7 @@ final class MagicValue
      * @param string $value Value
      * @return bool
      */
-    public static function is(string $value) : bool
+    public static function is(string $value): bool
     {
         $value = str_replace(static::WRAPPER, '', $value);
 
@@ -70,7 +72,7 @@ final class MagicValue
      *
      * @return string
      */
-    public function get() : string
+    public function get(): string
     {
         $value = str_replace(static::WRAPPER, '', $this->value);
 

@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Crud\Action;
 
 use ArrayIterator;
@@ -37,7 +38,7 @@ class SchemaAction extends BaseAction
      *
      * @return void
      */
-    protected function _get() : void
+    protected function _get(): void
     {
         $data_fields = [];
         $data_association = $this->getAssociations($this->_table()->associations()->getIterator());
@@ -55,7 +56,7 @@ class SchemaAction extends BaseAction
      * @param  mixed[] $associations Table associations
      * @return mixed[] custum data
      */
-    protected function getFields(array $associations) : array
+    protected function getFields(array $associations): array
     {
         $migrationJson = new ModuleConfig(ConfigType::MIGRATION(), $this->_controller()->getName());
         $fieldJson = new ModuleConfig(ConfigType::FIELDS(), $this->_controller()->getName());
@@ -118,7 +119,7 @@ class SchemaAction extends BaseAction
      * @param  string $foreign_key Filed name
      * @return string|null Association name
      */
-    private function findAssociation(array $associations, string $foreign_key) : ?string
+    private function findAssociation(array $associations, string $foreign_key): ?string
     {
         foreach ($associations as $key => $value) {
             if ($value['foreign_key'] === $foreign_key) {
@@ -135,7 +136,7 @@ class SchemaAction extends BaseAction
      * @param  ArrayIterator $associations table associations
      * @return mixed[] custum data array
      */
-    private function getAssociations(ArrayIterator $associations) : array
+    private function getAssociations(ArrayIterator $associations): array
     {
         $data_association = [];
 
@@ -173,7 +174,7 @@ class SchemaAction extends BaseAction
      * @param  mixed[] $data input data
      * @return mixed[] array with no keys.
      */
-    private function getOptionList(array $data) : array
+    private function getOptionList(array $data): array
     {
         $result = [];
         foreach ($data as $key => $value) {

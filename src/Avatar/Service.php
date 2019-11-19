@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Avatar;
 
 use App\Avatar\Type\ImageSource;

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Copyright (c) Qobo Ltd. (https://www.qobo.biz)
  *
@@ -9,6 +10,7 @@
  * @copyright     Copyright (c) Qobo Ltd. (https://www.qobo.biz)
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
+
 namespace App\Test\TestCase\Search;
 
 use App\Search\Manager;
@@ -17,14 +19,14 @@ use Qobo\Utils\Utility\User;
 
 class ManagerTest extends TestCase
 {
-    public function setUp() : void
+    public function setUp(): void
     {
         parent::setUp();
 
         User::setCurrentUser(['id' => '00000000-0000-0000-0000-000000000001']);
     }
 
-    public function testGetOptionsFromRequest() : void
+    public function testGetOptionsFromRequest(): void
     {
         $expected = [
             'data' => [
@@ -55,7 +57,7 @@ class ManagerTest extends TestCase
         $this->assertSame($expected, Manager::getOptionsFromRequest($data, []));
     }
 
-    public function testGetOptionsFromRequestWithMagicValue() : void
+    public function testGetOptionsFromRequestWithMagicValue(): void
     {
         $data = [
             'criteria' => [
@@ -74,7 +76,7 @@ class ManagerTest extends TestCase
         $this->assertSame($expected, Manager::getOptionsFromRequest($data, []));
     }
 
-    public function testGetOptionsFromRequestWithMagicValues() : void
+    public function testGetOptionsFromRequestWithMagicValues(): void
     {
         $data = [
             'criteria' => [
@@ -93,7 +95,7 @@ class ManagerTest extends TestCase
         $this->assertSame($expected, Manager::getOptionsFromRequest($data, []));
     }
 
-    public function testGetOptionsFromRequestWithGoupBy() : void
+    public function testGetOptionsFromRequestWithGoupBy(): void
     {
         $expected = ['group' => 'foo'];
 

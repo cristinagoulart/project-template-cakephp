@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Test\TestCase\Controller\Component;
 
 use App\Feature\Factory;
@@ -26,7 +27,7 @@ class LogActionsComponentTest extends IntegrationTestCase
         'plugin.RolesCapabilities.roles',
     ];
 
-    public function setUp() : void
+    public function setUp(): void
     {
         parent::setUp();
 
@@ -49,7 +50,7 @@ class LogActionsComponentTest extends IntegrationTestCase
         ]);
     }
 
-    public function testLogView() : void
+    public function testLogView(): void
     {
         $configure = [
             'LogActions' => [
@@ -69,7 +70,7 @@ class LogActionsComponentTest extends IntegrationTestCase
         $this->assertEquals($count_record + 1, $query->count());
     }
 
-    public function testLogPostRequest() : void
+    public function testLogPostRequest(): void
     {
         $configure = [
             'LogActions' => [
@@ -95,7 +96,7 @@ class LogActionsComponentTest extends IntegrationTestCase
         $this->assertEquals($count_record, $query->count());
     }
 
-    public function testLogEmptyController() : void
+    public function testLogEmptyController(): void
     {
         $configure = [
             'LogActions' => [
@@ -115,7 +116,7 @@ class LogActionsComponentTest extends IntegrationTestCase
         $this->assertEquals($count_record, $query->count());
     }
 
-    public function testLogAvoidAction() : void
+    public function testLogAvoidAction(): void
     {
         $configure = [
             'LogActions' => [

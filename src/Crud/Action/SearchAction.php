@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Crud\Action;
 
 use App\Search\Manager as SearchManager;
@@ -49,7 +50,7 @@ class SearchAction extends BaseAction
      *
      * @return void
      */
-    protected function _post() : void
+    protected function _post(): void
     {
         list($finder, ) = $this->_extractFinder();
         $options = SearchManager::getOptionsFromRequest(

@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Model\Table;
 
 use App\Avatar\Service as AvatarService;
@@ -92,7 +93,7 @@ class UsersTable extends Table
      * @return \Cake\Datasource\QueryInterface
      * @link https://book.cakephp.org/3.0/en/controllers/components/authentication.html#customizing-find-query
      */
-    public function findAuth(QueryInterface $query, array $options) : QueryInterface
+    public function findAuth(QueryInterface $query, array $options): QueryInterface
     {
         $query->where(['Users.active' => 1]);
 

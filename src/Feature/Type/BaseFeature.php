@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Feature\Type;
 
 use App\Feature\Config;
