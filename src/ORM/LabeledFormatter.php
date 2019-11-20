@@ -108,7 +108,12 @@ final class LabeledFormatter
         }
 
         if ($value instanceof \Cake\I18n\Time) {
-            return $value->format('Y-m-d H:i:s');
+            $format = 'Y-m-d H:i:s';
+            if ('time' === $table->getSchema()->getColumnType($field)) {
+                $format = 'H:i';
+            }
+
+            return $value->format($format);
         }
 
         return $value;

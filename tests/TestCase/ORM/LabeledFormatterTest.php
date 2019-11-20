@@ -68,7 +68,7 @@ class LabeledFormatterTest extends TestCase
             'trashed' => null,
             'vip' => true,
             'website' => 'https://google.com',
-            'work_start' => '2019-11-19 08:32:00'
+            'work_start' => '08:32'
         ];
 
         $query = $this->table
@@ -160,7 +160,7 @@ class LabeledFormatterTest extends TestCase
             'trashed' => null,
             'vip' => true,
             'website' => 'https://google.com',
-            'work_start' => '2019-11-19 08:32:00'
+            'work_start' => '08:32'
         ];
 
         $query = $this->table
@@ -256,7 +256,7 @@ class LabeledFormatterTest extends TestCase
             'trashed' => null,
             'vip' => true,
             'website' => 'https://google.com',
-            'work_start' => '2019-11-19 08:32:00'
+            'work_start' => '08:32'
         ];
 
         $query = $this->table
