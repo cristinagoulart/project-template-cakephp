@@ -79,20 +79,20 @@ class SearchTest extends TestCase
         $this->assertSame(['created'], $result[0]['options']['xkey']);
         $this->assertSame(['created (COUNT)'], $result[0]['options']['ykeys']);
         $this->assertCount(1, $result[0]['options']['dataChart']['data']);
-        $this->assertSame(['value' => 2, 'label' => '2018-01-18 15:47'], $result[0]['options']['dataChart']['data'][0]);
+        $this->assertSame(['value' => 3, 'label' => '2018-01-18 15:47'], $result[0]['options']['dataChart']['data'][0]);
 
         $this->assertSame('pie', $result[1]['chart']);
         $this->assertSame('Things grouped by created date', $result[1]['slug']);
         $this->assertSame(['2018-01-18 15:47'], $result[1]['options']['dataChart']['data']['labels']);
         $this->assertCount(1, $result[1]['options']['dataChart']['data']['datasets']);
-        $this->assertSame([2], $result[1]['options']['dataChart']['data']['datasets'][0]['data']);
+        $this->assertSame([3], $result[1]['options']['dataChart']['data']['datasets'][0]['data']);
 
         $this->assertSame('bar', $result[2]['chart']);
         $this->assertSame('Things grouped by created date', $result[2]['slug']);
         $this->assertSame(['2018-01-18 15:47'], $result[2]['options']['dataChart']['data']['labels']);
         $this->assertCount(1, $result[2]['options']['dataChart']['data']['datasets']);
         $this->assertSame('Created (COUNT)', $result[2]['options']['dataChart']['data']['datasets'][0]['label']);
-        $this->assertSame([2], $result[2]['options']['dataChart']['data']['datasets'][0]['data']);
+        $this->assertSame([3], $result[2]['options']['dataChart']['data']['datasets'][0]['data']);
     }
 
     public function testGetChartOptionsWithoutGroupByOrAggregate(): void
@@ -136,19 +136,19 @@ class SearchTest extends TestCase
         $this->assertSame(['created'], $result[0]['options']['xkey']);
         $this->assertSame(['created (COUNT)'], $result[0]['options']['ykeys']);
         $this->assertCount(1, $result[0]['options']['dataChart']['data']);
-        $this->assertSame(['value' => 2, 'label' => 'Created'], $result[0]['options']['dataChart']['data'][0]);
+        $this->assertSame(['value' => 3, 'label' => 'Created'], $result[0]['options']['dataChart']['data'][0]);
 
         $this->assertSame('pie', $result[1]['chart']);
         $this->assertSame('Things NOT grouped by', $result[1]['slug']);
         $this->assertSame(['Created'], $result[1]['options']['dataChart']['data']['labels']);
         $this->assertCount(1, $result[1]['options']['dataChart']['data']['datasets']);
-        $this->assertSame([2], $result[1]['options']['dataChart']['data']['datasets'][0]['data']);
+        $this->assertSame([3], $result[1]['options']['dataChart']['data']['datasets'][0]['data']);
 
         $this->assertSame('bar', $result[2]['chart']);
         $this->assertSame('Things NOT grouped by', $result[2]['slug']);
         $this->assertSame(['Created'], $result[2]['options']['dataChart']['data']['labels']);
         $this->assertCount(1, $result[2]['options']['dataChart']['data']['datasets']);
         $this->assertSame('Created (COUNT)', $result[2]['options']['dataChart']['data']['datasets'][0]['label']);
-        $this->assertSame([2], $result[2]['options']['dataChart']['data']['datasets'][0]['data']);
+        $this->assertSame([3], $result[2]['options']['dataChart']['data']['datasets'][0]['data']);
     }
 }
