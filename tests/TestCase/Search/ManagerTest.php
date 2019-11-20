@@ -16,9 +16,20 @@ namespace App\Test\TestCase\Search;
 use App\Search\Manager;
 use Cake\TestSuite\TestCase;
 use Qobo\Utils\Utility\User;
+use Webmozart\Assert\Assert;
 
 class ManagerTest extends TestCase
 {
+    public $fixtures = [
+        'app.SavedSearches',
+        'app.Things',
+        'app.Users',
+        'plugin.Groups.groups',
+        'plugin.Groups.groups_users',
+        'plugin.RolesCapabilities.groups_roles',
+        'plugin.RolesCapabilities.roles',
+    ];
+
     public function setUp(): void
     {
         parent::setUp();
@@ -34,6 +45,7 @@ class ManagerTest extends TestCase
                 ['field' => 'avg(budget)', 'operator' => 'greater', 'value' => 1000]
             ],
             'fields' => ['created', 'modified', 'avg(budget)', 'count(status)'],
+            'conjunction' => 'OR',
             'order' => ['created' => 'asc'],
             'group' => 'status'
         ];
@@ -50,6 +62,7 @@ class ManagerTest extends TestCase
                     ['operator' => 'greater', 'value' => 1000]
                 ]
             ],
+            'conjunction' => 'OR',
             'group_by' => 'status',
             'aggregator' => 'AND'
         ];
@@ -100,5 +113,50 @@ class ManagerTest extends TestCase
         $expected = ['group' => 'foo'];
 
         $this->assertSame($expected, Manager::getOptionsFromRequest(['group_by' => 'foo'], []));
+    }
+
+    public function testIncludePrimaryKey(): void
+    {
+        $this->assertTrue(Manager::includePrimaryKey([]));
+    }
+
+    public function testIncludePrimaryKeyWithGoupBy(): void
+    {
+        $this->assertFalse(Manager::includePrimaryKey(['group' => 'foo']));
+    }
+
+    public function testIncludePrimaryKeyWithAggregate(): void
+    {
+        $this->assertFalse(Manager::includePrimaryKey(['fields' => ['count(status)']]));
+    }
+
+    public function testGetSystemSearch(): void
+    {
+        $this->assertNull(Manager::getSystemSearch('Things'));
+    }
+
+    public function testGetSystemSearchAfterCreation(): void
+    {
+        Manager::createSystemSearch('Things');
+
+        $savedSearch = Manager::getSystemSearch('Things');
+
+        Assert::isInstanceOf($savedSearch, \Search\Model\Entity\SavedSearch::class);
+        $this->assertSame('Things', $savedSearch->get('model'));
+        $this->assertTrue($savedSearch->get('system'));
+    }
+
+    public function testCreateSystemSearch(): void
+    {
+        $savedSearch = Manager::createSystemSearch('Things');
+
+        $this->assertSame('Default Things search', $savedSearch->get('name'));
+        $this->assertSame('Things', $savedSearch->get('model'));
+        $this->assertSame('00000000-0000-0000-0000-000000000001', $savedSearch->get('user_id'));
+        $this->assertSame([], $savedSearch->get('criteria'));
+        $this->assertSame('AND', $savedSearch->get('conjunction'));
+        $this->assertSame('DESC', $savedSearch->get('order_by_direction'));
+        $this->assertTrue($savedSearch->get('system'));
+        $this->assertTrue($savedSearch->get('is_editable'));
     }
 }
