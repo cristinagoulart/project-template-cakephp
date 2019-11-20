@@ -215,5 +215,12 @@
         "required": false,
         "non-searchable": true,
         "unique": false
+    },
+    "sample_date": {
+        "name": "sample_date",
+        "type": "datetime",
+        "required": false,
+        "non-searchable": false,
+        "unique": false
     }
 }
