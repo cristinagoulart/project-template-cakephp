@@ -59,7 +59,7 @@ $matchCounts = Composer::getMatchCounts($packages, $matchWords);
                             <th width="20%"><?= __('Name') ?></th>
                             <th width="10%"><?= __('Version') ?></th>
                             <th width="10%"><?= __('License') ?></th>
-                            <th width="60%"><?php __('Description') ?></th>
+                            <th width="60%"><?= __('Description') ?></th>
                         </tr>
                     </thead>
                     <tbody>
