@@ -487,9 +487,13 @@ class AppController extends Controller
             $data = is_array($data[$this->name][$innerKey]) ? $data[$this->name][$innerKey] : $data[$this->name];
         }
 
+        $table = $this->loadModel();
+        Assert::isInstanceOf($table, Table::class);
+
         $panels = $this->getPanels(
             (new ModuleConfig(ConfigType::MODULE(), $this->name))->parseToArray(),
-            $data
+            $data,
+            ['request' => $this->getRequest(), 'table' => $table]
         );
         if (! empty($panels)) {
             $result['success'] = true;
