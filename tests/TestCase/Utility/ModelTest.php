@@ -14,7 +14,7 @@ class ModelTest extends TestCase
         $fields = Model::fields('Things');
 
         // 32 migration.json fields, +4 from combined fields, +1 trashed field
-        $this->assertCount(37, $fields);
+        $this->assertCount(37, $fields, "The fields in database doesn't match those in the migration file. This happens when new fields were introduced in the database, usually from another branch");
 
         foreach ($fields as $field) {
             $this->assertArrayHasKey('name', $field);
