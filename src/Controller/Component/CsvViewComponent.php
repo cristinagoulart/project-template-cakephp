@@ -17,6 +17,8 @@ use Cake\Controller\Component;
 use Cake\Controller\Controller;
 use Cake\Core\Configure;
 use Cake\Event\Event;
+use Cake\Http\ServerRequest;
+use Cake\ORM\Table;
 use CsvMigrations\Controller\Traits\PanelsTrait;
 use CsvMigrations\FieldHandlers\CsvField;
 use CsvMigrations\Utility\Field;
@@ -85,11 +87,16 @@ class CsvViewComponent extends Component
         $controller = $event->getSubject();
         Assert::isInstanceOf($controller, Controller::class);
 
+        $table = $controller->loadModel();
+        Assert::isInstanceOf($table, Table::class);
+        $request = $controller->getRequest();
+        Assert::isInstanceOf($request, ServerRequest::class);
+
         $config = new ModuleConfig(ConfigType::MODULE(), $controller->getName());
         $config = json_encode($config->parse());
         $config = false === $config ? [] : json_decode($config, true);
 
-        $panels = $this->getPanels($config, $controller->viewVars['entity']->toArray());
+        $panels = $this->getPanels($config, $controller->viewVars['entity']->toArray(), compact('request', 'table'));
 
         $batchAction = (string)Configure::read('CsvMigrations.batch.action') === $this->request->getParam('action');
 

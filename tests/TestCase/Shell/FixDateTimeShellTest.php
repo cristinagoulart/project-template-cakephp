@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Test\TestCase\Entity;
+namespace App\Test\TestCase\Shell;
 
 use App\Shell\FixDateTimeShell;
 use Cake\ORM\TableRegistry;
@@ -46,7 +46,9 @@ class FixDateTimeShellTest extends TestCase
             'sample_date' => '2018-01-18 15:47:16',
             'created_by' => '00000000-0000-0000-0000-000000000001',
             'modified_by' => '00000000-0000-0000-0000-000000000001',
-            'trashed' => null
+            'trashed' => null,
+            'country' => 'CY',
+            'gender' => 'm',
         ];
         $entity = $this->table->newEntity($data);
         $this->table->save($entity);
