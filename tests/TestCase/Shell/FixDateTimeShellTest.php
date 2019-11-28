@@ -16,6 +16,7 @@ class FixDateTimeShellTest extends TestCase
     ];
 
     private $table;
+    private $primaryKey;
 
     public function setUp(): void
     {
@@ -51,8 +52,7 @@ class FixDateTimeShellTest extends TestCase
         ];
         $entity = $this->table->newEntity($data);
         $this->table->save($entity);
-
-        $entity = $this->table->get($entity->get('id'));
+        $entity = $this->table->get($entity->get($this->primaryKey));
 
         $shell = new FixDateTimeShell();
         $shell->setModule('Things');
@@ -61,7 +61,7 @@ class FixDateTimeShellTest extends TestCase
         $shell->setLimit('1');
         $shell->updateFields('Things');
 
-        $entity = $this->table->get($entity->get('id'));
+        $entity = $this->table->get($entity->get($this->primaryKey));
 
         $this->assertSame('2018-01-18 13:47:16', $entity->get('sample_date')->format('Y-m-d H:i:s'));
 
@@ -73,7 +73,7 @@ class FixDateTimeShellTest extends TestCase
         $shell->setLimit('1');
         $shell->updateFields('Things');
 
-        $entity = $this->table->get($entity->get('id'));
+        $entity = $this->table->get($entity->get($this->primaryKey));
 
         $this->assertSame('2018-01-18 13:47:16', $entity->get('sample_date')->format('Y-m-d H:i:s'));
     }
