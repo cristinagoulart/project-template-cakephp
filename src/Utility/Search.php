@@ -4,6 +4,7 @@ namespace App\Utility;
 
 use App\Model\Table\UsersTable;
 use App\Search\Manager;
+use Cake\Cache\Cache;
 use Cake\Core\App;
 use Cake\Datasource\EntityInterface;
 use Cake\Log\Log;
@@ -75,6 +76,12 @@ final class Search
             return static::$filters[$tableName];
         }
 
+        $cacheKey = 'search_filters_' . md5($tableName);
+        $cached = Cache::read($cacheKey);
+        if (false !== $cached) {
+            return $cached;
+        }
+
         $table = TableRegistry::getTableLocator()->get($tableName);
         $labels = self::getAssociationLabels($table);
         $result = self::getSearchableFields($table);
@@ -91,6 +98,8 @@ final class Search
         usort($result, function ($x, $y) {
             return strcasecmp($x['field'], $y['field']);
         });
+
+        Cache::write($cacheKey, $result);
 
         static::$filters[$tableName] = $result;
 
