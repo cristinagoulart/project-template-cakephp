@@ -482,9 +482,7 @@ class AppController extends Controller
         }
 
         if (is_array($data[$this->name])) {
-            $innerKey = key($data[$this->name]);
-            // embedded form - [module][dynamicField][inputName] : Regular form format - [module][inputName]
-            $data = is_array($data[$this->name][$innerKey]) ? $data[$this->name][$innerKey] : $data[$this->name];
+            $data = $data[$this->name];
         }
 
         $table = $this->loadModel();
