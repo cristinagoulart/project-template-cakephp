@@ -21,11 +21,11 @@ foreach ((array)$savedSearch->get('fields') as $item) {
         $hasAggregate = true;
         preg_match(AggregateInterface::AGGREGATE_PATTERN, $item, $matches);
         list(, $aggregateField) = pluginSplit($matches[2]);
-        $key = array_search($matches[2], array_column($filters, 'field'));
+        $key = array_search($matches[2], array_column($filters, 'field'), true);
         $label = sprintf('%s (%s)', $filters[$key]['label'], $matches[1]);
     } else {
-        $key = array_search($item, array_column($filters, 'field'));
-        $label = $key ? $filters[$key]['label'] : $item;
+        $key = array_search($item, array_column($filters, 'field'), true);
+        $label = false !== $key ? $filters[$key]['label'] : $item;
     }
     $headers[] = ['value' => $item, 'text' => $label];
 }

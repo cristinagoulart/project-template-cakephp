@@ -122,7 +122,7 @@ final class Search
         }, $result);
 
         $result = array_filter($result, function ($item) use ($tableName) {
-            return array_search($item, array_column(self::getFilters($tableName), 'field'));
+            return false !== array_search($item, array_column(self::getFilters($tableName), 'field'), true);
         });
 
         return array_values($result);
