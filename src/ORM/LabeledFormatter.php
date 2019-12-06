@@ -2,6 +2,7 @@
 
 namespace App\ORM;
 
+use App\Utility\FieldList;
 use App\Utility\Model;
 use Cake\Collection\CollectionInterface;
 use Cake\Core\App;
@@ -91,9 +92,9 @@ final class LabeledFormatter
             return self::getDisplayValueFromAssociation($table->getAssociation($associations[$key]['name']), $field, $value);
         }
 
-        $listName = Model::getListName($model, $field);
-        if ('' !== $listName) {
-            $options = Model::getListOptions($model, $listName);
+        $list = new FieldList($model, $field);
+        if ($list->has()) {
+            $options = $list->options(['prettify' => false]);
             $key = array_search($value, array_column($options, 'value'));
 
             return false !== $key ? $options[$key]['label'] : $value;
