@@ -205,6 +205,7 @@ final class Manager
 
         return $result;
     }
+
     /**
      * Returns entity access permissions.
      *
