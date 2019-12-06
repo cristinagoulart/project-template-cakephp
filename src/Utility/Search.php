@@ -145,8 +145,8 @@ final class Search
             'group_by' => $savedSearch->get('group_by')
         ], []));
 
-        $query->formatResults(new \App\ORM\PrettyFormatter())
-            ->formatResults(new \App\ORM\FlatFormatter());
+        $query->formatResults(new \App\ORM\PrettyFormatter());
+        $query->formatResults(new \App\ORM\FlatFormatter());
 
         $rowLabel = sprintf('%s (%s)', $aggregateField, $aggregateType);
         list(, $rowValue) = $savedSearch->get('group_by') ? pluginSplit($savedSearch->get('group_by')) : ['', $aggregateField];
