@@ -141,6 +141,11 @@ abstract class BaseActionListener implements EventListenerInterface
      */
     protected function prettify(EntityInterface $entity, Table $table, array $fields = []): void
     {
+        deprecationWarning(
+            'BaseActionListener::prettify() method is deprecated. ' .
+            'Use \App\ORM\PrettyFormatter class instead.'
+        );
+
         $fields = empty($fields) ? array_keys($entity->toArray()) : $fields;
 
         /**
