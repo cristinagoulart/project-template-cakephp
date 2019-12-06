@@ -27,6 +27,13 @@
         "non-searchable": false,
         "unique": false
     },
+    "currency": {
+        "name": "currency",
+        "type": "currency(currencies)",
+        "required": true,
+        "non-searchable": false,
+        "unique": false
+    },
     "gender": {
         "name": "gender",
         "type": "list(genders)",
