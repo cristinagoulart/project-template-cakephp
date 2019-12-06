@@ -71,6 +71,16 @@ final class PrettyFormatter
             return;
         }
 
+        /**
+         * Handles the special cases of combined fields, this will go away
+         * once we properly separate database column and UI field definitions.
+         */
+        if (self::isCombinedField($field)) {
+            self::formatCombinedField($entity, $table, $field);
+
+            return;
+        }
+
         static $factory = null;
         if (null === $factory) {
             $factory = new FieldHandlerFactory();
@@ -115,5 +125,53 @@ final class PrettyFormatter
         Assert::isInstanceOf($association, \Cake\ORM\Association::class);
 
         return self::format($entity, $association->getTarget());
+    }
+
+    /**
+     * Combined field detector.
+     *
+     * @param string $field Field name
+     * @return bool
+     */
+    private static function isCombinedField(string $field): bool
+    {
+        foreach (['_amount', '_currency', '_unit'] as $item) {
+            $strlen = strlen($item);
+            if ($item === substr($field, -$strlen, $strlen)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * Formats combined field.
+     *
+     * @param \Cake\Datasource\EntityInterface $entity Entity instance
+     * @param \Cake\ORM\Table $table Table instance
+     * @param string $field Field name
+     * @return void
+     */
+    private static function formatCombinedField(EntityInterface $entity, Table $table, string $field): void
+    {
+        static $factory = null;
+        if (null === $factory) {
+            $factory = new FieldHandlerFactory();
+        }
+
+        $mapping = [
+            '_amount' => 'decimal',
+            '_currency' => 'currency(currencies)',
+            '_unit' => 'list(units_area)'];
+
+        $index = '_' . explode('_', $field)[1];
+
+        $entity->set($field, $factory->renderValue(
+            $table,
+            $field,
+            $entity->get($field),
+            ['entity' => $entity, 'fieldDefinitions' => ['type' => $mapping[$index]]]
+        ));
     }
 }
