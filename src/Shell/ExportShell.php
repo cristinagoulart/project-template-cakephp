@@ -43,6 +43,7 @@ final class ExportShell extends Shell
     /**
      * Removes export files older than -1 day.
      *
+     * @param string $path Export path
      * @return void
      */
     private function gcPath(string $path): void
