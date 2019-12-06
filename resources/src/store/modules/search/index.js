@@ -232,7 +232,7 @@ export default {
           commit('savedSearchUserId', data.user_id)
           commit('orderByField', data.order_by_field)
           commit('orderByDirection', data.order_by_direction)
-          if (data.hasOwnProperty('criteria')) {
+          if (data.hasOwnProperty('criteria') && typeof data.criteria === 'object' && data.criteria !== null) {
             Object.keys(data.criteria).forEach((item) => {
               const guid = Object.keys(data.criteria[item])[0]
               const filter = data.criteria[item][guid]
