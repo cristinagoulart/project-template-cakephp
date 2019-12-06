@@ -199,8 +199,8 @@ export default {
             .then(resp => {
               dispatch('savedSearchesGet')
               dispatch('setNotification', {
-                'type': 'info',
-                'msg': 'Successfully copied the search'
+                type: 'success',
+                text: 'Search successfully copied.'
               })
             })
         })
@@ -211,8 +211,8 @@ export default {
         .then(response => {
           dispatch('savedSearchesGet')
           dispatch('setNotification', {
-            'type': 'info',
-            'msg': 'Saved Search successfully removed'
+            type: 'success',
+            text: 'Search successfully deleted.'
           })
         })
     },
@@ -245,11 +245,6 @@ export default {
               })
             })
           }
-
-          dispatch('setNotification', {
-            'type': 'info',
-            'msg': 'Successfully loaded search results'
-          })
         })
     },
     savedSearchSave ({ commit, state, dispatch }) {
@@ -276,8 +271,8 @@ export default {
             commit('savedSearchId', response.data.data.id)
             dispatch('savedSearchesGet')
             dispatch('setNotification', {
-              'type': 'info',
-              'msg': 'Search successfully created'
+              type: 'success',
+              text: 'Search successfully created.'
             })
           })
       } else {
@@ -286,8 +281,8 @@ export default {
           .then(response => {
             dispatch('savedSearchesGet')
             dispatch('setNotification', {
-              'type': 'info',
-              'msg': 'Search successfully updated'
+              type: 'success',
+              text: 'Search successfully updated.'
             })
           })
       }
@@ -305,9 +300,8 @@ export default {
     },
     setNotification ({ commit, state }, data) {
       Vue.notify({
-        'group': 'SearchNotification',
-        'type': data.type,
-        'text': data.msg
+        type: data.type,
+        text: data.text
       })
     }
   }

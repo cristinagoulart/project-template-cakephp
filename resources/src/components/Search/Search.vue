@@ -1,6 +1,5 @@
 <template>
     <div>
-        <notifications group="SearchNotification" />
         <div class="box box-solid" v-if="withForm">
             <div class="box-body">
                 <form class="search-form" novalidate="novalidate" v-on:submit.prevent="search">
