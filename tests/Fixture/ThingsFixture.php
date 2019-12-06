@@ -25,6 +25,7 @@ class ThingsFixture extends TestFixture
             'modified_by' => '00000000-0000-0000-0000-000000000001',
             'gender' => 'm',
             'country' => 'CY',
+            'currency' => 'GBP',
             'area_amount' => '25.738',
             'area_unit' => 'm',
             'salary_amount' => '1000',
@@ -39,7 +40,7 @@ class ThingsFixture extends TestFixture
             'date_of_birth' => '1990-01-17',
             'work_start' => '08:32',
             'website' => 'https://google.com',
-            'bio' => '',
+            'bio' => 'A blob type',
             'level' => '7',
             'appointment' => '2019-10-29 15:47:16',
             'phone' => '+35725123456',
@@ -66,6 +67,7 @@ class ThingsFixture extends TestFixture
             'salary_amount' => '1000',
             'salary_currency' => 'EUR',
             'assigned_to' => '00000000-0000-0000-0000-000000000002',
+            'primary_thing' => '00000000-0000-0000-0000-000000000001',
             'trashed' => null
         ],
         [
