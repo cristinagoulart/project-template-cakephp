@@ -38,6 +38,8 @@ class UsersTableTest extends TestCase
         $this->assertSame(true, $this->table->hasBehavior('Searchable'));
         $this->assertSame(true, $this->table->hasBehavior('Footprint'));
         $this->assertSame(true, $this->table->hasBehavior('Lookup'));
+        $this->assertSame('id', $this->table->getPrimaryKey());
+        $this->assertSame('name', $this->table->getDisplayField());
     }
 
     public function testValidationDefault(): void
