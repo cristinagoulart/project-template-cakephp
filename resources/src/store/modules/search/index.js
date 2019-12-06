@@ -18,7 +18,6 @@ export default {
     conjunction: 'AND',
     criteria: {},
     default_fields: [],
-    exportId: '',
     id: '',
     fields: [],
     filters: [],
@@ -134,9 +133,6 @@ export default {
     defaultFields (state, value) {
       state.default_fields = value
     },
-    exportId (state, value) {
-      state.exportId = value
-    },
     fields (state, value) {
       state.fields = value.length ? value : state.default_fields
     },
@@ -218,17 +214,6 @@ export default {
             'type': 'info',
             'msg': 'Saved Search successfully removed'
           })
-        })
-    },
-    savedSearchExport ({ commit, state }) {
-      const data = state.savedSearch
-      // this is treated as temporary saved search
-      data.name = ''
-
-      return ApiSearch
-        .exportSearch(API_STORE_SEARCH, data)
-        .then(response => {
-          commit('exportId', response.data.data.id)
         })
     },
     savedSearchGet ({ commit, state, dispatch }, id) {
