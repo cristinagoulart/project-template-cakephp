@@ -69,6 +69,29 @@ final class PrettyFormatter
                 continue;
             }
 
+            $isCombinedField = false;
+            $combinedFields = ['_amount' => 'decimal', '_currency' => 'currency(currencies)', '_unit' => 'list(units_area)'];
+            /**
+             * Handles the special cases of combined fields, this will go away
+             * once we properly separate database column and UI field definitions.
+             */
+            foreach ($combinedFields as $fieldSuffix => $fieldType) {
+                $strlen = strlen($fieldSuffix);
+                if ($fieldSuffix === substr($field, -$strlen, $strlen)) {
+                    $isCombinedField = true;
+                    $entity->set($field, $factory->renderValue(
+                        $table,
+                        $field,
+                        $entity->get($field),
+                        ['entity' => $entity, 'fieldDefinitions' => ['type' => $fieldType]]
+                    ));
+                }
+            }
+
+            if ($isCombinedField) {
+                continue;
+            }
+
             // current model field
             if ($table->hasField($field)) {
                 $entity->set($field, $factory->renderValue($table, $field, $entity->get($field)));
