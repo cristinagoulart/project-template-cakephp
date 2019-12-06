@@ -3,10 +3,12 @@
 namespace App\Event\Controller\Api;
 
 use App\Event\EventName;
+use App\ORM\PrettyFormatter;
 use Cake\Controller\Controller;
 use Cake\Datasource\EntityInterface;
 use Cake\Datasource\QueryInterface;
 use Cake\Event\Event;
+use Cake\ORM\Query;
 use Cake\ORM\Table;
 use Webmozart\Assert\Assert;
 
@@ -34,7 +36,13 @@ class ViewActionListener extends BaseActionListener
      */
     public function beforeFind(Event $event, QueryInterface $query): void
     {
-        //
+        $controller = $event->getSubject();
+        Assert::isInstanceOf($controller, Controller::class);
+
+        if (static::FORMAT_PRETTY === $controller->getRequest()->getQuery('format')) {
+            Assert::isInstanceOf($query, Query::class);
+            $query->formatResults(new PrettyFormatter());
+        }
     }
 
     /**
@@ -61,9 +69,9 @@ class ViewActionListener extends BaseActionListener
 
         $this->resourceToString($entity);
 
-        static::FORMAT_PRETTY === $request->getQuery('format') ?
-            $this->prettify($entity, $table) :
+        if (static::FORMAT_PRETTY !== $request->getQuery('format')) {
             $this->attachFiles($entity, $table);
+        }
 
         /**
          * TODO: seems like obsolete code needs to be tested and removed if not used (might be dealing with virtual fields). Added here: https://github.com/QoboLtd/cakephp-csv-migrations/pull/258
