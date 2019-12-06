@@ -145,16 +145,18 @@ final class Search
             'group_by' => $savedSearch->get('group_by')
         ], []));
 
+        $query->formatResults(new \App\ORM\PrettyFormatter())
+            ->formatResults(new \App\ORM\FlatFormatter());
+
         $rowLabel = sprintf('%s (%s)', $aggregateField, $aggregateType);
         list(, $rowValue) = $savedSearch->get('group_by') ? pluginSplit($savedSearch->get('group_by')) : ['', $aggregateField];
         $filters = self::getFilters($savedSearch->get('model'));
         $rows = [];
-        foreach ($query->all() as $entity) {
-            $formatted = self::formatEntity($entity, $table, $factory);
 
-            $row = [$rowLabel => $formatted[$aggregate]];
+        foreach ($query->all() as $entity) {
+            $row = [$rowLabel => $entity[$aggregate]];
             $key = array_search($aggregateFieldAliased, array_column($filters, 'field'));
-            $row[$rowValue] = $savedSearch->get('group_by') ? $formatted[$savedSearch->get('group_by')] : $filters[$key]['label'];
+            $row[$rowValue] = $savedSearch->get('group_by') ? $entity[$savedSearch->get('group_by')] : $filters[$key]['label'];
 
             $rows[] = $row;
         }
@@ -214,38 +216,6 @@ final class Search
             }
 
             $result[] = $options;
-        }
-
-        return $result;
-    }
-
-    /**
-     * Method that formats search result-set entity.
-     *
-     * @param \Cake\Datasource\EntityInterface $entity Entity instance
-     * @param \Cake\ORM\Table $table Table instance
-     * @param \CsvMigrations\FieldHandlers\FieldHandlerFactory $factory Field handler factory instance
-     * @return mixed[]
-     */
-    private static function formatEntity(EntityInterface $entity, Table $table, FieldHandlerFactory $factory): array
-    {
-        $result = [];
-        foreach (array_diff($entity->visibleProperties(), $entity->getVirtual()) as $field) {
-            // current table field
-            if ('_matchingData' !== $field) {
-                $result[$table->aliasField($field)] = 1 === preg_match(AggregateInterface::AGGREGATE_PATTERN, $field) ?
-                    $entity->get($field) :
-                    $factory->renderValue($table, $field, $entity->get($field));
-                continue;
-            }
-
-            foreach ($entity->get('_matchingData') as $associationName => $relatedEntity) {
-                $result = array_merge($result, self::formatEntity(
-                    $relatedEntity,
-                    $table->getAssociation($associationName)->getTarget(),
-                    $factory
-                ));
-            }
         }
 
         return $result;
