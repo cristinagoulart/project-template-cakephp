@@ -261,10 +261,6 @@ final class Search
     {
         $result = [];
         foreach ($table->associations() as $association) {
-            if (! in_array($association->type(), self::SUPPORTED_ASSOCIATIONS)) {
-                continue;
-            }
-
             $result[$association->getName()] = sprintf(
                 '%s (%s)',
                 App::shortName(get_class($association->getTarget()), 'Model/Table', 'Table'),
