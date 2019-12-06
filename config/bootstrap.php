@@ -80,6 +80,7 @@ try {
     Configure::load('csv_migrations', 'default');
     Configure::load('database_log', 'default');
     Configure::load('event_listeners', 'default');
+    Configure::load('export', 'default');
     Configure::load(file_exists(CONFIG . 'features_local.php') ? 'features_local' : 'features', 'default');
     Configure::load('file_storage', 'default');
     Configure::load('groups', 'default');
