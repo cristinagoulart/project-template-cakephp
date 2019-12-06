@@ -53,6 +53,7 @@ $skinName = Configure::read('Theme.skin');
 
                 <?php echo $this->Flash->render(); ?>
                 <?php echo $this->Flash->render('auth'); ?>
+                <notifications position="bottom center" classes="vue-notification-adminlte"></notifications>
                 <?php echo $this->fetch('content'); ?>
 
             </div>

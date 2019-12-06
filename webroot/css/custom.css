@@ -105,3 +105,32 @@ hr.separator {
     color: #333;
     white-space: nowrap;
 }
+
+.vue-notification-adminlte {
+    padding: 15px;
+    margin: 0 5px 5px;
+    border-radius: 3px;
+    color: #ffffff;
+    background: #00c0ef;
+    border-color: #00acd6;
+}
+
+.vue-notification-adminlte a {
+    color: #ffffff;
+    text-decoration: underline;
+}
+
+.vue-notification-adminlte.warn {
+    background: #f39c12;
+    border-color: #e08e0b;
+}
+
+.vue-notification-adminlte.error {
+    background: #dd4b39;
+    border-color: #d73925;
+}
+
+.vue-notification-adminlte.success {
+    background: #00a65a;
+    border-color: #008d4c;
+}
