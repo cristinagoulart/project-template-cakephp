@@ -39,6 +39,7 @@ $disableBatch = '' !== (string)$savedSearch->get('group_by') || $hasAggregate;
 $accessFactory = new AccessFactory();
 list($plugin, $controller) = pluginSplit($savedSearch->get('model'));
 $urlBatch = ['plugin' => $plugin, 'controller' => $controller, 'action' => 'batch'];
+$urlExport = ['plugin' => $plugin, 'controller' => $controller, 'action' => 'exportSearch'];
 
 $charts = $this->Search->getChartOptions($savedSearch);
 if ([] !== $charts) {
@@ -97,6 +98,7 @@ $uniqid = uniqid();
                 :with-actions="<?= ! $disableBatch ? 'true' : 'false' ?>"
                 :with-batch-delete="<?= ! $disableBatch && $accessFactory->hasAccess($urlBatch, $user) ? 'true' : 'false' ?>"
                 :with-batch-edit="<?= ! $disableBatch && $accessFactory->hasAccess($urlBatch, $user) ? 'true' : 'false' ?>"
+                :with-export="<?= ! $disableBatch && $accessFactory->hasAccess($urlExport, $user) ? 'true' : 'false' ?>"
             ></table-ajax>
         </div>
         <?php foreach ($charts as $key => $chart) : ?>
