@@ -70,7 +70,8 @@
                   @sort-order-updated="sortOrderUpdated"
                   :with-actions="!disableBatch"
                   :with-batch-delete="!disableBatch && withBatchDelete"
-                  :with-batch-edit="!disableBatch && withBatchEdit">
+                  :with-batch-edit="!disableBatch && withBatchEdit"
+                  :with-export="!disableBatch && withExport">
                 </table-ajax>
             </div>
         </div>
