@@ -2,7 +2,6 @@
 
 namespace App\Utility;
 
-use App\Model\Table\UsersTable;
 use App\Search\Manager;
 use Cake\Core\App;
 use Cake\Datasource\EntityInterface;
@@ -16,8 +15,6 @@ use CsvMigrations\FieldHandlers\FieldHandlerFactory;
 use DatabaseLog\Model\Table\DatabaseLogsTable;
 use Qobo\Utils\ModuleConfig\ConfigType;
 use Qobo\Utils\ModuleConfig\ModuleConfig;
-use Qobo\Utils\Utility\User;
-use RolesCapabilities\Access\AccessFactory;
 use Search\Aggregate\AggregateInterface;
 use Search\Model\Entity\SavedSearch;
 use Search\Service\Search as SearchService;
@@ -309,10 +306,6 @@ final class Search
     {
         list($plugin, $controller) = pluginSplit(App::shortName(get_class($table), 'Model/Table', 'Table'));
         $url = ['plugin' => $plugin, 'controller' => $controller, 'action' => 'search'];
-
-        if (! (new AccessFactory())->hasAccess($url, User::getCurrentUser())) {
-            return [];
-        }
 
         if (! empty(self::$fields[$table->getRegistryAlias()])) {
             return self::$fields[$table->getRegistryAlias()];
