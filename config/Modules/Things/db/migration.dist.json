@@ -169,7 +169,7 @@
     },
     "test_list": {
         "name": "test_list",
-        "type": "sublist(test_list)",
+        "type": "sublist(Things.test_list)",
         "required": false,
         "non-searchable": false,
         "unique": false
