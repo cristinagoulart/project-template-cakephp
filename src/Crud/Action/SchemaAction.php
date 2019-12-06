@@ -95,7 +95,10 @@ class SchemaAction extends BaseAction
                     break;
                 case "list":
                 case "sublist":
-                    $list = new ModuleConfig(ConfigType::LISTS(), $this->_controller()->getName(), (string)$csvField->getLimit());
+                    list($moduleName, $listName) = false !== strpos((string)$csvField->getLimit(), '.') ?
+                        explode('.', (string)$csvField->getLimit(), 2) :
+                        [$this->_controller()->getName(), (string)$csvField->getLimit()];
+                    $list = new ModuleConfig(ConfigType::LISTS(), $moduleName, $listName);
                     $data['db_type'] = $db_fields_type[$csvField->getName()];
                     $data['options'] = $this->getOptionList($list->parseToArray()['items']);
                     break;
