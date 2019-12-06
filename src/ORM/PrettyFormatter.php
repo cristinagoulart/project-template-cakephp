@@ -38,66 +38,82 @@ final class PrettyFormatter
      */
     private static function format(EntityInterface $entity, Table $table): EntityInterface
     {
+        foreach (array_diff($entity->visibleProperties(), $entity->getVirtual()) as $field) {
+            self::formatField($entity, $table, $field);
+        }
+
+        return $entity;
+    }
+
+    /**
+     * Formats specified field.
+     *
+     * @param \Cake\Datasource\EntityInterface $entity Entity instance
+     * @param \Cake\ORM\Table $table Table instance
+     * @param string $field Field name
+     * @return void
+     */
+    private static function formatField(EntityInterface $entity, Table $table, string $field): void
+    {
+        if ('_permissions' === $field) {
+            return;
+        }
+
+        if ('_matchingData' === $field) {
+            $entity->set('_matchingData', self::formatMatchingData($entity->get('_matchingData'), $table));
+
+            return;
+        }
+
+        if ($entity->get($field) instanceof EntityInterface) {
+            $entity->set($field, self::formatAssociatedEntity($entity->get($field), $table, $field));
+
+            return;
+        }
+
         static $factory = null;
         if (null === $factory) {
             $factory = new FieldHandlerFactory();
         }
+        // current model field
+        if ($table->hasField($field)) {
+            $entity->set($field, $factory->renderValue($table, $field, $entity->get($field)));
+        }
+    }
 
-        foreach (array_diff($entity->visibleProperties(), $entity->getVirtual()) as $field) {
-            if ('_permissions' === $field) {
-                continue;
-            }
-
-            if ('_matchingData' === $field) {
-                $matchingData = [];
-                foreach ($entity->get('_matchingData') as $associationName => $relatedEntity) {
-                    $matchingData[$associationName] = self::format(
-                        $relatedEntity,
-                        $table->getAssociation($associationName)->getTarget()
-                    );
-                }
-                $entity->set('_matchingData', $matchingData);
-
-                continue;
-            }
-
-            if ($entity->get($field) instanceof EntityInterface) {
-                $association = $table->associations()->getByProperty($field);
-                Assert::isInstanceOf($association, \Cake\ORM\Association::class);
-                $entity->set($field, self::format($entity->get($field), $association->getTarget()));
-
-                continue;
-            }
-
-            $isCombinedField = false;
-            $combinedFields = ['_amount' => 'decimal', '_currency' => 'currency(currencies)', '_unit' => 'list(units_area)'];
-            /**
-             * Handles the special cases of combined fields, this will go away
-             * once we properly separate database column and UI field definitions.
-             */
-            foreach ($combinedFields as $fieldSuffix => $fieldType) {
-                $strlen = strlen($fieldSuffix);
-                if ($fieldSuffix === substr($field, -$strlen, $strlen)) {
-                    $isCombinedField = true;
-                    $entity->set($field, $factory->renderValue(
-                        $table,
-                        $field,
-                        $entity->get($field),
-                        ['entity' => $entity, 'fieldDefinitions' => ['type' => $fieldType]]
-                    ));
-                }
-            }
-
-            if ($isCombinedField) {
-                continue;
-            }
-
-            // current model field
-            if ($table->hasField($field)) {
-                $entity->set($field, $factory->renderValue($table, $field, $entity->get($field)));
-            }
+    /**
+     * Formats related _matchingData.
+     *
+     * @param mixed[] $data Related data
+     * @param \Cake\ORM\Table $table Table instance
+     * @return mixed[]
+     */
+    private static function formatMatchingData(array $data, Table $table): array
+    {
+        $result = [];
+        foreach ($data as $associationName => $relatedEntity) {
+            $result[$associationName] = self::format(
+                $relatedEntity,
+                $table->getAssociation($associationName)->getTarget()
+            );
         }
 
-        return $entity;
+        return $result;
+    }
+
+    /**
+     * Formats associated entity.
+     *
+     * @param \Cake\Datasource\EntityInterface $entity Associated entity instance
+     * @param \Cake\ORM\Table $table Table instance
+     * @param string $field Field name
+     * @return \Cake\Datasource\EntityInterface
+     */
+    private static function formatAssociatedEntity(EntityInterface $entity, Table $table, string $field): EntityInterface
+    {
+        $association = $table->associations()->getByProperty($field);
+        Assert::isInstanceOf($association, \Cake\ORM\Association::class);
+
+        return self::format($entity, $association->getTarget());
     }
 }
