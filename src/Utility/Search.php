@@ -320,13 +320,9 @@ final class Search
     private static function getDisplayFieldsFromView(string $tableName): array
     {
         list($plugin, $module) = pluginSplit($tableName);
-        try {
-            $config = (new ModuleConfig(ConfigType::VIEW(), $module, 'index'))->parseToArray();
-            $fields = ! empty($config['items']) ? $config['items'] : [];
-        } catch (\InvalidArgumentException $e) {
-            $fields = [];
-            Log::error($e->getMessage());
-        }
+
+        $config = (new ModuleConfig(ConfigType::VIEW(), $module, 'index'))->parseToArray();
+        $fields = ! empty($config['items']) ? $config['items'] : [];
 
         $columns = TableRegistry::getTableLocator()
             ->get($tableName)
