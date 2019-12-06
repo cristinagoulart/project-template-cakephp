@@ -161,6 +161,7 @@ final class Manager
         foreach ($entities as $entity) {
             $result[] = self::formatEntity($entity, $table, $withPermissions);
         }
+
         return $result;
     }
 
@@ -178,6 +179,7 @@ final class Manager
         if (null === $factory) {
             $factory = new FieldHandlerFactory();
         }
+
         $result = [];
         foreach (array_diff($entity->visibleProperties(), $entity->getVirtual()) as $field) {
             // current table field
@@ -185,6 +187,7 @@ final class Manager
                 $result[$table->aliasField($field)] = $factory->renderValue($table, $field, $entity->get($field));
                 continue;
             }
+
             foreach ($entity->get('_matchingData') as $associationName => $relatedEntity) {
                 $result = array_merge($result, self::formatEntity(
                     $relatedEntity,
@@ -193,11 +196,13 @@ final class Manager
                 ));
             }
         }
+
         if ($withPermissions) {
             $primaryKey = $table->getPrimaryKey();
             Assert::string($primaryKey);
             $result['_permissions'] = self::getPermissions($entity->get($primaryKey), $table);
         }
+
         return $result;
     }
     /**
@@ -213,16 +218,20 @@ final class Manager
         if (null === $factory) {
             $factory = new AccessFactory();
         }
+
         list($plugin, $controller) = pluginSplit($table->getAlias());
+
         $urls = [
             'view' => ['prefix' => false, 'plugin' => $plugin, 'controller' => $controller, 'action' => 'view', $id],
             'edit' => ['prefix' => false, 'plugin' => $plugin, 'controller' => $controller, 'action' => 'edit', $id],
             'delete' => ['prefix' => false, 'plugin' => $plugin, 'controller' => $controller, 'action' => 'delete', $id]
         ];
+
         array_walk($urls, function (&$item, $key) use ($factory) {
             $className = sprintf('\App\Controller\%sController', $item['controller']);
             $item = $factory->hasAccess($item, User::getCurrentUser()) && method_exists($className, $item['action']);
         });
+
         return $urls;
     }
 
