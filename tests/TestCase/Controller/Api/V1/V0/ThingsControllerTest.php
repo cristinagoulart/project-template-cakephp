@@ -39,6 +39,22 @@ class ThingsControllerTest extends JsonIntegrationTestCase
 
     /**
      * @param mixed[] $expected
+     * @dataProvider rawDataProvider
+     */
+    public function testIndexRaw(array $expected): void
+    {
+        $this->get('/api/' . Inflector::dasherize($this->moduleName) . '?sort=id&direction=asc');
+        $this->assertJsonResponseOk();
+        $response = $this->getParsedResponse();
+
+        $result = json_decode((string)json_encode($response->data[0]), true);
+        foreach ($expected as $key => $value) {
+            $this->assertSame($value, $result[$key]);
+        }
+    }
+
+    /**
+     * @param mixed[] $expected
      * @dataProvider prettifiedDataProvider
      */
     public function testIndexPrettified(array $expected): void
@@ -48,6 +64,22 @@ class ThingsControllerTest extends JsonIntegrationTestCase
         $response = $this->getParsedResponse();
 
         $result = json_decode((string)json_encode($response->data[0]), true);
+        foreach ($expected as $key => $value) {
+            $this->assertSame($value, $result[$key]);
+        }
+    }
+
+    /**
+     * @param mixed[] $expected
+     * @dataProvider rawDataProvider
+     */
+    public function testViewRaw(array $expected): void
+    {
+        $this->get('/api/' . Inflector::dasherize($this->moduleName) . '/view/00000000-0000-0000-0000-000000000001');
+        $this->assertJsonResponseOk();
+        $response = $this->getParsedResponse();
+
+        $result = json_decode((string)json_encode($response->data), true);
         foreach ($expected as $key => $value) {
             $this->assertSame($value, $result[$key]);
         }
@@ -71,6 +103,22 @@ class ThingsControllerTest extends JsonIntegrationTestCase
 
     /**
      * @param mixed[] $expected
+     * @dataProvider rawDataProvider
+     */
+    public function testRelatedRaw(array $expected): void
+    {
+        $this->get('/api/' . Inflector::dasherize($this->moduleName) . '/related/00000000-0000-0000-0000-000000000002/Thingsprimary_thing');
+        $this->assertJsonResponseOk();
+        $response = $this->getParsedResponse();
+
+        $result = json_decode((string)json_encode($response->data[0]), true);
+        foreach ($expected as $key => $value) {
+            $this->assertSame($value, $result[$key]);
+        }
+    }
+
+    /**
+     * @param mixed[] $expected
      * @dataProvider prettifiedDataProvider
      */
     public function testRelatedPrettified(array $expected): void
@@ -83,6 +131,57 @@ class ThingsControllerTest extends JsonIntegrationTestCase
         foreach ($expected as $key => $value) {
             $this->assertSame($value, $result[$key]);
         }
+    }
+
+    /**
+     * @return mixed[]
+     */
+    public function rawDataProvider(): array
+    {
+        return [
+            [
+                [
+                    'id' => '00000000-0000-0000-0000-000000000001',
+                    'name' => 'Thing #1',
+                    'description' => 'Long description goes here',
+                    'test_list' => '',
+                    'testmetric_amount' => 33.18,
+                    'testmetric_unit' => 'ft',
+                    'testmoney_amount' => 155.22,
+                    'testmoney_currency' => 'USD',
+                    'created' => '2018-01-18T15:47:16+00:00',
+                    'modified' => '2018-01-18T15:47:16+00:00',
+                    'created_by' => '00000000-0000-0000-0000-000000000001',
+                    'modified_by' => '00000000-0000-0000-0000-000000000001',
+                    'trashed' => null,
+                    'country' => 'CY',
+                    'gender' => 'm',
+                    'assigned_to' => '00000000-0000-0000-0000-000000000002',
+                    'salary_amount' => 1000,
+                    'salary_currency' => 'EUR',
+                    'vip' => true,
+                    'area_amount' => 25.74,
+                    'area_unit' => 'm',
+                    'date_of_birth' => '1990-01-17T00:00:00+00:00',
+                    'work_start' => '2019-12-06T08:32:00+00:00',
+                    'website' => 'https://google.com',
+                    'bio' => 'A blob type',
+                    'level' => 7,
+                    'appointment' => '2019-10-29T15:47:16+00:00',
+                    'phone' => '+35725123456',
+                    'email' => '1@thing.com',
+                    'rate' => 25.13,
+                    'primary_thing' => '00000000-0000-0000-0000-000000000002',
+                    'title' => 'Dr',
+                    'language' => 'grc',
+                    'photos' => [],
+                    'file' => [],
+                    'non_searchable' => '',
+                    'sample_date' => null,
+                    'currency' => 'GBP'
+                ]
+            ]
+        ];
     }
 
     /**
