@@ -70,7 +70,9 @@ final class PrettyFormatter
             }
 
             // current model field
-            $entity->set($field, $factory->renderValue($table, $field, $entity->get($field)));
+            if ($table->hasField($field)) {
+                $entity->set($field, $factory->renderValue($table, $field, $entity->get($field)));
+            }
         }
 
         return $entity;
