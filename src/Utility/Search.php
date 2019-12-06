@@ -23,25 +23,11 @@ use Webmozart\Assert\Assert;
 final class Search
 {
     /**
-     * Searchable fields.
-     *
-     * @var array
-     */
-    private static $fields = [];
-
-    /**
      * Search filters.
      *
      * @var array
      */
     private static $filters = [];
-
-    /**
-     * Association labels.
-     *
-     * @var array
-     */
-    private static $associationLabels = [];
 
     private const SUPPORTED_ASSOCIATIONS = [
         Association::MANY_TO_ONE,
@@ -273,10 +259,6 @@ final class Search
      */
     private static function getAssociationLabels(Table $table): array
     {
-        if (! empty(self::$associationLabels[$table->getRegistryAlias()])) {
-            return self::$associationLabels[$table->getRegistryAlias()];
-        }
-
         $result = [];
         foreach ($table->associations() as $association) {
             if (! in_array($association->type(), self::SUPPORTED_ASSOCIATIONS)) {
@@ -289,8 +271,6 @@ final class Search
                 Inflector::humanize(implode(', ', (array)$association->getForeignKey()))
             );
         }
-
-        self::$associationLabels[$table->getRegistryAlias()] = $result;
 
         return $result;
     }
@@ -307,16 +287,10 @@ final class Search
         list($plugin, $controller) = pluginSplit(App::shortName(get_class($table), 'Model/Table', 'Table'));
         $url = ['plugin' => $plugin, 'controller' => $controller, 'action' => 'search'];
 
-        if (! empty(self::$fields[$table->getRegistryAlias()])) {
-            return self::$fields[$table->getRegistryAlias()];
-        }
-
         $result = self::getSearchableFieldsByTable($table);
         if ($withAssociated) {
             $result = array_merge($result, self::includeAssociated($table));
         }
-
-        self::$fields[$table->getRegistryAlias()] = $result;
 
         return $result;
     }
