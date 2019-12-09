@@ -15,7 +15,7 @@ class ThingsControllerTest extends JsonIntegrationTestCase
         'app.things',
         'app.log_audit',
         'app.users',
-        'app.file_storage'
+        'app.file_storage',
     ];
 
     private $moduleName = 'Things';

@@ -28,7 +28,7 @@ return [
                         'selectOptions' => [
                             'mail' => 'Mail',
                             'smtp' => 'Smtp',
-                            'debug' => 'Debug'
+                            'debug' => 'Debug',
                         ],
                         'scope' => [
                             'app',
@@ -41,7 +41,7 @@ return [
                         'type' => 'string',
                         'help' => '',
                         'scope' => [
-                            'app'
+                            'app',
                         ],
                     ],
                     'Port' => [
@@ -49,7 +49,7 @@ return [
                         'type' => 'string',
                         'help' => '',
                         'scope' => [
-                            'app'
+                            'app',
                         ],
                     ],
                     'Timeout' => [
@@ -57,7 +57,7 @@ return [
                         'type' => 'integer',
                         'help' => '',
                         'scope' => [
-                            'app'
+                            'app',
                         ],
                     ],
                     'Username' => [
@@ -65,7 +65,7 @@ return [
                         'type' => 'string',
                         'help' => '',
                         'scope' => [
-                            'app'
+                            'app',
                         ],
                     ],
                     'Password' => [
@@ -73,7 +73,7 @@ return [
                         'type' => 'string',
                         'help' => '',
                         'scope' => [
-                            'app'
+                            'app',
                         ],
                     ],
                     'TLS' => [
@@ -81,11 +81,11 @@ return [
                         'type' => 'boolean',
                         'help' => '',
                         'scope' => [
-                            'app'
+                            'app',
                         ],
                     ],
                 ],
-            ]
+            ],
         ],
         'Security' => [
             'Authentication' => [
@@ -95,7 +95,7 @@ return [
                         'type' => 'boolean',
                         'help' => '',
                         'scope' => [
-                            'app'
+                            'app',
                         ],
                     ],
                     'Username' => [
@@ -103,7 +103,7 @@ return [
                         'type' => 'string',
                         'help' => '',
                         'scope' => [
-                            'app'
+                            'app',
                         ],
                     ],
                     'Password' => [
@@ -111,7 +111,7 @@ return [
                         'type' => 'string',
                         'help' => '',
                         'scope' => [
-                            'app'
+                            'app',
                         ],
                     ],
                     'Host' => [
@@ -119,7 +119,7 @@ return [
                         'type' => 'string',
                         'help' => '',
                         'scope' => [
-                            'app'
+                            'app',
                         ],
                     ],
                     'Port' => [
@@ -127,7 +127,7 @@ return [
                         'type' => 'integer',
                         'help' => '',
                         'scope' => [
-                            'app'
+                            'app',
                         ],
                     ],
                     'Version' => [
@@ -135,7 +135,7 @@ return [
                         'type' => 'string',
                         'help' => '',
                         'scope' => [
-                            'app'
+                            'app',
                         ],
                     ],
                     'Domain' => [
@@ -143,7 +143,7 @@ return [
                         'type' => 'string',
                         'help' => '',
                         'scope' => [
-                            'app'
+                            'app',
                         ],
                     ],
                     'BaseDN' => [
@@ -151,7 +151,7 @@ return [
                         'type' => 'string',
                         'help' => '',
                         'scope' => [
-                            'app'
+                            'app',
                         ],
                     ],
                     'Filter' => [
@@ -159,7 +159,7 @@ return [
                         'type' => 'string',
                         'help' => '',
                         'scope' => [
-                            'app'
+                            'app',
                         ],
                     ],
                 ],
@@ -173,7 +173,7 @@ return [
                         'type' => 'boolean',
                         'help' => 'Use this with caution! All errors will be displayed and debug messages will be logged.',
                         'scope' => [
-                            'app'
+                            'app',
                         ],
                     ],
                 ],

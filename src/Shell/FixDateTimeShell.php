@@ -46,7 +46,7 @@ class FixDateTimeShell extends BaseShell
         $parser->setDescription('Checking for datetime fields to be updated');
         $parser->addOption('module', [
             'short' => 'm',
-            'help' => 'Specific module to fix'
+            'help' => 'Specific module to fix',
         ]);
 
         $parser->addOption('timezonefrom', ['short' => 'f', 'help' => 'Select the current timezone', 'default' => '']);
@@ -220,7 +220,7 @@ class FixDateTimeShell extends BaseShell
             $dateTimeFixData = [
                 'module' => $module,
                 'record_id' => $entity->get($primaryKey),
-                'updated' => true
+                'updated' => true,
             ];
 
             $createDateTimeFixRecord = $dateTimeFixTable->newEntity();

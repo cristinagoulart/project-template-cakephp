@@ -32,8 +32,8 @@ class SettingsShell extends Shell
                         'reset' => [
                             'help' => __('Insert key'),
                             'required' => true,
-                        ]
-                    ]
+                        ],
+                    ],
                 ],
             ]);
         $parser->addSubcommand('resetAll', [
@@ -42,8 +42,8 @@ class SettingsShell extends Shell
                     'options' => [
                         'reset' => [
                             'required' => false,
-                        ]
-                    ]
+                        ],
+                    ],
                 ],
             ]);
 

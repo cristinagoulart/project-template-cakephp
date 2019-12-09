@@ -31,11 +31,11 @@ class ManagerTest extends TestCase
         $expected = [
             'data' => [
                 ['field' => 'country', 'operator' => 'is', 'value' => ['CY']],
-                ['field' => 'avg(budget)', 'operator' => 'greater', 'value' => 1000]
+                ['field' => 'avg(budget)', 'operator' => 'greater', 'value' => 1000],
             ],
             'fields' => ['created', 'modified', 'avg(budget)', 'count(status)'],
             'order' => ['created' => 'asc'],
-            'group' => 'status'
+            'group' => 'status',
         ];
 
         $data = [
@@ -44,14 +44,14 @@ class ManagerTest extends TestCase
             'fields' => ['created', 'modified', 'avg(budget)', 'count(status)'],
             'criteria' => [
                 'country' => [
-                    ['operator' => 'is', 'value' => ['CY']]
+                    ['operator' => 'is', 'value' => ['CY']],
                 ],
                 'avg(budget)' => [
-                    ['operator' => 'greater', 'value' => 1000]
-                ]
+                    ['operator' => 'greater', 'value' => 1000],
+                ],
             ],
             'group_by' => 'status',
-            'aggregator' => 'AND'
+            'aggregator' => 'AND',
         ];
 
         $this->assertSame($expected, Manager::getOptionsFromRequest($data, []));
@@ -62,15 +62,15 @@ class ManagerTest extends TestCase
         $data = [
             'criteria' => [
                 'assigned_to' => [
-                    ['operator' => 'is_not', 'value' => '%%me%%']
-                ]
-            ]
+                    ['operator' => 'is_not', 'value' => '%%me%%'],
+                ],
+            ],
         ];
 
         $expected = [
             'data' => [
-                ['field' => 'assigned_to', 'operator' => 'is_not', 'value' => User::getCurrentUser()['id']]
-            ]
+                ['field' => 'assigned_to', 'operator' => 'is_not', 'value' => User::getCurrentUser()['id']],
+            ],
         ];
 
         $this->assertSame($expected, Manager::getOptionsFromRequest($data, []));
@@ -81,15 +81,15 @@ class ManagerTest extends TestCase
         $data = [
             'criteria' => [
                 'assigned_to' => [
-                    ['operator' => 'is_not', 'value' => ['%%me%%', '%%me%%']]
-                ]
-            ]
+                    ['operator' => 'is_not', 'value' => ['%%me%%', '%%me%%']],
+                ],
+            ],
         ];
 
         $expected = [
             'data' => [
-                ['field' => 'assigned_to', 'operator' => 'is_not', 'value' => [User::getCurrentUser()['id'], User::getCurrentUser()['id']]]
-            ]
+                ['field' => 'assigned_to', 'operator' => 'is_not', 'value' => [User::getCurrentUser()['id'], User::getCurrentUser()['id']]],
+            ],
         ];
 
         $this->assertSame($expected, Manager::getOptionsFromRequest($data, []));

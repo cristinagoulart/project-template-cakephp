@@ -82,7 +82,7 @@ class MagicValueTest extends TestCase
             ['%%me%%'],
             ['%%today%%'],
             ['%%yesterday%%'],
-            ['%%tomorrow%%']
+            ['%%tomorrow%%'],
         ];
     }
 }

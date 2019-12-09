@@ -18,12 +18,12 @@ return [
                 'size' => 160,
                 'length' => 2,
                 'background' => ['#00c0ef', '#00a65a', '#d81b60', '#605ca8', '#39CCCC', '#f56954'],
-            ]
+            ],
         ],
         'order' => [
             App\Avatar\Type\ImageSource::class,
             App\Avatar\Type\Gravatar::class,
             App\Avatar\Type\DynamicAvatar::class,
-        ]
-    ]
+        ],
+    ],
 ];

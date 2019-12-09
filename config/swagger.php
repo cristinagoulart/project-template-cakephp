@@ -10,7 +10,7 @@ return [
             'validator' => true,
             'api_selector' => true,
             'route' => '/swagger/',
-            'schemes' => ['http', 'https']
+            'schemes' => ['http', 'https'],
         ],
         'docs' => [
             'crawl' => (bool)Configure::read('debug') || (bool)Configure::read('Swagger.crawl'),
@@ -18,16 +18,16 @@ return [
             'cors' => [
                 'Access-Control-Allow-Origin' => '*',
                 'Access-Control-Allow-Methods' => 'GET, POST',
-                'Access-Control-Allow-Headers' => 'X-Requested-With'
-            ]
+                'Access-Control-Allow-Headers' => 'X-Requested-With',
+            ],
         ],
         'library' => [
             'api' => [
                 'include' => [
-                    ROOT . DS . 'src' . DS . 'Controller' . DS . 'Api' . DS . 'V1' . DS . 'V0'
-                ]
-            ]
+                    ROOT . DS . 'src' . DS . 'Controller' . DS . 'Api' . DS . 'V1' . DS . 'V0',
+                ],
+            ],
         ],
-        'analyser' => new Analyser()
-    ]
+        'analyser' => new Analyser(),
+    ],
 ];

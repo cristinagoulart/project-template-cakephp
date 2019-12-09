@@ -44,7 +44,7 @@ class ScheduledJobLogsTable extends Table
 
         $this->belongsTo('ScheduledJobs', [
             'foreignKey' => 'scheduled_job_id',
-            'joinType' => 'INNER'
+            'joinType' => 'INNER',
         ]);
     }
 

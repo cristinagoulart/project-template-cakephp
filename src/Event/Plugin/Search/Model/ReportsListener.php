@@ -19,7 +19,7 @@ class ReportsListener implements EventListenerInterface
     public function implementedEvents()
     {
         return [
-            (string)EventName::MODEL_DASHBOARDS_GET_REPORTS() => 'getReports'
+            (string)EventName::MODEL_DASHBOARDS_GET_REPORTS() => 'getReports',
         ];
     }
 

@@ -21,7 +21,7 @@ class PluginShell extends CorePluginShell
      */
     public $tasks = [
         'List',
-        'Migrations'
+        'Migrations',
     ];
 
     /**

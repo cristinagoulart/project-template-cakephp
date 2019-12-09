@@ -26,7 +26,7 @@ class ControllerApiTest extends JsonIntegrationTestCase
         'app.things',
         'app.log_audit',
         'app.users',
-        'app.file_storage'
+        'app.file_storage',
     ];
 
     public function setUp()
@@ -157,22 +157,22 @@ class ControllerApiTest extends JsonIntegrationTestCase
             [
                 'name' => 'testmetric_amount',
                 'type' => 'metric',
-                'db_type' => 'decimal'
+                'db_type' => 'decimal',
             ],
             [
                 'name' => 'testmetric_unit',
                 'type' => 'metric',
-                'db_type' => 'string'
+                'db_type' => 'string',
             ],
             [
                 'name' => 'testmoney_amount',
                 'type' => 'money',
-                'db_type' => 'decimal'
+                'db_type' => 'decimal',
             ],
             [
                 'name' => 'testmoney_currency',
                 'type' => 'money',
-                'db_type' => 'string'
+                'db_type' => 'string',
             ],
             [
                 'name' => 'test_list',
@@ -184,21 +184,21 @@ class ControllerApiTest extends JsonIntegrationTestCase
                         'children' => [
                             [
                                 'label' => 'first children',
-                                'value' => 'first.first_children'
+                                'value' => 'first.first_children',
                             ],
                             [
                                 'label' => 'second children',
-                                'value' => 'first.second_children'
-                            ]
+                                'value' => 'first.second_children',
+                            ],
                         ],
-                        'value' => 'first'
+                        'value' => 'first',
                     ],
                     [
                         'label' => 'second',
-                        'value' => 'second'
-                    ]
-                ]
-            ]
+                        'value' => 'second',
+                    ],
+                ],
+            ],
         ];
 
         $this->assertSame([], array_diff(Hash::flatten($expected), Hash::flatten($data)));

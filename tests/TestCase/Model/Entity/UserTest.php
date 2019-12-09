@@ -10,7 +10,7 @@ use Webmozart\Assert\Assert;
 class ContactTest extends TestCase
 {
     public $fixtures = [
-        'app.users'
+        'app.users',
     ];
 
     private $table;

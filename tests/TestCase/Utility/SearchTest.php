@@ -12,7 +12,7 @@ class SearchTest extends TestCase
     public $fixtures = [
         'app.saved_searches',
         'app.things',
-        'app.users'
+        'app.users',
     ];
 
     public function setUp(): void
@@ -31,7 +31,7 @@ class SearchTest extends TestCase
             'label' => 'Email',
             'field' => 'AssignedToUsers.email',
             'association' => 'manyToOne',
-            'group' => 'Users (Assigned To)'
+            'group' => 'Users (Assigned To)',
         ];
         $index = array_search($expected['field'], array_column($result, 'field'));
         $this->assertSame($expected, $result[$index]);
@@ -40,7 +40,7 @@ class SearchTest extends TestCase
             'type' => 'string',
             'label' => 'label name',
             'field' => 'Things.name',
-            'group' => 'Things'
+            'group' => 'Things',
         ];
         $index = array_search($expected['field'], array_column($result, 'field'));
         $this->assertSame($expected, $result[$index]);
@@ -53,7 +53,7 @@ class SearchTest extends TestCase
             'Things.gender',
             'Things.assigned_to',
             'Things.created',
-            'Things.modified'
+            'Things.modified',
         ];
 
         $this->assertSame($expected, Search::getDisplayFields('Things'));
@@ -65,7 +65,7 @@ class SearchTest extends TestCase
             'name' => 'Things grouped by created date',
             'model' => 'Things',
             'fields' => ['Things.created', 'COUNT(Things.created)'],
-            'group_by' => 'Things.created'
+            'group_by' => 'Things.created',
         ]);
 
         $result = Search::getChartOptions($savedSearch);
@@ -99,7 +99,7 @@ class SearchTest extends TestCase
     {
         $savedSearch = new SavedSearch([
             'name' => 'Things NOT grouped by',
-            'model' => 'Things'
+            'model' => 'Things',
         ]);
 
         $this->assertSame([], Search::getChartOptions($savedSearch));
@@ -111,7 +111,7 @@ class SearchTest extends TestCase
             'name' => 'Things NOT grouped by',
             'model' => 'Things',
             'fields' => ['Things.created'],
-            'group_by' => 'Things.created'
+            'group_by' => 'Things.created',
         ]);
 
         $this->assertSame([], Search::getChartOptions($savedSearch));
@@ -122,7 +122,7 @@ class SearchTest extends TestCase
         $savedSearch = new SavedSearch([
             'name' => 'Things NOT grouped by',
             'model' => 'Things',
-            'fields' => ['COUNT(Things.created)']
+            'fields' => ['COUNT(Things.created)'],
         ]);
 
         $result = Search::getChartOptions($savedSearch);

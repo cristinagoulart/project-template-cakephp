@@ -72,7 +72,7 @@ class UsersControllerTest extends IntegrationTestCase
         $this->configRequest([
             'headers' => [
                 'Accept' => 'application/json',
-                'Content-Type' => 'application/json'
+                'Content-Type' => 'application/json',
             ],
         ]);
     }
@@ -88,7 +88,7 @@ class UsersControllerTest extends IntegrationTestCase
             'headers' => [
                 'Accept' => 'application/json',
                 'Content-Type' => 'application/json',
-                'authorization' => 'Bearer ' . $token
+                'authorization' => 'Bearer ' . $token,
             ],
         ]);
     }
@@ -128,7 +128,7 @@ class UsersControllerTest extends IntegrationTestCase
             'username' => 'foo',
             'email' => 'foo@company.com',
             'password' => 'bar',
-            'active' => true
+            'active' => true,
         ];
 
         $this->post('/api/users/add.json', $data);
@@ -176,7 +176,7 @@ class UsersControllerTest extends IntegrationTestCase
         $id = '00000000-0000-0000-0000-000000000001';
 
         $data = [
-            'first_name' => 'Some really random first name'
+            'first_name' => 'Some really random first name',
         ];
 
         $entity = $this->Users->get($id);

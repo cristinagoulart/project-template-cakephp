@@ -22,12 +22,12 @@ class FakerShell extends Shell
         $parser->setDescription('Generate fake data.');
         $parser->addArgument('model', [
             'help' => 'Model name to generate fake data for.',
-            'required' => true
+            'required' => true,
         ]);
         $parser->addOption('number', [
             'short' => 'n',
             'help' => 'Number of fake records to create.',
-            'default' => 10
+            'default' => 10,
         ]);
 
         return $parser;
@@ -229,7 +229,7 @@ class FakerShell extends Shell
 
             $result[Inflector::underscore($className)] = [
                 'className' => $fullClassName,
-                'shortName' => $className
+                'shortName' => $className,
             ];
         }
 

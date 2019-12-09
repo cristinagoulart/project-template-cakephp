@@ -24,8 +24,8 @@ class LogsController extends BaseLogsController
             'DatabaseLogs.created',
             'DatabaseLogs.type',
             'DatabaseLogs.message',
-            'DatabaseLogs.id'
-        ]
+            'DatabaseLogs.id',
+        ],
     ];
 
     /**

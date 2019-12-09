@@ -123,7 +123,7 @@ class DatabaseLogShell extends BaseShell
         ]);
         $query = $query->where([
             'type' => $logLevel,
-            'created >= ' => $since
+            'created >= ' => $since,
         ]);
         $query = $query->group(['message']);
         $query = $query->order(['count' => 'DESC']);
@@ -149,8 +149,8 @@ class DatabaseLogShell extends BaseShell
                     'since' => [
                         'help' => __('Period to be exported. Example "-1 day"'),
                         'required' => false,
-                    ]
-                ]
+                    ],
+                ],
             ],
         ]);
 
