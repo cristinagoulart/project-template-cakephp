@@ -119,7 +119,8 @@ class SettingsShell extends Shell
             'value' => Configure::read($index),
             'scope' => 'app',
             'context' => 'app',
-            'type' => $alias[$index] // dynamic field to pass `type` to the validator
+            // dynamic field to pass `type` to the validator
+            'type' => $alias[$index] === "list" ? "string" : $alias[$index]
         ];
     }
 
