@@ -120,7 +120,7 @@ class SettingsShell extends Shell
             'scope' => 'app',
             'context' => 'app',
             // dynamic field to pass `type` to the validator
-            'type' => $alias[$index] === "list" ? "string" : $alias[$index]
+            'type' => $alias[$index] === "list" ? "string" : $alias[$index],
         ];
     }
 
