@@ -39,7 +39,7 @@ trait MenuEntityTrait
             'icon' => 'eye',
             'label' => __('View'),
             'type' => 'link_button',
-            'order' => 100
+            'order' => 100,
         ]);
     }
 
@@ -61,7 +61,7 @@ trait MenuEntityTrait
             'icon' => 'pencil',
             'label' => __('Edit'),
             'type' => 'link_button',
-            'order' => 110
+            'order' => 110,
         ]);
     }
 
@@ -92,7 +92,7 @@ trait MenuEntityTrait
             'confirmMsg' => __(
                 'Are you sure you want to delete {0}?',
                 empty(trim($displayName)) ? 'this record' : strip_tags($displayName)
-            )
+            ),
         ];
 
         if ($useApi) {

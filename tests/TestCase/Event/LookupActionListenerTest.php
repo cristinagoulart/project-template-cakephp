@@ -69,7 +69,7 @@ class LookupActionListenerTest extends TestCase
                 'plugin' => null,
                 '_ext' => 'json',
                 '_matchedRoute' => '/api/:controller/:action/*',
-                'isAjax' => true
+                'isAjax' => true,
             ],
             'query' => $query,
         ]);

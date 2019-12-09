@@ -37,9 +37,9 @@ class ScheduledLogShell extends Shell
                     'age' => [
                         'help' => __('Time to delete (ex: -1 day / -1 months)'),
                         'required' => false,
-                        'short' => 'a'
-                    ]
-                ]
+                        'short' => 'a',
+                    ],
+                ],
             ],
         ]);
 

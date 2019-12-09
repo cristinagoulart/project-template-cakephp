@@ -53,7 +53,7 @@ final class Gravatar extends AbstractAvatar
         $response = $http->get($gravatarBaseUrl . $this->options['email'], [
             'size' => $this->options['size'],
             'default' => $this->options['default'],
-            'rating' => $this->options['rating']
+            'rating' => $this->options['rating'],
         ]);
 
         if (404 == $response->getStatusCode()) {

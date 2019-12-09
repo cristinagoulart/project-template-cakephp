@@ -43,7 +43,7 @@ class BatchActionListener implements EventListenerInterface
                 'plugin' => $controller->getPlugin(),
                 'controller' => $controller->getName(),
                 'action' => $operation,
-                $batchId
+                $batchId,
             ];
             if ($this->_checkAccess($url, $user)) {
                 $result[] = $batchId;

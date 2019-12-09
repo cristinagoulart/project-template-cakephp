@@ -169,15 +169,15 @@ abstract class BaseActionListener implements EventListenerInterface
 
             if ($unit) {
                 $fieldDefinitions = [
-                    'type' => 'list(units_area)'
+                    'type' => 'list(units_area)',
                 ];
             } elseif ($amount) {
                 $fieldDefinitions = [
-                    'type' => 'decimal'
+                    'type' => 'decimal',
                 ];
             } elseif ($currency) {
                 $fieldDefinitions = [
-                    'type' => 'currency(currencies)'
+                    'type' => 'currency(currencies)',
                 ];
             }
 
@@ -230,7 +230,7 @@ abstract class BaseActionListener implements EventListenerInterface
             'controller' => $this->getControllerName($table),
             'displayField' => $table->getDisplayField(),
             'entity' => $entity,
-            'user' => $user
+            'user' => $user,
         ];
 
         $entity->set(static::MENU_PROPERTY_NAME, $this->getView()->element('Module/Menu/index_actions', $data));
@@ -254,7 +254,7 @@ abstract class BaseActionListener implements EventListenerInterface
             'controller' => $controller,
             'displayField' => $table->getDisplayField(),
             'entity' => $entity,
-            'user' => $user
+            'user' => $user,
         ];
 
         $entity->set(static::MENU_PROPERTY_NAME, $this->getView()->element('Module/Menu/related_actions', $data));

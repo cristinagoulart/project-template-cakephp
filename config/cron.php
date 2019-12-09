@@ -8,11 +8,11 @@ return [
                 'FakerShell',
                 'PluginShell',
                 'CronShell',
-                'FixDateTimeShell'
+                'FixDateTimeShell',
             ],
             'skipPlugins' => [
                 'Bake',
             ],
         ],
-    ]
+    ],
 ];

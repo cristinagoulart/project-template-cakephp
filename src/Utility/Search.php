@@ -50,7 +50,7 @@ final class Search
     private const SUPPORTED_ASSOCIATIONS = [
         Association::MANY_TO_ONE,
         Association::MANY_TO_MANY,
-        Association::ONE_TO_MANY
+        Association::ONE_TO_MANY,
     ];
 
     /**
@@ -61,7 +61,7 @@ final class Search
     private const CHARTS = [
         ['type' => 'funnelChart', 'icon' => 'filter', 'class' => '\Search\Widgets\Reports\DonutChartReportWidget'],
         ['type' => 'pie', 'icon' => 'pie-chart', 'class' => '\Search\Widgets\Reports\PieChartReportWidget'],
-        ['type' => 'bar', 'icon' => 'bar-chart', 'class' => '\Search\Widgets\Reports\BarChartReportWidget']
+        ['type' => 'bar', 'icon' => 'bar-chart', 'class' => '\Search\Widgets\Reports\BarChartReportWidget'],
     ];
 
     /**
@@ -168,7 +168,7 @@ final class Search
             'conjunction' => $savedSearch->get('conjunction'),
             'sort' => $savedSearch->get('order_by_field'),
             'direction' => $savedSearch->get('order_by_direction'),
-            'group_by' => $savedSearch->get('group_by')
+            'group_by' => $savedSearch->get('group_by'),
         ], []));
 
         $rowLabel = sprintf('%s (%s)', $aggregateField, $aggregateType);
@@ -191,7 +191,7 @@ final class Search
                 'icon' => $chart['icon'],
                 'id' => Inflector::delimit($chart['type']) . '_' . uniqid(),
                 'chart' => $chart['type'],
-                'slug' => $savedSearch->get('name')
+                'slug' => $savedSearch->get('name'),
             ];
 
             switch ($chart['type']) {
@@ -203,8 +203,8 @@ final class Search
                         'info' => [
                             'columns' => implode(',', [$rowLabel, $rowValue]),
                             'x_axis' => $rowValue,
-                            'y_axis' => $rowLabel
-                        ]
+                            'y_axis' => $rowLabel,
+                        ],
                     ]);
 
                     $widget->setContainerId($options);
@@ -215,7 +215,7 @@ final class Search
                     foreach ($rows as $row) {
                         $data[] = [
                             'value' => Hash::get($row, $rowLabel),
-                            'label' => Hash::get($row, $rowValue)
+                            'label' => Hash::get($row, $rowValue),
                         ];
                     }
 
@@ -225,15 +225,15 @@ final class Search
                             'hideHover' => true,
                             'labels' => [
                                 Inflector::humanize($rowLabel),
-                                Inflector::humanize($rowValue)
+                                Inflector::humanize($rowValue),
                             ],
                             'xkey' => [$rowValue],
                             'ykeys' => [$rowLabel],
                             'dataChart' => [
                                 'type' => $chart['type'],
-                                'data' => $data
-                            ]
-                        ]
+                                'data' => $data,
+                            ],
+                        ],
                     ];
 
                     break;

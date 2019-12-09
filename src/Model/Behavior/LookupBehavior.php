@@ -70,7 +70,7 @@ class LookupBehavior extends Behavior
             }
 
             $query->where([
-                $table->aliasField($primaryKey) => $options['value']
+                $table->aliasField($primaryKey) => $options['value'],
             ]);
 
             return;
@@ -85,7 +85,7 @@ class LookupBehavior extends Behavior
             }
 
             $query->orWhere([
-                $table->aliasField($field) => $options['value']
+                $table->aliasField($field) => $options['value'],
             ]);
         }
     }
@@ -323,7 +323,7 @@ class LookupBehavior extends Behavior
             }
 
             $query->where([
-                $table->aliasField($primaryKey) => $options['value']
+                $table->aliasField($primaryKey) => $options['value'],
             ]);
 
             return $query;
@@ -338,7 +338,7 @@ class LookupBehavior extends Behavior
             }
 
             $query->orWhere([
-                $table->aliasField($field) => $options['value']
+                $table->aliasField($field) => $options['value'],
             ]);
         }
 

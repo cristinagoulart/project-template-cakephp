@@ -28,8 +28,8 @@ class AccessMenuListener implements EventListenerInterface
         return [
             (string)MenuEventName::GET_MENU_ITEMS() => [
                 'callable' => 'getMenuItems',
-                'priority' => 100
-            ]
+                'priority' => 100,
+            ],
         ];
     }
 

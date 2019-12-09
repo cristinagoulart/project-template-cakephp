@@ -167,7 +167,7 @@ class LdapAuthenticate extends BaseAuthenticate
 
         // look for the user in the database
         $query = $table->find('all', [
-            'conditions' => [$this->_config['fields']['username'] => $request->getData('username')]
+            'conditions' => [$this->_config['fields']['username'] => $request->getData('username')],
         ])->enableHydration(true);
 
         $entity = $query->first();

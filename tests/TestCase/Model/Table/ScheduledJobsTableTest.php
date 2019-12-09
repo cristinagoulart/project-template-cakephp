@@ -28,7 +28,7 @@ class ScheduledJobsTableTest extends TestCase
      */
     public $fixtures = [
         'app.log_audit',
-        'app.scheduled_jobs'
+        'app.scheduled_jobs',
     ];
 
     /**
