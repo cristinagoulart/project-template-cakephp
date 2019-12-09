@@ -427,7 +427,7 @@ class BaseModuleController extends AppController
         $event = new Event((string)EventName::BATCH_IDS(), $this, [
             $batchIds,
             $operation,
-            $this->Auth->user()
+            $this->Auth->user(),
         ]);
         $this->getEventManager()->dispatch($event);
 

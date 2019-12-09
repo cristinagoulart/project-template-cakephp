@@ -36,7 +36,7 @@ class GravatarTest extends TestCase
                 ],
                 false,
                 'Non existing email should return 404 from Gravar',
-            ]
+            ],
         ];
     }
 }

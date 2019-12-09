@@ -25,7 +25,7 @@ class AppTable extends Table
         parent::initialize($config);
 
         $this->addBehavior('AuditStash.AuditLog', [
-            'blacklist' => ['created', 'modified', 'created_by', 'modified_by']
+            'blacklist' => ['created', 'modified', 'created_by', 'modified_by'],
         ]);
 
         $tableConfig = (new ModuleConfig(ConfigType::MODULE(), App::shortName(get_class($this), 'Model/Table', 'Table')))->parseToArray();
@@ -36,7 +36,7 @@ class AppTable extends Table
             $this->addBehavior('Search.Searchable', [
                 'fields' => array_keys(array_filter($fieldsConfig, function ($definition) {
                     return ! (bool)$definition['non-searchable'];
-                }))
+                })),
             ]);
         }
 

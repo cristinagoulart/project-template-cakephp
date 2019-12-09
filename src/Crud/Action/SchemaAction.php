@@ -25,12 +25,12 @@ class SchemaAction extends BaseAction
         'enabled' => true,
         'api' => [
             'success' => [
-                'code' => 200
+                'code' => 200,
             ],
             'error' => [
-                'code' => 400
-            ]
-        ]
+                'code' => 400,
+            ],
+        ],
     ];
 
     /**
@@ -68,7 +68,7 @@ class SchemaAction extends BaseAction
             $csvField = new CsvField($field);
             $data = [
                 'name' => $csvField->getName(),
-                'type' => $csvField->getType()
+                'type' => $csvField->getType(),
             ];
             // Check if exist a label, or required, non_searchable, unique are set as true.
             !empty($fieldJson[$csvField->getName()]['label']) ? $data['label'] = $fieldJson[$csvField->getName()]['label'] : '';
@@ -146,7 +146,7 @@ class SchemaAction extends BaseAction
                 'model' => App::shortName(get_class($association->getTarget()), 'Model/Table', 'Table'),
                 'type' => $association->type(),
                 'primary_key' => $association->getBindingKey(),
-                'foreign_key' => $association->getForeignKey()
+                'foreign_key' => $association->getForeignKey(),
             ];
         }
 

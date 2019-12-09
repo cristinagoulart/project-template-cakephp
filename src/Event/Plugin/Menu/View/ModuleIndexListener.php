@@ -24,7 +24,7 @@ class ModuleIndexListener implements EventListenerInterface
     public function implementedEvents()
     {
         return [
-            (string)MenuEventName::GET_MENU_ITEMS() => 'getMenuItems'
+            (string)MenuEventName::GET_MENU_ITEMS() => 'getMenuItems',
         ];
     }
 

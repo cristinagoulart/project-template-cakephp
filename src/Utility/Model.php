@@ -78,7 +78,7 @@ final class Model
             'label' => $this->getLabel($column),
             'type' => $this->getType($column),
             'db_type' => $this->table->getSchema()->getColumnType($column),
-            'meta' => $this->getMeta($column)
+            'meta' => $this->getMeta($column),
         ];
 
         if (in_array($result['type'], self::LIST_TYPES, true)) {
@@ -139,7 +139,7 @@ final class Model
         $combinedFields = [
             ['_amount', 'decimal'],
             ['_currency', 'currency'],
-            ['_unit', 'list']
+            ['_unit', 'list'],
         ];
 
         /**

@@ -37,12 +37,12 @@ class SearchAction extends BaseAction
         'api' => [
             'methods' => ['post'],
             'success' => [
-                'code' => 200
+                'code' => 200,
             ],
             'error' => [
-                'code' => 400
-            ]
-        ]
+                'code' => 400,
+            ],
+        ],
     ];
 
     /**
@@ -71,7 +71,7 @@ class SearchAction extends BaseAction
         $this->_trigger('beforePaginate', $subject);
         $resultSet = $this->_controller()->paginate($subject->query, [
             'limit' => $this->_request()->getData('limit', 10),
-            'page' => $this->_request()->getData('page', 1)
+            'page' => $this->_request()->getData('page', 1),
         ]);
 
         $subject->set(['entities' => SearchManager::formatEntities(

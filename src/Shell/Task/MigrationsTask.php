@@ -32,7 +32,7 @@ class MigrationsTask extends Shell
      * @var array
      */
     public $tasks = [
-        'Migrate'
+        'Migrate',
     ];
 
     /**
@@ -55,7 +55,7 @@ class MigrationsTask extends Shell
             ->addOption('connection', [
                 'short' => 'c',
                 'help' => 'The datasource connection to use',
-                'required' => false
+                'required' => false,
             ]);
 
         return $parser;

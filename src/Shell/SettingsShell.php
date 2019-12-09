@@ -32,8 +32,8 @@ class SettingsShell extends Shell
                         'reset' => [
                             'help' => __('Insert key'),
                             'required' => true,
-                        ]
-                    ]
+                        ],
+                    ],
                 ],
             ]);
         $parser->addSubcommand('resetAll', [
@@ -42,8 +42,8 @@ class SettingsShell extends Shell
                     'options' => [
                         'reset' => [
                             'required' => false,
-                        ]
-                    ]
+                        ],
+                    ],
                 ],
             ]);
 
@@ -119,7 +119,7 @@ class SettingsShell extends Shell
             'value' => Configure::read($index),
             'scope' => 'app',
             'context' => 'app',
-            'type' => $alias[$index] // dynamic field to pass `type` to the validator
+            'type' => $alias[$index], // dynamic field to pass `type` to the validator
         ];
     }
 

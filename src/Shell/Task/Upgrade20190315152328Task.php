@@ -34,7 +34,7 @@ class Upgrade20190315152328Task extends Shell
         $task->add('CakeShell::Search:search', [
             'recurrence' => 'FREQ=DAILY;INTERVAL=1',
             'start_date' => new Time('now'),
-            'options' => 'cleanup'
+            'options' => 'cleanup',
         ]);
 
         return true;

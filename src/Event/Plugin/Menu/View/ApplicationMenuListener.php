@@ -22,8 +22,8 @@ class ApplicationMenuListener implements EventListenerInterface
         return [
             (string)MenuEventName::GET_MENU_ITEMS() => [
                 'callable' => 'getMenuItems',
-                'priority' => 1
-            ]
+                'priority' => 1,
+            ],
         ];
     }
 

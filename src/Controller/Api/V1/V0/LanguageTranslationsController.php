@@ -46,7 +46,7 @@ class LanguageTranslationsController extends AppController
                     $table->aliasField('object_model'),
                     $table->aliasField('object_foreign_key'),
                     $table->aliasField('object_field'),
-                    'Languages.code'
+                    'Languages.code',
                 ]]);
             } else {
                 // In case of missing params to return empty dataset instead of all records

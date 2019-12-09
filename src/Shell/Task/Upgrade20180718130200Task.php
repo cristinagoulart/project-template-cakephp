@@ -143,7 +143,7 @@ class Upgrade20180718130200Task extends Shell
 
             $table = $this->getTableFromPath([
                 'short_name' => App::shortName($className, 'Model/Table', 'Table'),
-                'class_name' => $className
+                'class_name' => $className,
             ]);
 
             if (is_null($table)) {
@@ -251,7 +251,7 @@ class Upgrade20180718130200Task extends Shell
         return [
             'table' => $association->getTarget()->getTable(),
             'primary_key' => $association->getTarget()->getPrimaryKey(),
-            'foreign_key' => $association->getForeignKey()
+            'foreign_key' => $association->getForeignKey(),
         ];
     }
 
@@ -297,7 +297,7 @@ class Upgrade20180718130200Task extends Shell
         $query->select([
             'COLUMN_NAME as foreign_key',
             'REFERENCED_TABLE_NAME AS table',
-            'REFERENCED_COLUMN_NAME AS primary_key'
+            'REFERENCED_COLUMN_NAME AS primary_key',
         ]);
         $query->from('INFORMATION_SCHEMA.KEY_COLUMN_USAGE');
         $query->where(['REFERENCED_TABLE_SCHEMA' => $config['database'], 'TABLE_NAME' => $table->getTable()]);

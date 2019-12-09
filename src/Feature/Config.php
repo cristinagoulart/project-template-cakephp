@@ -29,7 +29,7 @@ class Config
     {
         $required = [
             'name' => ['type' => 'string'],
-            'active' => ['type' => 'boolean']
+            'active' => ['type' => 'boolean'],
         ];
 
         foreach ($required as $field => $options) {

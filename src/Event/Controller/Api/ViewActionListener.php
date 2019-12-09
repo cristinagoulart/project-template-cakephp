@@ -21,7 +21,7 @@ class ViewActionListener extends BaseActionListener
     {
         return [
             (string)EventName::API_VIEW_BEFORE_FIND() => 'beforeFind',
-            (string)EventName::API_VIEW_AFTER_FIND() => 'afterFind'
+            (string)EventName::API_VIEW_AFTER_FIND() => 'afterFind',
         ];
     }
 

@@ -46,7 +46,7 @@ class ScheduledJobLogsFixture extends TestFixture
             'context' => '{"foo":"bar"}',
             'status' => true,
             'datetime' => '2018-01-18 09:00:00',
-            'created' => '2018-01-18 14:33:33'
+            'created' => '2018-01-18 14:33:33',
         ],
     ];
 }

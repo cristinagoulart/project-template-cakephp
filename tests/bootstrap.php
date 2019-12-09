@@ -35,7 +35,7 @@ Log::setConfig([
         'levels' => ['warning', 'error', 'critical', 'alert', 'emergency'],
         'file' => 'error',
         'path' => LOGS,
-    ]
+    ],
 ]);
 
 restore_error_handler();

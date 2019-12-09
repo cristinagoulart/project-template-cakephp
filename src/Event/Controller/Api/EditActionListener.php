@@ -18,7 +18,7 @@ class EditActionListener extends BaseActionListener
             (string)EventName::API_EDIT_BEFORE_FIND() => 'beforeFind',
             (string)EventName::API_EDIT_AFTER_FIND() => 'afterFind',
             (string)EventName::API_EDIT_BEFORE_SAVE() => 'beforeSave',
-            (string)EventName::API_EDIT_AFTER_SAVE() => 'afterSave'
+            (string)EventName::API_EDIT_AFTER_SAVE() => 'afterSave',
         ];
     }
 

@@ -27,7 +27,7 @@ class ModuleViewListener implements EventListenerInterface
     public function implementedEvents()
     {
         return [
-            (string)MenuEventName::GET_MENU_ITEMS() => 'getMenuItems'
+            (string)MenuEventName::GET_MENU_ITEMS() => 'getMenuItems',
         ];
     }
 
@@ -101,7 +101,7 @@ class ModuleViewListener implements EventListenerInterface
             'type' => 'link_button_modal',
             'modal_target' => 'permissions-modal-add',
             'order' => 50,
-            'viewElement' => ['modal-permissions', ['id' => $id]]
+            'viewElement' => ['modal-permissions', ['id' => $id]],
         ]);
     }
 
@@ -124,7 +124,7 @@ class ModuleViewListener implements EventListenerInterface
             'label' => __('Changelog'),
             'icon' => 'book',
             'type' => 'link_button',
-            'order' => 60
+            'order' => 60,
         ]);
     }
 }

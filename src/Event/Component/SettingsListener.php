@@ -17,7 +17,7 @@ class SettingsListener implements EventListenerInterface
     public function implementedEvents()
     {
         return [
-             'Controller.startup' => [ 'callable' => 'loadUserSettings', 'priority' => 100]
+             'Controller.startup' => [ 'callable' => 'loadUserSettings', 'priority' => 100],
         ];
     }
 

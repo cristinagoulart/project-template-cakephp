@@ -23,7 +23,7 @@ class ThingsFixture extends TestFixture
             'modified' => '2018-01-18 15:47:16',
             'created_by' => '00000000-0000-0000-0000-000000000001',
             'modified_by' => '00000000-0000-0000-0000-000000000001',
-            'trashed' => null
+            'trashed' => null,
         ],
         [
             'id' => '00000000-0000-0000-0000-000000000002',
@@ -38,7 +38,7 @@ class ThingsFixture extends TestFixture
             'area_unit' => 'm',
             'salary_amount' => '1000',
             'salary_currency' => 'EUR',
-            'trashed' => null
+            'trashed' => null,
         ],
         [
             'id' => '00000000-0000-0000-0000-000000000003',
@@ -61,7 +61,7 @@ class ThingsFixture extends TestFixture
             'sample_date' => '2018-01-18 15:47:16',
             'created_by' => '00000000-0000-0000-0000-000000000001',
             'modified_by' => '00000000-0000-0000-0000-000000000001',
-            'trashed' => null
-        ]
+            'trashed' => null,
+        ],
     ];
 }
