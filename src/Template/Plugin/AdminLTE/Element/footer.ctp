@@ -1,13 +1,12 @@
 <footer class="main-footer">
     <div class="pull-right hidden-xs">
-        <b>Version</b>:
+        <b><?= __('Version') ?></b>:
 		<?= $this->SystemInfo->getProjectVersion() ?>
     </div>
     <strong>
-		Copyright &copy; <?php echo date('Y'); ?>,
-		<?= $this->SystemInfo->getProjectName() ?>.
+		<?= __('Copyright &copy; {0}, {1}', date('Y'), $this->SystemInfo->getProjectName()) ?>
 	</strong>
-	All rights reserved.
+	<?= __('All rights reserved.'); ?>
 </footer>
 <?php
 // @todo find a way to load this as part of 'block' => 'css'

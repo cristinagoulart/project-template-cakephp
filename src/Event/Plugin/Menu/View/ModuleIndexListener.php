@@ -114,7 +114,7 @@ class ModuleIndexListener implements EventListenerInterface
             'url' => ['plugin' => false, 'controller' => 'ScheduledJobLogs', 'action' => 'gc'],
             'icon' => 'trash',
             'label' => __('Delete old logs'),
-            'confirmMsg' => __('Are you sure? This action will delete all the scheduled job logs older than ' . ltrim($age, '-') . '.'),
+            'confirmMsg' => __('Are you sure? This action will delete all the scheduled job logs older than {0}.', ltrim($age, '-')),
             'attributes' => ['class' => 'btn btn-danger'],
             'type' => 'postlink_button',
             'order' => 20,
