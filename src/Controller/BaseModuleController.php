@@ -451,7 +451,7 @@ class BaseModuleController extends AppController
             // execute batch delete
             if ($table->{$deleteMethod}($conditions)) {
                 $this->Flash->success(
-                    (string)__( '{0} of {1} selected records have been deleted.', count($batchIds), $batchIdsCount)
+                    (string)__('{0} of {1} selected records have been deleted.', count($batchIds), $batchIdsCount)
                 );
             } else {
                 $this->Flash->error((string)__('Selected records could not be deleted. Please, try again.'));
