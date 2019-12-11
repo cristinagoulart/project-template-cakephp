@@ -43,7 +43,7 @@ $this->layout = 'AdminLTE/login';
             <div class="checkbox icheck">
                 <?= $this->Form->control(Configure::read('Users.Key.Data.rememberMe'), [
                     'type' => 'checkbox',
-                    'label' => ' ' . __d('Users', 'Remember Me'),
+                    'label' => ' ' . __d('CakeDC/Users', 'Remember Me'),
                     'templates' => ['inputContainer' => '{{content}}']
                 ]); ?>
             </div>
@@ -61,11 +61,11 @@ $this->layout = 'AdminLTE/login';
 <?= $this->Form->end() ?>
 <?php
 if (!(bool)Configure::read('Ldap.enabled')) {
-    echo $this->Html->link(__d('users', 'I forgot my password'), ['action' => 'requestResetPassword']);
+    echo $this->Html->link(__d('CakeDC/Users', 'I forgot my password'), ['action' => 'requestResetPassword']);
 }
 
 if ((bool)Configure::read('Users.Registration.active') && (bool)Configure::read('Users.Email.validate')) {
-    echo $this->Html->link(__d('users', 'Resend validation email'), [
+    echo $this->Html->link(__d('CakeDC/Users', 'Resend validation email'), [
         'controller' => 'Users',
         'action' => 'resendTokenValidation'
         ], ['class' => 'pull-right']
@@ -74,5 +74,5 @@ if ((bool)Configure::read('Users.Registration.active') && (bool)Configure::read(
 
 if ((bool)Configure::read('Users.Registration.active')) {
     echo '<hr />';
-    echo $this->Html->link(__d('users', 'Register a new membership'), ['action' => 'register']);
+    echo $this->Html->link(__d('CakeDC/Users', 'Register a new membership'), ['action' => 'register']);
 }

@@ -22,7 +22,7 @@ $inputOptions = [
     'div' => false,
     'container' => false,
     'class' => 'form-control input-sm',
-    'placeholder' => 'Search in ' . strtolower($name) . '...',
+    'placeholder' => __('Search in {0} ...', strtolower($name)),
     'templates' => [
         'inputContainer' => '{{content}}'
     ]
