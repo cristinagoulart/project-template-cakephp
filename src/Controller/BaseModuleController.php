@@ -477,7 +477,7 @@ class BaseModuleController extends AppController
             // execute batch edit
             if ($table->updateAll($fields, $conditions)) {
                 $this->Flash->success(
-                    (string)__( '{0} of {1} selected records have been updated.', count($batchIds), $batchIdsCount)
+                    (string)__('{0} of {1} selected records have been updated.', count($batchIds), $batchIdsCount)
                 );
             } else {
                 $this->Flash->error((string)__('Selected records could not be updated. Please, try again.'));
