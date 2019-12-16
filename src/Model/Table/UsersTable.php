@@ -46,6 +46,11 @@ class UsersTable extends Table
 
         $this->addBehavior('Lookup', ['lookupFields' => Hash::get($tableConfig, 'table.lookup_fields', [])]);
         $this->addBehavior('Muffin/Trash.Trash', ['field' => 'trashed']);
+
+        // set display field from config
+        if (isset($tableConfig['table']['display_field'])) {
+            $this->setDisplayField($tableConfig['table']['display_field']);
+        }
     }
 
     /**

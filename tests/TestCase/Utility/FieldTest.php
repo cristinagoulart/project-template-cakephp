@@ -212,7 +212,7 @@ class FieldTest extends TestCase
             'db_type' => 'uuid',
             'meta' => [],
             'source' => 'users',
-            'display_field' => 'username',
+            'display_field' => 'name',
         ];
 
         $this->assertSame($expected, (new Field('Things', 'assigned_to'))->state());
