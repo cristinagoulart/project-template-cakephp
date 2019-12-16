@@ -36,7 +36,7 @@ trait ChangelogTrait
     public function changelog(string $id)
     {
         $this->paginate = [
-            'limit' => 15
+            'limit' => 15,
         ];
 
         /*

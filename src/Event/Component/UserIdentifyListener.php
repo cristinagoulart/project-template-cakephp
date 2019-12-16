@@ -15,7 +15,7 @@ class UserIdentifyListener implements EventListenerInterface
     public function implementedEvents()
     {
         return [
-            'Auth.afterIdentify' => 'afterIdentify'
+            'Auth.afterIdentify' => 'afterIdentify',
         ];
     }
 

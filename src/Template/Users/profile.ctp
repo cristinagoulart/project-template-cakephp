@@ -9,7 +9,7 @@ echo $this->Html->css('AdminLTE./bower_components/bootstrap-datepicker/dist/css/
 echo $this->Html->script('AdminLTE./bower_components/bootstrap-datepicker/dist/js/bootstrap-datepicker.min', ['block' => 'scriptBottom']);
 ?>
 <section class="content-header">
-    <h1>User Profile</h1>
+    <h1><?=__('User Profile') ?></h1>
 </section>
 <section class="content">
     <div class="row">
@@ -21,7 +21,7 @@ echo $this->Html->script('AdminLTE./bower_components/bootstrap-datepicker/dist/j
 
                 <h3 class="profile-username text-center"><?= $user['name']; ?></h3>
 
-                <p class="text-muted text-center">System User</p>
+                <p class="text-muted text-center"><?= __('System User') ?></p>
 
                 </div>
                 <!-- /.box-body -->
@@ -30,8 +30,8 @@ echo $this->Html->script('AdminLTE./bower_components/bootstrap-datepicker/dist/j
         <div class="col-md-9">
             <div class="nav-tabs-custom">
                 <ul class="nav nav-tabs">
-                    <li class="active"><a href="#info" data-toggle="tab">Info</a></li>
-                    <li><a href="#settings" data-toggle="tab">Settings</a></li>
+                    <li class="active"><a href="#info" data-toggle="tab"><?= __('Info') ?></a></li>
+                    <li><a href="#settings" data-toggle="tab"><?= __('Settings') ?></a></li>
                 </ul>
                 <div class="tab-content">
                     <div class="active tab-pane" id="info">
@@ -82,7 +82,7 @@ echo $this->Html->script('AdminLTE./bower_components/bootstrap-datepicker/dist/j
                             <dd><?= !empty($user['phone_extension']) ? h($user['phone_extension']) : '&nbsp;' ?></dd>
                         </dl>
                         <?= $this->Html->link(
-                            '<i class="fa fa-lock"></i> ' . __d('Users', 'Change Password'),
+                            '<i class="fa fa-lock"></i> ' . __d('CakeDC/Users', 'Change Password'),
                             ['controller' => 'Users', 'action' => 'changePassword'],
                             ['escape' => false, 'class' => 'btn btn-default btn-sm']
                         ); ?>
@@ -93,7 +93,7 @@ echo $this->Html->script('AdminLTE./bower_components/bootstrap-datepicker/dist/j
                             if($feature->isActive() && $factory->hasAccess(['controller' => 'settings', 'action' => 'my'], $user)):
                         ?>
                             <?= $this->Html->link(
-                                '<i class="fa fa-gears"></i>' . __d('Users', 'User Settings'),
+                                '<i class="fa fa-gears"></i> de' . __d('CakeDC/Users', 'User Settings'),
                                 ['controller' => 'settings', 'action' => 'my'],
                                 ['class' => 'btn btn-default btn-sm', 'escape' => false]
                             ) ?>

@@ -3,10 +3,12 @@
 namespace App\Event\Controller\Api;
 
 use App\Event\EventName;
+use App\ORM\PrettyFormatter;
 use Cake\Controller\Controller;
 use Cake\Datasource\QueryInterface;
 use Cake\Datasource\ResultSetInterface;
 use Cake\Event\Event;
+use Cake\ORM\Query;
 use Cake\ORM\Table;
 use Cake\Utility\Hash;
 use Webmozart\Assert\Assert;
@@ -23,7 +25,7 @@ class IndexActionListener extends BaseActionListener
         return [
             (string)EventName::API_INDEX_BEFORE_PAGINATE() => 'beforePaginate',
             (string)EventName::API_INDEX_AFTER_PAGINATE() => 'afterPaginate',
-            (string)EventName::API_INDEX_BEFORE_RENDER() => 'beforeRender'
+            (string)EventName::API_INDEX_BEFORE_RENDER() => 'beforeRender',
         ];
     }
 
@@ -43,6 +45,11 @@ class IndexActionListener extends BaseActionListener
         $this->filterByConditions($query, $event);
 
         $query->order($this->getOrderClause($request, $table));
+
+        if (static::FORMAT_PRETTY === $request->getQuery('format')) {
+            Assert::isInstanceOf($query, Query::class);
+            $query->formatResults(new PrettyFormatter());
+        }
     }
 
     /**
@@ -73,9 +80,9 @@ class IndexActionListener extends BaseActionListener
         foreach ($resultSet as $entity) {
             $this->resourceToString($entity);
 
-            static::FORMAT_PRETTY === $request->getQuery('format') ?
-                $this->prettify($entity, $table) :
+            if (static::FORMAT_PRETTY !== $request->getQuery('format')) {
                 $this->attachFiles($entity, $table);
+            }
 
             if ((bool)$request->getQuery(static::FLAG_INCLUDE_MENUS)) {
                 $this->attachMenu($entity, $table, $controller->Auth->user());

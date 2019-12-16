@@ -192,7 +192,7 @@ return [
         '_cake_swagger_' => [
             'className' => 'File',
             'prefix' => 'cakephp_swagger_',
-            'path' => CACHE
+            'path' => CACHE,
         ],
     ],
 
@@ -429,7 +429,7 @@ return [
     'Log' => [
         'default' => [
             'className' => 'LevelAwareDatabase',
-            'levels' => $logLevels
+            'levels' => $logLevels,
         ],
         // To enable this dedicated query log, you need set your datasource's log flag to true
         'queries' => [
@@ -442,7 +442,7 @@ return [
     ],
 
     'DatabaseLog' => [
-        'datasource' => 'default' // data-source to use
+        'datasource' => 'default', // data-source to use
     ],
 
     /**
@@ -496,12 +496,12 @@ return [
         'timeout' => (int)$sessionTimeout / 60,
     ],
     'AuditStash' => [
-        'persister' => 'App\Persister\MysqlPersister'
+        'persister' => 'App\Persister\MysqlPersister',
     ],
     'Swagger' => [
-        'crawl' => env('SWAGGER_CRAWL', true)
+        'crawl' => env('SWAGGER_CRAWL', true),
     ],
     'Whoops' => [
-        'editor' => true
-    ]
+        'editor' => true,
+    ],
 ];

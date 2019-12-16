@@ -25,7 +25,7 @@ class UsersControllerTest extends IntegrationTestCase
         'plugin.Groups.groups',
         'plugin.Groups.groups_users',
         'plugin.Menu.menus',
-        'plugin.Menu.menu_items'
+        'plugin.Menu.menu_items',
     ];
 
     public function setUp()
@@ -49,7 +49,7 @@ class UsersControllerTest extends IntegrationTestCase
         $this->session([
             'Auth' => [
                 'User' => $this->table->get($this->userId)->toArray(),
-            ]
+            ],
         ]);
     }
 
@@ -166,7 +166,7 @@ class UsersControllerTest extends IntegrationTestCase
         $this->enableCsrfToken();
         $data = [
             'password' => 'cakephp',
-            'password_confirm' => 'cakephp'
+            'password_confirm' => 'cakephp',
         ];
 
         $this->withSession();
@@ -184,7 +184,7 @@ class UsersControllerTest extends IntegrationTestCase
         $this->enableCsrfToken();
         $data = [
             'password' => 'cakephp',
-            'password_confirm' => 'cakephp'
+            'password_confirm' => 'cakephp',
         ];
 
         $this->get('/users/change-user-password/' . $this->userId);
@@ -201,11 +201,11 @@ class UsersControllerTest extends IntegrationTestCase
         $this->enableRetainFlashMessages();
         $data = [
             'password' => 'cakephp 3',
-            'password_confirm' => 'cakephp'
+            'password_confirm' => 'cakephp',
         ];
         $emptyData = [
             'password' => '',
-            'password_confirm' => ''
+            'password_confirm' => '',
         ];
 
         $this->withSession();
@@ -232,7 +232,7 @@ class UsersControllerTest extends IntegrationTestCase
         $data = [
             'username' => 'john.smith',
             'password' => 'john.smith',
-            'email' => 'john.smith@company.com'
+            'email' => 'john.smith@company.com',
         ];
         $where = $data;
         unset($where['password']);
@@ -271,7 +271,7 @@ class UsersControllerTest extends IntegrationTestCase
         $data = [
             'username' => 'john.smith',
             'password' => 'john.smith',
-            'email' => 'john.smith@company.com'
+            'email' => 'john.smith@company.com',
         ];
 
         $count = $this->table->find()->count();

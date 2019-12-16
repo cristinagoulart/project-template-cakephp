@@ -50,6 +50,6 @@ return [
         'stats' => [
             'period' => '-1 day',
             'limit' => 10,
-        ]
-    ]
+        ],
+    ],
 ];

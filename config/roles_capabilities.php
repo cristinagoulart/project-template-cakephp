@@ -9,8 +9,8 @@ return [
                     App\Model\Table\UsersTable::class,
                     Menu\Model\Table\MenuItemsTable::class,
                     Menu\Model\Table\MenusTable::class,
-                    Search\Model\Table\SavedSearchesTable::class
-                ]
+                    Search\Model\Table\SavedSearchesTable::class,
+                ],
             ],
         ],
         'accessCheck' => [
@@ -40,5 +40,5 @@ return [
                 ],
             ],
         ],
-    ]
+    ],
 ];

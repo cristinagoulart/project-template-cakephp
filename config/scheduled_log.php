@@ -3,7 +3,7 @@
 return [
    'ScheduledLog' => [
       'stats' => [
-         'age' => '-1 month'
-      ]
-   ]
+         'age' => '-1 month',
+      ],
+   ],
 ];

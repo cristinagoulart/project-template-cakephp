@@ -37,7 +37,7 @@ class Upgrade20180511135300Task extends Shell
 
         $task->add('CakeShell::CsvMigrations:import', [
             // every 5 minutes
-            'recurrence' => 'FREQ=MINUTELY;INTERVAL=5'
+            'recurrence' => 'FREQ=MINUTELY;INTERVAL=5',
         ]);
 
         return true;

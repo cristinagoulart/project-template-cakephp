@@ -44,7 +44,7 @@ class LookupBehaviorTest extends TestCase
     public $fixtures = [
         'app.log_audit',
         'app.things',
-        'app.users'
+        'app.users',
     ];
 
     /**
@@ -61,8 +61,8 @@ class LookupBehaviorTest extends TestCase
 
         $config = [
             'lookupFields' => [
-                'name'
-            ]
+                'name',
+            ],
         ];
 
         $this->Lookup = new LookupBehavior($this->things, $config);
@@ -96,7 +96,7 @@ class LookupBehaviorTest extends TestCase
 
         $options = new ArrayObject([
             'lookup' => true,
-            'value' => 'Thing #2'
+            'value' => 'Thing #2',
         ]);
 
         $primary = true;

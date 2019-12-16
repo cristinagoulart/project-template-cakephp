@@ -83,9 +83,9 @@ class UsersController extends AppController
                         'exp' => time() + (int)Configure::read('API.expireTime'),
                     ],
                     Security::getSalt()
-                )
+                ),
             ],
-            '_serialize' => ['success', 'data']
+            '_serialize' => ['success', 'data'],
         ]);
     }
 }

@@ -27,7 +27,7 @@ class SettingsTableTest extends TestCase
      * @var array
      */
     public $fixtures = [
-        'app.settings'
+        'app.settings',
     ];
 
     /**
@@ -94,7 +94,7 @@ class SettingsTableTest extends TestCase
             'value' => '1234',
             'scope' => 'user',
             'context' => 'bb697cd7-c869-491d-8696-805b1af8c08f',
-            'type' => 'integer'
+            'type' => 'integer',
         ];
 
         $entity = $this->settings->newEntity($params);
@@ -128,7 +128,7 @@ class SettingsTableTest extends TestCase
             'value' => 'my NEW value',
             'scope' => 'user',
             'context' => 'bb697cd7-c869-491d-8696-805b1af8c08f',
-            'type' => 'string'
+            'type' => 'string',
         ];
         /**
          * @var \Cake\Datasource\EntityInterface $oldEntity
@@ -140,7 +140,7 @@ class SettingsTableTest extends TestCase
             'value' => $oldEntity['value'],
             'scope' => $oldEntity['scope'],
             'context' => $oldEntity['context'],
-            'type' => $oldEntity['type']
+            'type' => $oldEntity['type'],
         ];
 
         $this->assertEquals($params, $oldEntityValues);
@@ -229,7 +229,7 @@ class SettingsTableTest extends TestCase
         $params = [
             'key' => $key,
             'value' => '300',
-            'type' => 'integer' // dynamic field to pass type to the validator
+            'type' => 'integer', // dynamic field to pass type to the validator
         ];
         $newEntity = $this->settings->patchEntity($entity, $params);
         $this->assertEmpty($newEntity->getErrors());
@@ -246,7 +246,7 @@ class SettingsTableTest extends TestCase
         $params = [
             'key' => $key,
             'value' => 'wrong value',
-            'type' => 'integer' // dynamic field to pass type to the validator
+            'type' => 'integer', // dynamic field to pass type to the validator
         ];
         if (is_array($entity) || is_null($entity)) {
             return;
@@ -304,7 +304,7 @@ class SettingsTableTest extends TestCase
                ],
              ],
            ],
-          ]
+          ],
         ];
 
         $alias = (array)Hash::extract($configSettings, '{s}.{s}.{s}.{s}.alias');
@@ -358,7 +358,7 @@ class SettingsTableTest extends TestCase
             'value' => '1234',
             'scope' => 'user',
             'context' => 'bb697cd7-c869-491d-8696-805b1af8c08f',
-            'type' => 'integer'
+            'type' => 'integer',
         ];
         if (is_array($entity) || is_null($entity)) {
             return;
@@ -380,7 +380,7 @@ class SettingsTableTest extends TestCase
             'value' => '1234',
             'scope' => 'user',
             'context' => 'not a UUID !',
-            'type' => 'integer'
+            'type' => 'integer',
         ];
         if (is_array($entity) || is_null($entity)) {
             return;
@@ -402,7 +402,7 @@ class SettingsTableTest extends TestCase
             'value' => '1234',
             'scope' => 'app',
             'context' => 'app',
-            'type' => 'integer'
+            'type' => 'integer',
         ];
         if (is_array($entity) || is_null($entity)) {
             return;
@@ -424,7 +424,7 @@ class SettingsTableTest extends TestCase
             'value' => '1234',
             'scope' => 'app',
             'context' => 'not app string',
-            'type' => 'integer'
+            'type' => 'integer',
         ];
         if (is_array($entity) || is_null($entity)) {
             return;

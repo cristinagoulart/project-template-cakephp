@@ -13,5 +13,5 @@ return [
             // example :
             // 'view', 'edit'
         ],
-    ]
+    ],
 ];

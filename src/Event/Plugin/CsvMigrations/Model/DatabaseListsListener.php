@@ -19,8 +19,8 @@ class DatabaseListsListener implements EventListenerInterface
         return [
             'Model.beforeFind' => [
                 'callable' => 'beforeFind',
-                'priority' => 1
-            ]
+                'priority' => 1,
+            ],
         ];
     }
 

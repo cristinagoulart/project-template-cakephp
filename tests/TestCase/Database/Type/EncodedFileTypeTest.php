@@ -56,7 +56,7 @@ class EncodedFileTypeTest extends TestCase
             'type' => 'image/png',
             'tmp_name' => $testFile,
             'error' => 0,
-            'size' => filesize($testFile)
+            'size' => filesize($testFile),
         ];
         $expected = 'data:image/png;base64,' . base64_encode((string)file_get_contents($testFile));
         $result = $this->type->toDatabase($testValue, $this->driver);
