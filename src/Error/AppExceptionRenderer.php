@@ -40,7 +40,7 @@ class AppExceptionRenderer extends ExceptionRenderer
         ];
 
         // adding generated error info into custom session variable for system/error page.
-        $this->controller->request->session()->write('currentError', json_encode($data));
+        $this->controller->request->getSession()->write('currentError', json_encode($data));
 
         return $this->controller->redirect('/system/error');
     }

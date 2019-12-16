@@ -56,8 +56,16 @@
         [
             "Details",
             "sample_date",
+            "currency",
             "",
-            "",
+            ""
+        ],
+        [
+            "Dynamic panel - male",
+            ""
+        ],
+        [
+            "Dynamic panel - female",
             ""
         ]
     ]
