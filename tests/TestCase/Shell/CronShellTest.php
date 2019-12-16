@@ -90,7 +90,7 @@ class CronShellTest extends ConsoleIntegrationTestCase
             ['foo\1234', 'b*a@r!5', 'b_a_r_5'],
             ['foos', null, ''],
             ['foos', '', ''],
-            ['foos', '1', '1']
+            ['foos', '1', '1'],
         ];
     }
 }

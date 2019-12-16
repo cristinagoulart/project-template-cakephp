@@ -27,7 +27,7 @@ class LogAuditTableTest extends TestCase
      * @var array
      */
     public $fixtures = [
-        'app.log_audit'
+        'app.log_audit',
     ];
 
     /**
@@ -79,7 +79,7 @@ class LogAuditTableTest extends TestCase
         $entity = $this->LogAudit->newEntity([
             'timestamp' => new Datetime(),
             'primary_key' => '00000000-0000-0000-0000-000000001234',
-            'source' => 'Foo'
+            'source' => 'Foo',
         ]);
 
         $this->assertEmpty($entity->getErrors());

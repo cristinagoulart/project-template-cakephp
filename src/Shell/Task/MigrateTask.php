@@ -65,7 +65,7 @@ class MigrateTask extends Shell
         foreach ($plugins as $plugin) {
             $this->out('Migrating plugin [' . $plugin . ']:');
             $this->dispatchShell([
-               'command' => $dispatchCommand . ' --plugin ' . $plugin
+               'command' => $dispatchCommand . ' --plugin ' . $plugin,
             ]);
             $this->hr();
         }

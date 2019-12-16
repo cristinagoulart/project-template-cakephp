@@ -226,7 +226,7 @@ class Annotation
                     description="Not found"
                 )
             )
-        */'
+        */',
     ];
 
     /**
@@ -294,7 +294,7 @@ class Annotation
         $versions = Utility::getApiVersions(App::path('Controller/Api')[0]);
 
         $placeholders = [
-            '{{version}}' => $versions[0]['number']
+            '{{version}}' => $versions[0]['number'],
         ];
 
         return str_replace(
@@ -323,7 +323,7 @@ class Annotation
         foreach ($columns as $column) {
             $placeholders = [
                 '{{property}}' => $column['db_field']->getName(),
-                '{{options}}' => $this->getPropertyOptionsAsString($column)
+                '{{options}}' => $this->getPropertyOptionsAsString($column),
             ];
 
             $result[] = str_replace(
@@ -385,7 +385,7 @@ class Annotation
                 'type' => $type,
                 'required' => ! $table->getSchema()->isNullable($column),
                 'non-searchable' => null,
-                'unique' => null
+                'unique' => null,
             ];
 
             $csvField = new CsvField($column);
@@ -453,7 +453,7 @@ class Annotation
             case 'files':
             case 'images':
                 $result = [
-                    'type' => 'string', 'format' => 'uuid', 'description' => 'UUID (related)', 'example' => Text::uuid()
+                    'type' => 'string', 'format' => 'uuid', 'description' => 'UUID (related)', 'example' => Text::uuid(),
                 ];
                 break;
 
@@ -462,7 +462,7 @@ class Annotation
                     'type' => 'string',
                     'format' => 'text',
                     'example' => 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod ' .
-                        'tempor incididunt ut labore et dolore magna aliqua.'
+                        'tempor incididunt ut labore et dolore magna aliqua.',
                 ];
                 break;
 
@@ -475,7 +475,7 @@ class Annotation
                 $result = [
                     'type' => 'string',
                     'format' => 'date-time',
-                    'example' => Time::now()->i18nFormat('yyyy-MM-dd HH:mm:ss')
+                    'example' => Time::now()->i18nFormat('yyyy-MM-dd HH:mm:ss'),
                 ];
                 break;
 
@@ -491,7 +491,7 @@ class Annotation
                 $result = [
                     'type' => 'number',
                     'format' => 'float',
-                    'example' => (mt_rand() / mt_getrandmax()) * (mt_getrandmax() / 1000)
+                    'example' => (mt_rand() / mt_getrandmax()) * (mt_getrandmax() / 1000),
                 ];
                 break;
 
@@ -516,7 +516,7 @@ class Annotation
                     'format' => 'list',
                     'example' => $opts[array_rand($opts)],
                     'enum' => $opts,
-                    'description' => $description
+                    'description' => $description,
                 ];
                 break;
 
@@ -526,7 +526,7 @@ class Annotation
 
             case 'phone':
                 $result = [
-                    'type' => 'string', 'format' => 'phone', 'example' => '+357-' . (string)rand(95000000, 99999999)
+                    'type' => 'string', 'format' => 'phone', 'example' => '+357-' . (string)rand(95000000, 99999999),
                 ];
                 break;
 
@@ -539,7 +539,7 @@ class Annotation
                     'type' => 'string',
                     'format' => 'blob',
                     'example' => 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeCAYAAAA7MK6iAAAAK0lEQV' .
-                        'R42u3NMQEAAAQAMA79wwhIDI6twLKqJw6kWCwWi8VisVgsFov/xgt4rjQnLeKjCAAAAABJRU5ErkJggg=='
+                        'R42u3NMQEAAAQAMA79wwhIDI6twLKqJw6kWCwWi8VisVgsFov/xgt4rjQnLeKjCAAAAABJRU5ErkJggg==',
                 ];
                 break;
 
@@ -614,7 +614,7 @@ class Annotation
         $placeholders = [
             '{{definition}}' => Inflector::singularize($this->className),
             '{{required}}' => json_encode($required, JSON_FORCE_OBJECT),
-            '{{properties}}' => $properties
+            '{{properties}}' => $properties,
         ];
 
         $result = str_replace(
@@ -653,7 +653,7 @@ class Annotation
             '{{module_human_plural}}' => Inflector::pluralize(Inflector::humanize(Inflector::underscore($this->className))),
             '{{module_singular}}' => Inflector::singularize($this->className),
             '{{module_url}}' => Inflector::dasherize($this->className),
-            '{{sort_fields}}' => '"' . implode('", "', $fields) . '"'
+            '{{sort_fields}}' => '"' . implode('", "', $fields) . '"',
         ];
 
         return str_replace(

@@ -28,7 +28,7 @@ class CleanModulesDataShell extends Shell
         $parser->addOption('modules', [
             'short' => 'm',
             'help' => 'Module Names separated with "," eg. "Accounts,Contacts"',
-            'default' => ''
+            'default' => '',
         ]);
 
         return $parser;

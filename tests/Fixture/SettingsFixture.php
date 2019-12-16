@@ -31,6 +31,6 @@ class SettingsFixture extends TestFixture
                 'value' => '-1 month',
                 'scope' => 'app',
                 'context' => 'bb697cd7-c869-491d-8696-805b1af8c08f',
-            ]
+            ],
         ];
 }

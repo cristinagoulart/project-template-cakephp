@@ -25,8 +25,8 @@ return [
                             // List of icons, which are not allowed to be used as
                             // module icons.  For example: cube.
                             'icon_bad_values' => ['cube'],
-                        ]
-                    ]
+                        ],
+                    ],
                 ],
                 // Common module is not used for any display purposes, so it's fine for
                 // it not to have any strict validations
@@ -35,10 +35,10 @@ return [
                         'CsvMigrations\\Utility\\Validate\\Check\\ConfigCheck' => [
                             'display_field_bad_values' => [],
                             'icon_bad_values' => [],
-                        ]
-                    ]
-                ]
-            ]
-        ]
-    ]
+                        ],
+                    ],
+                ],
+            ],
+        ],
+    ],
 ];

@@ -31,7 +31,7 @@ class LookupActionListener extends BaseActionListener
     {
         return [
             (string)EventName::API_LOOKUP_BEFORE_FIND() => 'beforeLookup',
-            (string)EventName::API_LOOKUP_AFTER_FIND() => 'afterLookup'
+            (string)EventName::API_LOOKUP_AFTER_FIND() => 'afterLookup',
         ];
     }
 
@@ -152,7 +152,7 @@ class LookupActionListener extends BaseActionListener
     {
         $table = TableRegistry::get((string)$csvField->getLimit());
         $query = $table->find('list', [
-            'keyField' => $table->primaryKey()
+            'keyField' => $table->primaryKey(),
         ]);
 
         // recursive call
@@ -357,7 +357,7 @@ class LookupActionListener extends BaseActionListener
             'table' => $targetTable->table(),
             'alias' => $parentAssociation->name(),
             'type' => 'LEFT',
-            'conditions' => [$foreignKey => $primaryKey]
+            'conditions' => [$foreignKey => $primaryKey],
         ]);
 
         $this->_joinParentTables($targetTable, $query);

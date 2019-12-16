@@ -56,7 +56,7 @@ class SearchTest extends TestCase
             'Things.gender',
             'Things.assigned_to',
             'Things.created',
-            'Things.modified'
+            'Things.modified',
         ];
 
         $this->assertSame($expected, Search::getDisplayFields('Things'));
@@ -112,7 +112,7 @@ class SearchTest extends TestCase
             'name' => 'Things grouped by created date',
             'model' => 'Things',
             'fields' => ['Things.created', 'COUNT(Things.created)'],
-            'group_by' => 'Things.created'
+            'group_by' => 'Things.created',
         ]);
 
         $result = Search::getChartOptions($savedSearch);
@@ -128,7 +128,7 @@ class SearchTest extends TestCase
     {
         $savedSearch = new SavedSearch([
             'name' => 'Things NOT grouped by',
-            'model' => 'Things'
+            'model' => 'Things',
         ]);
 
         $this->assertSame([], Search::getChartOptions($savedSearch));
@@ -140,7 +140,7 @@ class SearchTest extends TestCase
             'name' => 'Things NOT grouped by',
             'model' => 'Things',
             'fields' => ['Things.created'],
-            'group_by' => 'Things.created'
+            'group_by' => 'Things.created',
         ]);
 
         $this->assertSame([], Search::getChartOptions($savedSearch));
@@ -155,7 +155,7 @@ class SearchTest extends TestCase
         $savedSearch = new SavedSearch([
             'name' => 'Things NOT grouped by',
             'model' => 'Things',
-            'fields' => ['COUNT(Things.created)']
+            'fields' => ['COUNT(Things.created)'],
         ]);
 
         $result = Search::getChartOptions($savedSearch);

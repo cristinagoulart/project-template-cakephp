@@ -27,7 +27,7 @@ class ModuleMenuListener implements EventListenerInterface
         'order' => 0,
         'target' => '_self',
         'children' => [],
-        'desc' => ''
+        'desc' => '',
     ];
 
     /**
@@ -151,7 +151,7 @@ class ModuleMenuListener implements EventListenerInterface
     private function getModuleDefaults(string $module): array
     {
         return [
-            'icon' => $this->getModuleIcon($module)
+            'icon' => $this->getModuleIcon($module),
         ];
     }
 

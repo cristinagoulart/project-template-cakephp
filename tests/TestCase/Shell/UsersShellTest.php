@@ -78,7 +78,7 @@ class UsersShellTest extends TestCase
             'username' => 'foo',
             'password' => 'foo',
             'email' => 'foo@example.com',
-            'active' => 1
+            'active' => 1,
         ];
 
         $entity = TableRegistry::get('CakeDC/Users.Users')->newEntity($data);
@@ -97,7 +97,7 @@ class UsersShellTest extends TestCase
             'addSuperuser',
             '--username=' . $data['username'],
             '--password=' . $data['password'],
-            '--email=' . $data['email']
+            '--email=' . $data['email'],
         ]);
 
         // capture output
@@ -106,7 +106,7 @@ class UsersShellTest extends TestCase
         $expected = [
             'Username: ' . $data['username'],
             'Email   : ' . $data['email'],
-            'Password: ' . $data['password']
+            'Password: ' . $data['password'],
         ];
 
         foreach ($expected as $param) {
