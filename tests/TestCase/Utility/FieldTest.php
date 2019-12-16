@@ -80,7 +80,7 @@ class FieldTest extends TestCase
             'label' => 'Id',
             'type' => 'uuid',
             'db_type' => 'uuid',
-            'meta' => ['required', 'unique']
+            'meta' => ['required', 'unique'],
         ];
 
         $this->assertSame($expected, (new Field('Things', 'id'))->state());
@@ -93,7 +93,7 @@ class FieldTest extends TestCase
             'label' => 'label name',
             'type' => 'string',
             'db_type' => 'string',
-            'meta' => []
+            'meta' => [],
         ];
 
         $this->assertSame($expected, (new Field('Things', 'name'))->state());
@@ -106,7 +106,7 @@ class FieldTest extends TestCase
             'label' => 'label description',
             'type' => 'text',
             'db_type' => 'text',
-            'meta' => []
+            'meta' => [],
         ];
 
         $this->assertSame($expected, (new Field('Things', 'description'))->state());
@@ -119,7 +119,7 @@ class FieldTest extends TestCase
             'label' => 'Rate',
             'type' => 'decimal',
             'db_type' => 'decimal',
-            'meta' => []
+            'meta' => [],
         ];
 
         $this->assertSame($expected, (new Field('Things', 'rate'))->state());
@@ -132,7 +132,7 @@ class FieldTest extends TestCase
             'label' => 'Level',
             'type' => 'integer',
             'db_type' => 'integer',
-            'meta' => []
+            'meta' => [],
         ];
 
         $this->assertSame($expected, (new Field('Things', 'level'))->state());
@@ -145,7 +145,7 @@ class FieldTest extends TestCase
             'label' => 'Date Of Birth',
             'type' => 'date',
             'db_type' => 'date',
-            'meta' => []
+            'meta' => [],
         ];
 
         $this->assertSame($expected, (new Field('Things', 'date_of_birth'))->state());
@@ -158,7 +158,7 @@ class FieldTest extends TestCase
             'label' => 'Work Start',
             'type' => 'time',
             'db_type' => 'time',
-            'meta' => []
+            'meta' => [],
         ];
 
         $this->assertSame($expected, (new Field('Things', 'work_start'))->state());
@@ -171,7 +171,7 @@ class FieldTest extends TestCase
             'label' => 'Created',
             'type' => 'datetime',
             'db_type' => 'datetime',
-            'meta' => []
+            'meta' => [],
         ];
 
         $this->assertSame($expected, (new Field('Things', 'created'))->state());
@@ -184,7 +184,7 @@ class FieldTest extends TestCase
             'label' => 'Vip',
             'type' => 'boolean',
             'db_type' => 'boolean',
-            'meta' => []
+            'meta' => [],
         ];
 
         $this->assertSame($expected, (new Field('Things', 'vip'))->state());
@@ -197,7 +197,7 @@ class FieldTest extends TestCase
             'label' => 'Bio',
             'type' => 'blob',
             'db_type' => 'binary',
-            'meta' => []
+            'meta' => [],
         ];
 
         $this->assertSame($expected, (new Field('Things', 'bio'))->state());
@@ -212,7 +212,7 @@ class FieldTest extends TestCase
             'db_type' => 'uuid',
             'meta' => [],
             'source' => 'users',
-            'display_field' => 'username'
+            'display_field' => 'username',
         ];
 
         $this->assertSame($expected, (new Field('Things', 'assigned_to'))->state());
@@ -225,7 +225,7 @@ class FieldTest extends TestCase
             'label' => 'Appointment',
             'type' => 'reminder',
             'db_type' => 'datetime',
-            'meta' => []
+            'meta' => [],
         ];
 
         $this->assertSame($expected, (new Field('Things', 'appointment'))->state());
@@ -238,7 +238,7 @@ class FieldTest extends TestCase
             'label' => 'Phone',
             'type' => 'phone',
             'db_type' => 'string',
-            'meta' => []
+            'meta' => [],
         ];
 
         $this->assertSame($expected, (new Field('Things', 'phone'))->state());
@@ -251,7 +251,7 @@ class FieldTest extends TestCase
             'label' => 'Email',
             'type' => 'email',
             'db_type' => 'string',
-            'meta' => ['required', 'unique']
+            'meta' => ['required', 'unique'],
         ];
 
         $this->assertSame($expected, (new Field('Things', 'email'))->state());
@@ -269,8 +269,8 @@ class FieldTest extends TestCase
                 ['value' => 'Mr', 'label' => 'Mr'],
                 ['value' => 'Mrs', 'label' => 'Mrs'],
                 ['value' => 'Ms', 'label' => 'Ms'],
-                ['value' => 'Dr', 'label' => 'Dr']
-            ]
+                ['value' => 'Dr', 'label' => 'Dr'],
+            ],
         ];
 
         $this->assertSame($expected, (new Field('Things', 'title'))->state());
@@ -288,8 +288,8 @@ class FieldTest extends TestCase
                 ['value' => 'first', 'label' => 'first'],
                 ['value' => 'first.first_children', 'label' => ' - first children'],
                 ['value' => 'first.second_children', 'label' => ' - second children'],
-                ['value' => 'second', 'label' => 'second']
-            ]
+                ['value' => 'second', 'label' => 'second'],
+            ],
         ];
 
         $this->assertSame($expected, (new Field('Things', 'test_list'))->state());
@@ -302,7 +302,7 @@ class FieldTest extends TestCase
             'label' => 'Country',
             'type' => 'country',
             'db_type' => 'string',
-            'meta' => ['required']
+            'meta' => ['required'],
         ];
 
         $result = (new Field('Things', 'country'))->state();
@@ -324,8 +324,8 @@ class FieldTest extends TestCase
             'options' => [
                 ['value' => 'EUR', 'label' => '<span title="Euro">€&nbsp;(EUR)</span>'],
                 ['value' => 'GBP', 'label' => '<span title="United Kingdom Pound">£&nbsp;(GBP)</span>'],
-                ['value' => 'USD', 'label' => '<span title="United States Dollar">&#36;&nbsp;(USD)</span>']
-            ]
+                ['value' => 'USD', 'label' => '<span title="United States Dollar">&#36;&nbsp;(USD)</span>'],
+            ],
         ];
 
         $this->assertSame($expected, (new Field('Things', 'currency'))->state());
@@ -338,7 +338,7 @@ class FieldTest extends TestCase
             'label' => 'Photos',
             'type' => 'files',
             'db_type' => 'uuid',
-            'meta' => []
+            'meta' => [],
         ];
 
         $this->assertSame($expected, (new Field('Things', 'photos'))->state());
@@ -354,8 +354,8 @@ class FieldTest extends TestCase
             'meta' => [],
             'options' => [
                 ['value' => 'm', 'label' => 'm²'],
-                ['value' => 'ft', 'label' => 'ft²']
-            ]
+                ['value' => 'ft', 'label' => 'ft²'],
+            ],
         ];
 
         $this->assertSame($expected, (new Field('Things', 'testmetric_unit'))->state());
@@ -365,7 +365,7 @@ class FieldTest extends TestCase
             'label' => 'Testmetric Amount',
             'type' => 'decimal',
             'db_type' => 'decimal',
-            'meta' => []
+            'meta' => [],
         ];
 
         $this->assertSame($expected, (new Field('Things', 'testmetric_amount'))->state());
@@ -382,8 +382,8 @@ class FieldTest extends TestCase
             'options' => [
                 ['value' => 'EUR', 'label' => '<span title="Euro">€&nbsp;(EUR)</span>'],
                 ['value' => 'GBP', 'label' => '<span title="United Kingdom Pound">£&nbsp;(GBP)</span>'],
-                ['value' => 'USD', 'label' => '<span title="United States Dollar">&#36;&nbsp;(USD)</span>']
-            ]
+                ['value' => 'USD', 'label' => '<span title="United States Dollar">&#36;&nbsp;(USD)</span>'],
+            ],
         ];
 
         $this->assertSame($expected, (new Field('Things', 'testmoney_currency'))->state());
@@ -393,7 +393,7 @@ class FieldTest extends TestCase
             'label' => 'Testmoney Amount',
             'type' => 'decimal',
             'db_type' => 'decimal',
-            'meta' => []
+            'meta' => [],
         ];
 
         $this->assertSame($expected, (new Field('Things', 'testmoney_amount'))->state());

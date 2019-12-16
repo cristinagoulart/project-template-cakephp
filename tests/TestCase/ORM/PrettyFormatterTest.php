@@ -10,7 +10,7 @@ class PrettyFormatterTest extends TestCase
 {
     public $fixtures = [
         'app.Things',
-        'app.Users'
+        'app.Users',
     ];
 
     private $table;
@@ -68,7 +68,7 @@ class PrettyFormatterTest extends TestCase
             'trashed' => '',
             'vip' => 'Yes',
             'website' => '<a href="https://google.com" target="_blank">https://google.com</a>',
-            'work_start' => '08:32'
+            'work_start' => '08:32',
         ];
 
         $query = $this->table
@@ -127,7 +127,7 @@ class PrettyFormatterTest extends TestCase
                 'team' => '',
                 'tos_date' => '6/24/15, 5:33 PM',
                 'trashed' => '',
-                'username' => 'user-2'
+                'username' => 'user-2',
             ],
             'bio' => 'A blob type',
             'country' => '<span class="flag-icon flag-icon-cy flag-icon-default"></span>&nbsp;&nbsp;Cyprus',
@@ -161,7 +161,7 @@ class PrettyFormatterTest extends TestCase
             'trashed' => '',
             'vip' => 'Yes',
             'website' => '<a href="https://google.com" target="_blank">https://google.com</a>',
-            'work_start' => '08:32'
+            'work_start' => '08:32',
         ];
 
         $query = $this->table
@@ -219,8 +219,8 @@ class PrettyFormatterTest extends TestCase
                     'team' => '',
                     'tos_date' => '6/24/15, 5:33 PM',
                     'trashed' => '',
-                    'username' => 'user-2'
-                ]
+                    'username' => 'user-2',
+                ],
             ],
             'appointment' => '2019-10-29 15:47',
             'area_amount' => '25.74',
@@ -258,7 +258,7 @@ class PrettyFormatterTest extends TestCase
             'trashed' => '',
             'vip' => 'Yes',
             'website' => '<a href="https://google.com" target="_blank">https://google.com</a>',
-            'work_start' => '08:32'
+            'work_start' => '08:32',
         ];
 
         $query = $this->table

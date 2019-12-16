@@ -11,7 +11,7 @@ class LabeledFormatterTest extends TestCase
     public $fixtures = [
         'app.LogAudit',
         'app.Things',
-        'app.Users'
+        'app.Users',
     ];
 
     private $table;
@@ -69,7 +69,7 @@ class LabeledFormatterTest extends TestCase
             'trashed' => null,
             'vip' => true,
             'website' => 'https://google.com',
-            'work_start' => '08:32'
+            'work_start' => '08:32',
         ];
 
         $query = $this->table
@@ -128,7 +128,7 @@ class LabeledFormatterTest extends TestCase
                 'team' => null,
                 'tos_date' => '2015-06-24 17:33:54',
                 'trashed' => null,
-                'username' => 'user-2'
+                'username' => 'user-2',
             ],
             'bio' => 'A blob type',
             'country' => 'Cyprus',
@@ -162,7 +162,7 @@ class LabeledFormatterTest extends TestCase
             'trashed' => null,
             'vip' => true,
             'website' => 'https://google.com',
-            'work_start' => '08:32'
+            'work_start' => '08:32',
         ];
 
         $query = $this->table
@@ -220,8 +220,8 @@ class LabeledFormatterTest extends TestCase
                     'team' => null,
                     'tos_date' => '2015-06-24 17:33:54',
                     'trashed' => null,
-                    'username' => 'user-2'
-                ]
+                    'username' => 'user-2',
+                ],
             ],
             'appointment' => '2019-10-29 15:47:16',
             'area_amount' => 25.74,
@@ -259,7 +259,7 @@ class LabeledFormatterTest extends TestCase
             'trashed' => null,
             'vip' => true,
             'website' => 'https://google.com',
-            'work_start' => '08:32'
+            'work_start' => '08:32',
         ];
 
         $query = $this->table

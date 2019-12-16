@@ -178,9 +178,9 @@ class ThingsControllerTest extends JsonIntegrationTestCase
                     'file' => [],
                     'non_searchable' => '',
                     'sample_date' => null,
-                    'currency' => 'GBP'
-                ]
-            ]
+                    'currency' => 'GBP',
+                ],
+            ],
         ];
     }
 
@@ -229,9 +229,9 @@ class ThingsControllerTest extends JsonIntegrationTestCase
                     'trashed' => '',
                     'vip' => 'Yes',
                     'website' => '<a href="https://google.com" target="_blank">https://google.com</a>',
-                    'work_start' => '08:32'
-                ]
-            ]
+                    'work_start' => '08:32',
+                ],
+            ],
         ];
     }
 }

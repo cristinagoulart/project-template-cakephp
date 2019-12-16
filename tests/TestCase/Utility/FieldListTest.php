@@ -38,7 +38,7 @@ class FieldListTest extends TestCase
             ['value' => 'first', 'label' => 'first'],
             ['value' => 'first.first_children', 'label' => ' - first children'],
             ['value' => 'first.second_children', 'label' => ' - second children'],
-            ['value' => 'second', 'label' => 'second']
+            ['value' => 'second', 'label' => 'second'],
         ];
 
         $this->assertSame($expected, (new FieldList('Things', 'test_list'))->options());
@@ -51,7 +51,7 @@ class FieldListTest extends TestCase
             ['value' => 'first.first_children', 'label' => ' - first children'],
             ['value' => 'first.second_children', 'label' => ' - second children'],
             ['value' => 'second', 'label' => 'second'],
-            ['value' => 'third', 'label' => 'third']
+            ['value' => 'third', 'label' => 'third'],
         ];
 
         $this->assertSame($expected, (new FieldList('Things', 'test_list'))->options(['filter' => false]));
@@ -62,15 +62,15 @@ class FieldListTest extends TestCase
         $expected = [
             ['value' => 'first', 'label' => 'first', 'children' => [
                 ['value' => 'first.first_children', 'label' => ' - first children'],
-                ['value' => 'first.second_children', 'label' => ' - second children']
+                ['value' => 'first.second_children', 'label' => ' - second children'],
             ]],
             ['value' => 'second', 'label' => 'second'],
-            ['value' => 'third', 'label' => 'third']
+            ['value' => 'third', 'label' => 'third'],
         ];
 
         $this->assertSame($expected, (new FieldList('Things', 'test_list'))->options([
             'filter' => false,
-            'flatten' => false
+            'flatten' => false,
         ]));
     }
 
@@ -81,12 +81,12 @@ class FieldListTest extends TestCase
             ['value' => 'first.first_children', 'label' => 'first children'],
             ['value' => 'first.second_children', 'label' => 'second children'],
             ['value' => 'second', 'label' => 'second'],
-            ['value' => 'third', 'label' => 'third']
+            ['value' => 'third', 'label' => 'third'],
         ];
 
         $this->assertSame($expected, (new FieldList('Things', 'test_list'))->options([
             'filter' => false,
-            'prettify' => false
+            'prettify' => false,
         ]));
     }
 
@@ -95,9 +95,9 @@ class FieldListTest extends TestCase
         $expected = [
             ['value' => 'first', 'label' => 'first', 'children' => [
                 ['value' => 'first.first_children', 'label' => ' - first children'],
-                ['value' => 'first.second_children', 'label' => ' - second children']
+                ['value' => 'first.second_children', 'label' => ' - second children'],
             ]],
-            ['value' => 'second', 'label' => 'second']
+            ['value' => 'second', 'label' => 'second'],
         ];
 
         $this->assertSame($expected, (new FieldList('Things', 'test_list'))->options(['flatten' => false]));
@@ -108,14 +108,14 @@ class FieldListTest extends TestCase
         $expected = [
             ['value' => 'first', 'label' => 'first', 'children' => [
                 ['value' => 'first.first_children', 'label' => 'first children'],
-                ['value' => 'first.second_children', 'label' => 'second children']
+                ['value' => 'first.second_children', 'label' => 'second children'],
             ]],
-            ['value' => 'second', 'label' => 'second']
+            ['value' => 'second', 'label' => 'second'],
         ];
 
         $this->assertSame($expected, (new FieldList('Things', 'test_list'))->options([
             'flatten' => false,
-            'prettify' => false
+            'prettify' => false,
         ]));
     }
 
@@ -125,7 +125,7 @@ class FieldListTest extends TestCase
             ['value' => 'first', 'label' => 'first'],
             ['value' => 'first.first_children', 'label' => 'first children'],
             ['value' => 'first.second_children', 'label' => 'second children'],
-            ['value' => 'second', 'label' => 'second']
+            ['value' => 'second', 'label' => 'second'],
         ];
 
         $this->assertSame($expected, (new FieldList('Things', 'test_list'))->options(['prettify' => false]));
@@ -136,16 +136,16 @@ class FieldListTest extends TestCase
         $expected = [
             ['value' => 'first', 'label' => 'first', 'children' => [
                 ['value' => 'first.first_children', 'label' => 'first children'],
-                ['value' => 'first.second_children', 'label' => 'second children']
+                ['value' => 'first.second_children', 'label' => 'second children'],
             ]],
             ['value' => 'second', 'label' => 'second'],
-            ['value' => 'third', 'label' => 'third']
+            ['value' => 'third', 'label' => 'third'],
         ];
 
         $this->assertSame($expected, (new FieldList('Things', 'test_list'))->options([
             'filter' => false,
             'flatten' => false,
-            'prettify' => false
+            'prettify' => false,
         ]));
     }
 
@@ -166,7 +166,7 @@ class FieldListTest extends TestCase
             ['value' => 'AS', 'label' => '<span class="flag-icon flag-icon-as flag-icon-default"></span>&nbsp;&nbsp;American Samoa'],
             ['value' => 'AT', 'label' => '<span class="flag-icon flag-icon-at flag-icon-default"></span>&nbsp;&nbsp;Austria'],
             ['value' => 'AU', 'label' => '<span class="flag-icon flag-icon-au flag-icon-default"></span>&nbsp;&nbsp;Australia'],
-            ['value' => 'AW', 'label' => '<span class="flag-icon flag-icon-aw flag-icon-default"></span>&nbsp;&nbsp;Aruba']
+            ['value' => 'AW', 'label' => '<span class="flag-icon flag-icon-aw flag-icon-default"></span>&nbsp;&nbsp;Aruba'],
         ];
 
         $result = (new FieldList('Things', 'country'))->options();
@@ -184,7 +184,7 @@ class FieldListTest extends TestCase
         $expected = [
             ['value' => 'EUR', 'label' => '<span title="Euro">€&nbsp;(EUR)</span>'],
             ['value' => 'GBP', 'label' => '<span title="United Kingdom Pound">£&nbsp;(GBP)</span>'],
-            ['value' => 'USD', 'label' => '<span title="United States Dollar">&#36;&nbsp;(USD)</span>']
+            ['value' => 'USD', 'label' => '<span title="United States Dollar">&#36;&nbsp;(USD)</span>'],
         ];
 
         $result = (new FieldList('Things', 'salary_currency'))->options();
@@ -215,7 +215,7 @@ class FieldListTest extends TestCase
             ['salary_amount', false],
             ['salary_currency', true],
             ['area_amount', false],
-            ['area_unit', true]
+            ['area_unit', true],
         ];
     }
 
@@ -232,7 +232,7 @@ class FieldListTest extends TestCase
             ['gender', 'genders'],
             ['salary_currency', 'currencies'],
             ['title', 'titles'],
-            ['language', 'languages']
+            ['language', 'languages'],
         ];
     }
 }
