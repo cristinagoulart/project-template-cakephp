@@ -113,8 +113,8 @@ final class Export
         $options = [
             'fields' => $this->fields,
             'data' => [
-                ['field' => $this->table->aliasField($primaryKey), 'operator' => 'is', 'value' => $this->ids]
-            ]
+                ['field' => $this->table->aliasField($primaryKey), 'operator' => 'is', 'value' => $this->ids],
+            ],
         ];
 
         $query = $this->table->find('search', $options);

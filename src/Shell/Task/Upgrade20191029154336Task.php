@@ -31,7 +31,7 @@ class Upgrade20191029154336Task extends Shell
         $task->add('CakeShell::App:export', [
             'recurrence' => 'FREQ=DAILY;INTERVAL=1',
             'start_date' => new Time('now'),
-            'options' => 'gc'
+            'options' => 'gc',
         ]);
 
         return true;

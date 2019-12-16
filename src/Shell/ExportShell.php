@@ -87,7 +87,7 @@ final class ExportShell extends Shell
 
         return [
             WWW_ROOT . $url . DS,
-            \App\Service\Export::path()
+            \App\Service\Export::path(),
         ];
     }
 }
