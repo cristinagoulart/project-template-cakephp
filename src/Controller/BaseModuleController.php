@@ -396,7 +396,7 @@ class BaseModuleController extends AppController
             return $this->redirect($this->referer());
         }
 
-        $this->Flash->success(sprintf('(%s)', count($ids)) . ' ' . __('records have been linked.'));
+        $this->Flash->success((string)__('({0}) records have been linked.', count($ids)));
 
         return $this->redirect($this->referer());
     }
@@ -429,7 +429,7 @@ class BaseModuleController extends AppController
         $event = new Event((string)EventName::BATCH_IDS(), $this, [
             $batchIds,
             $operation,
-            $this->Auth->user()
+            $this->Auth->user(),
         ]);
         $this->getEventManager()->dispatch($event);
 
@@ -437,7 +437,7 @@ class BaseModuleController extends AppController
 
         if (empty($batchIds)) {
             $operation = strtolower(Inflector::humanize($operation));
-            $this->Flash->error((string)__('Insufficient permissions to ' . $operation . ' the selected records.'));
+            $this->Flash->error((string)__('Insufficient permissions to {0} the selected records.', $operation));
 
             return $this->redirect($redirectUrl);
         }
@@ -453,7 +453,7 @@ class BaseModuleController extends AppController
             // execute batch delete
             if ($table->{$deleteMethod}($conditions)) {
                 $this->Flash->success(
-                    (string)__(count($batchIds) . ' of ' . $batchIdsCount . ' selected records have been deleted.')
+                    (string)__('{0} of {1} selected records have been deleted.', count($batchIds), $batchIdsCount)
                 );
             } else {
                 $this->Flash->error((string)__('Selected records could not be deleted. Please, try again.'));
@@ -479,7 +479,7 @@ class BaseModuleController extends AppController
             // execute batch edit
             if ($table->updateAll($fields, $conditions)) {
                 $this->Flash->success(
-                    (string)__(count($batchIds) . ' of ' . $batchIdsCount . ' selected records have been updated.')
+                    (string)__('{0} of {1} selected records have been updated.', count($batchIds), $batchIdsCount)
                 );
             } else {
                 $this->Flash->error((string)__('Selected records could not be updated. Please, try again.'));

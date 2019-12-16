@@ -25,7 +25,7 @@ class IndexActionListener extends BaseActionListener
         return [
             (string)EventName::API_INDEX_BEFORE_PAGINATE() => 'beforePaginate',
             (string)EventName::API_INDEX_AFTER_PAGINATE() => 'afterPaginate',
-            (string)EventName::API_INDEX_BEFORE_RENDER() => 'beforeRender'
+            (string)EventName::API_INDEX_BEFORE_RENDER() => 'beforeRender',
         ];
     }
 

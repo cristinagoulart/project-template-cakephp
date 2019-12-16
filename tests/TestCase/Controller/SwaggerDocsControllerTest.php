@@ -19,7 +19,7 @@ class SwaggerDocsControllerTest extends IntegrationTestCase
     public $fixtures = [
         'app.users',
         'plugin.CsvMigrations.dblists',
-        'plugin.CsvMigrations.dblist_items'
+        'plugin.CsvMigrations.dblist_items',
     ];
 
     /**

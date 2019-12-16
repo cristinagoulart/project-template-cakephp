@@ -57,7 +57,7 @@ final class Field
             'label' => $this->label(),
             'type' => $this->type(),
             'db_type' => $this->databaseType(),
-            'meta' => $this->meta()
+            'meta' => $this->meta(),
         ];
 
         $list = new FieldList($this->model, $this->field);

@@ -25,7 +25,7 @@ class RelatedActionListener extends BaseActionListener
         return [
             (string)EventName::API_RELATED_BEFORE_PAGINATE() => 'beforePaginate',
             (string)EventName::API_RELATED_AFTER_PAGINATE() => 'afterPaginate',
-            (string)EventName::API_RELATED_BEFORE_RENDER() => 'beforeRender'
+            (string)EventName::API_RELATED_BEFORE_RENDER() => 'beforeRender',
         ];
     }
 

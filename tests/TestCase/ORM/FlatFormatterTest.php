@@ -11,7 +11,7 @@ class FlatFormatterTest extends TestCase
 {
     public $fixtures = [
         'app.Things',
-        'app.Users'
+        'app.Users',
     ];
 
     private $table;

@@ -13,7 +13,7 @@ use Webmozart\Assert\Assert;
 class UsersTableTest extends TestCase
 {
     public $fixtures = [
-        'app.users'
+        'app.users',
     ];
 
     private $table;

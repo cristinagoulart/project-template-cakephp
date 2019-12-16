@@ -23,7 +23,7 @@ class ModuleIndexRowListener implements EventListenerInterface
     public function implementedEvents()
     {
         return [
-            (string)MenuEventName::GET_MENU_ITEMS() => 'getMenuItems'
+            (string)MenuEventName::GET_MENU_ITEMS() => 'getMenuItems',
         ];
     }
 
@@ -69,7 +69,7 @@ class ModuleIndexRowListener implements EventListenerInterface
         $menu->addMenuItem($editMenuItem);
         $deleteMenuItem = $this->getDeleteMenuItem($entity, $request, true);
         $deleteMenuItem->setViewElement('Plugin/Menu/view-actions-delete', [
-            'menuItem' => $deleteMenuItem
+            'menuItem' => $deleteMenuItem,
         ]);
 
         $deleteMenuItem->disableIf(function () use ($request) {

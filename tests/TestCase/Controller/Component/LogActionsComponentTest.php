@@ -45,8 +45,8 @@ class LogActionsComponentTest extends IntegrationTestCase
         $userId = '00000000-0000-0000-0000-000000000001';
         $this->session([
             'Auth' => [
-                'User' => TableRegistry::get('Users')->get($userId)->toArray()
-            ]
+                'User' => TableRegistry::get('Users')->get($userId)->toArray(),
+            ],
         ]);
     }
 
@@ -57,7 +57,7 @@ class LogActionsComponentTest extends IntegrationTestCase
                 'enableLogActions' => true,
                 'controllers' => [\App\Controller\ThingsController::class],
                 'actions' => ['view'],
-            ]
+            ],
         ];
         Configure::write($configure);
 
@@ -77,7 +77,7 @@ class LogActionsComponentTest extends IntegrationTestCase
                 'enableLogActions' => true,
                 'controllers' => [\App\Controller\ThingsController::class],
                 'actions' => ['view'],
-            ]
+            ],
         ];
         Configure::write($configure);
 
@@ -86,7 +86,7 @@ class LogActionsComponentTest extends IntegrationTestCase
 
         $data = [
             'type' => 'a',
-            'name' => 'test'
+            'name' => 'test',
         ];
 
         $this->post('/things/add', $data);
@@ -103,7 +103,7 @@ class LogActionsComponentTest extends IntegrationTestCase
                 'enableLogActions' => true,
                 'controllers' => [],
                 'actions' => ['view'],
-            ]
+            ],
         ];
         Configure::write($configure);
 
@@ -123,7 +123,7 @@ class LogActionsComponentTest extends IntegrationTestCase
                 'enableLogActions' => true,
                 'controllers' => [\App\Controller\ThingsController::class],
                 'actions' => [],
-            ]
+            ],
         ];
         Configure::write($configure);
 

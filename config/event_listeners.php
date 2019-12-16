@@ -13,6 +13,6 @@
 
 return [
     'EventListeners' => [
-        'blacklist' => []
-    ]
+        'blacklist' => [],
+    ],
 ];

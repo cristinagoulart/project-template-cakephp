@@ -114,7 +114,7 @@ final class Manager
             $result[] = [
                 'field' => $field,
                 'operator' => $item['operator'],
-                'value' => self::applyMagicValue($item['value'])
+                'value' => self::applyMagicValue($item['value']),
             ];
         }
 
@@ -225,7 +225,7 @@ final class Manager
         $urls = [
             'view' => ['prefix' => false, 'plugin' => $plugin, 'controller' => $controller, 'action' => 'view', $id],
             'edit' => ['prefix' => false, 'plugin' => $plugin, 'controller' => $controller, 'action' => 'edit', $id],
-            'delete' => ['prefix' => false, 'plugin' => $plugin, 'controller' => $controller, 'action' => 'delete', $id]
+            'delete' => ['prefix' => false, 'plugin' => $plugin, 'controller' => $controller, 'action' => 'delete', $id],
         ];
 
         array_walk($urls, function (&$item, $key) use ($factory) {
@@ -282,7 +282,7 @@ final class Manager
             'conjunction' => \Search\Criteria\Conjunction::DEFAULT_CONJUNCTION,
             'fields' => $displayFields,
             'order_by_direction' => \Search\Criteria\Direction::DEFAULT_DIRECTION,
-            'order_by_field' => current($displayFields)
+            'order_by_field' => current($displayFields),
         ]);
 
         $table->saveOrFail($savedSearch);

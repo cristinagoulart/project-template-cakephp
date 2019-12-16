@@ -11,7 +11,7 @@ class PermissionsFormatterTest extends TestCase
 {
     public $fixtures = [
         'app.Things',
-        'app.Users'
+        'app.Users',
     ];
 
     private $table;
@@ -42,7 +42,7 @@ class PermissionsFormatterTest extends TestCase
         $expected = [
             'view' => true,
             'edit' => true,
-            'delete' => true
+            'delete' => true,
         ];
 
         User::setCurrentUser($this->user->toArray());
@@ -73,7 +73,7 @@ class PermissionsFormatterTest extends TestCase
         $expected = [
             'view' => false,
             'edit' => false,
-            'delete' => false
+            'delete' => false,
         ];
 
         $query = $this->table

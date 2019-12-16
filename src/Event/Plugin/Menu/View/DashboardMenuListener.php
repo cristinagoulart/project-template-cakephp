@@ -88,7 +88,7 @@ class DashboardMenuListener implements EventListenerInterface
     private function addAdminMenuItems(MenuInterface $menu, array $user): void
     {
         $link = MenuItemFactory::createMenuItem([
-            'label' => 'Dashboard',
+            'label' => __('Dashboards'),
             'url' => '#',
             'icon' => 'tachometer',
         ]);
@@ -98,7 +98,7 @@ class DashboardMenuListener implements EventListenerInterface
 
         $createUrl = empty($link->getMenuItems()) ? '/search/dashboards/index' : '/search/dashboards/add';
         $createLink = MenuItemFactory::createMenuItem([
-            'label' => 'Create',
+            'label' => __('Create'),
             'url' => $createUrl,
             'icon' => 'plus',
             'order' => PHP_INT_MAX,

@@ -24,7 +24,7 @@ class ConfigTest extends TestCase
         $data = [
             'name' => 'Foobar',
             'active' => false,
-            'options' => [1, 'foo']
+            'options' => [1, 'foo'],
         ];
         $this->config = new Config($data);
     }
@@ -95,7 +95,7 @@ class ConfigTest extends TestCase
     {
         return [
             ['name'],
-            ['active']
+            ['active'],
         ];
     }
 
@@ -109,7 +109,7 @@ class ConfigTest extends TestCase
             [['array']],
             [357],
             [true],
-            [null]
+            [null],
         ];
     }
 
@@ -124,7 +124,7 @@ class ConfigTest extends TestCase
             ['string'],
             [1],
             [0],
-            [null]
+            [null],
         ];
     }
 }

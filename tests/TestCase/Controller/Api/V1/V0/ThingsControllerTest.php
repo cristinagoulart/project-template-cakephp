@@ -16,7 +16,7 @@ class ThingsControllerTest extends JsonIntegrationTestCase
         'app.things',
         'app.log_audit',
         'app.users',
-        'app.file_storage'
+        'app.file_storage',
     ];
 
     private $moduleName = 'Things';
@@ -163,7 +163,7 @@ class ThingsControllerTest extends JsonIntegrationTestCase
                     'area_amount' => 25.74,
                     'area_unit' => 'm',
                     'date_of_birth' => '1990-01-17T00:00:00+00:00',
-                    'work_start' => '2019-12-06T08:32:00+00:00',
+                    'work_start' => (new \DateTimeImmutable('08:32'))->format(\DateTime::ATOM),
                     'website' => 'https://google.com',
                     'bio' => 'A blob type',
                     'level' => 7,
@@ -178,9 +178,9 @@ class ThingsControllerTest extends JsonIntegrationTestCase
                     'file' => [],
                     'non_searchable' => '',
                     'sample_date' => null,
-                    'currency' => 'GBP'
-                ]
-            ]
+                    'currency' => 'GBP',
+                ],
+            ],
         ];
     }
 
@@ -229,9 +229,9 @@ class ThingsControllerTest extends JsonIntegrationTestCase
                     'trashed' => '',
                     'vip' => 'Yes',
                     'website' => '<a href="https://google.com" target="_blank">https://google.com</a>',
-                    'work_start' => '08:32'
-                ]
-            ]
+                    'work_start' => '08:32',
+                ],
+            ],
         ];
     }
 }

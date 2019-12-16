@@ -12,7 +12,7 @@ class FixDateTimeShellTest extends TestCase
     public $fixtures = [
         'app.things',
         'app.log_audit',
-        'app.DateTimeFix'
+        'app.DateTimeFix',
     ];
 
     private $table;

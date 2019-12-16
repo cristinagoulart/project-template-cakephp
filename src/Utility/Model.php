@@ -78,7 +78,7 @@ final class Model
                 'model' => App::shortName(get_class($association->getTarget()), 'Model/Table', 'Table'),
                 'type' => $association->type(),
                 'primary_key' => $association->getBindingKey(),
-                'foreign_key' => $association->getForeignKey()
+                'foreign_key' => $association->getForeignKey(),
             ];
         }
 

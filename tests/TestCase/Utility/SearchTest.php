@@ -14,7 +14,7 @@ class SearchTest extends TestCase
         'app.things',
         'app.users',
         'plugin.CakeDC/Users.social_accounts',
-        'plugin.CsvMigrations.dblists'
+        'plugin.CsvMigrations.dblists',
     ];
 
     public function setUp(): void
@@ -56,7 +56,7 @@ class SearchTest extends TestCase
             'Things.gender',
             'Things.assigned_to',
             'Things.created',
-            'Things.modified'
+            'Things.modified',
         ];
 
         $this->assertSame($expected, Search::getDisplayFields('Things'));
@@ -76,7 +76,7 @@ class SearchTest extends TestCase
                 'model' => 'Things',
                 'user_id' => '00000000-0000-0000-0000-000000000002',
                 'system' => true,
-                'fields' => $expected
+                'fields' => $expected,
             ])
         );
 
@@ -93,7 +93,7 @@ class SearchTest extends TestCase
             'SavedSearches.model',
             'SavedSearches.name',
             'SavedSearches.order_by_direction',
-            'SavedSearches.order_by_field'
+            'SavedSearches.order_by_field',
         ];
 
         $displayFields = Search::getDisplayFields('Search.SavedSearches');
@@ -112,7 +112,7 @@ class SearchTest extends TestCase
             'name' => 'Things grouped by created date',
             'model' => 'Things',
             'fields' => ['Things.created', 'COUNT(Things.created)'],
-            'group_by' => 'Things.created'
+            'group_by' => 'Things.created',
         ]);
 
         $result = Search::getChartOptions($savedSearch);
@@ -128,7 +128,7 @@ class SearchTest extends TestCase
     {
         $savedSearch = new SavedSearch([
             'name' => 'Things NOT grouped by',
-            'model' => 'Things'
+            'model' => 'Things',
         ]);
 
         $this->assertSame([], Search::getChartOptions($savedSearch));
@@ -140,7 +140,7 @@ class SearchTest extends TestCase
             'name' => 'Things NOT grouped by',
             'model' => 'Things',
             'fields' => ['Things.created'],
-            'group_by' => 'Things.created'
+            'group_by' => 'Things.created',
         ]);
 
         $this->assertSame([], Search::getChartOptions($savedSearch));
@@ -155,7 +155,7 @@ class SearchTest extends TestCase
         $savedSearch = new SavedSearch([
             'name' => 'Things NOT grouped by',
             'model' => 'Things',
-            'fields' => ['COUNT(Things.created)']
+            'fields' => ['COUNT(Things.created)'],
         ]);
 
         $result = Search::getChartOptions($savedSearch);
@@ -177,9 +177,9 @@ class SearchTest extends TestCase
                 [
                     ['icon' => 'filter', 'chart' => 'funnelChart', 'slug' => 'Things grouped by created date', 'options' => ['resize' => true, 'hideHover' => true, 'labels' => ['Created (COUNT)', 'Created'], 'xkey' => ['created'], 'ykeys' => ['created (COUNT)'], 'dataChart' => ['type' => 'funnelChart', 'data' => [['value' => 3, 'label' => '2018-01-18 15:47']]]]],
                     ['icon' => 'pie-chart', 'chart' => 'pie', 'slug' => 'Things grouped by created date', 'options' => ['resize' => true, 'hideHover' => true, 'dataChart' => ['type' => 'pie', 'data' => ['labels' => ['2018-01-18 15:47'], 'datasets' => [['backgroundColor' => ['#c7004c'], 'data' => [3]]]]]]],
-                    ['icon' => 'bar-chart', 'chart' => 'bar', 'slug' => 'Things grouped by created date', 'options' => ['resize' => true, 'hideHover' => true, 'dataChart' => ['type' => 'bar', 'data' => ['labels' => ['2018-01-18 15:47'], 'datasets' => [['label' => 'Created (COUNT)', 'backgroundColor' => ['#948412'], 'data' => [3]]]], 'options' => ['legend' => ['display' => false], 'scales' => ['yAxes' => [['ticks' => ['beginAtZero' => true]]], 'xAxes' => [['ticks' => ['autoSkip' => false]]]]]]]]
-                ]
-            ]
+                    ['icon' => 'bar-chart', 'chart' => 'bar', 'slug' => 'Things grouped by created date', 'options' => ['resize' => true, 'hideHover' => true, 'dataChart' => ['type' => 'bar', 'data' => ['labels' => ['2018-01-18 15:47'], 'datasets' => [['label' => 'Created (COUNT)', 'backgroundColor' => ['#948412'], 'data' => [3]]]], 'options' => ['legend' => ['display' => false], 'scales' => ['yAxes' => [['ticks' => ['beginAtZero' => true]]], 'xAxes' => [['ticks' => ['autoSkip' => false]]]]]]]],
+                ],
+            ],
         ];
     }
 
@@ -193,9 +193,9 @@ class SearchTest extends TestCase
                 [
                     ['icon' => 'filter', 'chart' => 'funnelChart', 'slug' => 'Things NOT grouped by', 'options' => ['resize' => true, 'hideHover' => true, 'labels' => ['Created (COUNT)', 'Created'], 'xkey' => ['created'], 'ykeys' => ['created (COUNT)'], 'dataChart' => ['type' => 'funnelChart', 'data' => [['value' => 3, 'label' => 'Created']]]]],
                     ['icon' => 'pie-chart', 'chart' => 'pie', 'slug' => 'Things NOT grouped by', 'options' => ['resize' => true, 'hideHover' => true, 'dataChart' => ['type' => 'pie', 'data' => ['labels' => ['Created'], 'datasets' => [['backgroundColor' => ['#a06ee1'], 'data' => [3]]]]]]],
-                    ['icon' => 'bar-chart', 'chart' => 'bar', 'slug' => 'Things NOT grouped by', 'options' => ['resize' => true, 'hideHover' => true, 'dataChart' => ['type' => 'bar', 'data' => ['labels' => ['Created'], 'datasets' => [['label' => 'Created (COUNT)', 'backgroundColor' => ['#5460a5'], 'data' => [3]]]], 'options' => ['legend' => ['display' => false], 'scales' => ['yAxes' => [['ticks' => ['beginAtZero' => true]]], 'xAxes' => [['ticks' => ['autoSkip' => false]]]]]]]]
-                ]
-            ]
+                    ['icon' => 'bar-chart', 'chart' => 'bar', 'slug' => 'Things NOT grouped by', 'options' => ['resize' => true, 'hideHover' => true, 'dataChart' => ['type' => 'bar', 'data' => ['labels' => ['Created'], 'datasets' => [['label' => 'Created (COUNT)', 'backgroundColor' => ['#5460a5'], 'data' => [3]]]], 'options' => ['legend' => ['display' => false], 'scales' => ['yAxes' => [['ticks' => ['beginAtZero' => true]]], 'xAxes' => [['ticks' => ['autoSkip' => false]]]]]]]],
+                ],
+            ],
         ];
     }
 
@@ -339,8 +339,8 @@ class SearchTest extends TestCase
                     ['type' => 'list', 'label' => 'Title', 'field' => 'Things.title', 'group' => 'Things'],
                     ['type' => 'boolean', 'label' => 'Vip', 'field' => 'Things.vip', 'group' => 'Things'],
                     ['type' => 'url', 'label' => 'Website', 'field' => 'Things.website', 'group' => 'Things'],
-                    ['type' => 'time', 'label' => 'Work Start', 'field' => 'Things.work_start', 'group' => 'Things']
-                ]
+                    ['type' => 'time', 'label' => 'Work Start', 'field' => 'Things.work_start', 'group' => 'Things'],
+                ],
             ],
             [
                 'Users',
@@ -488,9 +488,9 @@ class SearchTest extends TestCase
                     ['type' => 'string', 'label' => 'Token', 'field' => 'Users.token', 'group' => 'Users'],
                     ['type' => 'datetime', 'label' => 'Token Expires', 'field' => 'Users.token_expires', 'group' => 'Users'],
                     ['type' => 'datetime', 'label' => 'Tos Date', 'field' => 'Users.tos_date', 'group' => 'Users'],
-                    ['type' => 'string', 'label' => 'Username', 'field' => 'Users.username', 'group' => 'Users']
-                ]
-            ]
+                    ['type' => 'string', 'label' => 'Username', 'field' => 'Users.username', 'group' => 'Users'],
+                ],
+            ],
         ];
     }
 }

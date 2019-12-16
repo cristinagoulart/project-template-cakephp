@@ -16,7 +16,7 @@ class ScheduledJobLogsTableTest extends TestCase
 {
     public $fixtures = [
         'app.scheduled_jobs',
-        'app.scheduled_job_logs'
+        'app.scheduled_job_logs',
     ];
 
     private $table;

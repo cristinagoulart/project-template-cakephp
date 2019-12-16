@@ -43,7 +43,7 @@ class ModelTest extends TestCase
                 'model' => 'Users',
                 'type' => 'manyToOne',
                 'primary_key' => 'id',
-                'foreign_key' => 'assigned_to'
+                'foreign_key' => 'assigned_to',
             ],
             [
                 'name' => 'CreatedByUsers',
@@ -51,7 +51,7 @@ class ModelTest extends TestCase
                 'model' => 'Users',
                 'type' => 'manyToOne',
                 'primary_key' => 'id',
-                'foreign_key' => 'created_by'
+                'foreign_key' => 'created_by',
             ],
             [
                 'name' => 'FileFileStorageFileStorage',
@@ -59,7 +59,7 @@ class ModelTest extends TestCase
                 'model' => 'Burzum/FileStorage.FileStorage',
                 'type' => 'oneToMany',
                 'primary_key' => 'id',
-                'foreign_key' => 'foreign_key'
+                'foreign_key' => 'foreign_key',
             ],
             [
                 'name' => 'ModifiedByUsers',
@@ -67,7 +67,7 @@ class ModelTest extends TestCase
                 'model' => 'Users',
                 'type' => 'manyToOne',
                 'primary_key' => 'id',
-                'foreign_key' => 'modified_by'
+                'foreign_key' => 'modified_by',
             ],
             [
                 'name' => 'PhotosFileStorageFileStorage',
@@ -75,7 +75,7 @@ class ModelTest extends TestCase
                 'model' => 'Burzum/FileStorage.FileStorage',
                 'type' => 'oneToMany',
                 'primary_key' => 'id',
-                'foreign_key' => 'foreign_key'
+                'foreign_key' => 'foreign_key',
             ],
             [
                 'name' => 'PrimaryThingThings',
@@ -83,7 +83,7 @@ class ModelTest extends TestCase
                 'model' => 'Things',
                 'type' => 'manyToOne',
                 'primary_key' => 'id',
-                'foreign_key' => 'primary_thing'
+                'foreign_key' => 'primary_thing',
             ],
             [
                 'name' => 'Thingsprimary_thing',
@@ -91,8 +91,8 @@ class ModelTest extends TestCase
                 'model' => 'Things',
                 'type' => 'oneToMany',
                 'primary_key' => 'id',
-                'foreign_key' => 'primary_thing'
-            ]
+                'foreign_key' => 'primary_thing',
+            ],
         ];
 
         $associations = Model::associations('Things');

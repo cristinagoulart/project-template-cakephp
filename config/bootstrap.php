@@ -282,8 +282,8 @@ Plugin::load('ADmad/JwtAuth');
 EventManager::instance()->on(new LocalListener([
     'imageProcessing' => true,
     'pathBuilderOptions' => [
-        'pathPrefix' => Configure::read('FileStorage.pathBuilderOptions.pathPrefix')
-    ]
+        'pathPrefix' => Configure::read('FileStorage.pathBuilderOptions.pathPrefix'),
+    ],
 ]));
 
 /*
