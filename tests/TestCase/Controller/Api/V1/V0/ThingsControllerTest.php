@@ -163,7 +163,7 @@ class ThingsControllerTest extends JsonIntegrationTestCase
                     'area_amount' => 25.74,
                     'area_unit' => 'm',
                     'date_of_birth' => '1990-01-17T00:00:00+00:00',
-                    'work_start' => '2019-12-06T08:32:00+00:00',
+                    'work_start' => (new \DateTimeImmutable('08:32'))->format(\DateTimeInterface::ATOM),
                     'website' => 'https://google.com',
                     'bio' => 'A blob type',
                     'level' => 7,
