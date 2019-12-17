@@ -131,7 +131,7 @@ final class Export
         $query->formatResults(new \App\ORM\FlatFormatter());
         $pages = ceil($query->count() / self::QUERY_LIMIT) + 1;
 
-        $this->write([$this->getHeaders()], 'w');
+        $this->write([$this->headers()], 'w');
         for ($page = 1; $page < $pages; $page++) {
             $data = $query->page($page, self::QUERY_LIMIT)->toArray();
             $data = array_map(function ($item) {
@@ -210,7 +210,7 @@ final class Export
      *
      * @return string[]
      */
-    private function getHeaders(): array
+    private function headers(): array
     {
         if ([] === $this->fields) {
             return [];
