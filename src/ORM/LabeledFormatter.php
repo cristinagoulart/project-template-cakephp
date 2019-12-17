@@ -89,7 +89,7 @@ final class LabeledFormatter
         $associations = Model::associations($model);
         $key = array_search($field, array_column($associations, 'foreign_key'));
         if (false !== $key) {
-            return self::getDisplayValueFromAssociation($table->getAssociation($associations[$key]['name']), $field, $value);
+            return self::displayValueFromAssociation($table->getAssociation($associations[$key]['name']), $field, $value);
         }
 
         $list = new FieldList($model, $field);
@@ -130,7 +130,7 @@ final class LabeledFormatter
      * @param mixed $value Field value
      * @return mixed
      */
-    private static function getDisplayValueFromAssociation(Association $association, string $field, $value)
+    private static function displayValueFromAssociation(Association $association, string $field, $value)
     {
         $targetTable = $association->getTarget();
         $displayField = $targetTable->getDisplayField();
@@ -148,7 +148,7 @@ final class LabeledFormatter
         $associations = Model::associations($model);
         $key = array_search($displayField, array_column($associations, 'foreign_key'));
         if (false !== $key) {
-            return self::getDisplayValueFromAssociation(
+            return self::displayValueFromAssociation(
                 $targetTable->getAssociation($associations[$key]['name']),
                 $displayField,
                 $value
