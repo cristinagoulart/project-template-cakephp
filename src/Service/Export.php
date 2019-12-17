@@ -135,8 +135,9 @@ final class Export
         for ($page = 1; $page < $pages; $page++) {
             $data = $query->page($page, self::QUERY_LIMIT)->toArray();
             $data = array_map(function ($item) {
-                return $item->toArray();
+                return array_merge(array_flip($this->fields), $item->toArray());
             }, $data);
+
             $this->write($data, 'a');
         }
     }
