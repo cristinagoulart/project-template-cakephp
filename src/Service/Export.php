@@ -72,7 +72,9 @@ final class Export
         Assert::notEmpty($fields);
 
         $this->table = $table;
-        $this->fields = $fields;
+        $this->fields = array_map(function ($item) {
+            return $this->table->aliasField($item);
+        }, $fields);
         $this->formatted = $formatted;
         $this->createdAt = new \DateTimeImmutable();
     }
