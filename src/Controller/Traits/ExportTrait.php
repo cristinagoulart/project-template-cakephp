@@ -20,9 +20,9 @@ trait ExportTrait
         $table = $this->loadModel();
         Assert::isInstanceOf($table, Table::class);
 
-        $export = Export::withIds(
-            $table,
+        $export = Export::fromIds(
             (array)$this->getRequest()->getData('ids'),
+            $table,
             (array)$this->getRequest()->getData('headers')
         );
 

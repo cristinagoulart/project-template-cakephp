@@ -36,7 +36,7 @@ final class Export
     /**
      * @var string[]
      */
-    private $ids;
+    private $ids = [];
 
     /**
      * @var string[]
@@ -62,21 +62,16 @@ final class Export
      * Constructor.
      *
      * @param \Cake\ORM\Table $table Search name
-     * @param string[] $ids IDs to be exported
      * @param string[] $fields IDs to be exported
      * @param bool $formatted Format flag
      * @return void
      */
-    private function __construct(Table $table, array $ids, array $fields, bool $formatted = false)
+    private function __construct(Table $table, array $fields, bool $formatted = false)
     {
-        Assert::isList($ids);
-        Assert::notEmpty($ids);
-
         Assert::isList($fields);
         Assert::notEmpty($fields);
 
         $this->table = $table;
-        $this->ids = $ids;
         $this->fields = $fields;
         $this->formatted = $formatted;
         $this->createdAt = new \DateTimeImmutable();
@@ -87,17 +82,22 @@ final class Export
      *
      * @param \Cake\ORM\Table $table Search name
      * @param string[] $ids IDs to be exported
-     * @param string[] $fields IDs to be exported
+     * @param string[] $fields Fields to export values from
      * @param bool $formatted Format flag
      * @return self
      */
-    public static function withIds(Table $table, array $ids, array $fields, bool $formatted = false): self
+    public static function fromIds(array $ids, Table $table, array $fields, bool $formatted = false): self
     {
-        $export = new self($table, $ids, $fields, $formatted);
+        Assert::isList($ids);
+        Assert::notEmpty($ids);
 
-        $export->execute();
+        $instance = new self($table, $fields, $formatted);
+        $instance->ids = $ids;
 
-        return $export;
+        $instance->execute();
+
+        return $instance;
+
     }
 
     /**
