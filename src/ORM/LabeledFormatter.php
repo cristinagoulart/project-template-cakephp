@@ -94,10 +94,7 @@ final class LabeledFormatter
 
         $list = new FieldList($model, $field);
         if ($list->has()) {
-            $options = $list->options(['prettify' => false]);
-            $key = array_search($value, array_column($options, 'value'));
-
-            return false !== $key ? $options[$key]['label'] : $value;
+            return self::listValueLabel($list, $value);
         }
 
         if (is_resource($value)) {
@@ -118,6 +115,36 @@ final class LabeledFormatter
         }
 
         return $value;
+    }
+
+    /**
+     * Fetches and returns formatted list option label.
+     *
+     * @param \App\Utility\FieldList $list FieldList instance
+     * @param mixed $value Field value
+     * @return mixed
+     */
+    private static function listValueLabel(FieldList $list, $value)
+    {
+        $options = $list->options(['prettify' => ! in_array($list->name(), ['currencies', 'countries'], true)]);
+        $key = array_search($value, array_column($options, 'value'));
+
+        if (false === $key) {
+            return $value;
+        }
+
+        // Concatenate all parents together with value (nested values are dot-separated).
+        // At least the value itself will be included, if no parents.
+        $path = '';
+        $result = '';
+        foreach (explode('.', $options[$key]['value']) as $item) {
+            $path = '' === $path ? $item : $path . '.' . $item;
+            $key = array_search($path, array_column($options, 'value'));
+
+            $result .= false !== $key ? $options[$key]['label'] : '';
+        }
+
+        return $result;
     }
 
     /**
