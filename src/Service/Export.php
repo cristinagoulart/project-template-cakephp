@@ -97,7 +97,16 @@ final class Export
         $instance->execute();
 
         return $instance;
+    }
 
+    /**
+     * Extract and return model name from table object.
+     *
+     * @return string
+     */
+    private function modelName(): string
+    {
+        return App::shortName(get_class($this->table), 'Model/Table', 'Table');
     }
 
     /**
@@ -193,7 +202,7 @@ final class Export
     {
         $filename = sprintf(
             '%s - %s',
-            App::shortName(get_class($this->table), 'Model/Table', 'Table'),
+            $this->modelName(),
             $this->createdAt->format('YmdHis')
         );
 
@@ -211,7 +220,7 @@ final class Export
             return [];
         }
 
-        $associations = Model::associations(App::shortName(get_class($this->table), 'Model/Table', 'Table'));
+        $associations = Model::associations($this->modelName());
 
         $result = [];
         foreach ($this->fields as $field) {
