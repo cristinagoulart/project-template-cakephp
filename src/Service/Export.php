@@ -152,7 +152,7 @@ final class Export
             return $this->file;
         }
 
-        $file = new File(self::path() . $this->filename(), true);
+        $file = new File($this->path(), true);
 
         if (! $file->writable()) {
             throw new \RuntimeException(sprintf('Export file is not writable: %s.', $file->pwd()));
@@ -177,10 +177,14 @@ final class Export
     }
 
     /**
-     * Path getter.
+     * Full path getter.
      *
      * @return string
      */
+    public function path(): string
+    {
+        return self::basePath() . $this->filename();
+    }
 
     /**
      * Base path getter.
