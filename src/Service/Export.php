@@ -80,8 +80,8 @@ final class Export
     /**
      * Exports data into a CSV by provided IDs and returns its filename.
      *
-     * @param \Cake\ORM\Table $table Search name
      * @param string[] $ids IDs to be exported
+     * @param \Cake\ORM\Table $table Search name
      * @param string[] $fields Fields to export values from
      * @param bool $formatted Format flag
      * @return self
