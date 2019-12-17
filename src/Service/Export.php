@@ -236,6 +236,7 @@ final class Export
                 $field = AbstractAggregate::extractFieldName($field);
             }
 
+            $field = $this->table->aliasField($field);
             list($modelName, $fieldName) = pluginSplit($field);
             $key = array_search($modelName, array_column($associations, 'name'));
             if (false !== $key) {
