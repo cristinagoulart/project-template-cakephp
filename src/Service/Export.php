@@ -181,7 +181,13 @@ final class Export
      *
      * @return string
      */
-    public static function path(): string
+
+    /**
+     * Base path getter.
+     *
+     * @return string
+     */
+    public static function basePath(): string
     {
         $path = Configure::readOrFail('Export.path');
         Assert::string($path);
