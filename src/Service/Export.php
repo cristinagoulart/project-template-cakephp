@@ -131,10 +131,6 @@ final class Export
         $query->formatResults(new \App\ORM\FlatFormatter());
         $pages = ceil($query->count() / self::QUERY_LIMIT) + 1;
 
-        // dd($query->toArray());
-
-        // debug($this->fields);
-
         $this->write([$this->getHeaders()], 'w');
         for ($page = 1; $page < $pages; $page++) {
             $data = $query->page($page, self::QUERY_LIMIT)->toArray();
