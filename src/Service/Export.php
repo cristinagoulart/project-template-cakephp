@@ -96,7 +96,7 @@ final class Export
         $instance = new self($table, $fields, $formatted);
         $instance->ids = $ids;
 
-        $instance->execute();
+        $instance->execute($formatted);
 
         return $instance;
     }
@@ -114,9 +114,10 @@ final class Export
     /**
      * Executes export functionality.
      *
+     * @param bool $formatted Format flag
      * @return void
      */
-    private function execute(): void
+    private function execute(bool $formatted): void
     {
         $primaryKey = $this->table->getPrimaryKey();
         Assert::string($primaryKey);
@@ -129,7 +130,7 @@ final class Export
         ];
 
         $query = $this->table->find('search', $options);
-        $query->formatResults(new \App\ORM\LabeledFormatter());
+        $query->formatResults($formatted ? new \App\ORM\LabeledFormatter() : new \App\ORM\RawFormatter());
         $query->formatResults(new \App\ORM\FlatFormatter());
         $pages = ceil($query->count() / self::QUERY_LIMIT) + 1;
 
