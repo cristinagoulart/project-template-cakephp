@@ -83,6 +83,31 @@ class SearchTest extends TestCase
         $this->assertSame($expected, Search::getDisplayFields('Things'));
     }
 
+    public function testGetDisplayFieldsWithDisplayFieldBeingTheFirstFilter(): void
+    {
+        $table = TableRegistry::getTableLocator()->get('Search.SavedSearches');
+        $table->deleteAll([]);
+
+        $expected = ['AssignedToUsers.activation_date'];
+        $this->assertSame(
+            current($expected),
+            Search::getFilters('Things')[0]['field'],
+            'Pre-test assertion, if $expected does not match filters first field, adjust $expected accordingly'
+        );
+
+        $table->saveOrFail(
+            $table->newEntity([
+                'name' => 'A name',
+                'model' => 'Things',
+                'user_id' => '00000000-0000-0000-0000-000000000002',
+                'system' => true,
+                'fields' => $expected,
+            ])
+        );
+
+        $this->assertSame($expected, Search::getDisplayFields('Things'));
+    }
+
     public function testGetDisplayFieldsFromDatabaseColumns(): void
     {
         $table = TableRegistry::getTableLocator()->get('Search.SavedSearches');
