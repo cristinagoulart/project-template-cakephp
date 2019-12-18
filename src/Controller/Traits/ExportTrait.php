@@ -23,7 +23,8 @@ trait ExportTrait
         $export = Export::fromIds(
             (array)$this->getRequest()->getData('ids'),
             $table,
-            (array)$this->getRequest()->getData('headers')
+            (array)$this->getRequest()->getData('headers'),
+            (bool)$this->getRequest()->getData('formatted', false)
         );
 
         $this->set('url', $export->url());
