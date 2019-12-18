@@ -6,6 +6,7 @@
                 <button type="button" :disabled="!selected.length" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-bars"></i> Actions <span class="caret"></span></button>
                 <ul class="dropdown-menu dropdown-menu-right">
                     <li v-if="withExport"><a href="#" @click.prevent="batchExport()"><i class="fa fa-download"></i> Export</a></li>
+                    <li v-if="withExport"><a href="#" @click.prevent="batchExport(false)"><i class="fa fa-download"></i> Export (raw)</a></li>
                     <li v-if="withBatchEdit"><a href="#" @click.prevent="batchEdit()"><i class="fa fa-pencil"></i> Edit</a></li>
                     <li v-if="withBatchDelete"><a href="#" @click.prevent="batchDelete()"><i class="fa fa-trash"></i> Delete</a></li>
                 </ul>
@@ -316,14 +317,18 @@ export default {
       })
     },
 
-    batchExport () {
+    batchExport (formatted = true) {
       if (!this.withExport || !this.selected.length) {
         return
       }
 
       return new Promise((resolve, reject) => {
         return axios
-          .post('/' + this.model + '/export', { ids: this.selected, headers: this.headers.map(item => item.value) })
+          .post('/' + this.model + '/export', {
+            ids: this.selected,
+            headers: this.headers.map(item => item.value),
+            formatted: formatted
+          })
           .then(response => {
             if (response.data) {
               let text = '<a href="' + response.data + '" title="Download Link">Download</a>'
