@@ -48,7 +48,7 @@ class UsersExternalApiTest extends IntegrationTestCase
                 'password' => getenv('DEV_USER'),
             ],
             [
-                'type' => 'json'
+                'type' => 'json',
             ]
         );
 

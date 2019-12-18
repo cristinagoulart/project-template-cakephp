@@ -23,6 +23,7 @@ use Cake\Utility\Inflector;
 use CsvMigrations\FieldHandlers\FieldHandlerFactory;
 use Qobo\Utils\Utility\User;
 use RolesCapabilities\Access\AccessFactory;
+use Search\Aggregate\AggregateInterface;
 use Search\Model\Entity\SavedSearch;
 use Webmozart\Assert\Assert;
 
@@ -63,6 +64,27 @@ final class Manager
     }
 
     /**
+     * Checks whether the primary key must be included in the search fields.
+     *
+     * @param mixed[] $options Search options
+     * @return bool
+     */
+    public static function includePrimaryKey(array $options): bool
+    {
+        if (array_key_exists('group', $options)) {
+            return false;
+        }
+
+        foreach ((array)Hash::get($options, 'fields', []) as $item) {
+            if (1 === preg_match(AggregateInterface::AGGREGATE_PATTERN, $item)) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    /**
      * Criteria getter.
      *
      * @param mixed[] $criteria Search criteria
@@ -92,7 +114,7 @@ final class Manager
             $result[] = [
                 'field' => $field,
                 'operator' => $item['operator'],
-                'value' => self::applyMagicValue($item['value'])
+                'value' => self::applyMagicValue($item['value']),
             ];
         }
 
@@ -130,6 +152,11 @@ final class Manager
      */
     public static function formatEntities(ResultSetInterface $entities, Table $table, bool $withPermissions = false): array
     {
+        deprecationWarning(
+            'Manager::formatEntities() method is deprecated. ' .
+            'Use \App\ORM\PrettyFormatter class instead.'
+        );
+
         $result = [];
         foreach ($entities as $entity) {
             $result[] = self::formatEntity($entity, $table, $withPermissions);
@@ -198,7 +225,7 @@ final class Manager
         $urls = [
             'view' => ['prefix' => false, 'plugin' => $plugin, 'controller' => $controller, 'action' => 'view', $id],
             'edit' => ['prefix' => false, 'plugin' => $plugin, 'controller' => $controller, 'action' => 'edit', $id],
-            'delete' => ['prefix' => false, 'plugin' => $plugin, 'controller' => $controller, 'action' => 'delete', $id]
+            'delete' => ['prefix' => false, 'plugin' => $plugin, 'controller' => $controller, 'action' => 'delete', $id],
         ];
 
         array_walk($urls, function (&$item, $key) use ($factory) {
@@ -255,7 +282,7 @@ final class Manager
             'conjunction' => \Search\Criteria\Conjunction::DEFAULT_CONJUNCTION,
             'fields' => $displayFields,
             'order_by_direction' => \Search\Criteria\Direction::DEFAULT_DIRECTION,
-            'order_by_field' => current($displayFields)
+            'order_by_field' => current($displayFields),
         ]);
 
         $table->saveOrFail($savedSearch);

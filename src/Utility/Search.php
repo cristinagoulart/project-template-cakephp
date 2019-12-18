@@ -2,8 +2,8 @@
 
 namespace App\Utility;
 
-use App\Model\Table\UsersTable;
 use App\Search\Manager;
+use Cake\Cache\Cache;
 use Cake\Core\App;
 use Cake\Datasource\EntityInterface;
 use Cake\Log\Log;
@@ -16,8 +16,6 @@ use CsvMigrations\FieldHandlers\FieldHandlerFactory;
 use DatabaseLog\Model\Table\DatabaseLogsTable;
 use Qobo\Utils\ModuleConfig\ConfigType;
 use Qobo\Utils\ModuleConfig\ModuleConfig;
-use Qobo\Utils\Utility\User;
-use RolesCapabilities\Access\AccessFactory;
 use Search\Aggregate\AggregateInterface;
 use Search\Model\Entity\SavedSearch;
 use Search\Service\Search as SearchService;
@@ -26,30 +24,16 @@ use Webmozart\Assert\Assert;
 final class Search
 {
     /**
-     * Searchable fields.
-     *
-     * @var array
-     */
-    private static $fields = [];
-
-    /**
      * Search filters.
      *
      * @var array
      */
     private static $filters = [];
 
-    /**
-     * Association labels.
-     *
-     * @var array
-     */
-    private static $associationLabels = [];
-
-    const SUPPORTED_ASSOCIATIONS = [
+    private const SUPPORTED_ASSOCIATIONS = [
         Association::MANY_TO_ONE,
         Association::MANY_TO_MANY,
-        Association::ONE_TO_MANY
+        Association::ONE_TO_MANY,
     ];
 
     /**
@@ -57,10 +41,10 @@ final class Search
      *
      * @var array
      */
-    const CHARTS = [
+    private const CHARTS = [
         ['type' => 'funnelChart', 'icon' => 'filter', 'class' => '\Search\Widgets\Reports\DonutChartReportWidget'],
         ['type' => 'pie', 'icon' => 'pie-chart', 'class' => '\Search\Widgets\Reports\PieChartReportWidget'],
-        ['type' => 'bar', 'icon' => 'bar-chart', 'class' => '\Search\Widgets\Reports\BarChartReportWidget']
+        ['type' => 'bar', 'icon' => 'bar-chart', 'class' => '\Search\Widgets\Reports\BarChartReportWidget'],
     ];
 
     /**
@@ -73,6 +57,12 @@ final class Search
     {
         if (! empty(static::$filters[$tableName])) {
             return static::$filters[$tableName];
+        }
+
+        $cacheKey = 'search_filters_' . md5($tableName);
+        $cached = Cache::read($cacheKey);
+        if (false !== $cached) {
+            return $cached;
         }
 
         $table = TableRegistry::getTableLocator()->get($tableName);
@@ -91,6 +81,8 @@ final class Search
         usort($result, function ($x, $y) {
             return strcasecmp($x['field'], $y['field']);
         });
+
+        Cache::write($cacheKey, $result);
 
         static::$filters[$tableName] = $result;
 
@@ -159,19 +151,21 @@ final class Search
             'conjunction' => $savedSearch->get('conjunction'),
             'sort' => $savedSearch->get('order_by_field'),
             'direction' => $savedSearch->get('order_by_direction'),
-            'group_by' => $savedSearch->get('group_by')
+            'group_by' => $savedSearch->get('group_by'),
         ], []));
+
+        $query->formatResults(new \App\ORM\PrettyFormatter());
+        $query->formatResults(new \App\ORM\FlatFormatter());
 
         $rowLabel = sprintf('%s (%s)', $aggregateField, $aggregateType);
         list(, $rowValue) = $savedSearch->get('group_by') ? pluginSplit($savedSearch->get('group_by')) : ['', $aggregateField];
         $filters = self::getFilters($savedSearch->get('model'));
         $rows = [];
-        foreach ($query->all() as $entity) {
-            $formatted = self::formatEntity($entity, $table, $factory);
 
-            $row = [$rowLabel => $formatted[$aggregate]];
+        foreach ($query->all() as $entity) {
+            $row = [$rowLabel => $entity[$aggregate]];
             $key = array_search($aggregateFieldAliased, array_column($filters, 'field'));
-            $row[$rowValue] = $savedSearch->get('group_by') ? $formatted[$savedSearch->get('group_by')] : $filters[$key]['label'];
+            $row[$rowValue] = $savedSearch->get('group_by') ? $entity[$savedSearch->get('group_by')] : $filters[$key]['label'];
 
             $rows[] = $row;
         }
@@ -182,7 +176,7 @@ final class Search
                 'icon' => $chart['icon'],
                 'id' => Inflector::delimit($chart['type']) . '_' . uniqid(),
                 'chart' => $chart['type'],
-                'slug' => $savedSearch->get('name')
+                'slug' => $savedSearch->get('name'),
             ];
 
             switch ($chart['type']) {
@@ -194,8 +188,8 @@ final class Search
                         'info' => [
                             'columns' => implode(',', [$rowLabel, $rowValue]),
                             'x_axis' => $rowValue,
-                            'y_axis' => $rowLabel
-                        ]
+                            'y_axis' => $rowLabel,
+                        ],
                     ]);
 
                     $widget->setContainerId($options);
@@ -206,7 +200,7 @@ final class Search
                     foreach ($rows as $row) {
                         $data[] = [
                             'value' => Hash::get($row, $rowLabel),
-                            'label' => Hash::get($row, $rowValue)
+                            'label' => Hash::get($row, $rowValue),
                         ];
                     }
 
@@ -216,53 +210,21 @@ final class Search
                             'hideHover' => true,
                             'labels' => [
                                 Inflector::humanize($rowLabel),
-                                Inflector::humanize($rowValue)
+                                Inflector::humanize($rowValue),
                             ],
                             'xkey' => [$rowValue],
                             'ykeys' => [$rowLabel],
                             'dataChart' => [
                                 'type' => $chart['type'],
-                                'data' => $data
-                            ]
-                        ]
+                                'data' => $data,
+                            ],
+                        ],
                     ];
 
                     break;
             }
 
             $result[] = $options;
-        }
-
-        return $result;
-    }
-
-    /**
-     * Method that formats search result-set entity.
-     *
-     * @param \Cake\Datasource\EntityInterface $entity Entity instance
-     * @param \Cake\ORM\Table $table Table instance
-     * @param \CsvMigrations\FieldHandlers\FieldHandlerFactory $factory Field handler factory instance
-     * @return mixed[]
-     */
-    private static function formatEntity(EntityInterface $entity, Table $table, FieldHandlerFactory $factory): array
-    {
-        $result = [];
-        foreach (array_diff($entity->visibleProperties(), $entity->getVirtual()) as $field) {
-            // current table field
-            if ('_matchingData' !== $field) {
-                $result[$table->aliasField($field)] = 1 === preg_match(AggregateInterface::AGGREGATE_PATTERN, $field) ?
-                    $entity->get($field) :
-                    $factory->renderValue($table, $field, $entity->get($field));
-                continue;
-            }
-
-            foreach ($entity->get('_matchingData') as $associationName => $relatedEntity) {
-                $result = array_merge($result, self::formatEntity(
-                    $relatedEntity,
-                    $table->getAssociation($associationName)->getTarget(),
-                    $factory
-                ));
-            }
         }
 
         return $result;
@@ -276,24 +238,14 @@ final class Search
      */
     private static function getAssociationLabels(Table $table): array
     {
-        if (! empty(self::$associationLabels[$table->getRegistryAlias()])) {
-            return self::$associationLabels[$table->getRegistryAlias()];
-        }
-
         $result = [];
         foreach ($table->associations() as $association) {
-            if (! in_array($association->type(), self::SUPPORTED_ASSOCIATIONS)) {
-                continue;
-            }
-
             $result[$association->getName()] = sprintf(
                 '%s (%s)',
                 App::shortName(get_class($association->getTarget()), 'Model/Table', 'Table'),
                 Inflector::humanize(implode(', ', (array)$association->getForeignKey()))
             );
         }
-
-        self::$associationLabels[$table->getRegistryAlias()] = $result;
 
         return $result;
     }
@@ -310,20 +262,10 @@ final class Search
         list($plugin, $controller) = pluginSplit(App::shortName(get_class($table), 'Model/Table', 'Table'));
         $url = ['plugin' => $plugin, 'controller' => $controller, 'action' => 'search'];
 
-        if (! (new AccessFactory())->hasAccess($url, User::getCurrentUser())) {
-            return [];
-        }
-
-        if (! empty(self::$fields[$table->getRegistryAlias()])) {
-            return self::$fields[$table->getRegistryAlias()];
-        }
-
         $result = self::getSearchableFieldsByTable($table);
         if ($withAssociated) {
             $result = array_merge($result, self::includeAssociated($table));
         }
-
-        self::$fields[$table->getRegistryAlias()] = $result;
 
         return $result;
     }
@@ -357,13 +299,9 @@ final class Search
     private static function getDisplayFieldsFromView(string $tableName): array
     {
         list($plugin, $module) = pluginSplit($tableName);
-        try {
-            $config = (new ModuleConfig(ConfigType::VIEW(), $module, 'index'))->parseToArray();
-            $fields = ! empty($config['items']) ? $config['items'] : [];
-        } catch (\InvalidArgumentException $e) {
-            $fields = [];
-            Log::error($e->getMessage());
-        }
+
+        $config = (new ModuleConfig(ConfigType::VIEW(), $module, 'index'))->parseToArray();
+        $fields = ! empty($config['items']) ? $config['items'] : [];
 
         $columns = TableRegistry::getTableLocator()
             ->get($tableName)

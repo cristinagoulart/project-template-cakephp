@@ -21,12 +21,12 @@ class LdapAuthenticate extends BaseAuthenticate
     /**
      * Default LDAP protocol version.
      */
-    const DEFAULT_VERSION = 3;
+    public const DEFAULT_VERSION = 3;
 
     /**
      * Default LDAP port.
      */
-    const DEFAULT_PORT = 389;
+    public const DEFAULT_PORT = 389;
 
     /**
      * LDAP Object.
@@ -167,7 +167,7 @@ class LdapAuthenticate extends BaseAuthenticate
 
         // look for the user in the database
         $query = $table->find('all', [
-            'conditions' => [$this->_config['fields']['username'] => $request->getData('username')]
+            'conditions' => [$this->_config['fields']['username'] => $request->getData('username')],
         ])->enableHydration(true);
 
         $entity = $query->first();

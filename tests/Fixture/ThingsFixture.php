@@ -23,7 +23,35 @@ class ThingsFixture extends TestFixture
             'modified' => '2018-01-18 15:47:16',
             'created_by' => '00000000-0000-0000-0000-000000000001',
             'modified_by' => '00000000-0000-0000-0000-000000000001',
-            'trashed' => null
+            'gender' => 'm',
+            'country' => 'CY',
+            'currency' => 'GBP',
+            'area_amount' => '25.738',
+            'area_unit' => 'm',
+            'salary_amount' => '1000',
+            'salary_currency' => 'EUR',
+            'test_list' => '',
+            'testmetric_amount' => '33.178',
+            'testmetric_unit' => 'ft',
+            'testmoney_amount' => '155.22',
+            'testmoney_currency' => 'USD',
+            'assigned_to' => '00000000-0000-0000-0000-000000000002',
+            'vip' => true,
+            'date_of_birth' => '1990-01-17',
+            'work_start' => '08:32',
+            'website' => 'https://google.com',
+            'bio' => 'A blob type',
+            'level' => '7',
+            'appointment' => '2019-10-29 15:47:16',
+            'phone' => '+35725123456',
+            'rate' => '25.134',
+            'primary_thing' => '00000000-0000-0000-0000-000000000002',
+            'title' => 'Dr',
+            'language' => 'grc',
+            'photos' => '',
+            'file' => '',
+            'non_searchable' => '',
+            'trashed' => null,
         ],
         [
             'id' => '00000000-0000-0000-0000-000000000002',
@@ -38,7 +66,9 @@ class ThingsFixture extends TestFixture
             'area_unit' => 'm',
             'salary_amount' => '1000',
             'salary_currency' => 'EUR',
-            'trashed' => null
+            'assigned_to' => '00000000-0000-0000-0000-000000000002',
+            'primary_thing' => '00000000-0000-0000-0000-000000000001',
+            'trashed' => null,
         ],
         [
             'id' => '00000000-0000-0000-0000-000000000003',
@@ -61,7 +91,7 @@ class ThingsFixture extends TestFixture
             'sample_date' => '2018-01-18 15:47:16',
             'created_by' => '00000000-0000-0000-0000-000000000001',
             'modified_by' => '00000000-0000-0000-0000-000000000001',
-            'trashed' => null
-        ]
+            'trashed' => null,
+        ],
     ];
 }

@@ -58,7 +58,7 @@ trait SearchTrait
             $result = [
                 'success' => true,
                 'data' => ['path' => $export->getUrl()],
-                '_serialize' => ['success', 'data']
+                '_serialize' => ['success', 'data'],
             ];
 
             $this->set($result);

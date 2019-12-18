@@ -21,17 +21,17 @@ abstract class BaseActionListener implements EventListenerInterface
     /**
      * Pretty format identifier
      */
-    const FORMAT_PRETTY = 'pretty';
+    public const FORMAT_PRETTY = 'pretty';
 
     /**
      * Include menus identifier
      */
-    const FLAG_INCLUDE_MENUS = 'menus';
+    public const FLAG_INCLUDE_MENUS = 'menus';
 
     /**
      * Property name for menu items
      */
-    const MENU_PROPERTY_NAME = '_Menus';
+    public const MENU_PROPERTY_NAME = '_Menus';
 
     /**
      * FieldHandlerFactory instance.
@@ -141,6 +141,11 @@ abstract class BaseActionListener implements EventListenerInterface
      */
     protected function prettify(EntityInterface $entity, Table $table, array $fields = []): void
     {
+        deprecationWarning(
+            'BaseActionListener::prettify() method is deprecated. ' .
+            'Use \App\ORM\PrettyFormatter class instead.'
+        );
+
         $fields = empty($fields) ? array_keys($entity->toArray()) : $fields;
 
         /**
@@ -169,15 +174,15 @@ abstract class BaseActionListener implements EventListenerInterface
 
             if ($unit) {
                 $fieldDefinitions = [
-                    'type' => 'list(units_area)'
+                    'type' => 'list(units_area)',
                 ];
             } elseif ($amount) {
                 $fieldDefinitions = [
-                    'type' => 'decimal'
+                    'type' => 'decimal',
                 ];
             } elseif ($currency) {
                 $fieldDefinitions = [
-                    'type' => 'currency(currencies)'
+                    'type' => 'currency(currencies)',
                 ];
             }
 
@@ -230,7 +235,7 @@ abstract class BaseActionListener implements EventListenerInterface
             'controller' => $this->getControllerName($table),
             'displayField' => $table->getDisplayField(),
             'entity' => $entity,
-            'user' => $user
+            'user' => $user,
         ];
 
         $entity->set(static::MENU_PROPERTY_NAME, $this->getView()->element('Module/Menu/index_actions', $data));
@@ -254,7 +259,7 @@ abstract class BaseActionListener implements EventListenerInterface
             'controller' => $controller,
             'displayField' => $table->getDisplayField(),
             'entity' => $entity,
-            'user' => $user
+            'user' => $user,
         ];
 
         $entity->set(static::MENU_PROPERTY_NAME, $this->getView()->element('Module/Menu/related_actions', $data));

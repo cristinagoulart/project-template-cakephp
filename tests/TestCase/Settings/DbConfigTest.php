@@ -29,7 +29,7 @@ class DbConfigTest extends TestCase
      * @var array
      */
     public $fixtures = [
-        'app.settings'
+        'app.settings',
     ];
 
     /**

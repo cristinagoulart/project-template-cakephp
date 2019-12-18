@@ -40,12 +40,17 @@ class UsersTable extends Table
         $tableConfig = (new ModuleConfig(ConfigType::MODULE(), $this->getAlias()))->parseToArray();
         if (Hash::get($tableConfig, 'table.searchable')) {
             $this->addBehavior('Search.Searchable', [
-                'fields' => ['first_name', 'last_name', 'username', 'email', 'created', 'modified']
+                'fields' => ['first_name', 'last_name', 'username', 'email', 'created', 'modified'],
             ]);
         }
 
         $this->addBehavior('Lookup', ['lookupFields' => Hash::get($tableConfig, 'table.lookup_fields', [])]);
         $this->addBehavior('Muffin/Trash.Trash', ['field' => 'trashed']);
+
+        // set display field from config
+        if (isset($tableConfig['table']['display_field'])) {
+            $this->setDisplayField($tableConfig['table']['display_field']);
+        }
     }
 
     /**
@@ -67,19 +72,19 @@ class UsersTable extends Table
 
         $validator->add('username', 'validRegex', [
             'rule' => ['custom', '/^[\w\d\@\-\_\s\.]+$/Du'],
-            'message' => 'The provided value is invalid (alphanumeric, dot, dash, at, underscore, space)'
+            'message' => 'The provided value is invalid (alphanumeric, dot, dash, at, underscore, space)',
         ]);
 
         $validator->add('first_name', 'validRegex', [
             // \p is used for targeting unicode character properties, in this case L which means all letters
             // @link http://php.net/manual/en/regexp.reference.unicode.php
             'rule' => ['custom', '/^[\pL\-\s\.]+$/Du'],
-            'message' => 'The provided value is invalid (letter, dot, dash, space)'
+            'message' => 'The provided value is invalid (letter, dot, dash, space)',
         ]);
 
         $validator->add('last_name', 'validRegex', [
             'rule' => ['custom', '/^[\pL\-\s\.]+$/Du'],
-            'message' => 'The provided value is invalid (letter, dot, dash, space)'
+            'message' => 'The provided value is invalid (letter, dot, dash, space)',
         ]);
 
         return $validator;

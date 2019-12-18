@@ -46,14 +46,14 @@ class AppController extends Controller
                 'Crud.Lookup',
                 'related' => ['className' => '\App\Crud\Action\RelatedAction'],
                 'schema' => ['className' => '\App\Crud\Action\SchemaAction'],
-                'search' => ['className' => '\App\Crud\Action\SearchAction']
+                'search' => ['className' => '\App\Crud\Action\SearchAction'],
             ],
             'listeners' => [
                 'Crud.Api',
                 'Crud.ApiPagination',
-                'Crud.ApiQueryLog'
-            ]
-        ]
+                'Crud.ApiQueryLog',
+            ],
+        ],
     ];
 
     public $paginate = [
@@ -73,7 +73,7 @@ class AppController extends Controller
         'authenticate' => [
             // used for validating user credentials before the token is generated
             'Form' => [
-                'finder' => 'auth'
+                'finder' => 'auth',
             ],
             // used for token validation
             'ADmad/JwtAuth.Jwt' => [
@@ -81,13 +81,13 @@ class AppController extends Controller
                 'userModel' => 'Users',
                 'finder' => 'auth',
                 'fields' => [
-                    'username' => 'id'
+                    'username' => 'id',
                 ],
-                'queryDatasource' => true
-            ]
+                'queryDatasource' => true,
+            ],
         ],
         'unauthorizedRedirect' => false,
-        'checkAuthIn' => 'Controller.initialize'
+        'checkAuthIn' => 'Controller.initialize',
     ];
 
     /**
@@ -161,11 +161,11 @@ class AppController extends Controller
 
             $event->getSubject()->query->applyOptions([
                 'lookup' => true,
-                'value' => $this->request->getParam('pass.0')
+                'value' => $this->request->getParam('pass.0'),
             ]);
 
             $ev = new Event((string)EventName::API_VIEW_BEFORE_FIND(), $this, [
-                'query' => $event->getSubject()->query
+                'query' => $event->getSubject()->query,
             ]);
             $this->getEventManager()->dispatch($ev);
         });
@@ -176,7 +176,7 @@ class AppController extends Controller
             }
 
             $ev = new Event((string)EventName::API_VIEW_AFTER_FIND(), $this, [
-                'entity' => $event->getSubject()->entity
+                'entity' => $event->getSubject()->entity,
             ]);
             $this->getEventManager()->dispatch($ev);
         });
@@ -199,7 +199,7 @@ class AppController extends Controller
             }
 
             $ev = new Event((string)EventName::API_RELATED_BEFORE_PAGINATE(), $this, [
-                'query' => $event->getSubject()->query
+                'query' => $event->getSubject()->query,
             ]);
             $this->getEventManager()->dispatch($ev);
         });
@@ -210,7 +210,7 @@ class AppController extends Controller
             }
 
             $ev = new Event((string)EventName::API_RELATED_AFTER_PAGINATE(), $this, [
-                'entities' => $event->getSubject()->entities
+                'entities' => $event->getSubject()->entities,
             ]);
             $this->getEventManager()->dispatch($ev);
         });
@@ -221,7 +221,7 @@ class AppController extends Controller
             }
 
             $ev = new Event((string)EventName::API_RELATED_BEFORE_RENDER(), $this, [
-                'entities' => $event->getSubject()->entities
+                'entities' => $event->getSubject()->entities,
             ]);
             $this->getEventManager()->dispatch($ev);
         });
@@ -242,7 +242,7 @@ class AppController extends Controller
             }
 
             $ev = new Event((string)EventName::API_INDEX_BEFORE_PAGINATE(), $this, [
-                'query' => $event->getSubject()->query
+                'query' => $event->getSubject()->query,
             ]);
             $this->getEventManager()->dispatch($ev);
         });
@@ -253,7 +253,7 @@ class AppController extends Controller
             }
 
             $ev = new Event((string)EventName::API_INDEX_AFTER_PAGINATE(), $this, [
-                'entities' => $event->getSubject()->entities
+                'entities' => $event->getSubject()->entities,
             ]);
             $this->getEventManager()->dispatch($ev);
         });
@@ -264,7 +264,7 @@ class AppController extends Controller
             }
 
             $ev = new Event((string)EventName::API_INDEX_BEFORE_RENDER(), $this, [
-                'entities' => $event->getSubject()->entities
+                'entities' => $event->getSubject()->entities,
             ]);
             $this->getEventManager()->dispatch($ev);
         });
@@ -289,7 +289,7 @@ class AppController extends Controller
             }
 
             $ev = new Event((string)EventName::API_ADD_BEFORE_SAVE(), $this, [
-                'entity' => $event->getSubject()->entity
+                'entity' => $event->getSubject()->entity,
             ]);
             $this->getEventManager()->dispatch($ev);
         });
@@ -315,7 +315,7 @@ class AppController extends Controller
             );
 
             $ev = new Event((string)EventName::API_ADD_AFTER_SAVE(), $this, [
-                'entity' => $entity
+                'entity' => $entity,
             ]);
             $this->getEventManager()->dispatch($ev);
         });
@@ -341,11 +341,11 @@ class AppController extends Controller
 
             $event->getSubject()->query->applyOptions([
                 'lookup' => true,
-                'value' => $this->request->getParam('pass.0')
+                'value' => $this->request->getParam('pass.0'),
             ]);
 
             $ev = new Event((string)EventName::API_EDIT_BEFORE_FIND(), $this, [
-                'query' => $event->getSubject()->query
+                'query' => $event->getSubject()->query,
             ]);
             $this->getEventManager()->dispatch($ev);
         });
@@ -356,7 +356,7 @@ class AppController extends Controller
             }
 
             $ev = new Event((string)EventName::API_EDIT_AFTER_FIND(), $this, [
-                'entity' => $event->getSubject()->entity
+                'entity' => $event->getSubject()->entity,
             ]);
             $this->getEventManager()->dispatch($ev);
         });
@@ -367,7 +367,7 @@ class AppController extends Controller
             }
 
             $ev = new Event((string)EventName::API_EDIT_BEFORE_SAVE(), $this, [
-                'entity' => $event->getSubject()->entity
+                'entity' => $event->getSubject()->entity,
             ]);
             $this->getEventManager()->dispatch($ev);
         });
@@ -417,7 +417,7 @@ class AppController extends Controller
 
         $result = [
             'success' => true,
-            'data' => []
+            'data' => [],
         ];
         foreach ((array)$this->request->getData($this->name) as $field => $files) {
             if (! is_array($files)) {
@@ -444,7 +444,7 @@ class AppController extends Controller
             }
 
             $ev = new Event((string)EventName::API_LOOKUP_BEFORE_FIND(), $this, [
-                'query' => $event->getSubject()->query
+                'query' => $event->getSubject()->query,
             ]);
             $this->getEventManager()->dispatch($ev);
         });
@@ -455,7 +455,7 @@ class AppController extends Controller
             }
 
             $ev = new Event((string)EventName::API_LOOKUP_AFTER_FIND(), $this, [
-                'entities' => $event->getSubject()->entities
+                'entities' => $event->getSubject()->entities,
             ]);
             $this->getEventManager()->dispatch($ev);
             $event->getSubject()->entities = $ev->result;

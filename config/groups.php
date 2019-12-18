@@ -10,7 +10,7 @@ return [
         'defaultGroup' => getenv('DEFAULT_GROUP'),
         'remoteGroups' => [
             'enabled' => (bool)getenv('REMOTE_GROUPS'),
-            'LDAP' => $ldapConfig
-        ]
+            'LDAP' => $ldapConfig,
+        ],
     ],
 ];

@@ -35,6 +35,6 @@ return [
                 'label' => 'Developer',
                 'icon' => 'fa-wrench',
             ],
-        ]
-    ]
+        ],
+    ],
 ];

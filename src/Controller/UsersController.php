@@ -199,7 +199,7 @@ class UsersController extends AppController
         $table = $this->loadModel();
         $tableAlias = $table->getAlias();
         $entity = $table->get($id, [
-            'contain' => []
+            'contain' => [],
         ]);
 
         /**
@@ -229,7 +229,7 @@ class UsersController extends AppController
     {
         $table = $this->loadModel();
         $entity = $table->get($id, [
-            'contain' => []
+            'contain' => [],
         ]);
 
         $username = $entity->get('username');
@@ -263,7 +263,7 @@ class UsersController extends AppController
     {
         return [
             $this->Auth->user('username'),
-            getenv('DEV_USER')
+            getenv('DEV_USER'),
         ];
     }
 }

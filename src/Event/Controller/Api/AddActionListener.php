@@ -15,7 +15,7 @@ class AddActionListener extends BaseActionListener
     {
         return [
             (string)EventName::API_ADD_BEFORE_SAVE() => 'beforeSave',
-            (string)EventName::API_ADD_AFTER_SAVE() => 'afterSave'
+            (string)EventName::API_ADD_AFTER_SAVE() => 'afterSave',
         ];
     }
 

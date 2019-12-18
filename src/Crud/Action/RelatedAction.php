@@ -39,12 +39,12 @@ class RelatedAction extends BaseAction
         'serialize' => [],
         'api' => [
             'success' => [
-                'code' => 200
+                'code' => 200,
             ],
             'error' => [
-                'code' => 400
-            ]
-        ]
+                'code' => 400,
+            ],
+        ],
     ];
 
     /**
@@ -59,7 +59,7 @@ class RelatedAction extends BaseAction
         $items = [];
         $subject = $this->_subject([
             'success' => true,
-            'query' => $this->getQuery($id, $associationName)
+            'query' => $this->getQuery($id, $associationName),
         ]);
 
         $this->_trigger('beforePaginate', $subject);
@@ -179,7 +179,7 @@ class RelatedAction extends BaseAction
         $foreignKey = $association->getForeignKey();
 
         $query = $association->find('all')->where([
-            $association->getTarget()->aliasField($foreignKey) => $id
+            $association->getTarget()->aliasField($foreignKey) => $id,
         ]);
 
         return $query;

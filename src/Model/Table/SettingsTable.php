@@ -27,9 +27,9 @@ use CsvMigrations\FieldHandlers\CsvField;
 class SettingsTable extends Table
 {
 
-    const SCOPE_APP = 'app';
-    const CONTEXT_APP = 'app';
-    const SCOPE_USER = 'user';
+    public const SCOPE_APP = 'app';
+    public const CONTEXT_APP = 'app';
+    public const SCOPE_USER = 'user';
 
     /**
      * Initialize method
@@ -131,7 +131,7 @@ class SettingsTable extends Table
         $validationRules = new $validationClass($config);
 
         $validator = $validationRules->provide(new Validator(), [
-            'fieldDefinitions' => new CsvField(['name' => 'value'])
+            'fieldDefinitions' => new CsvField(['name' => 'value']),
         ]);
 
         return empty($validator->errors(['value' => $value]));
@@ -178,7 +178,7 @@ class SettingsTable extends Table
             'scope' => $scope,
             'context' => $context,
             // dynamic field to pass type to the validator
-            'type' => $type
+            'type' => $type,
         ];
 
         // Check if the user has already a record with the key. If true will update instead of create a new one

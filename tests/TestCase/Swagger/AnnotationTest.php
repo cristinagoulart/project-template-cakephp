@@ -11,7 +11,7 @@ class AnnotationTest extends TestCase
 {
     public $fixtures = [
         'plugin.CsvMigrations.dblists',
-        'plugin.CsvMigrations.dblist_items'
+        'plugin.CsvMigrations.dblist_items',
     ];
 
     /**

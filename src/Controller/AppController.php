@@ -257,7 +257,7 @@ class AppController extends Controller
         $url = [
             'plugin' => 'CakeDC/Users',
             'controller' => 'Users',
-            'action' => 'requestResetPassword'
+            'action' => 'requestResetPassword',
         ];
 
         // skip if url does not match Users requestResetPassword action.
@@ -322,7 +322,7 @@ class AppController extends Controller
             'getMenu',
             'getCapabilities',
             'getSkipControllers',
-            'getSkipActions'
+            'getSkipActions',
         ];
 
         return $result;

@@ -54,7 +54,7 @@ class User extends BaseUser
         $options = array_merge($options, [
             'id' => $this->get('id'),
             'email' => $this->get('email'),
-            'name' => $this->get('name')
+            'name' => $this->get('name'),
         ]);
 
         $service = new AvatarService();

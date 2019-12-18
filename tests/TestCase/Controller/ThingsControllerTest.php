@@ -36,8 +36,8 @@ class ThingsControllerTest extends IntegrationTestCase
         $userId = '00000000-0000-0000-0000-000000000001';
         $this->session([
             'Auth' => [
-                'User' => TableRegistry::get('Users')->get($userId)->toArray()
-            ]
+                'User' => TableRegistry::get('Users')->get($userId)->toArray(),
+            ],
         ]);
     }
 
@@ -145,8 +145,9 @@ class ThingsControllerTest extends IntegrationTestCase
             'type' => 'a',
             'name' => 'test',
             'country' => 'CY',
+            'currency' => 'EUR',
             'gender' => 'm',
-            'email' => 'name@domain.com'
+            'email' => 'name@domain.com',
         ];
 
         $this->post('/things/add', $data);
@@ -207,7 +208,7 @@ class ThingsControllerTest extends IntegrationTestCase
 
         $data = [
             'type' => 'a',
-            'name' => 'test'
+            'name' => 'test',
         ];
 
         $this->post('/things/edit/' . $id, $data);
@@ -231,7 +232,7 @@ class ThingsControllerTest extends IntegrationTestCase
 
         $data = [
             'type' => 'a',
-            'name' => 'test'
+            'name' => 'test',
         ];
 
         $this->put('/things/edit/' . $id, $data);
@@ -334,9 +335,9 @@ class ThingsControllerTest extends IntegrationTestCase
             'batch' => [
                 'ids' => [
                     '00000000-0000-0000-0000-000000000001',
-                    '00000000-0000-0000-0000-000000000002'
-                ]
-            ]
+                    '00000000-0000-0000-0000-000000000002',
+                ],
+            ],
         ];
 
         $this->post('/things/batch/delete', $data);
@@ -371,9 +372,9 @@ class ThingsControllerTest extends IntegrationTestCase
             'batch' => [
                 'ids' => [
                     '00000000-0000-0000-0000-000000000001',
-                    '00000000-0000-0000-0000-000000000002'
-                ]
-            ]
+                    '00000000-0000-0000-0000-000000000002',
+                ],
+            ],
         ];
         $this->post('/things/batch/edit', $data);
         $this->assertResponseSuccess();
@@ -407,8 +408,8 @@ class ThingsControllerTest extends IntegrationTestCase
 
         $data = [
             'batch' => [
-                'execute' => true
-            ]
+                'execute' => true,
+            ],
         ];
 
         $this->post('/things/batch/edit', $data);
@@ -429,9 +430,9 @@ class ThingsControllerTest extends IntegrationTestCase
                 'execute' => true,
                 'ids' => [
                     '00000000-0000-0000-0000-000000000001',
-                    '00000000-0000-0000-0000-000000000002'
-                ]
-            ]
+                    '00000000-0000-0000-0000-000000000002',
+                ],
+            ],
         ];
 
         $this->post('/things/batch/edit', $data);
