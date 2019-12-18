@@ -10,6 +10,7 @@ use Cake\ORM\TableRegistry;
 use Cake\Utility\Inflector;
 use CsvMigrations\Controller\Traits\PanelsTrait;
 use CsvMigrations\Exception\UnsupportedPrimaryKeyException;
+use CsvMigrations\FieldHandlers\FieldHandlerFactory;
 use CsvMigrations\Utility as CsvUtility;
 use CsvMigrations\Utility\Panel;
 use CsvMigrations\Utility\Validate\Utility;
@@ -79,6 +80,7 @@ class GenerateLanguageFilesShell extends BaseShell
      */
     public function generateCtpFiles(string $module): void
     {
+        $factory = new FieldHandlerFactory();
         $table = TableRegistry::getTableLocator()->get($module);
 
         $callable = [$this, 'generateCtpLine'];
@@ -103,7 +105,8 @@ class GenerateLanguageFilesShell extends BaseShell
         foreach ($fieldLabelConfig as $key => $fieldLabel) {
             if (isset($fieldLabel['label'])) {
                 $ctpLines .= "//Module: " . $module . ", Field Label for: " . $key . "\n";
-                $ctpLines .= $this->generateCtpLine($fieldLabel['label']) . "\n\n";
+                $label = $factory->renderName($module, $fieldLabel['label']);
+                $ctpLines .= $this->generateCtpLine($label) . "\n\n";
             }
         }
 
@@ -178,12 +181,10 @@ class GenerateLanguageFilesShell extends BaseShell
         $fields = $mc->parseToArray();
 
         $fieldLabels = [];
-
+        $factory = new FieldHandlerFactory();
         foreach ($fields as $field) {
-            // if (preg_match("/^.*\_(unit|amount|currency)$/", $field['name'])) {
-            //     $fieldLabels[] = $field['name'].
-            // }
-            //$label = $factory->renderName('Things', 'salary');
+            // $label = $factory->renderName($module, $field['name']);
+            // $fieldLabels[] = $label;
             $fieldLabels[] = Inflector::humanize(Inflector::underscore($field['name']));
         }
 

@@ -112,7 +112,7 @@ final class Model
         $default = substr($column, -3) === '_id' ? substr($column, 0, -3) : $column;
         $default = Inflector::humanize(Inflector::underscore($default));
 
-        return Hash::get($config, $column . '.label', $default);
+        return Hash::get($config, $column . '.label', _($default));
     }
 
     /**
