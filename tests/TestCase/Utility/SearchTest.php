@@ -114,6 +114,7 @@ class SearchTest extends TestCase
         $table->deleteAll([]);
 
         $expected = [
+            'SavedSearches.conjunction',
             'SavedSearches.group_by',
             'SavedSearches.model',
             'SavedSearches.name',
