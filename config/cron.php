@@ -9,6 +9,7 @@ return [
                 'PluginShell',
                 'CronShell',
                 'FixDateTimeShell',
+                'GenerateLanguageFilesShell',
             ],
             'skipPlugins' => [
                 'Bake',

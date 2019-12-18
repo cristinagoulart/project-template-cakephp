@@ -49,7 +49,7 @@ if ($options['hasPanels']) {
 }
 
 $linkTitle = is_array($options['title']) ? $this->Html->link(
-            $options['title']['alias'],
+            __($options['title']['alias']),
             [
                 'plugin' => $this->plugin,
                 'controller' => $options['title']['link'],

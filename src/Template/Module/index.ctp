@@ -41,7 +41,7 @@ $title = isset($config->table->alias) ? $config->table->alias : Inflector::human
 <section class="content-header">
     <div class="row">
         <div class="col-xs-12 col-md-6">
-            <h4><?= $title ?></h4>
+            <h4><?= __($title) ?></h4>
         </div>
         <div class="col-xs-12 col-md-6">
             <div class="pull-right">

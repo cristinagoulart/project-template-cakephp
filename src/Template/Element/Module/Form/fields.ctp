@@ -17,7 +17,7 @@ $factory = new FieldHandlerFactory($this);
 foreach ($options['fields'] as $panelName => $panelFields) : ?>
 <div class="box box-primary" data-provide="dynamic-panel">
     <div class="box-header with-border">
-        <h3 class="box-title" data-title="dynamic-panel-title"><?= $panelName ?></h3>
+        <h3 class="box-title" data-title="dynamic-panel-title"><?= __($panelName) ?></h3>
     </div>
     <div class="box-body">
         <?= $this->element('Module/Form/fields_panel', [
