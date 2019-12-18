@@ -174,7 +174,7 @@ final class Export
     public function url(): string
     {
         $url = Configure::readOrFail('Export.url');
-        Assert::string($url);
+        Assert::stringNotEmpty($url);
 
         return '/' . trim($url, '/') . '/' . $this->filename();
     }
@@ -197,9 +197,9 @@ final class Export
     public static function basePath(): string
     {
         $path = Configure::readOrFail('Export.path');
-        Assert::string($path);
+        Assert::stringNotEmpty($path);
 
-        return WWW_ROOT . trim($path, DS) . DS;
+        return rtrim($path, DS) . DS;
     }
 
     /**

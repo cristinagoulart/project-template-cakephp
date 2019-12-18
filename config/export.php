@@ -2,8 +2,7 @@
 
 return [
     'Export' => [
-        // has to be relative to webroot
-        'path' => DS . 'uploads' . DS . 'export' . DS,
+        'path' => WWW_ROOT . 'uploads' . DS . 'export' . DS,
         'url' => '/uploads/export/',
     ],
 ];
