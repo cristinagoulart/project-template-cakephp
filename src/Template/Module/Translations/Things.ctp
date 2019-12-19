@@ -7,10 +7,10 @@ echo __('Things');
 echo __('Things');
 
 //Module: Things, Field Label for: name
-echo __('Label Name');
+echo __('label name');
 
 //Module: Things, Field Label for: description
-echo __('Label Description');
+echo __('label description');
 
 //Module: Things, Migration Field Labels
 echo __('Id');

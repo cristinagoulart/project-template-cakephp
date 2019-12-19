@@ -105,8 +105,10 @@ class GenerateLanguageFilesShell extends BaseShell
         foreach ($fieldLabelConfig as $key => $fieldLabel) {
             if (isset($fieldLabel['label'])) {
                 $ctpLines .= "//Module: " . $module . ", Field Label for: " . $key . "\n";
-                $label = $factory->renderName($module, $fieldLabel['label']);
-                $ctpLines .= $this->generateCtpLine($label) . "\n\n";
+                //var_dump($fieldLabel['label']);
+                //$label = $factory->renderName($module, $fieldLabel['label']);
+                //$ctpLines .= $this->generateCtpLine($label) . "\n\n";
+                $ctpLines .= $this->generateCtpLine($fieldLabel['label']) . "\n\n";
             }
         }
 
@@ -124,7 +126,7 @@ class GenerateLanguageFilesShell extends BaseShell
         $menuLabelConfig = (new ModuleConfig(ConfigType::MENUS(), $module))->parseToArray();
         if (is_array($menuLabelConfig) && 0 < count($menuLabelConfig)) {
             $menuItems = $this->translateMenuItems(array_shift($menuLabelConfig));
-            //var_dump($menuItems);
+
             $ctpLinesArray = [];
             $ctpLinesArray = array_map([$this, "generateCtpLine"], $menuItems);
             $ctpLines .= "//Module: " . $module . ", Menus Labels" . "\n";
@@ -183,8 +185,9 @@ class GenerateLanguageFilesShell extends BaseShell
         $fieldLabels = [];
         $factory = new FieldHandlerFactory();
         foreach ($fields as $field) {
-            // $label = $factory->renderName($module, $field['name']);
-            // $fieldLabels[] = $label;
+            //$label = $factory->renderName($module, $field['name']);
+            //var_dump($label);
+            //$fieldLabels[] = $label;
             $fieldLabels[] = Inflector::humanize(Inflector::underscore($field['name']));
         }
 

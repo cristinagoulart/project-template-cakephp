@@ -43,7 +43,7 @@ if (array_key_exists('panels', $config)) {
 }
 ?>
 <section class="content-header">
-    <h4><?= Hash::get($config, 'table.alias', Inflector::humanize(Inflector::underscore($controller))) ?> &raquo; <?= __('Create') ?></h4>
+    <h4><?= Hash::get($config, 'table.alias', __("{0} &raquo; Create", Inflector::humanize(Inflector::underscore($controller)))) ?></h4>
 </section>
 <section class="content">
 <?php
