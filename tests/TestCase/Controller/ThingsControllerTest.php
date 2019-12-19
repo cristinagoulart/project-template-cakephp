@@ -145,6 +145,7 @@ class ThingsControllerTest extends IntegrationTestCase
             'type' => 'a',
             'name' => 'test',
             'country' => 'CY',
+            'currency' => 'EUR',
             'gender' => 'm',
             'email' => 'name@domain.com',
         ];

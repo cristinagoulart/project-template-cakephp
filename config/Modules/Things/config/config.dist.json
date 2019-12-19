@@ -11,6 +11,10 @@
         "permissions_parent_modules": [],
         "type": "module"
     },
+    "panels": {
+        "Dynamic panel - male": "(%%gender%%=='m')",
+        "Dynamic panel - female": "(%%gender%%=='f')"
+    },
     "virtualFields": {},
     "notifications": {
         "enable": true,

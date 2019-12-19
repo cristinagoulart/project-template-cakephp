@@ -58,8 +58,9 @@ class SearchAction extends BaseAction
             $this->_request()->getQueryParams()
         );
 
-        // always include primary key into the fields
-        $options['fields'] = array_merge((array)$this->_table()->getPrimaryKey(), Hash::get($options, 'fields', []));
+        if (SearchManager::includePrimaryKey($options)) {
+            $options['fields'] = array_merge((array)$this->_table()->getPrimaryKey(), Hash::get($options, 'fields', []));
+        }
         $query = $this->_table()->find($finder, $options);
 
         $subject = $this->_subject(['success' => true, 'query' => $query]);
@@ -69,16 +70,17 @@ class SearchAction extends BaseAction
         }
 
         $this->_trigger('beforePaginate', $subject);
+
+        $subject->query->formatResults(new \App\ORM\PrettyFormatter())
+            ->formatResults(new \App\ORM\PermissionsFormatter())
+            ->formatResults(new \App\ORM\FlatFormatter());
+
         $resultSet = $this->_controller()->paginate($subject->query, [
             'limit' => $this->_request()->getData('limit', 10),
             'page' => $this->_request()->getData('page', 1),
         ]);
 
-        $subject->set(['entities' => SearchManager::formatEntities(
-            $resultSet,
-            $this->_table(),
-            ! array_key_exists('group', $options)
-        )]);
+        $subject->set(['entities' => $resultSet->toArray()]);
 
         $this->_trigger('afterPaginate', $subject);
         $this->_trigger('beforeRender', $subject);

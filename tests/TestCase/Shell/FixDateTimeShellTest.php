@@ -48,10 +48,11 @@ class FixDateTimeShellTest extends TestCase
             'modified_by' => '00000000-0000-0000-0000-000000000001',
             'trashed' => null,
             'country' => 'CY',
+            'currency' => 'EUR',
             'gender' => 'm',
         ];
         $entity = $this->table->newEntity($data);
-        $this->table->save($entity);
+        $this->table->saveOrFail($entity);
         $entity = $this->table->get($entity->get($this->primaryKey));
 
         $shell = new FixDateTimeShell();
