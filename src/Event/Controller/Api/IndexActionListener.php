@@ -50,10 +50,7 @@ class IndexActionListener extends BaseActionListener
         $prettyFormat = static::FORMAT_PRETTY === $request->getQuery('format');
 
         Assert::isInstanceOf($query, Query::class);
-        $query->formatResults($prettyFormat ?
-            new PrettyFormatter() :
-            new RawFormatter()
-        );
+        $query->formatResults($prettyFormat ? new PrettyFormatter() : new RawFormatter());
     }
 
     /**

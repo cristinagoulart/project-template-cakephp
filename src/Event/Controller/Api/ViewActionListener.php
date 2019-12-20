@@ -43,10 +43,7 @@ class ViewActionListener extends BaseActionListener
         $prettyFormat = static::FORMAT_PRETTY === $controller->getRequest()->getQuery('format');
 
         Assert::isInstanceOf($query, Query::class);
-        $query->formatResults($prettyFormat ?
-            new PrettyFormatter() :
-            new RawFormatter()
-        );
+        $query->formatResults($prettyFormat ? new PrettyFormatter() : new RawFormatter());
     }
 
     /**
