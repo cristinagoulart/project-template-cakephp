@@ -38,6 +38,7 @@ class SearchTest extends TestCase
         });
 
         foreach ($expected as $key => $value) {
+            $key = array_search($value['field'], array_column($result, 'field'), true);
             unset($result[$key]['options']);
             $this->assertSame($value, $result[$key]);
         }
