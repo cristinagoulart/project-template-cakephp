@@ -4,6 +4,7 @@ namespace App\Event\Controller\Api;
 
 use App\Event\EventName;
 use App\ORM\PrettyFormatter;
+use App\ORM\RawFormatter;
 use Cake\Controller\Controller;
 use Cake\Datasource\EntityInterface;
 use Cake\Datasource\QueryInterface;
@@ -39,18 +40,19 @@ class ViewActionListener extends BaseActionListener
         $controller = $event->getSubject();
         Assert::isInstanceOf($controller, Controller::class);
 
-        if (static::FORMAT_PRETTY === $controller->getRequest()->getQuery('format')) {
-            Assert::isInstanceOf($query, Query::class);
-            $query->formatResults(new PrettyFormatter());
-        }
+        $prettyFormat = static::FORMAT_PRETTY === $controller->getRequest()->getQuery('format');
+
+        Assert::isInstanceOf($query, Query::class);
+        $query->formatResults($prettyFormat ?
+            new PrettyFormatter() :
+            new RawFormatter()
+        );
     }
 
     /**
      * afterFind method.
      *
      * Handles the following:
-     * - Converts field values of type resource to string
-     * - Prettifies field values if relevant format is requested
      * - Attaches associated files to the entity
      *
      * @param \Cake\Event\Event $event Event instance
@@ -66,8 +68,6 @@ class ViewActionListener extends BaseActionListener
 
         $table = $controller->loadModel();
         Assert::isInstanceOf($table, Table::class);
-
-        $this->resourceToString($entity);
 
         if (static::FORMAT_PRETTY !== $request->getQuery('format')) {
             $this->attachFiles($entity, $table);

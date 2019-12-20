@@ -115,23 +115,6 @@ abstract class BaseActionListener implements EventListenerInterface
     }
 
     /**
-     * Convert Entity resource values to strings.
-     * Temporary fix for bug with resources and json_encode() (see link).
-     *
-     * @param  \Cake\Datasource\EntityInterface $entity Entity
-     * @return void
-     * @link https://github.com/cakephp/cakephp/issues/9658
-     */
-    protected function resourceToString(EntityInterface $entity): void
-    {
-        foreach (array_keys($entity->toArray()) as $field) {
-            if (is_resource($entity->get($field))) {
-                $entity->set($field, stream_get_contents($entity->get($field)));
-            }
-        }
-    }
-
-    /**
      * Method that renders Entity values through Field Handler Factory.
      *
      * @param \Cake\Datasource\EntityInterface $entity Entity instance
