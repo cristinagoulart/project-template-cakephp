@@ -69,8 +69,5 @@ export default {
         })
         .catch(() => reject)
     })
-  },
-  exportSearch (resource, data) {
-    return this.post(resource, data)
   }
 }

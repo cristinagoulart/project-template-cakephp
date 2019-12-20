@@ -89,15 +89,12 @@ final class LabeledFormatter
         $associations = Model::associations($model);
         $key = array_search($field, array_column($associations, 'foreign_key'));
         if (false !== $key) {
-            return self::getDisplayValueFromAssociation($table->getAssociation($associations[$key]['name']), $field, $value);
+            return self::displayValueFromAssociation($table->getAssociation($associations[$key]['name']), $field, $value);
         }
 
         $list = new FieldList($model, $field);
         if ($list->has()) {
-            $options = $list->options(['prettify' => false]);
-            $key = array_search($value, array_column($options, 'value'));
-
-            return false !== $key ? $options[$key]['label'] : $value;
+            return self::listValueLabel($list, $value);
         }
 
         if (is_resource($value)) {
@@ -121,6 +118,36 @@ final class LabeledFormatter
     }
 
     /**
+     * Fetches and returns formatted list option label.
+     *
+     * @param \App\Utility\FieldList $list FieldList instance
+     * @param mixed $value Field value
+     * @return mixed
+     */
+    private static function listValueLabel(FieldList $list, $value)
+    {
+        $options = $list->options(['prettify' => ! in_array($list->name(), ['currencies', 'countries'], true)]);
+        $key = array_search($value, array_column($options, 'value'));
+
+        if (false === $key) {
+            return $value;
+        }
+
+        // Concatenate all parents together with value (nested values are dot-separated).
+        // At least the value itself will be included, if no parents.
+        $path = '';
+        $result = '';
+        foreach (explode('.', $options[$key]['value']) as $item) {
+            $path = '' === $path ? $item : $path . '.' . $item;
+            $key = array_search($path, array_column($options, 'value'));
+
+            $result .= false !== $key ? $options[$key]['label'] : '';
+        }
+
+        return $result;
+    }
+
+    /**
      * Retrieves corresponding display value from related record.
      *
      * This method will recurse until it retrieves a non-primary-key value.
@@ -130,7 +157,7 @@ final class LabeledFormatter
      * @param mixed $value Field value
      * @return mixed
      */
-    private static function getDisplayValueFromAssociation(Association $association, string $field, $value)
+    private static function displayValueFromAssociation(Association $association, string $field, $value)
     {
         $targetTable = $association->getTarget();
         $displayField = $targetTable->getDisplayField();
@@ -148,7 +175,7 @@ final class LabeledFormatter
         $associations = Model::associations($model);
         $key = array_search($displayField, array_column($associations, 'foreign_key'));
         if (false !== $key) {
-            return self::getDisplayValueFromAssociation(
+            return self::displayValueFromAssociation(
                 $targetTable->getAssociation($associations[$key]['name']),
                 $displayField,
                 $value

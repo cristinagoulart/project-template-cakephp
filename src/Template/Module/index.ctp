@@ -34,6 +34,7 @@ $disableBatch = '' !== (string)$savedSearch->get('group_by') || $hasAggregate;
 $accessFactory = new AccessFactory();
 list($plugin, $controller) = pluginSplit($savedSearch->get('model'));
 $urlBatch = ['plugin' => $plugin, 'controller' => $controller, 'action' => 'batch'];
+$urlExport = ['plugin' => $plugin, 'controller' => $controller, 'action' => 'exportSearch'];
 
 $config = (new ModuleConfig(ConfigType::MODULE(), $controller))->parse();
 $title = isset($config->table->alias) ? $config->table->alias : Inflector::humanize(Inflector::underscore($controller));
@@ -68,6 +69,7 @@ $title = isset($config->table->alias) ? $config->table->alias : Inflector::human
                 :with-actions="<?= ! $disableBatch ? 'true' : 'false' ?>"
                 :with-batch-delete="<?= ! $disableBatch && $accessFactory->hasAccess($urlBatch, $user) ? 'true' : 'false' ?>"
                 :with-batch-edit="<?= ! $disableBatch && $accessFactory->hasAccess($urlBatch, $user) ? 'true' : 'false' ?>"
+                :with-export="<?= ! $disableBatch && $accessFactory->hasAccess($urlExport, $user) ? 'true' : 'false' ?>"
             ></table-ajax>
         </div>
     </div>

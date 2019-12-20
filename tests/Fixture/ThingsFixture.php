@@ -30,7 +30,7 @@ class ThingsFixture extends TestFixture
             'area_unit' => 'm',
             'salary_amount' => '1000',
             'salary_currency' => 'EUR',
-            'test_list' => '',
+            'test_list' => 'first.second_children',
             'testmetric_amount' => '33.178',
             'testmetric_unit' => 'ft',
             'testmoney_amount' => '155.22',

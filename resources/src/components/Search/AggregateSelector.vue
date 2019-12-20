@@ -6,8 +6,8 @@
     </select>
     <div class="row form-group" v-if="aggregate">
       <div class="col-xs-4">
-        <select v-model="model" class="form-control input-sm" readonly>
-          <option v-for="item in models" v-if="item === model">{{ item }}</option>
+        <select v-model="model" class="form-control input-sm">
+          <option v-for="item in models">{{ item }}</option>
         </select>
       </div>
       <div class="col-xs-8">
@@ -82,7 +82,6 @@ export default {
         this.aggregate = Aggregate.extractAggregateType(Aggregate.getAggregate(value))
         this.field = Aggregate.extractAggregateField(Aggregate.getAggregate(value))
       } else {
-        this.aggregate = ''
         this.field = ''
       }
     }
@@ -108,11 +107,6 @@ export default {
 
       // if no model selected reset the field input
       if (!this.model) {
-        this.field = ''
-      }
-
-      // if model had a value and it does not match the new value reset the field input
-      if (oldValue[3] && newValue[3] !== oldValue[3]) {
         this.field = ''
       }
 

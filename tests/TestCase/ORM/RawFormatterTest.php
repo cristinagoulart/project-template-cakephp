@@ -2,11 +2,11 @@
 
 namespace App\Test\TestCase\ORM;
 
-use App\ORM\LabeledFormatter;
+use App\ORM\RawFormatter;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
 
-class LabeledFormatterTest extends TestCase
+class RawFormatterTest extends TestCase
 {
     public $fixtures = [
         'app.LogAudit',
@@ -35,34 +35,34 @@ class LabeledFormatterTest extends TestCase
         $expected = [
             'appointment' => '2019-10-29 15:47:16',
             'area_amount' => 25.74,
-            'area_unit' => 'm²',
-            'assigned_to' => 'user-2',
+            'area_unit' => 'm',
+            'assigned_to' => '00000000-0000-0000-0000-000000000002',
             'bio' => 'A blob type',
-            'country' => 'Cyprus',
+            'country' => 'CY',
             'created' => '2018-01-18 15:47:16',
-            'created_by' => 'user-1',
+            'created_by' => '00000000-0000-0000-0000-000000000001',
             'currency' => 'GBP',
             'date_of_birth' => '1990-01-17',
             'description' => 'Long description goes here',
             'email' => '1@thing.com',
             'file' => null,
-            'gender' => 'Male',
+            'gender' => 'm',
             'id' => '00000000-0000-0000-0000-000000000001',
-            'language' => 'Ancient Greek',
+            'language' => 'grc',
             'level' => 7,
             'modified' => '2018-01-18 15:47:16',
-            'modified_by' => 'user-1',
+            'modified_by' => '00000000-0000-0000-0000-000000000001',
             'name' => 'Thing #1',
             'non_searchable' => '',
             'phone' => '+35725123456',
             'photos' => null,
-            'primary_thing' => 'Thing #2',
+            'primary_thing' => '00000000-0000-0000-0000-000000000002',
             'rate' => 25.13,
             'salary_amount' => 1000.0,
             'salary_currency' => 'EUR',
-            'test_list' => 'first - second children',
+            'test_list' => 'first.second_children',
             'testmetric_amount' => 33.18,
-            'testmetric_unit' => 'ft²',
+            'testmetric_unit' => 'ft',
             'testmoney_amount' => 155.22,
             'testmoney_currency' => 'USD',
             'title' => 'Dr',
@@ -75,7 +75,7 @@ class LabeledFormatterTest extends TestCase
         $query = $this->table
             ->find()
             ->where(['Things.id' => '00000000-0000-0000-0000-000000000001'])
-            ->formatResults(new LabeledFormatter());
+            ->formatResults(new RawFormatter());
 
         $result = $query->first()->toArray();
         ksort($result);
@@ -90,8 +90,8 @@ class LabeledFormatterTest extends TestCase
         $expected = [
             'appointment' => '2019-10-29 15:47:16',
             'area_amount' => 25.74,
-            'area_unit' => 'm²',
-            'assigned_to' => 'user-2',
+            'area_unit' => 'm',
+            'assigned_to' => '00000000-0000-0000-0000-000000000002',
             'assigned_to_user' => [
                 'activation_date' => '2015-06-24 17:33:54',
                 'active' => true,
@@ -131,31 +131,31 @@ class LabeledFormatterTest extends TestCase
                 'username' => 'user-2',
             ],
             'bio' => 'A blob type',
-            'country' => 'Cyprus',
+            'country' => 'CY',
             'created' => '2018-01-18 15:47:16',
-            'created_by' => 'user-1',
+            'created_by' => '00000000-0000-0000-0000-000000000001',
             'currency' => 'GBP',
             'date_of_birth' => '1990-01-17',
             'description' => 'Long description goes here',
             'email' => '1@thing.com',
             'file' => null,
-            'gender' => 'Male',
+            'gender' => 'm',
             'id' => '00000000-0000-0000-0000-000000000001',
-            'language' => 'Ancient Greek',
+            'language' => 'grc',
             'level' => 7,
             'modified' => '2018-01-18 15:47:16',
-            'modified_by' => 'user-1',
+            'modified_by' => '00000000-0000-0000-0000-000000000001',
             'name' => 'Thing #1',
             'non_searchable' => '',
             'phone' => '+35725123456',
             'photos' => null,
-            'primary_thing' => 'Thing #2',
+            'primary_thing' => '00000000-0000-0000-0000-000000000002',
             'rate' => 25.13,
             'salary_amount' => 1000.0,
             'salary_currency' => 'EUR',
-            'test_list' => 'first - second children',
+            'test_list' => 'first.second_children',
             'testmetric_amount' => 33.18,
-            'testmetric_unit' => 'ft²',
+            'testmetric_unit' => 'ft',
             'testmoney_amount' => 155.22,
             'testmoney_currency' => 'USD',
             'title' => 'Dr',
@@ -169,7 +169,7 @@ class LabeledFormatterTest extends TestCase
             ->find()
             ->where(['Things.id' => '00000000-0000-0000-0000-000000000001'])
             ->contain('AssignedToUsers')
-            ->formatResults(new LabeledFormatter());
+            ->formatResults(new RawFormatter());
 
         $result = $query->first()->toArray();
         ksort($result);
@@ -225,34 +225,34 @@ class LabeledFormatterTest extends TestCase
             ],
             'appointment' => '2019-10-29 15:47:16',
             'area_amount' => 25.74,
-            'area_unit' => 'm²',
-            'assigned_to' => 'user-2',
+            'area_unit' => 'm',
+            'assigned_to' => '00000000-0000-0000-0000-000000000002',
             'bio' => 'A blob type',
-            'country' => 'Cyprus',
+            'country' => 'CY',
             'created' => '2018-01-18 15:47:16',
-            'created_by' => 'user-1',
+            'created_by' => '00000000-0000-0000-0000-000000000001',
             'currency' => 'GBP',
             'date_of_birth' => '1990-01-17',
             'description' => 'Long description goes here',
             'email' => '1@thing.com',
             'file' => null,
-            'gender' => 'Male',
+            'gender' => 'm',
             'id' => '00000000-0000-0000-0000-000000000001',
-            'language' => 'Ancient Greek',
+            'language' => 'grc',
             'level' => 7,
             'modified' => '2018-01-18 15:47:16',
-            'modified_by' => 'user-1',
+            'modified_by' => '00000000-0000-0000-0000-000000000001',
             'name' => 'Thing #1',
             'non_searchable' => '',
             'phone' => '+35725123456',
             'photos' => null,
-            'primary_thing' => 'Thing #2',
+            'primary_thing' => '00000000-0000-0000-0000-000000000002',
             'rate' => 25.13,
             'salary_amount' => 1000.0,
             'salary_currency' => 'EUR',
-            'test_list' => 'first - second children',
+            'test_list' => 'first.second_children',
             'testmetric_amount' => 33.18,
-            'testmetric_unit' => 'ft²',
+            'testmetric_unit' => 'ft',
             'testmoney_amount' => 155.22,
             'testmoney_currency' => 'USD',
             'title' => 'Dr',
@@ -266,7 +266,7 @@ class LabeledFormatterTest extends TestCase
             ->find()
             ->where(['Things.id' => '00000000-0000-0000-0000-000000000001'])
             ->matching('AssignedToUsers')
-            ->formatResults(new LabeledFormatter());
+            ->formatResults(new RawFormatter());
 
         $result = $query->first()->toArray();
         ksort($result);
@@ -283,7 +283,7 @@ class LabeledFormatterTest extends TestCase
             ->find()
             ->where(['Things.id' => '00000000-0000-0000-0000-000000000001'])
             ->formatResults(new \App\ORM\PermissionsFormatter())
-            ->formatResults(new LabeledFormatter());
+            ->formatResults(new RawFormatter());
 
         $keys = array_keys($query->first()->toArray());
         $this->assertTrue(in_array('_permissions', $keys, true));
@@ -299,7 +299,7 @@ class LabeledFormatterTest extends TestCase
         $query = $this->table
             ->find()
             ->where(['Things.id' => '00000000-0000-0000-0000-000000000001'])
-            ->formatResults(new LabeledFormatter());
+            ->formatResults(new RawFormatter());
 
         $this->assertSame('a-non-uuid-string', $query->first()->get('primary_thing'));
     }
@@ -314,8 +314,8 @@ class LabeledFormatterTest extends TestCase
         $query = $this->table
             ->find()
             ->where(['Things.id' => '00000000-0000-0000-0000-000000000001'])
-            ->formatResults(new LabeledFormatter());
+            ->formatResults(new RawFormatter());
 
-        $this->assertSame('user-2', $query->first()->get('primary_thing'));
+        $this->assertSame('00000000-0000-0000-0000-000000000002', $query->first()->get('primary_thing'));
     }
 }

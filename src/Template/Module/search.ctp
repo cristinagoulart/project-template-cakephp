@@ -12,6 +12,7 @@ $table = TableRegistry::get($tableName);
 
 $accessFactory = new AccessFactory();
 $urlBatch = ['plugin' => $this->plugin, 'controller' => $this->name, 'action' => 'batch'];
+$urlExport = ['plugin' => $this->plugin, 'controller' => $this->name, 'action' => 'exportSearch'];
 ?>
 <section class="content-header"></section>
 <section class="content">
@@ -25,5 +26,6 @@ $urlBatch = ['plugin' => $this->plugin, 'controller' => $this->name, 'action' =>
         user-id="<?= User::getCurrentUser()['id'] ?>"
         :with-batch-delete="<?= $accessFactory->hasAccess($urlBatch, $user) ? 'true' : 'false' ?>"
         :with-batch-edit="<?= $accessFactory->hasAccess($urlBatch, $user) ? 'true' : 'false' ?>"
+        :with-export="<?= $accessFactory->hasAccess($urlExport, $user) ? 'true' : 'false' ?>"
     ></search>
 </section>

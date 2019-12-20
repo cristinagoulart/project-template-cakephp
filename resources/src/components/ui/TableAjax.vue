@@ -5,6 +5,8 @@
                 <div v-if="isBatchEnabled" class="btn-group btn-group-sm">
                 <button type="button" :disabled="!selected.length" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-bars"></i> Actions <span class="caret"></span></button>
                 <ul class="dropdown-menu dropdown-menu-right">
+                    <li v-if="withExport"><a href="#" @click.prevent="batchExport()"><i class="fa fa-download"></i> Export</a></li>
+                    <li v-if="withExport"><a href="#" @click.prevent="batchExport(false)"><i class="fa fa-download"></i> Export (raw)</a></li>
                     <li v-if="withBatchEdit"><a href="#" @click.prevent="batchEdit()"><i class="fa fa-pencil"></i> Edit</a></li>
                     <li v-if="withBatchDelete"><a href="#" @click.prevent="batchDelete()"><i class="fa fa-trash"></i> Delete</a></li>
                 </ul>
@@ -79,6 +81,10 @@ export default {
     withBatchEdit: {
       type: Boolean,
       default: true
+    },
+    withExport: {
+      type: Boolean,
+      default: true
     }
   },
 
@@ -93,7 +99,7 @@ export default {
   },
   computed: {
     isBatchEnabled () {
-      return this.withBatchEdit || this.withBatchDelete
+      return this.withBatchEdit || this.withBatchDelete || this.withExport
     }
   },
   methods: {
@@ -311,6 +317,34 @@ export default {
       })
     },
 
+    batchExport (formatted = true) {
+      if (!this.withExport || !this.selected.length) {
+        return
+      }
+
+      return new Promise((resolve, reject) => {
+        return axios
+          .post('/' + this.model + '/export', {
+            ids: this.selected,
+            headers: this.headers.map(item => item.value),
+            formatted: formatted
+          })
+          .then(response => {
+            if (response.data) {
+              let text = '<a href="' + response.data + '" title="Download Link">Download</a>'
+              this.$notify({
+                type: 'success',
+                duration: -1,
+                title: 'Export is ready',
+                text: text
+              })
+              resolve(response)
+            }
+          })
+          .catch(() => reject)
+      })
+    },
+
     /**
      * {@link} https://stackoverflow.com/questions/19064352/how-to-redirect-through-post-method-using-javascript/27766998
      * @return {undefined}
@@ -320,7 +354,7 @@ export default {
         return
       }
 
-      this.generateBatchForm('/' + this.model + '/batch/' + 'edit').submit()
+      this.generateBatchForm('/' + this.model + '/batch/edit').submit()
     },
 
     batchDelete () {
@@ -332,7 +366,7 @@ export default {
         return
       }
 
-      this.generateBatchForm('/' + this.model + '/batch/' + 'delete').submit()
+      this.generateBatchForm('/' + this.model + '/batch/delete').submit()
     },
 
     generateBatchForm (action) {

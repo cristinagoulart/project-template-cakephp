@@ -18,7 +18,6 @@ export default {
     conjunction: 'AND',
     criteria: {},
     default_fields: [],
-    exportId: '',
     id: '',
     fields: [],
     filters: [],
@@ -134,9 +133,6 @@ export default {
     defaultFields (state, value) {
       state.default_fields = value
     },
-    exportId (state, value) {
-      state.exportId = value
-    },
     fields (state, value) {
       state.fields = value.length ? value : state.default_fields
     },
@@ -203,8 +199,8 @@ export default {
             .then(resp => {
               dispatch('savedSearchesGet')
               dispatch('setNotification', {
-                'type': 'info',
-                'msg': 'Successfully copied the search'
+                type: 'success',
+                text: 'Search successfully copied.'
               })
             })
         })
@@ -215,20 +211,9 @@ export default {
         .then(response => {
           dispatch('savedSearchesGet')
           dispatch('setNotification', {
-            'type': 'info',
-            'msg': 'Saved Search successfully removed'
+            type: 'success',
+            text: 'Search successfully deleted.'
           })
-        })
-    },
-    savedSearchExport ({ commit, state }) {
-      const data = state.savedSearch
-      // this is treated as temporary saved search
-      data.name = ''
-
-      return ApiSearch
-        .exportSearch(API_STORE_SEARCH, data)
-        .then(response => {
-          commit('exportId', response.data.data.id)
         })
     },
     savedSearchGet ({ commit, state, dispatch }, id) {
@@ -247,7 +232,7 @@ export default {
           commit('savedSearchUserId', data.user_id)
           commit('orderByField', data.order_by_field)
           commit('orderByDirection', data.order_by_direction)
-          if (data.hasOwnProperty('criteria')) {
+          if (data.hasOwnProperty('criteria') && typeof data.criteria === 'object' && data.criteria !== null) {
             Object.keys(data.criteria).forEach((item) => {
               const guid = Object.keys(data.criteria[item])[0]
               const filter = data.criteria[item][guid]
@@ -260,11 +245,6 @@ export default {
               })
             })
           }
-
-          dispatch('setNotification', {
-            'type': 'info',
-            'msg': 'Successfully loaded search results'
-          })
         })
     },
     savedSearchSave ({ commit, state, dispatch }) {
@@ -291,8 +271,8 @@ export default {
             commit('savedSearchId', response.data.data.id)
             dispatch('savedSearchesGet')
             dispatch('setNotification', {
-              'type': 'info',
-              'msg': 'Search successfully created'
+              type: 'success',
+              text: 'Search successfully created.'
             })
           })
       } else {
@@ -301,8 +281,8 @@ export default {
           .then(response => {
             dispatch('savedSearchesGet')
             dispatch('setNotification', {
-              'type': 'info',
-              'msg': 'Search successfully updated'
+              type: 'success',
+              text: 'Search successfully updated.'
             })
           })
       }
@@ -320,9 +300,8 @@ export default {
     },
     setNotification ({ commit, state }, data) {
       Vue.notify({
-        'group': 'SearchNotification',
-        'type': data.type,
-        'text': data.msg
+        type: data.type,
+        text: data.text
       })
     }
   }

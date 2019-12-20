@@ -1,6 +1,5 @@
 <template>
     <div>
-        <notifications group="SearchNotification" />
         <div class="box box-solid" v-if="withForm">
             <div class="box-body">
                 <form class="search-form" novalidate="novalidate" v-on:submit.prevent="search">
@@ -38,7 +37,7 @@
                             <span class="visible-lg">&nbsp;</span>
                             <button class="btn btn-primary btn-sm" type="submit"><i class="fa fa-search"></i> Search</button>
                             <button type="button" @click="searchReset()" class="btn btn-default btn-sm"><i class="fa fa-undo"></i> Reset</button>
-                            <button v-if="withExport" type="button" @click="searchExport()" class="btn btn-default btn-sm"><i class="fa fa-download"></i> Export</button>
+                            <button v-if="withExport && searchId" type="button" @click="searchExport()" class="btn btn-default btn-sm"><i class="fa fa-download"></i> Export</button>
                             <div v-if="withSets" class="btn-group btn-group-sm">
                                 <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
                                     <i class="fa fa-plus"></i> Add to set <span class="caret"></span>
@@ -70,7 +69,8 @@
                   @sort-order-updated="sortOrderUpdated"
                   :with-actions="!disableBatch"
                   :with-batch-delete="!disableBatch && withBatchDelete"
-                  :with-batch-edit="!disableBatch && withBatchEdit">
+                  :with-batch-edit="!disableBatch && withBatchEdit"
+                  :with-export="!disableBatch && withExport">
                 </table-ajax>
             </div>
         </div>
@@ -212,6 +212,8 @@ export default {
           fields: state => state.search.fields,
           filtersList: state => state.search.filters,
           modelName: state => state.search.model,
+          searchId: state => state.search.id,
+          searchName: state => state.search.name,
           sortByField: state => state.search.order_by_field,
           sortByOrder: state => state.search.order_by_direction
         }),
@@ -420,37 +422,24 @@ export default {
             })
         },
         searchExport() {
-            if (! this.withExport) {
+            if (!this.withExport || !this.searchId) {
                 return
             }
 
-            this.$store.dispatch('search/savedSearchExport').then(() => {
-                const id = this.$store.state.search.exportId
+            const date = new Date()
+            const addZero = function (value) {
+                return value < 10 ? '0' + value : value
+            }
+            const datetime = [
+                date.getFullYear(),
+                addZero(date.getMonth() + 1),
+                addZero(date.getDate()),
+                addZero(date.getHours()),
+                addZero(date.getMinutes()),
+                addZero(date.getSeconds())
+            ]
 
-                if ('' === id) {
-                    return
-                }
-
-                let name = this.$store.state.search.name
-                name = '' === name ? this.modelName : name
-
-                const date = new Date()
-
-                const addZero = function (value) {
-                    return value < 10 ? '0' + value : value
-                }
-
-                const datetime = [
-                    date.getFullYear(),
-                    addZero(date.getMonth() + 1),
-                    addZero(date.getDate()),
-                    addZero(date.getHours()),
-                    addZero(date.getMinutes()),
-                    addZero(date.getSeconds())
-                ]
-
-                window.location.href = encodeURI('/' + this.modelUrl + '/export-search/' + id + '/' + name + ' ' + datetime.join(''))
-            })
+            window.location.href = encodeURI('/' + this.modelUrl + '/export-search/' + this.searchId + '/' + this.searchName + ' - ' + datetime.join(''))
         },
         searchReset() {
             this.$store.dispatch('search/reset')
