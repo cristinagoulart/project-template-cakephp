@@ -46,7 +46,9 @@ class ExportShellTest extends ConsoleIntegrationTestCase
         $created = touch($basePath . 'export-test-new.csv');
         Assert::true($created);
 
-        $this->assertSame(['export-test-old.csv', 'export-test-new.csv'], $folder->find('.*\.csv'));
+        $result = $folder->find('.*\.csv');
+        sort($result);
+        $this->assertSame(['export-test-new.csv', 'export-test-old.csv'], $result);
 
         $this->exec('export gc');
         $this->assertOutputContains('<success>Successfully deleted 1 export file(s), last modified before ');
