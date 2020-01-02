@@ -6,7 +6,7 @@
         "typeahead_fields": [],
         "basic_search_fields": [],
         "lookup_fields": [],
-        "allow_reminders": [],
+        "allow_reminders": ["Users"],
         "translatable": true,
         "permissions_parent_modules": [],
         "type": "module"

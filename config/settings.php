@@ -26,9 +26,9 @@ return [
                         'alias' => 'EmailTransport.default.className',
                         'type' => 'list',
                         'selectOptions' => [
-                            'mail' => 'Mail',
-                            'smtp' => 'Smtp',
-                            'debug' => 'Debug',
+                            'Mail' => 'Mail',
+                            'Smtp' => 'Smtp',
+                            'Debug' => 'Debug',
                         ],
                         'scope' => [
                             'app',

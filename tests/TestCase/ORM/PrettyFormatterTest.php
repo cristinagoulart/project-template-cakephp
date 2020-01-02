@@ -77,7 +77,6 @@ class PrettyFormatterTest extends TestCase
             ->formatResults(new PrettyFormatter());
 
         $result = $query->first()->toArray();
-        ksort($result);
 
         foreach ($expected as $key => $value) {
             $this->assertSame($value, $result[$key]);
@@ -171,11 +170,15 @@ class PrettyFormatterTest extends TestCase
             ->formatResults(new PrettyFormatter());
 
         $result = $query->first()->toArray();
-        ksort($result);
-        ksort($result['assigned_to_user']);
 
         foreach ($expected as $key => $value) {
-            $this->assertSame($value, $result[$key]);
+            if ('assigned_to_user' !== $key) {
+                $this->assertSame($value, $result[$key]);
+            }
+        }
+
+        foreach ($expected['assigned_to_user'] as $key => $value) {
+            $this->assertSame($value, $result['assigned_to_user'][$key]);
         }
     }
 
@@ -268,11 +271,15 @@ class PrettyFormatterTest extends TestCase
             ->formatResults(new PrettyFormatter());
 
         $result = $query->first()->toArray();
-        ksort($result);
-        ksort($result['_matchingData']['AssignedToUsers']);
 
         foreach ($expected as $key => $value) {
-            $this->assertSame($value, $result[$key]);
+            if ('_matchingData' !== $key) {
+                $this->assertSame($value, $result[$key]);
+            }
+        }
+
+        foreach ($expected['_matchingData']['AssignedToUsers'] as $key => $value) {
+            $this->assertSame($value, $result['_matchingData']['AssignedToUsers'][$key]);
         }
     }
 
