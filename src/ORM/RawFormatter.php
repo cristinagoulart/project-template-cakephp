@@ -90,7 +90,7 @@ final class RawFormatter
         }
 
         if ($value instanceof \Cake\I18n\Time) {
-            $format = 'Y-m-d H:i:s';
+            $format = \DateTime::ATOM;
             if ('time' === $table->getSchema()->getColumnType($field)) {
                 $format = 'H:i';
             }
