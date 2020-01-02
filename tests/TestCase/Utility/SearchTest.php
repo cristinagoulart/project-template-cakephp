@@ -29,9 +29,7 @@ class SearchTest extends TestCase
      */
     public function testGetFilters(string $modelName, array $expected): void
     {
-        $timeStart = microtime(true);
         $result = Search::getFilters($modelName);
-        $firstCallTiming = microtime(true) - $timeStart;
 
         usort($result, function (array $a, array $b) {
             return strcmp($a['field'], $b['field']);
@@ -42,12 +40,6 @@ class SearchTest extends TestCase
             unset($result[$key]['options']);
             $this->assertSame($value, $result[$key]);
         }
-
-        $timeStart = microtime(true);
-        Search::getFilters($modelName);
-        $secondCallTiming = microtime(true) - $timeStart;
-
-        $this->assertTrue($firstCallTiming > $secondCallTiming, 'In-memory caching is broken');
     }
 
     public function testGetDisplayFieldsFromView(): void
