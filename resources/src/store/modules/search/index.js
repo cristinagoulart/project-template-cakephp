@@ -234,14 +234,15 @@ export default {
           commit('orderByDirection', data.order_by_direction)
           if (data.hasOwnProperty('criteria') && typeof data.criteria === 'object' && data.criteria !== null) {
             Object.keys(data.criteria).forEach((item) => {
-              const guid = Object.keys(data.criteria[item])[0]
-              const filter = data.criteria[item][guid]
-              commit('criteriaCreate', {
-                field: item,
-                value: filter.value,
-                operator: filter.operator,
-                guid: guid,
-                type: filter.type
+              Object.keys(data.criteria[item]).forEach((guid) => {
+                const filter = data.criteria[item][guid]
+                commit('criteriaCreate', {
+                  field: item,
+                  value: filter.value,
+                  operator: filter.operator,
+                  guid: guid,
+                  type: filter.type
+                })
               })
             })
           }
