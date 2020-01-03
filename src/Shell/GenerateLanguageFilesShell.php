@@ -105,9 +105,6 @@ class GenerateLanguageFilesShell extends BaseShell
         foreach ($fieldLabelConfig as $key => $fieldLabel) {
             if (isset($fieldLabel['label'])) {
                 $ctpLines .= "//Module: " . $module . ", Field Label for: " . $key . "\n";
-                //var_dump($fieldLabel['label']);
-                //$label = $factory->renderName($module, $fieldLabel['label']);
-                //$ctpLines .= $this->generateCtpLine($label) . "\n\n";
                 $ctpLines .= $this->generateCtpLine($fieldLabel['label']) . "\n\n";
             }
         }
@@ -185,9 +182,6 @@ class GenerateLanguageFilesShell extends BaseShell
         $fieldLabels = [];
         $factory = new FieldHandlerFactory();
         foreach ($fields as $field) {
-            //$label = $factory->renderName($module, $field['name']);
-            //var_dump($label);
-            //$fieldLabels[] = $label;
             $fieldLabels[] = Inflector::humanize(Inflector::underscore($field['name']));
         }
 
