@@ -7,7 +7,7 @@ class SavedSearchesOrderField extends AbstractMigration
     /**
      * {@inheritDoc}
      */
-    public function up() : void
+    public function up(): void
     {
         $table = TableRegistry::getTableLocator()->get('Search.SavedSearches');
 
