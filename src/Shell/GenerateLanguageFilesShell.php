@@ -92,19 +92,25 @@ class GenerateLanguageFilesShell extends BaseShell
 
         $ctpLines = "<?php\n\n";
 
-        //Module Title
-        $ctpLines .= "//Module: " . $module . ", Module Title: " . $module . "\n";
-        $ctpLines .= $this->generateCtpLine(Inflector::humanize(Inflector::underscore($module))) . "\n\n";
+        $mc = $this->getModuleConfig($module, []);
+        $configFile = (string)$mc->find(false);
 
-        //Module Alias
-        $ctpLines .= "//Module: " . $module . ", Module Alias: " . $table->getAlias() . "\n";
+        //Module Title and Alias
+        $ctpLines .= $this->generateCommentCtpLine(str_replace(CONFIG, 'config' . DS, $configFile)) . "\n";
+        $ctpLines .= $this->generateCommentCtpLine("Module Title") . "\n";
+        $ctpLines .= $this->generateCtpLine(Inflector::humanize(Inflector::underscore($module))) . "\n";
+        $ctpLines .= $this->generateCommentCtpLine("Module Alias") . "\n";
         $ctpLines .= $this->generateCtpLine($table->getAlias()) . "\n\n";
 
         //Field Labels
-        $fieldLabelConfig = (new ModuleConfig(ConfigType::FIELDS(), $module))->parseToArray();
-        foreach ($fieldLabelConfig as $key => $fieldLabel) {
+        $fieldLabelConfig = (new ModuleConfig(ConfigType::FIELDS(), $module));
+        $fieldsFile = (string)$fieldLabelConfig->find(false);
+
+        if (!empty($fieldLabelConfig->parseToArray())) {
+            $ctpLines .= $this->generateCommentCtpLine(str_replace(CONFIG, 'config' . DS, $fieldsFile)) . "\n";
+        }
+        foreach ($fieldLabelConfig->parseToArray() as $key => $fieldLabel) {
             if (isset($fieldLabel['label'])) {
-                $ctpLines .= "//Module: " . $module . ", Field Label for: " . $key . "\n";
                 $ctpLines .= $this->generateCtpLine($fieldLabel['label']) . "\n\n";
             }
         }
@@ -114,19 +120,21 @@ class GenerateLanguageFilesShell extends BaseShell
         if (is_array($migrationFieldLabels) && 0 < count($migrationFieldLabels)) {
             $ctpLinesArray = [];
             $ctpLinesArray = array_map([$this, "generateCtpLine"], $migrationFieldLabels);
-            $ctpLines .= "//Module: " . $module . ", Migration Field Labels" . "\n";
+            $ctpLines .= $this->generateCommentCtpLine($this->migrationFieldFile($module)) . "\n";
             $ctpLines .= implode("\n", $ctpLinesArray);
             $ctpLines .= "\n\n";
         }
 
         //Menu Labels
-        $menuLabelConfig = (new ModuleConfig(ConfigType::MENUS(), $module))->parseToArray();
+        $menuLabelConfig = (new ModuleConfig(ConfigType::MENUS(), $module));
+        $labelFile = (string)$menuLabelConfig->find(false);
+        $menuLabelConfig = $menuLabelConfig->parseToArray();
         if (is_array($menuLabelConfig) && 0 < count($menuLabelConfig)) {
+            $ctpLines .= $this->generateCommentCtpLine(str_replace(CONFIG, 'config' . DS, $labelFile)) . "\n";
             $menuItems = $this->translateMenuItems(array_shift($menuLabelConfig));
 
             $ctpLinesArray = [];
             $ctpLinesArray = array_map([$this, "generateCtpLine"], $menuItems);
-            $ctpLines .= "//Module: " . $module . ", Menus Labels" . "\n";
             $ctpLines .= implode("\n", $ctpLinesArray);
             $ctpLines .= "\n\n";
         }
@@ -142,7 +150,7 @@ class GenerateLanguageFilesShell extends BaseShell
             }
 
             $hasViews = true;
-            $ctpLines .= "//Module: " . $module . ", CsvView: " . $view . "\n";
+            $ctpLines .= $this->generateCommentCtpLine("Module: " . $module . ", CsvView: " . $view) . "\n";
             $actionTitles = array_keys($panels);
 
             $ctpLinesArray = [];
@@ -174,7 +182,7 @@ class GenerateLanguageFilesShell extends BaseShell
      */
     private function migrationFieldLabels(string $module): array
     {
-        $mc = $this->getModuleConfig($module, []);
+        $mc = $this->getMigrationConfig($module, []);
 
         $config = json_encode($mc->parse());
         $fields = $mc->parseToArray();
@@ -189,8 +197,20 @@ class GenerateLanguageFilesShell extends BaseShell
     }
 
     /**
-     * Creates a custom instance of `ModuleConfig` with a parser, schema and
-     * extra validation.
+     * Return migration file path
+     * @param string $module Module name
+     * @return string
+     */
+    private function migrationFieldFile(string $module): string
+    {
+        $mc = $this->getMigrationConfig($module, []);
+        $filePath = str_replace(CONFIG, 'config' . DS, (string)$mc->find(false));
+
+        return $filePath;
+    }
+
+    /**
+     * Main configuration file
      *
      * @param string $module Module.
      * @param string[] $options Options.
@@ -199,8 +219,38 @@ class GenerateLanguageFilesShell extends BaseShell
     protected function getModuleConfig(string $module, array $options = []): ModuleConfig
     {
         $configFile = empty($options['configFile']) ? null : $options['configFile'];
-        $mc = new ModuleConfig(ConfigType::MIGRATION(), $module, $configFile, ['cacheSkip' => true]);
+        $mc = new ModuleConfig(ConfigType::MODULE(), $module, $configFile, ['cacheSkip' => true]);
 
+        return $mc;
+    }
+
+    /**
+     * View configuration file
+     *
+     * @param string $module Module.
+     * @param string[] $options Options.
+     * @return ModuleConfig Config.
+     */
+    protected function getViewConfig(string $module, array $options = []): ModuleConfig
+    {
+        $configFile = empty($options['configFile']) ? null : $options['configFile'];
+        $mc = new ModuleConfig(ConfigType::VIEW(), $module, $configFile, ['cacheSkip' => true]);
+
+        return $mc;
+    }
+
+    /**
+     * Creates a custom instance of `ModuleConfig` with a parser, schema and
+     * extra validation.
+     *
+     * @param string $module Module.
+     * @param string[] $options Options.
+     * @return ModuleConfig Module Config.
+     */
+    protected function getMigrationConfig(string $module, array $options = []): ModuleConfig
+    {
+        $configFile = empty($options['configFile']) ? null : $options['configFile'];
+        $mc = new ModuleConfig(ConfigType::MIGRATION(), $module, $configFile, ['cacheSkip' => true]);
         $schema = $mc->createSchema(['lint' => true]);
         $mc->setParser(new Parser($schema, ['lint' => true, 'validate' => true]));
 
@@ -215,6 +265,16 @@ class GenerateLanguageFilesShell extends BaseShell
     private function generateCtpLine(string $item): string
     {
         return "echo __('" . $item . "');";
+    }
+
+    /**
+     * Method for generating comment line
+     * @param  string $text Text to comment
+     * @return string
+     */
+    private function generateCommentCtpLine(string $text): string
+    {
+        return '/* ' . $text . ' */';
     }
 
     /**

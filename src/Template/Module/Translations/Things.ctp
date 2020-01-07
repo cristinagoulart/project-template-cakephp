@@ -1,22 +1,22 @@
 <?php
 
-//Module: Things, Module Title: Things
+/* config/Modules/Things/config/config.dist.json */
+/* Module Title */
+echo __('Things');
+/* Module Alias */
 echo __('Things');
 
-//Module: Things, Module Alias: Things
-echo __('Things');
-
-//Module: Things, Field Label for: name
+/* config/Modules/Things/config/fields.json */
 echo __('label name');
 
-//Module: Things, Field Label for: description
 echo __('label description');
 
-//Module: Things, Migration Field Labels
+/* config/Modules/Things/db/migration.json */
 echo __('Id');
 echo __('Name');
 echo __('Description');
 echo __('Country');
+echo __('Currency');
 echo __('Gender');
 echo __('Assigned To');
 echo __('Primary Thing');
@@ -46,16 +46,22 @@ echo __('Modified By');
 echo __('Non Searchable');
 echo __('Sample Date');
 
-//Module: Things, Menus Labels
+/* config/Modules/Things/config/menus.dist.json */
 echo __('Things');
 
-//Module: Things, CsvView: view
+/* Module: Things, CsvView: view */
 echo __('Details');
+echo __('Dynamic panel - male');
+echo __('Dynamic panel - female');
 
-//Module: Things, CsvView: edit
+/* Module: Things, CsvView: edit */
 echo __('Details');
+echo __('Dynamic panel - male');
+echo __('Dynamic panel - female');
 
-//Module: Things, CsvView: add
+/* Module: Things, CsvView: add */
 echo __('Details');
+echo __('Dynamic panel - male');
+echo __('Dynamic panel - female');
 
 

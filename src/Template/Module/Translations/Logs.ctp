@@ -1,9 +1,9 @@
 <?php
 
-//Module: Logs, Module Title: Logs
+/* config/Modules/Logs/config/config.dist.json */
+/* Module Title */
 echo __('Logs');
-
-//Module: Logs, Module Alias: Logs
+/* Module Alias */
 echo __('Logs');
 
 

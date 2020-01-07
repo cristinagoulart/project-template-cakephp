@@ -1,12 +1,12 @@
 <?php
 
-//Module: Users, Module Title: Users
+/* config/Modules/Users/config/config.dist.json */
+/* Module Title */
+echo __('Users');
+/* Module Alias */
 echo __('Users');
 
-//Module: Users, Module Alias: Users
-echo __('Users');
-
-//Module: Users, Menus Labels
+/* config/Modules/Users/config/menus.dist.json */
 echo __('Access Control');
 echo __('Manage access control');
 echo __('Users');

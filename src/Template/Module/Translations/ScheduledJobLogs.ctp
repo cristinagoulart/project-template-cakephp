@@ -1,12 +1,13 @@
 <?php
 
-//Module: ScheduledJobLogs, Module Title: ScheduledJobLogs
+/* config/Modules/ScheduledJobLogs/config/config.dist.json */
+/* Module Title */
 echo __('Scheduled Job Logs');
-
-//Module: ScheduledJobLogs, Module Alias: ScheduledJobLogs
+/* Module Alias */
 echo __('ScheduledJobLogs');
 
-//Module: ScheduledJobLogs, Migration Field Labels
+/* config/Modules/ScheduledJobLogs/config/fields.dist.json */
+/* config/Modules/ScheduledJobLogs/db/migration.dist.json */
 echo __('Id');
 echo __('Scheduled Job Id');
 echo __('Context');
@@ -16,7 +17,7 @@ echo __('Datetime');
 echo __('Created');
 echo __('Modified');
 
-//Module: ScheduledJobLogs, CsvView: view
+/* Module: ScheduledJobLogs, CsvView: view */
 echo __('Details');
 echo __('Response');
 

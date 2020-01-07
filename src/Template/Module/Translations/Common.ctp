@@ -1,12 +1,12 @@
 <?php
 
-//Module: Common, Module Title: Common
+/* config/Modules/Common/config/config.dist.json */
+/* Module Title */
+echo __('Common');
+/* Module Alias */
 echo __('Common');
 
-//Module: Common, Module Alias: Common
-echo __('Common');
-
-//Module: Common, Menus Labels
+/* config/Modules/Common/config/menus.dist.json */
 echo __('Access Control');
 echo __('Manage access control');
 echo __('Groups');
