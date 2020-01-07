@@ -71,20 +71,20 @@ class UsersTable extends Table
         $validator = parent::validationDefault($validator);
 
         $validator->add('username', 'validRegex', [
-            'rule' => ['custom', '/^[\w\d\@\-\_\s\.]+$/Du'],
-            'message' => 'The provided value is invalid (alphanumeric, dot, dash, at, underscore, space)',
+            'rule' => ['custom', '/^[\w\d\_\.\@\-]+$/Du'],
+            'message' => __('The provided value is invalid (alphanumeric, underscore, dash, at)'),
         ]);
 
         $validator->add('first_name', 'validRegex', [
             // \p is used for targeting unicode character properties, in this case L which means all letters
             // @link http://php.net/manual/en/regexp.reference.unicode.php
             'rule' => ['custom', '/^[\pL\-\s\.]+$/Du'],
-            'message' => 'The provided value is invalid (letter, dot, dash, space)',
+            'message' => __('The provided value is invalid (letter, dot, dash, space)'),
         ]);
 
         $validator->add('last_name', 'validRegex', [
             'rule' => ['custom', '/^[\pL\-\s\.]+$/Du'],
-            'message' => 'The provided value is invalid (letter, dot, dash, space)',
+            'message' => __('The provided value is invalid (letter, dot, dash, space)'),
         ]);
 
         return $validator;
