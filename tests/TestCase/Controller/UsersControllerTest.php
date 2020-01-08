@@ -316,6 +316,24 @@ class UsersControllerTest extends IntegrationTestCase
         $this->assertSession('The User could not be saved', 'Flash.flash.0.message');
     }
 
+    public function testEditWithInvalidUsername(): void
+    {
+        $this->enableCsrfToken();
+        $this->enableSecurityToken();
+        $this->withSession();
+        $this->enableRetainFlashMessages();
+
+        $data = ['username' => 'john smith'];
+
+        $entity = $this->table->get($this->userId);
+
+        // trying to update entity with invalid data
+        $this->put('/users/edit/' . $this->userId, $data);
+        $this->assertResponseOk();
+        $this->assertEquals($entity, $this->table->get($this->userId));
+        $this->assertSession('The User could not be saved', 'Flash.flash.0.message');
+    }
+
     public function testEditWithoutSession(): void
     {
         $this->enableCsrfToken();
