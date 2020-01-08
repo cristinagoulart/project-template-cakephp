@@ -63,7 +63,14 @@ class UsersTableTest extends TestCase
 
     public function testValidationInvalidUsername(): void
     {
+        //Check for exclamation mark
         $entity = $this->table->newEntity(['username' => 'foobar!', 'password' => 'foobar']);
+
+        $this->assertSame(true, array_key_exists('validRegex', $entity->getError('username')));
+        $this->assertSame(false, $this->table->save($entity));
+
+        //Check for space in username
+        $entity = $this->table->newEntity(['username' => 'foo bar', 'password' => 'foobar']);
 
         $this->assertSame(true, array_key_exists('validRegex', $entity->getError('username')));
         $this->assertSame(false, $this->table->save($entity));
