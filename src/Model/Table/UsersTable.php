@@ -72,7 +72,7 @@ class UsersTable extends Table
 
         $validator->add('username', 'validRegex', [
             'rule' => ['custom', '/^[\w\d\_\.\@\-]+$/Du'],
-            'message' => __('The provided value is invalid (alphanumeric, underscore, dash, at)'),
+            'message' => __('The provided value is invalid (alphanumeric, underscore, dot, at, dash)'),
         ]);
 
         $validator->add('first_name', 'validRegex', [
