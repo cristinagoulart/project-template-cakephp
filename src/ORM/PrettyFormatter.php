@@ -165,7 +165,8 @@ final class PrettyFormatter
             '_currency' => 'currency(currencies)',
             '_unit' => 'list(units_area)'];
 
-        $index = '_' . explode('_', $field)[1];
+        $parts = explode('_', $field);
+        $index = '_' . end($parts);
 
         $entity->set($field, $factory->renderValue(
             $table,
