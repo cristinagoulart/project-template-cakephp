@@ -1,8 +1,9 @@
 <?php
 
-/* config/Modules/Common/config/config.dist.json */
 /* Module Title */
 echo __('Common');
+
+/* config/Modules/Common/config/config.dist.json */
 /* Module Alias */
 echo __('Common');
 

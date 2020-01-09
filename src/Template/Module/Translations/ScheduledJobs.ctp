@@ -1,10 +1,11 @@
 <?php
 
-/* config/Modules/ScheduledJobs/config/config.dist.json */
 /* Module Title */
 echo __('Scheduled Jobs');
+
+/* config/Modules/ScheduledJobs/config/config.dist.json */
 /* Module Alias */
-echo __('ScheduledJobs');
+echo __('Scheduled Jobs');
 
 /* config/Modules/ScheduledJobs/config/fields.dist.json */
 /* config/Modules/ScheduledJobs/config/menus.dist.json */

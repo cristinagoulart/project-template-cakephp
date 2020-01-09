@@ -1,0 +1,1363 @@
+# LANGUAGE translation of CakePHP Application
+# Copyright YEAR NAME <EMAIL@ADDRESS>
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PROJECT VERSION\n"
+"POT-Creation-Date: 2020-01-09 14:43+0000\n"
+"PO-Revision-Date: YYYY-mm-DD HH:MM+ZZZZ\n"
+"Last-Translator: NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <EMAIL@ADDRESS>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=INTEGER; plural=EXPRESSION;\n"
+
+#: Controller/BaseModuleController.php:264
+msgid "The record could not be saved, please try again."
+msgstr ""
+
+#: Controller/BaseModuleController.php:268
+#: Controller/ScheduledJobsController.php:86
+msgid "The record has been saved."
+msgstr ""
+
+#: Controller/BaseModuleController.php:308
+msgid "The record has been deleted."
+msgstr ""
+
+#: Controller/BaseModuleController.php:310
+msgid "The record could not be deleted. Please, try again."
+msgstr ""
+
+#: Controller/BaseModuleController.php:344
+msgid "The record has been unlinked."
+msgstr ""
+
+#: Controller/BaseModuleController.php:372
+msgid "No records provided for linking."
+msgstr ""
+
+#: Controller/BaseModuleController.php:386
+msgid "No records found for linking."
+msgstr ""
+
+#: Controller/BaseModuleController.php:392
+msgid "Failed to link records."
+msgstr ""
+
+#: Controller/BaseModuleController.php:397
+msgid "({0}) records have been linked."
+msgstr ""
+
+#: Controller/BaseModuleController.php:419
+msgid "No records selected."
+msgstr ""
+
+#: Controller/BaseModuleController.php:438
+msgid "Insufficient permissions to {0} the selected records."
+msgstr ""
+
+#: Controller/BaseModuleController.php:454
+msgid "{0} of {1} selected records have been deleted."
+msgstr ""
+
+#: Controller/BaseModuleController.php:457
+msgid "Selected records could not be deleted. Please, try again."
+msgstr ""
+
+#: Controller/BaseModuleController.php:466
+msgid "Selected records could not be updated. No changes provided."
+msgstr ""
+
+#: Controller/BaseModuleController.php:480
+msgid "{0} of {1} selected records have been updated."
+msgstr ""
+
+#: Controller/BaseModuleController.php:483
+msgid "Selected records could not be updated. Please, try again."
+msgstr ""
+
+#: Controller/LogsController.php:70
+#: Controller/ScheduledJobLogsController.php:92
+msgid "Removed {0} log records older than {1}."
+msgstr ""
+
+#: Controller/ScheduledJobLogsController.php:80
+msgid "Max age is not configured."
+msgstr ""
+
+#: Controller/ScheduledJobsController.php:45
+msgid "Scheduled Job has been saved."
+msgstr ""
+
+#: Controller/ScheduledJobsController.php:50
+msgid "Scheduled Job could not be saved. Please, try again"
+msgstr ""
+
+#: Controller/ScheduledJobsController.php:88
+msgid "This record could not be saved."
+msgstr ""
+
+#: Controller/SettingsController.php:186
+msgid "Nothing to update"
+msgstr ""
+
+#: Controller/SettingsController.php:196
+msgid "Settings successfully updated"
+msgstr ""
+
+#: Controller/SettingsController.php:200
+msgid "Failed to update settings, please try again."
+msgstr ""
+
+#: Controller/UsersController.php:98
+msgid "Failed to upload image, please try again."
+msgstr ""
+
+#: Controller/UsersController.php:109
+msgid "Image is too large. Max size 512kb."
+msgstr ""
+
+#: Controller/UsersController.php:115
+msgid "Unsupported image type."
+msgstr ""
+
+#: Controller/UsersController.php:128
+msgid "The image has been uploaded."
+msgstr ""
+
+#: Controller/UsersController.php:130
+msgid "Couldn't upload the image"
+msgstr ""
+
+#: Controller/UsersController.php:165
+msgid "Profile successfully updated"
+msgstr ""
+
+#: Controller/UsersController.php:168
+msgid "Failed to update profile data, please try again."
+msgstr ""
+
+#: Event/Plugin/Menu/View/DashboardMenuListener.php:91
+#: Template/Plugin/Search/Dashboards/index.ctp:20
+msgid "Dashboards"
+msgstr ""
+
+#: Event/Plugin/Menu/View/DashboardMenuListener.php:101
+#: Template/Module/add.ctp:25
+msgid "Create"
+msgstr ""
+
+#: Event/Plugin/Menu/View/MenuEntityTrait.php:40
+#: Template/Element/Module/Menu/related_actions.ctp:14
+#: Template/System/searches.ctp:43
+#: Template/Users/index.ctp:91
+msgid "View"
+msgstr ""
+
+#: Event/Plugin/Menu/View/MenuEntityTrait.php:62
+#: Template/Element/Module/Menu/related_actions.ctp:22
+#: Template/Users/index.ctp:96
+msgid "Edit"
+msgstr ""
+
+#: Event/Plugin/Menu/View/MenuEntityTrait.php:89
+#: Template/Element/Module/Menu/related_actions.ctp:37
+#: Template/Users/index.ctp:131
+msgid "Delete"
+msgstr ""
+
+#: Event/Plugin/Menu/View/MenuEntityTrait.php:92
+#: Template/Element/Module/Menu/related_actions.ctp:40
+msgid "Are you sure you want to delete {0}?"
+msgstr ""
+
+#: Event/Plugin/Menu/View/ModuleIndexListener.php:76
+msgid "Import"
+msgstr ""
+
+#: Event/Plugin/Menu/View/ModuleIndexListener.php:96
+#: Template/Users/index.ctp:37;39
+msgid "Add"
+msgstr ""
+
+#: Event/Plugin/Menu/View/ModuleIndexListener.php:116
+#: Template/Logs/index.ctp:30
+msgid "Delete old logs"
+msgstr ""
+
+#: Event/Plugin/Menu/View/ModuleIndexListener.php:117
+msgid "Are you sure? This action will delete all the scheduled job logs older than {0}."
+msgstr ""
+
+#: Event/Plugin/Menu/View/ModuleViewListener.php:70
+msgid "More Actions"
+msgstr ""
+
+#: Event/Plugin/Menu/View/ModuleViewListener.php:99
+msgid "Permissions"
+msgstr ""
+
+#: Event/Plugin/Menu/View/ModuleViewListener.php:124
+#: Template/Element/changelog.ctp:30
+msgid "Changelog"
+msgstr ""
+
+#: Shell/DatabaseLogShell.php:150
+msgid "Period to be exported. Example \"-1 day\""
+msgstr ""
+
+#: Shell/GenerateLanguageFilesShell.php:103
+msgid "Unable to open file {0}.ctp"
+msgstr ""
+
+#: Shell/ScheduledLogShell.php:38
+msgid "Time to delete (ex: -1 day / -1 months)"
+msgstr ""
+
+#: Shell/SettingsShell.php:33
+msgid "Insert key"
+msgstr ""
+
+#: Template/Element/changelog.ctp:53
+msgid "Unknown"
+msgstr ""
+
+#: Template/Element/changelog.ctp:91
+msgid "{0} retrieved entity data"
+msgstr ""
+
+#: Template/Element/changelog.ctp:114
+msgid "{0} made the following changes:"
+msgstr ""
+
+#: Template/Element/changelog.ctp:120
+msgid "Field"
+msgstr ""
+
+#: Template/Element/changelog.ctp:121
+msgid "Old Value"
+msgstr ""
+
+#: Template/Element/changelog.ctp:122
+msgid "New Value"
+msgstr ""
+
+#: Template/Element/changelog.ctp:143
+msgid "Unknown value"
+msgstr ""
+
+#: Template/Element/changelog.ctp:166
+#: Template/Logs/advance_search_result.ctp:17;112
+#: Template/Logs/index.ctp:128
+msgid "Showing {{start}} to {{end}} of {{count}} entries"
+msgstr ""
+
+#: Template/Element/logo.ctp:6
+msgid "Site Logo"
+msgstr ""
+
+#: Template/Element/modal-permissions.ctp:67
+msgid "Add Permissions"
+msgstr ""
+
+#: Template/Element/modal-permissions.ctp:94;139
+msgid "Permission"
+msgstr ""
+
+#: Template/Element/modal-permissions.ctp:105
+#: Template/Element/Module/post.ctp:84
+#: Template/Element/Module/Embedded/form.ctp:63
+#: Template/ScheduledJobs/add.ctp:159
+#: Template/ScheduledJobs/edit.ctp:159
+#: Template/Settings/generator.ctp:340
+#: Template/Settings/index.ctp:179
+#: Template/Users/add.ctp:223
+#: Template/Users/change_password.ctp:72
+#: Template/Users/change_user_password.ctp:25
+#: Template/Users/edit.ctp:248
+#: Template/Users/profile.ctp:220
+msgid "Submit"
+msgstr ""
+
+#: Template/Element/modal-permissions.ctp:116
+msgid "User"
+msgstr ""
+
+#: Template/Element/modal-permissions.ctp:125
+#: Template/Module/Translations/Common.ctp:13
+#: Template/Plugin/Groups/Groups/view.ctp:17
+#: Template/Users/view.ctp:143
+msgid "Groups"
+msgstr ""
+
+#: Template/Element/modal-permissions.ctp:137
+#: Template/Users/profile.ctp:39
+#: Template/Users/view.ctp:21
+msgid "ID"
+msgstr ""
+
+#: Template/Element/modal-permissions.ctp:138
+#: Template/System/searches.ctp:20
+msgid "Model"
+msgstr ""
+
+#: Template/Element/modal-permissions.ctp:140
+#: Template/Element/Module/Associated/tab-content.ctp:99
+#: Template/ScheduledJobs/index.ctp:64
+#: Template/System/searches.ctp:21
+msgid "Actions"
+msgstr ""
+
+#: Template/Element/modal-permissions.ctp:160
+msgid "Are you sure you want to delete this permission?"
+msgstr ""
+
+#: Template/Element/modal-permissions.ctp:177
+msgid "Close"
+msgstr ""
+
+#: Template/Element/search-form.ctp:25
+msgid "Search in {0} ..."
+msgstr ""
+
+#: Template/Element/Email/activation_link.ctp:4
+#: Template/Element/Email/reset_password.ctp:4
+#: Template/Element/Email/social_account_validation.ctp:4
+msgid "Hi {0}"
+msgstr ""
+
+#: Template/Element/Log/message.ctp:15
+#: Template/Logs/advance_search_result.ctp:72
+msgid "Hostname"
+msgstr ""
+
+#: Template/Element/Log/message.ctp:17
+#: Template/Logs/advance_search_result.ctp:76
+msgid "IP"
+msgstr ""
+
+#: Template/Element/Log/message.ctp:21
+#: Template/Logs/advance_search_result.ctp:83
+msgid "Uri"
+msgstr ""
+
+#: Template/Element/Log/message.ctp:25
+#: Template/Logs/advance_search_result.ctp:89
+msgid "Referrer"
+msgstr ""
+
+#: Template/Element/Log/message.ctp:29
+#: Template/Logs/advance_search_result.ctp:95
+msgid "Message"
+msgstr ""
+
+#: Template/Element/Log/message.ctp:34
+#: Template/Module/Translations/ScheduledJobLogs.ctp:14
+msgid "Context"
+msgstr ""
+
+#: Template/Element/Module/post.ctp:52
+#: Template/Element/Module/view.ctp:44
+#: Template/Element/Module/Associated/tabs-list.ctp:27;37;39
+#: Template/Element/Module/Form/fields.ctp:20
+#: Template/Module/batch.ctp:18
+#: Template/Module/index.ctp:44
+msgid "{0}"
+msgstr ""
+
+#: Template/Element/Module/post.ctp:88
+#: Template/Element/Module/Embedded/form.ctp:68
+#: Template/ScheduledJobs/add.ctp:161
+#: Template/ScheduledJobs/edit.ctp:161
+msgid "Cancel"
+msgstr ""
+
+#: Template/Element/Module/Embedded/form.ctp:46
+msgid "{0} &raquo; Create"
+msgstr ""
+
+#: Template/Element/Module/Menu/related_actions.ctp:60
+msgid "Unlink"
+msgstr ""
+
+#: Template/Element/Module/Menu/related_actions.ctp:63
+msgid "Are you sure you want to unlink {0}?"
+msgstr ""
+
+#: Template/Element/System/about-cakephp.ctp:8
+msgid "CakePHP"
+msgstr ""
+
+#: Template/Element/System/about-cakephp.ctp:27
+msgid "This project is built with <strong>{0}</strong> framework."
+msgstr ""
+
+#: Template/Element/System/about-cakephp.ctp:28
+msgid "CakePHP is free, open source, rapid web development framework for PHP."
+msgstr ""
+
+#: Template/Element/System/about-cakephp.ctp:31
+#: Template/Element/System/about-project-template-cakephp.ctp:40
+#: Template/Element/System/about-qobo.ctp:33
+msgid "Here are some useful links for more information:"
+msgstr ""
+
+#: Template/Element/System/about-cakephp.ctp:41
+msgid "Commercial support for CakePHP is available via {0}."
+msgstr ""
+
+#: Template/Element/System/about-project-template-cakephp.ctp:27
+msgid "This project is built with <strong>{0}</strong>."
+msgstr ""
+
+#: Template/Element/System/about-project-template-cakephp.ctp:31
+msgid "This template is developed by {0} and aims to assist web developers in rapidly creating new web applications, powered by {1} framework.\n                It is also used in the award-winning {2} platform."
+msgstr ""
+
+#: Template/Element/System/about-project-template-cakephp.ctp:43
+#: Template/Element/System/about-qobo.ctp:35
+msgid "Qobo Website"
+msgstr ""
+
+#: Template/Element/System/about-project-template-cakephp.ctp:44
+msgid "Qobrix Website"
+msgstr ""
+
+#: Template/Element/System/about-project.ctp:15
+msgid "About"
+msgstr ""
+
+#: Template/Element/System/about-project.ctp:19
+msgid "Welcome to <strong>{0}</strong>. You are using version <strong>{1}</strong>."
+msgstr ""
+
+#: Template/Element/System/about-qobo.ctp:27
+msgid "<strong>{0}</strong> is a software development company, specializing in business applications."
+msgstr ""
+
+#: Template/Element/System/about-qobo.ctp:36
+msgid "Qobo Blog"
+msgstr ""
+
+#: Template/Element/System/about-qobo.ctp:37
+msgid "Qobo Careers"
+msgstr ""
+
+#: Template/Element/System/about-qobo.ctp:38
+msgid "Qobo on GitHub"
+msgstr ""
+
+#: Template/Element/System/about-qobo.ctp:39
+msgid "Qobo on Facebook"
+msgstr ""
+
+#: Template/Element/System/about-qobo.ctp:40
+msgid "Qobo on LinkedIn"
+msgstr ""
+
+#: Template/Element/System/about-qobo.ctp:42
+msgid "Feel free to contact Qobo via the {0} page."
+msgstr ""
+
+#: Template/Element/System/about-qobo.ctp:42
+msgid "Contact Us"
+msgstr ""
+
+#: Template/Element/System/cakephp.ctp:18
+#: Template/Element/System/server.ctp:15
+msgid "Summary"
+msgstr ""
+
+#: Template/Element/System/cakephp.ctp:24
+msgid "CakePHP version"
+msgstr ""
+
+#: Template/Element/System/cakephp.ctp:31
+msgid "CakePHP plugins"
+msgstr ""
+
+#: Template/Element/System/cakephp.ctp:41
+msgid "Loaded Plugins"
+msgstr ""
+
+#: Template/Element/System/composer.ctp:25
+msgid "Composer Summary"
+msgstr ""
+
+#: Template/Element/System/composer.ctp:32
+msgid "Composer libraries"
+msgstr ""
+
+#: Template/Element/System/composer.ctp:40
+msgid "Match {0}"
+msgstr ""
+
+#: Template/Element/System/composer.ctp:53
+msgid "Installed Dependencies"
+msgstr ""
+
+#: Template/Element/System/composer.ctp:59
+#: Template/Module/Translations/Things.ctp:17
+#: Template/Plugin/Groups/Groups/view.ctp:34
+#: Template/ScheduledJobs/index.ctp:57
+#: Template/System/searches.ctp:19
+#: Template/Users/view.ctp:167;194
+msgid "Name"
+msgstr ""
+
+#: Template/Element/System/composer.ctp:60
+#: Template/Plugin/AdminLTE/Element/footer.ctp:3
+msgid "Version"
+msgstr ""
+
+#: Template/Element/System/composer.ctp:61
+msgid "License"
+msgstr ""
+
+#: Template/Element/System/composer.ctp:62
+#: Template/Module/Translations/Things.ctp:18
+#: Template/Plugin/Groups/Groups/view.ctp:36
+#: Template/Users/view.ctp:168
+msgid "Description"
+msgstr ""
+
+#: Template/Element/System/database.ctp:26
+msgid "Database Summary"
+msgstr ""
+
+#: Template/Element/System/database.ctp:32
+msgid "Database engine"
+msgstr ""
+
+#: Template/Element/System/database.ctp:39
+msgid "Database size"
+msgstr ""
+
+#: Template/Element/System/database.ctp:46
+msgid "Total tables"
+msgstr ""
+
+#: Template/Element/System/database.ctp:51
+msgid "{0} system tables"
+msgstr ""
+
+#: Template/Element/System/database.ctp:60
+msgid "Table Records"
+msgstr ""
+
+#: Template/Element/System/database.ctp:73
+msgid "{0} records"
+msgstr ""
+
+#: Template/Element/System/database.ctp:78
+msgid "{0} deleted records ({1})"
+msgstr ""
+
+#: Template/Element/System/database.ctp:89
+msgid "Table Sizes"
+msgstr ""
+
+#: Template/Element/System/developer.ctp:16
+msgid "All good, no local modifications found."
+msgstr ""
+
+#: Template/Element/System/developer.ctp:24
+msgid "Build Summary"
+msgstr ""
+
+#: Template/Element/System/developer.ctp:30
+msgid "Current version"
+msgstr ""
+
+#: Template/Element/System/developer.ctp:37
+msgid "Current build"
+msgstr ""
+
+#: Template/Element/System/developer.ctp:44
+msgid "Deployed build"
+msgstr ""
+
+#: Template/Element/System/developer.ctp:51
+msgid "Previous build"
+msgstr ""
+
+#: Template/Element/System/developer.ctp:61
+msgid "Local Changes"
+msgstr ""
+
+#: Template/Element/System/developer.ctp:70
+msgid "Standard Features"
+msgstr ""
+
+#: Template/Element/System/developer.ctp:76
+msgid "Local Features"
+msgstr ""
+
+#: Template/Element/System/developer.ctp:88;94
+msgid "Changed files"
+msgstr ""
+
+#: Template/Element/System/php.ctp:26
+msgid "PHP Summary"
+msgstr ""
+
+#: Template/Element/System/php.ctp:32
+msgid "PHP version"
+msgstr ""
+
+#: Template/Element/System/php.ctp:39
+msgid "PHP extensions"
+msgstr ""
+
+#: Template/Element/System/php.ctp:49
+msgid "PHP Configuration"
+msgstr ""
+
+#: Template/Element/System/php.ctp:65
+msgid "Loaded Extensions"
+msgstr ""
+
+#: Template/Element/System/project.ctp:17
+msgid "Project Information"
+msgstr ""
+
+#: Template/Element/System/project.ctp:23
+msgid "Project name"
+msgstr ""
+
+#: Template/Element/System/project.ctp:30
+msgid "Project version"
+msgstr ""
+
+#: Template/Element/System/project.ctp:38
+msgid "Project URL"
+msgstr ""
+
+#: Template/Element/System/server.ctp:21
+msgid "Operating System"
+msgstr ""
+
+#: Template/Element/System/server.ctp:31
+msgid "Hardware"
+msgstr ""
+
+#: Template/Error/error400.ctp:47
+msgid "The page that you are trying to access requires authorization. Please login and try again."
+msgstr ""
+
+#: Template/Error/error400.ctp:48
+msgid "You do not have sufficient authorization to access this page. Please contact your system administrator."
+msgstr ""
+
+#: Template/Error/error400.ctp:49
+msgid "The page that you are trying to access does not exist. Please adjust your URL and try again."
+msgstr ""
+
+#: Template/Error/error400.ctp:50
+msgid "The method that you are using to access this page is not allowed."
+msgstr ""
+
+#: Template/Error/error400.ctp:51
+msgid "Your browser does not understand how to render the requested page. Please contact your system administrator."
+msgstr ""
+
+#: Template/Error/error400.ctp:52
+msgid "The server took longer than it is allowed to process your request.  Please try again later."
+msgstr ""
+
+#: Template/Error/error400.ctp:53
+msgid "The file that you requested used to be here, but it is gone now.  Please contact your system administrator."
+msgstr ""
+
+#: Template/Error/error400.ctp:54
+msgid "Your request is missing <pre>Content-Length</pre> header. Please contact your system administrator."
+msgstr ""
+
+#: Template/Error/error400.ctp:55
+msgid "The request file was too big to process.  Please try with a smaller file or contact your system administrator."
+msgstr ""
+
+#: Template/Error/error400.ctp:56
+msgid "The request URL is too long.  Please limit the number and/or length of parameters, or contact your system administrator."
+msgstr ""
+
+#: Template/Error/error400.ctp:57
+msgid "The file type of the request is not supported.  Please try with another file or contact your system administrator."
+msgstr ""
+
+#: Template/Error/error400.ctp:58
+msgid "There was a problem with your request. Please try later, adjust your request, or contact your system administrator."
+msgstr ""
+
+#: Template/Error/error500.ctp:50
+#: Template/System/error.ctp:35
+msgid "There was a problem processing your request.  Please notify your system administrator."
+msgstr ""
+
+#: Template/Logs/index.ctp:11
+#: Template/Logs/view.ctp:18
+#: Template/Module/Translations/Common.ctp:31
+#: Template/Module/Translations/Logs.ctp:4;8
+msgid "Logs"
+msgstr ""
+
+#: Template/Logs/index.ctp:15;18
+msgid "Delete duplicates"
+msgstr ""
+
+#: Template/Logs/index.ctp:27
+msgid "Delete old"
+msgstr ""
+
+#: Template/Logs/index.ctp:40;43
+msgid "Truncate all logs"
+msgstr ""
+
+#: Template/Logs/index.ctp:62
+msgid "All"
+msgstr ""
+
+#: Template/Module/batch.ctp:21
+msgid "Batch Edit"
+msgstr ""
+
+#: Template/Module/edit.ctp:34
+msgid "Edit {0} "
+msgstr ""
+
+#: Template/Module/Translations/Common.ctp:4;8
+msgid "Common"
+msgstr ""
+
+#: Template/Module/Translations/Common.ctp:11
+#: Template/Module/Translations/Users.ctp:11
+msgid "Access Control"
+msgstr ""
+
+#: Template/Module/Translations/Common.ctp:12
+#: Template/Module/Translations/Users.ctp:12
+msgid "Manage access control"
+msgstr ""
+
+#: Template/Module/Translations/Common.ctp:14
+msgid "Manage system groups"
+msgstr ""
+
+#: Template/Module/Translations/Common.ctp:15
+msgid "Roles"
+msgstr ""
+
+#: Template/Module/Translations/Common.ctp:16
+msgid "Manage system roles"
+msgstr ""
+
+#: Template/Module/Translations/Common.ctp:17
+#: Template/Module/Translations/ScheduledJobs.ctp:12
+#: Template/Module/Translations/Settings.ctp:4;8;11
+#: Template/Settings/index.ctp:64
+#: Template/Users/profile.ctp:34
+msgid "Settings"
+msgstr ""
+
+#: Template/Module/Translations/Common.ctp:18
+#: Template/Module/Translations/ScheduledJobs.ctp:13
+#: Template/Module/Translations/Settings.ctp:12
+msgid "Manage settings"
+msgstr ""
+
+#: Template/Module/Translations/Common.ctp:19
+msgid "Menus"
+msgstr ""
+
+#: Template/Module/Translations/Common.ctp:20
+msgid "Manage system menus"
+msgstr ""
+
+#: Template/Module/Translations/Common.ctp:21
+msgid "Lists"
+msgstr ""
+
+#: Template/Module/Translations/Common.ctp:22
+msgid "Manage database lists"
+msgstr ""
+
+#: Template/Module/Translations/Common.ctp:23
+msgid "Languages"
+msgstr ""
+
+#: Template/Module/Translations/Common.ctp:24
+msgid "Manage languages"
+msgstr ""
+
+#: Template/Module/Translations/Common.ctp:25
+#: Template/System/searches.ctp:7
+msgid "System Searches"
+msgstr ""
+
+#: Template/Module/Translations/Common.ctp:26
+msgid "Manage system searches"
+msgstr ""
+
+#: Template/Module/Translations/Common.ctp:27
+msgid "System"
+msgstr ""
+
+#: Template/Module/Translations/Common.ctp:28
+msgid "Manage system"
+msgstr ""
+
+#: Template/Module/Translations/Common.ctp:29
+msgid "Swagger"
+msgstr ""
+
+#: Template/Module/Translations/Common.ctp:30
+msgid "View swagger documentation"
+msgstr ""
+
+#: Template/Module/Translations/Common.ctp:32
+msgid "View system logs"
+msgstr ""
+
+#: Template/Module/Translations/Common.ctp:33
+msgid "Information"
+msgstr ""
+
+#: Template/Module/Translations/Common.ctp:34
+msgid "System information screen"
+msgstr ""
+
+#: Template/Module/Translations/FileStorage.ctp:4;8
+msgid "File Storage"
+msgstr ""
+
+#: Template/Module/Translations/ScheduledJobLogs.ctp:4;8
+msgid "Scheduled Job Logs"
+msgstr ""
+
+#: Template/Module/Translations/ScheduledJobLogs.ctp:12
+#: Template/Module/Translations/Things.ctp:16
+msgid "Id"
+msgstr ""
+
+#: Template/Module/Translations/ScheduledJobLogs.ctp:13
+msgid "Scheduled Job Id"
+msgstr ""
+
+#: Template/Module/Translations/ScheduledJobLogs.ctp:15
+msgid "Extra"
+msgstr ""
+
+#: Template/Module/Translations/ScheduledJobLogs.ctp:16
+msgid "Status"
+msgstr ""
+
+#: Template/Module/Translations/ScheduledJobLogs.ctp:17
+msgid "Datetime"
+msgstr ""
+
+#: Template/Module/Translations/ScheduledJobLogs.ctp:18
+#: Template/Module/Translations/Things.ctp:43
+#: Template/Users/index.ctp:59
+#: Template/Users/view.ctp:27
+msgid "Created"
+msgstr ""
+
+#: Template/Module/Translations/ScheduledJobLogs.ctp:19
+#: Template/Module/Translations/Things.ctp:44
+#: Template/Users/view.ctp:29
+msgid "Modified"
+msgstr ""
+
+#: Template/Module/Translations/ScheduledJobLogs.ctp:22
+#: Template/Module/Translations/ScheduledJobs.ctp:18;23;27
+#: Template/Module/Translations/Things.ctp:54;59;64
+#: Template/ScheduledJobs/add.ctp:23
+#: Template/ScheduledJobs/edit.ctp:23
+msgid "Details"
+msgstr ""
+
+#: Template/Module/Translations/ScheduledJobLogs.ctp:23
+msgid "Response"
+msgstr ""
+
+#: Template/Module/Translations/ScheduledJobs.ctp:4;8;14
+#: Template/ScheduledJobs/index.ctp:40
+msgid "Scheduled Jobs"
+msgstr ""
+
+#: Template/Module/Translations/ScheduledJobs.ctp:15
+msgid "Automated Scripts execution"
+msgstr ""
+
+#: Template/Module/Translations/ScheduledJobs.ctp:19
+msgid "Command"
+msgstr ""
+
+#: Template/Module/Translations/ScheduledJobs.ctp:20;24;28
+#: Template/ScheduledJobs/add.ctp:103
+#: Template/ScheduledJobs/edit.ctp:103
+#: Template/ScheduledJobs/index.ctp:60
+msgid "Recurrence"
+msgstr ""
+
+#: Template/Module/Translations/Settings.ctp:13
+msgid "System Settings"
+msgstr ""
+
+#: Template/Module/Translations/Settings.ctp:14
+msgid "Manage system settings"
+msgstr ""
+
+#: Template/Module/Translations/Things.ctp:4;8;51
+msgid "Things"
+msgstr ""
+
+#: Template/Module/Translations/Things.ctp:11
+msgid "label name"
+msgstr ""
+
+#: Template/Module/Translations/Things.ctp:13
+msgid "label description"
+msgstr ""
+
+#: Template/Module/Translations/Things.ctp:19
+#: Template/Users/profile.ctp:49
+#: Template/Users/view.ctp:51
+msgid "Country"
+msgstr ""
+
+#: Template/Module/Translations/Things.ctp:20
+msgid "Currency"
+msgstr ""
+
+#: Template/Module/Translations/Things.ctp:21
+#: Template/Users/index.ctp:56
+#: Template/Users/profile.ctp:62
+#: Template/Users/view.ctp:59
+msgid "Gender"
+msgstr ""
+
+#: Template/Module/Translations/Things.ctp:22
+msgid "Assigned To"
+msgstr ""
+
+#: Template/Module/Translations/Things.ctp:23
+msgid "Primary Thing"
+msgstr ""
+
+#: Template/Module/Translations/Things.ctp:24
+msgid "Salary"
+msgstr ""
+
+#: Template/Module/Translations/Things.ctp:25
+msgid "Vip"
+msgstr ""
+
+#: Template/Module/Translations/Things.ctp:26
+msgid "Area"
+msgstr ""
+
+#: Template/Module/Translations/Things.ctp:27
+msgid "Date Of Birth"
+msgstr ""
+
+#: Template/Module/Translations/Things.ctp:28
+msgid "Work Start"
+msgstr ""
+
+#: Template/Module/Translations/Things.ctp:29
+msgid "Website"
+msgstr ""
+
+#: Template/Module/Translations/Things.ctp:30
+msgid "Bio"
+msgstr ""
+
+#: Template/Module/Translations/Things.ctp:31
+msgid "Level"
+msgstr ""
+
+#: Template/Module/Translations/Things.ctp:32
+msgid "Appointment"
+msgstr ""
+
+#: Template/Module/Translations/Things.ctp:33
+msgid "Phone"
+msgstr ""
+
+#: Template/Module/Translations/Things.ctp:34
+#: Template/Users/index.ctp:53
+#: Template/Users/profile.ctp:43;187
+#: Template/Users/view.ctp:85
+msgid "Email"
+msgstr ""
+
+#: Template/Module/Translations/Things.ctp:35
+msgid "Rate"
+msgstr ""
+
+#: Template/Module/Translations/Things.ctp:36
+msgid "Title"
+msgstr ""
+
+#: Template/Module/Translations/Things.ctp:37
+msgid "Language"
+msgstr ""
+
+#: Template/Module/Translations/Things.ctp:38
+msgid "Photos"
+msgstr ""
+
+#: Template/Module/Translations/Things.ctp:39
+msgid "File"
+msgstr ""
+
+#: Template/Module/Translations/Things.ctp:40
+msgid "Test List"
+msgstr ""
+
+#: Template/Module/Translations/Things.ctp:41
+msgid "Testmetric"
+msgstr ""
+
+#: Template/Module/Translations/Things.ctp:42
+msgid "Testmoney"
+msgstr ""
+
+#: Template/Module/Translations/Things.ctp:45
+msgid "Created By"
+msgstr ""
+
+#: Template/Module/Translations/Things.ctp:46
+msgid "Modified By"
+msgstr ""
+
+#: Template/Module/Translations/Things.ctp:47
+msgid "Non Searchable"
+msgstr ""
+
+#: Template/Module/Translations/Things.ctp:48
+msgid "Sample Date"
+msgstr ""
+
+#: Template/Module/Translations/Things.ctp:55;60;65
+msgid "Dynamic panel - male"
+msgstr ""
+
+#: Template/Module/Translations/Things.ctp:56;61;66
+msgid "Dynamic panel - female"
+msgstr ""
+
+#: Template/Module/Translations/Users.ctp:4;8;13
+#: Template/Plugin/Groups/Groups/view.ctp:50
+#: Template/Users/index.ctp:31
+#: Template/Users/view.ctp:7
+msgid "Users"
+msgstr ""
+
+#: Template/Module/Translations/Users.ctp:14
+msgid "Manage system users"
+msgstr ""
+
+#: Template/Plugin/AdminLTE/Element/aside-control-sidebar.ctp:41
+msgid "Recent Activity"
+msgstr ""
+
+#: Template/Plugin/AdminLTE/Element/aside-control-sidebar.ctp:75
+msgid "No recent activity"
+msgstr ""
+
+#: Template/Plugin/AdminLTE/Element/footer.ctp:7
+msgid "Copyright &copy; {0}, {1}"
+msgstr ""
+
+#: Template/Plugin/AdminLTE/Element/footer.ctp:9
+msgid "All rights reserved."
+msgstr ""
+
+#: Template/Plugin/AdminLTE/Element/nav-top.ctp:40
+msgid "Member since {0}"
+msgstr ""
+
+#: Template/Plugin/AdminLTE/Element/nav-top.ctp:51
+msgid "Profile"
+msgstr ""
+
+#: Template/Plugin/AdminLTE/Element/nav-top.ctp:59
+msgid "Sign out"
+msgstr ""
+
+#: Template/Plugin/Groups/Groups/view.ctp:61
+#: Template/Users/index.ctp:52
+#: Template/Users/profile.ctp:41;114
+#: Template/Users/view.ctp:23
+msgid "Username"
+msgstr ""
+
+#: Template/Plugin/Groups/Groups/view.ctp:62
+#: Template/Users/index.ctp:54
+#: Template/Users/profile.ctp:45;122
+#: Template/Users/view.ctp:47
+msgid "First Name"
+msgstr ""
+
+#: Template/Plugin/Groups/Groups/view.ctp:63
+#: Template/Users/index.ctp:55
+#: Template/Users/profile.ctp:47;128
+#: Template/Users/view.ctp:49
+msgid "Last Name"
+msgstr ""
+
+#: Template/Plugin/Search/Dashboards/index.ctp:22
+msgid "There are no configured Dashboards for you."
+msgstr ""
+
+#: Template/Plugin/Search/Dashboards/index.ctp:28
+msgid "Please contact the system administrator."
+msgstr ""
+
+#: Template/Plugin/Search/Dashboards/index.ctp:32
+msgid "{0} Create Dashboard"
+msgstr ""
+
+#: Template/ScheduledJobLogs/view.ctp:52
+msgid "Scheduled Job"
+msgstr ""
+
+#: Template/ScheduledJobs/add.ctp:14
+#: Template/ScheduledJobs/edit.ctp:14
+msgid "Edit Scheduled Job"
+msgstr ""
+
+#: Template/ScheduledJobs/index.ctp:58
+#: Template/Users/index.ctp:58
+#: Template/Users/view.ctp:25
+msgid "Active"
+msgstr ""
+
+#: Template/ScheduledJobs/index.ctp:59
+msgid "Job"
+msgstr ""
+
+#: Template/ScheduledJobs/index.ctp:61
+msgid "Start"
+msgstr ""
+
+#: Template/ScheduledJobs/index.ctp:62
+msgid "End"
+msgstr ""
+
+#: Template/ScheduledJobs/index.ctp:63
+msgid "Last Run Date"
+msgstr ""
+
+#: Template/Settings/generator.ctp:204
+msgid "alias"
+msgstr ""
+
+#: Template/Settings/generator.ctp:205
+msgid "name"
+msgstr ""
+
+#: Template/Settings/generator.ctp:206
+msgid "type"
+msgstr ""
+
+#: Template/Settings/generator.ctp:207
+msgid "help"
+msgstr ""
+
+#: Template/Settings/generator.ctp:208
+msgid "scope"
+msgstr ""
+
+#: Template/System/home.ctp:17
+msgid "Homepage"
+msgstr ""
+
+#: Template/System/home.ctp:18
+msgid "Access control has not been defined. Please contact the system administrator."
+msgstr ""
+
+#: Template/System/info.ctp:8
+msgid "System Information"
+msgstr ""
+
+#: Template/Users/add.ctp:49
+msgid "Create {0}"
+msgstr ""
+
+#: Template/Users/add.ctp:57
+#: Template/Users/edit.ctp:89
+msgid "User Information"
+msgstr ""
+
+#: Template/Users/add.ctp:85
+#: Template/Users/edit.ctp:111
+msgid "Personal Details"
+msgstr ""
+
+#: Template/Users/add.ctp:150
+#: Template/Users/edit.ctp:175
+msgid "Contact Details"
+msgstr ""
+
+#: Template/Users/add.ctp:181
+#: Template/Users/edit.ctp:206
+msgid "Company Details"
+msgstr ""
+
+#: Template/Users/change_password.ctp:18;65
+msgid "Password"
+msgstr ""
+
+#: Template/Users/change_password.ctp:31;70
+msgid "Password Confirm"
+msgstr ""
+
+#: Template/Users/change_password.ctp:60
+msgid "Current Password"
+msgstr ""
+
+#: Template/Users/change_user_password.ctp:19
+msgid "Please enter the new password for user {0}"
+msgstr ""
+
+#: Template/Users/edit.ctp:49
+msgid "Edit {0}"
+msgstr ""
+
+#: Template/Users/edit.ctp:74
+msgid "Replace image"
+msgstr ""
+
+#: Template/Users/edit.ctp:74
+msgid "Upload image"
+msgstr ""
+
+#: Template/Users/edit.ctp:79
+msgid "Upload"
+msgstr ""
+
+#: Template/Users/index.ctp:57
+#: Template/Users/profile.ctp:73
+#: Template/Users/view.ctp:65
+msgid "Birthdate"
+msgstr ""
+
+#: Template/Users/index.ctp:101
+msgid "Change User Password"
+msgstr ""
+
+#: Template/Users/index.ctp:110
+msgid "Change User Settings"
+msgstr ""
+
+#: Template/Users/index.ctp:118
+msgid "User can not be deleted"
+msgstr ""
+
+#: Template/Users/index.ctp:130
+msgid "Are you sure you want to delete user {0}?"
+msgstr ""
+
+#: Template/Users/login.ctp:8;54
+msgid "Sign in"
+msgstr ""
+
+#: Template/Users/profile.ctp:12
+msgid "User Profile"
+msgstr ""
+
+#: Template/Users/profile.ctp:24
+msgid "System User"
+msgstr ""
+
+#: Template/Users/profile.ctp:33
+msgid "Info"
+msgstr ""
+
+#: Template/Users/profile.ctp:60;147
+#: Template/Users/view.ctp:57
+msgid "Initials"
+msgstr ""
+
+#: Template/Users/profile.ctp:75
+#: Template/Users/view.ctp:87;198
+msgid "Phone Office"
+msgstr ""
+
+#: Template/Users/profile.ctp:77
+#: Template/Users/view.ctp:89
+msgid "Phone Home"
+msgstr ""
+
+#: Template/Users/profile.ctp:79
+#: Template/Users/view.ctp:91
+msgid "Phone Mobile"
+msgstr ""
+
+#: Template/Users/profile.ctp:81;213
+#: Template/Users/view.ctp:93;199
+msgid "Phone Extension"
+msgstr ""
+
+#: Template/Users/profile.ctp:193
+msgid "Office Phone"
+msgstr ""
+
+#: Template/Users/profile.ctp:201
+msgid "Home Phone"
+msgstr ""
+
+#: Template/Users/profile.ctp:207
+msgid "Mobile Phone"
+msgstr ""
+
+#: Template/Users/register.ctp:37
+msgid "Register"
+msgstr ""
+
+#: Template/Users/view.ctp:26;128
+msgid "Yes"
+msgstr ""
+
+#: Template/Users/view.ctp:26;128
+msgid "No"
+msgstr ""
+
+#: Template/Users/view.ctp:95
+msgid "Fax"
+msgstr ""
+
+#: Template/Users/view.ctp:113
+msgid "Company"
+msgstr ""
+
+#: Template/Users/view.ctp:115;195
+msgid "Department"
+msgstr ""
+
+#: Template/Users/view.ctp:117;196
+msgid "Team"
+msgstr ""
+
+#: Template/Users/view.ctp:119;197
+msgid "Position"
+msgstr ""
+
+#: Template/Users/view.ctp:121
+msgid "Reports To"
+msgstr ""
+
+#: Template/Users/view.ctp:127
+msgid "Is Supervisor"
+msgstr ""
+
+#: Template/Users/view.ctp:152
+msgid "Subordinates"
+msgstr ""
+

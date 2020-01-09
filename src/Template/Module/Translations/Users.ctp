@@ -1,8 +1,9 @@
 <?php
 
-/* config/Modules/Users/config/config.dist.json */
 /* Module Title */
 echo __('Users');
+
+/* config/Modules/Users/config/config.dist.json */
 /* Module Alias */
 echo __('Users');
 

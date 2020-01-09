@@ -69,7 +69,7 @@ class GenerateLanguageFilesShell extends BaseShell
         $modules = '' === $modules ? $this->modules : explode(',', $modules);
 
         foreach ($modules as $module) {
-            $this->generateCtpFiles((string)$module);
+            $this->generateFiles((string)$module);
         }
     }
 
@@ -78,90 +78,23 @@ class GenerateLanguageFilesShell extends BaseShell
      * @param string $module Module name
      * @return void
      */
-    public function generateCtpFiles(string $module): void
+    public function generateFiles(string $module): void
     {
-        $factory = new FieldHandlerFactory();
-        $table = TableRegistry::getTableLocator()->get($module);
-
-        $callable = [$this, 'generateCtpLine'];
-        if (!is_callable($callable)) {
-            throw new BadMethodCallException(
-                sprintf("Method %s.%s does not exist", get_class($callable[0]), $callable[1])
-            );
-        }
-
         $ctpLines = "<?php\n\n";
 
-        $mc = $this->getModuleConfig($module, []);
-        $configFile = (string)$mc->find(false);
-
-        //Module Title and Alias
-        $ctpLines .= $this->generateCommentCtpLine(str_replace(CONFIG, 'config' . DS, $configFile)) . "\n";
-        $ctpLines .= $this->generateCommentCtpLine("Module Title") . "\n";
-        $ctpLines .= $this->generateCtpLine(Inflector::humanize(Inflector::underscore($module))) . "\n";
-        $ctpLines .= $this->generateCommentCtpLine("Module Alias") . "\n";
-        $ctpLines .= $this->generateCtpLine($table->getAlias()) . "\n\n";
-
+        //Module Title
+        $ctpLines .= $this->generateModuleTitleLine($module);
+        //Module Alias
+        $ctpLines .= $this->generateModuleAliasLine($module);
         //Field Labels
-        $fieldLabelConfig = (new ModuleConfig(ConfigType::FIELDS(), $module));
-        $fieldsFile = (string)$fieldLabelConfig->find(false);
-
-        if (!empty($fieldLabelConfig->parseToArray())) {
-            $ctpLines .= $this->generateCommentCtpLine(str_replace(CONFIG, 'config' . DS, $fieldsFile)) . "\n";
-        }
-        foreach ($fieldLabelConfig->parseToArray() as $key => $fieldLabel) {
-            if (isset($fieldLabel['label'])) {
-                $ctpLines .= $this->generateCtpLine($fieldLabel['label']) . "\n\n";
-            }
-        }
-
+        $ctpLines .= $this->generateModuleFieldLabelLines($module);
         //Migration Field Labels
-        $migrationFieldLabels = $this->migrationFieldLabels($module);
-        if (is_array($migrationFieldLabels) && 0 < count($migrationFieldLabels)) {
-            $ctpLinesArray = [];
-            $ctpLinesArray = array_map([$this, "generateCtpLine"], $migrationFieldLabels);
-            $ctpLines .= $this->generateCommentCtpLine($this->migrationFieldFile($module)) . "\n";
-            $ctpLines .= implode("\n", $ctpLinesArray);
-            $ctpLines .= "\n\n";
-        }
-
+        $ctpLines .= $this->generateModuleMigrationFieldLabels($module);
         //Menu Labels
-        $menuLabelConfig = (new ModuleConfig(ConfigType::MENUS(), $module));
-        $labelFile = (string)$menuLabelConfig->find(false);
-        $menuLabelConfig = $menuLabelConfig->parseToArray();
-        if (is_array($menuLabelConfig) && 0 < count($menuLabelConfig)) {
-            $ctpLines .= $this->generateCommentCtpLine(str_replace(CONFIG, 'config' . DS, $labelFile)) . "\n";
-            $menuItems = $this->translateMenuItems(array_shift($menuLabelConfig));
+        $ctpLines .= $this->generateModuleMenuLabels($module);
+        //Panel Title labels
+        $ctpLines .= $this->generatePanelTitleLabels($module);
 
-            $ctpLinesArray = [];
-            $ctpLinesArray = array_map([$this, "generateCtpLine"], $menuItems);
-            $ctpLines .= implode("\n", $ctpLinesArray);
-            $ctpLines .= "\n\n";
-        }
-
-        //Check for Panel Titles
-        $hasViews = false;
-        $views = ['view', 'edit', 'add'];
-        foreach ($views as $view) {
-            $panels = CsvUtility\Field::getCsvView($table, $view, true, true);
-
-            if (empty($panels)) {
-                continue;
-            }
-
-            $hasViews = true;
-            $ctpLines .= $this->generateCommentCtpLine("Module: " . $module . ", CsvView: " . $view) . "\n";
-            $actionTitles = array_keys($panels);
-
-            $ctpLinesArray = [];
-            $ctpLinesArray = array_map([$this, "generateCtpLine"], $actionTitles);
-            $ctpLines .= implode("\n", $ctpLinesArray);
-            $ctpLines .= "\n\n";
-        }
-
-        /**
-         * @var string $filename
-         */
         $filename = 'src/Template/Module/Translations/' . $module . ".ctp";
         if (!file_exists(dirname($filename))) {
             mkdir(dirname($filename), 0755, true);
@@ -173,6 +106,146 @@ class GenerateLanguageFilesShell extends BaseShell
             fwrite($ctpFile, $ctpContent);
             fclose($ctpFile);
         }
+    }
+
+    /**
+     * Generate lines for table title.
+     * @param string $module Module name
+     * @return string
+     */
+    private function generateModuleTitleLine(string $module): string
+    {
+        $mc = $this->getModuleConfig($module, []);
+        $configFile = (string)$mc->find(false);
+        $moduleAlias = $mc->parseToArray();
+
+        $ctpLines = '';
+        $ctpLines .= $this->generateCommentLine("Module Title") . "\n";
+        $ctpLines .= $this->generateLine(Inflector::humanize(Inflector::underscore($module))) . "\n\n";
+
+        return $ctpLines;
+    }
+
+    /**
+     * Generate lines for table alias.
+     * @param string $module Module name
+     * @return string
+     */
+    private function generateModuleAliasLine(string $module): string
+    {
+        $mc = $this->getModuleConfig($module, []);
+        $configFile = (string)$mc->find(false);
+        $moduleAlias = $mc->parseToArray();
+
+        $ctpLines = '';
+        $ctpLines .= $this->generateCommentLine(str_replace(CONFIG, 'config' . DS, $configFile)) . "\n";
+        $ctpLines .= $this->generateCommentLine("Module Alias") . "\n";
+        $ctpLines .= $this->generateLine(isset($moduleAlias['table']['alias']) ? $moduleAlias['table']['alias'] : Inflector::humanize(Inflector::underscore($module))) . "\n\n";
+
+        return $ctpLines;
+    }
+
+    /**
+     * Generate lines for field labels.
+     * @param string $module Module name
+     * @return string
+     */
+    private function generateModuleFieldLabelLines(string $module): string
+    {
+        $fieldLabelConfig = (new ModuleConfig(ConfigType::FIELDS(), $module));
+        $fieldsFile = (string)$fieldLabelConfig->find(false);
+
+        $ctpLines = '';
+
+        if (!empty($fieldLabelConfig->parseToArray())) {
+            $ctpLines .= $this->generateCommentLine(str_replace(CONFIG, 'config' . DS, $fieldsFile)) . "\n";
+        }
+        foreach ($fieldLabelConfig->parseToArray() as $key => $fieldLabel) {
+            if (isset($fieldLabel['label'])) {
+                $ctpLines .= $this->generateLine($fieldLabel['label']) . "\n\n";
+            }
+        }
+
+        return $ctpLines;
+    }
+
+    /**
+     * Generate lines for migration field labels.
+     * @param string $module Module name
+     * @return string
+     */
+    private function generateModuleMigrationFieldLabels(string $module): string
+    {
+        $ctpLines = '';
+
+        $migrationFieldLabels = $this->migrationFieldLabels($module);
+        if (is_array($migrationFieldLabels) && 0 < count($migrationFieldLabels)) {
+            $ctpLinesArray = [];
+            $ctpLinesArray = array_map([$this, "generateLine"], $migrationFieldLabels);
+            $ctpLines .= $this->generateCommentLine($this->migrationFieldFile($module)) . "\n";
+            $ctpLines .= implode("\n", $ctpLinesArray);
+            $ctpLines .= "\n\n";
+        }
+
+        return $ctpLines;
+    }
+
+    /**
+     * Generate lines for menu labels.
+     * @param string $module Module name
+     * @return string
+     */
+    private function generateModuleMenuLabels(string $module): string
+    {
+        $ctpLines = '';
+
+        $menuLabelConfig = (new ModuleConfig(ConfigType::MENUS(), $module));
+        $labelFile = (string)$menuLabelConfig->find(false);
+        $menuLabelConfig = $menuLabelConfig->parseToArray();
+        if (is_array($menuLabelConfig) && 0 < count($menuLabelConfig)) {
+            $ctpLines .= $this->generateCommentLine(str_replace(CONFIG, 'config' . DS, $labelFile)) . "\n";
+            $menuItems = $this->translateMenuItems(array_shift($menuLabelConfig));
+
+            $ctpLinesArray = [];
+            $ctpLinesArray = array_map([$this, "generateLine"], $menuItems);
+            $ctpLines .= implode("\n", $ctpLinesArray);
+            $ctpLines .= "\n\n";
+        }
+
+        return $ctpLines;
+    }
+
+    /**
+     * Generate lines for menu labels.
+     * @param string $module Module name
+     * @return string
+     */
+    private function generatePanelTitleLabels(string $module): string
+    {
+        $ctpLines = '';
+
+        $table = TableRegistry::getTableLocator()->get($module);
+
+        $hasViews = false;
+        $views = ['view', 'edit', 'add'];
+        foreach ($views as $view) {
+            $panels = CsvUtility\Field::getCsvView($table, $view, true, true);
+
+            if (empty($panels)) {
+                continue;
+            }
+
+            $hasViews = true;
+            $ctpLines .= $this->generateCommentLine("Module: " . $module . ", CsvView: " . $view) . "\n";
+            $actionTitles = array_keys($panels);
+
+            $ctpLinesArray = [];
+            $ctpLinesArray = array_map([$this, "generateLine"], $actionTitles);
+            $ctpLines .= implode("\n", $ctpLinesArray);
+            $ctpLines .= "\n\n";
+        }
+
+        return $ctpLines;
     }
 
     /**
@@ -262,7 +335,7 @@ class GenerateLanguageFilesShell extends BaseShell
      * @param  string $item Text for translation
      * @return string
      */
-    private function generateCtpLine(string $item): string
+    private function generateLine(string $item): string
     {
         return "echo __('" . $item . "');";
     }
@@ -272,7 +345,7 @@ class GenerateLanguageFilesShell extends BaseShell
      * @param  string $text Text to comment
      * @return string
      */
-    private function generateCommentCtpLine(string $text): string
+    private function generateCommentLine(string $text): string
     {
         return '/* ' . $text . ' */';
     }

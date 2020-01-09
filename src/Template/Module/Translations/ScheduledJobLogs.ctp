@@ -1,10 +1,11 @@
 <?php
 
-/* config/Modules/ScheduledJobLogs/config/config.dist.json */
 /* Module Title */
 echo __('Scheduled Job Logs');
+
+/* config/Modules/ScheduledJobLogs/config/config.dist.json */
 /* Module Alias */
-echo __('ScheduledJobLogs');
+echo __('Scheduled Job Logs');
 
 /* config/Modules/ScheduledJobLogs/config/fields.dist.json */
 /* config/Modules/ScheduledJobLogs/db/migration.dist.json */

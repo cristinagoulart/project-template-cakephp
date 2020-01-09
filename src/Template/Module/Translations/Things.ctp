@@ -1,17 +1,18 @@
 <?php
 
-/* config/Modules/Things/config/config.dist.json */
 /* Module Title */
 echo __('Things');
+
+/* config/Modules/Things/config/config.dist.json */
 /* Module Alias */
 echo __('Things');
 
-/* config/Modules/Things/config/fields.json */
+/* config/Modules/Things/config/fields.dist.json */
 echo __('label name');
 
 echo __('label description');
 
-/* config/Modules/Things/db/migration.json */
+/* config/Modules/Things/db/migration.dist.json */
 echo __('Id');
 echo __('Name');
 echo __('Description');

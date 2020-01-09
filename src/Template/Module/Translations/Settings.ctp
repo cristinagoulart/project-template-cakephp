@@ -1,8 +1,9 @@
 <?php
 
-/* config/Modules/Settings/config/config.dist.json */
 /* Module Title */
 echo __('Settings');
+
+/* config/Modules/Settings/config/config.dist.json */
 /* Module Alias */
 echo __('Settings');
 
