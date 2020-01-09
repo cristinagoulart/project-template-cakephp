@@ -12,6 +12,8 @@
         "type": "module"
     },
     "panels": {
+        "Dynamic panel - checkbox checked": "(%%vip%%==1)",
+        "Dynamic panel - checkbox unchecked": "(%%vip%%==0)",
         "Dynamic panel - male": "(%%gender%%=='m')",
         "Dynamic panel - female": "(%%gender%%=='f')"
     },

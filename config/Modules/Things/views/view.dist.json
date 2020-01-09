@@ -67,6 +67,14 @@
         [
             "Dynamic panel - female",
             ""
+        ],
+        [
+            "Dynamic panel - checkbox checked",
+            ""
+        ],
+        [
+            "Dynamic panel - checkbox unchecked",
+            ""
         ]
     ]
 }
