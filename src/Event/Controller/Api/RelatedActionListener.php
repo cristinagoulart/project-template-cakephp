@@ -4,6 +4,7 @@ namespace App\Event\Controller\Api;
 
 use App\Event\EventName;
 use App\ORM\PrettyFormatter;
+use App\ORM\RawFormatter;
 use Cake\Controller\Controller;
 use Cake\Core\App;
 use Cake\Datasource\QueryInterface;
@@ -44,10 +45,10 @@ class RelatedActionListener extends BaseActionListener
 
         $query->order($this->getOrderClause($request, $table));
 
-        if (static::FORMAT_PRETTY === $request->getQuery('format')) {
-            Assert::isInstanceOf($query, Query::class);
-            $query->formatResults(new PrettyFormatter());
-        }
+        $prettyFormat = static::FORMAT_PRETTY === $request->getQuery('format');
+
+        Assert::isInstanceOf($query, Query::class);
+        $query->formatResults($prettyFormat ? new PrettyFormatter() : new RawFormatter());
     }
 
     /**
@@ -79,8 +80,6 @@ class RelatedActionListener extends BaseActionListener
         $target = $table->getAssociation($request->getParam('pass.1'))->getTarget();
 
         foreach ($resultSet as $entity) {
-            $this->resourceToString($entity);
-
             if (static::FORMAT_PRETTY !== $request->getQuery('format')) {
                 $this->attachFiles($entity, $target);
             }

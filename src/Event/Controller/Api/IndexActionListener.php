@@ -4,6 +4,7 @@ namespace App\Event\Controller\Api;
 
 use App\Event\EventName;
 use App\ORM\PrettyFormatter;
+use App\ORM\RawFormatter;
 use Cake\Controller\Controller;
 use Cake\Datasource\QueryInterface;
 use Cake\Datasource\ResultSetInterface;
@@ -46,10 +47,10 @@ class IndexActionListener extends BaseActionListener
 
         $query->order($this->getOrderClause($request, $table));
 
-        if (static::FORMAT_PRETTY === $request->getQuery('format')) {
-            Assert::isInstanceOf($query, Query::class);
-            $query->formatResults(new PrettyFormatter());
-        }
+        $prettyFormat = static::FORMAT_PRETTY === $request->getQuery('format');
+
+        Assert::isInstanceOf($query, Query::class);
+        $query->formatResults($prettyFormat ? new PrettyFormatter() : new RawFormatter());
     }
 
     /**
@@ -78,8 +79,6 @@ class IndexActionListener extends BaseActionListener
         Assert::isInstanceOf($table, Table::class);
 
         foreach ($resultSet as $entity) {
-            $this->resourceToString($entity);
-
             if (static::FORMAT_PRETTY !== $request->getQuery('format')) {
                 $this->attachFiles($entity, $table);
             }
