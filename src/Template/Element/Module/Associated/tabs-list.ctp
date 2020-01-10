@@ -24,9 +24,9 @@ $setLabels = [];
         if (array_key_exists($association->getAlias(), $labels)) {
             $label .= $labels[$association->getAlias()];
         } else {
-            $label .= isset($config->table->alias) ?
+            $label .= __("{0}", isset($config->table->alias) ?
                 $config->table->alias :
-                Inflector::humanize(Inflector::delimit($tableName));
+                Inflector::humanize(Inflector::delimit($tableName)));
         }
 
         if (in_array($label, $setLabels)) {
@@ -34,9 +34,9 @@ $setLabels = [];
             $configFields = $mcFields->parseToArray();
 
             if (array_key_exists($association->getForeignKey(),$configFields) && array_key_exists('label',$configFields[$association->getForeignKey()]) ) {
-                $label .= ' (' . $configFields[$association->getForeignKey()]['label'] . ')';
+                $label .= ' (' . __("{0}", $configFields[$association->getForeignKey()]['label']) . ')';
             }else{
-                $label .= ' (' . Inflector::humanize(Inflector::delimit($association->getForeignKey())) . ')';
+                $label .= ' (' . __("{0}", Inflector::humanize(Inflector::delimit($association->getForeignKey()))) . ')';
             }
         }
 

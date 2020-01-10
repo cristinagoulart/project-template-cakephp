@@ -5,7 +5,7 @@ $this->layout = 'AdminLTE/login';
 ?>
 <?= $this->Form->create() ?>
 <fieldset>
-    <legend><?= __d('CakeDC/Users', 'Login') ?></legend>
+    <legend><?= __('Sign in') ?></legend>
     <div class="form-group">
         <div class="input-group">
             <span class="input-group-addon">
@@ -49,9 +49,9 @@ $this->layout = 'AdminLTE/login';
             </div>
         </div>
         <?php endif; ?>
-        <div class="col-xs-8 col-xs-offset-2 col-sm-6 col-sm-offset-3 col-md-4 col-md-offset-4">
+        <div class="col-md-12">
             <?= $this->Form->button(
-                '<span class="glyphicon glyphicon-log-in" aria-hidden="true"></span> ' . __d('Users', 'Sign In'),
+                '<span class="glyphicon glyphicon-log-in" aria-hidden="true"></span> ' . __('Sign in'),
                 ['class' => 'btn btn-primary btn-block']
             ); ?>
         </div>
@@ -61,7 +61,7 @@ $this->layout = 'AdminLTE/login';
 <?= $this->Form->end() ?>
 <?php
 if (!(bool)Configure::read('Ldap.enabled')) {
-    echo $this->Html->link(__d('CakeDC/Users', 'I forgot my password'), ['action' => 'requestResetPassword']);
+    echo $this->Html->link(__d('CakeDC/Users', 'Reset Password'), ['action' => 'requestResetPassword']);
 }
 
 if ((bool)Configure::read('Users.Registration.active') && (bool)Configure::read('Users.Email.validate')) {
@@ -74,5 +74,5 @@ if ((bool)Configure::read('Users.Registration.active') && (bool)Configure::read(
 
 if ((bool)Configure::read('Users.Registration.active')) {
     echo '<hr />';
-    echo $this->Html->link(__d('CakeDC/Users', 'Register a new membership'), ['action' => 'register']);
+    echo $this->Html->link(__d('CakeDC/Users', 'Register'), ['action' => 'register']);
 }
