@@ -37,7 +37,7 @@ use RolesCapabilities\Access\AccessFactory;
                         <?= $this->Html->tag('img', false, ['src' => $user['image_src'], 'class' => 'img-circle']) ?>
                         <p>
                             <?= $user['name']; ?>
-                            <small><?= __d('cake', 'Member since') ?> <?= $user['created']->i18nFormat('LLLL yyyy') ?></small>
+                            <small><?= __('Member since {0}', $user['created']->i18nFormat('LLLL yyyy')) ?></small>
                         </p>
                     </li>
                     <!-- Menu Footer-->
@@ -48,7 +48,7 @@ use RolesCapabilities\Access\AccessFactory;
                                 if($factory->hasAccess(['controller' => 'Users', 'action' => 'profile'], $user)):
                             ?>
                                 <?= $this->Html->link(
-                                '<span class="glyphicon glyphicon-user" aria-hidden="true"></span> ' . __d('cake', 'Profile'),
+                                '<span class="glyphicon glyphicon-user" aria-hidden="true"></span> ' . __('Profile'),
                                 '/users/profile',
                                 ['class' => 'btn btn-default btn-flat', 'escape' => false]
                                 ) ?>
@@ -56,7 +56,7 @@ use RolesCapabilities\Access\AccessFactory;
                         </div>
                         <div class="pull-right">
                             <?= $this->Html->link(
-                                '<span class="glyphicon glyphicon-log-in" aria-hidden="true"></span> ' . __d('cake', 'Sign out'),
+                                '<span class="glyphicon glyphicon-log-in" aria-hidden="true"></span> ' . __('Sign out'),
                                 '/users/logout',
                                 ['class' => 'btn btn-default btn-flat', 'escape' => false]
                             ); ?>

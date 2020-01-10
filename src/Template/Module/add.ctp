@@ -22,7 +22,7 @@ $options = [
     'entity' => $entity,
     'fields' => $fields,
     'title' => [
-        'page' => 'Create',
+        'page' => __('Create'),
         'alias' => $alias,
         'link' => $this->request->getParam('controller')
     ],
