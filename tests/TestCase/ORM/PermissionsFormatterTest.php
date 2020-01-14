@@ -70,6 +70,8 @@ class PermissionsFormatterTest extends TestCase
 
     public function testFormatResultsWithoutCurrentUser(): void
     {
+        User::setCurrentUser([]);
+
         $expected = [
             'view' => false,
             'edit' => false,
