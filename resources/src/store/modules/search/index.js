@@ -257,7 +257,7 @@ export default {
         name: state.name,
         user_id: state.user_id,
         model: state.model,
-        conjunction: 'AND',
+        conjunction: state.conjunction,
         criteria: JSON.parse(JSON.stringify(state.criteria)),
         fields: state.fields,
         group_by: state.group_by,
