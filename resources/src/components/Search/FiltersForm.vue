@@ -24,6 +24,7 @@
               :display-field="filters[field].display_field"
               :multiple="true"
               @input-value-updated="valueUpdated"
+              :key="guid"
             />
           </div>
           <div class="col-sm-2 col-md-1">
