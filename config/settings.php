@@ -20,6 +20,17 @@
 return [
     'Settings' => [
         'Communication' => [
+            'APIs' => [
+                'Keys' => [
+                    'Google Maps' => [
+                        'alias' => 'CsvMigrations.GoogleMaps.ApiKey',
+                        'type' => 'string',
+                        'scope' => [
+                            'app',
+                        ],
+                    ],
+                ],
+            ],
             'Email' => [
                 'General' => [
                     'Transport' => [
