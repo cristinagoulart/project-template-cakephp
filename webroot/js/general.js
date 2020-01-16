@@ -3,8 +3,8 @@
 
     //Highlight active link in the sidebar.
     var url = window.location;
-    $('.sidebar ul.sidebar-menu a').filter(function() {
-        return this.href == url;
+    $('.sidebar ul.sidebar-menu a').filter(function () {
+        return url.href.replace(/\/+$/, '') == this.href.replace(/\/+$/, '');
     }).parent().addClass('active');
 
     /**
