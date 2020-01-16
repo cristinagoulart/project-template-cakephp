@@ -1,6 +1,12 @@
 ;(function ($) {
     'use strict';
 
+    //Highlight active link in the sidebar.
+    var url = window.location;
+    $('.sidebar ul.sidebar-menu a').filter(function() {
+        return this.href == url;
+    }).parent().addClass('active');
+
     /**
      * Store and retrieve active tab, for all nav-tabs, using web browser's local storage.
      *
