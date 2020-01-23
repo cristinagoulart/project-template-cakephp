@@ -31,7 +31,6 @@ echo $this->Html->script('AdminLTE./bower_components/jquery-ui/jquery-ui.min', [
         $("ul.dashboard-menu-items").sortable({
             containment: 'parent',
             update: function (event, ui) {
-                console.clear();
                 var jsonObj = [];
                 $("li.dashboard-menu-item").each(function(){
                     var title_value = $(this).find('a').attr('title');
@@ -43,7 +42,6 @@ echo $this->Html->script('AdminLTE./bower_components/jquery-ui/jquery-ui.min', [
                     jsonObj.push(item);
                 })
                 $('#settings-dashboard_menu_order_value').val(JSON.stringify(jsonObj));
-                console.log(jsonObj);
             }
         });
 
