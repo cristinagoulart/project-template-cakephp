@@ -134,6 +134,39 @@ class SettingsController extends AppController
     }
 
     /**
+     * Give access to edit personal sidebar menu order
+     * @return \Cake\Http\Response|void|null
+     */
+    public function userMenuOrder()
+    {
+        $this->scope = SettingsTable::SCOPE_USER;
+        $this->context = $this->Auth->user('id');
+        $dataUser = $this->query->find('dataApp', ['scope' => SettingsTable::SCOPE_USER, 'context' => $this->context]);
+
+        $this->configureValue = Hash::merge($this->dataApp, $dataUser);
+        $this->viewBuilder()->template('menu_items_order');
+
+        $this->set('afterTitle', $this->Auth->user('username'));
+
+        return $this->settings();
+    }
+
+    /**
+     * Give access to edit application sidebar menu order
+     * @return \Cake\Http\Response|void|null
+     */
+    public function appMenuOrder()
+    {
+        $this->scope = SettingsTable::SCOPE_APP;
+        $this->context = SettingsTable::CONTEXT_APP;
+        $this->configureValue = $this->dataApp;
+        $this->set('afterTitle', 'App');
+        $this->viewBuilder()->template('menu_items_order');
+
+        return $this->settings();
+    }
+
+    /**
      * Redirect to my()
      * @return \Cake\Http\Response|void|null
      */

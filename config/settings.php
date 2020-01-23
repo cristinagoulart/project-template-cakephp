@@ -190,5 +190,20 @@ return [
                 ],
             ],
         ],
+        'Menu Order' => [
+            'Menu' => [
+                'Main Menu' => [
+                    'Dashboard Menu Order Value' => [
+                        'alias' => 'dashboard_menu_order_value',
+                        'type' => 'string',
+                        'help' => '',
+                        'scope' => [
+                            'user',
+                            'app',
+                        ],
+                    ],
+                ],
+            ],
+        ],
     ],
 ];
