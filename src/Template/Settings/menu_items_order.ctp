@@ -15,24 +15,15 @@ $currentDashboardOrder = $configure['dashboard_menu_order_value'];
 $currentDashboardOrderJson = json_decode($currentDashboardOrder) ?? [];
 
 foreach($currentDashboardOrderJson as $currentDashboardOrderJsonItem) {
-    move_to_bottom($dashboards, $currentDashboardOrderJsonItem->id );
-}
-
-function move_to_top(&$array, $key) {
-    $temp = array($key => $array[$key]);
-    unset($array[$key]);
-    $array = $temp + $array;
-}
-function move_to_bottom(&$array, $key) {
-    $value = $array[$key];
-    unset($array[$key]);
-    $array[$key] = $value;
+    //move element to buttom
+    $value = $dashboards[$currentDashboardOrderJsonItem->id];
+    unset($dashboards[$currentDashboardOrderJsonItem->id]);
+    $dashboards[$currentDashboardOrderJsonItem->id] = $value;
 }
 
 echo $this->Html->script('AdminLTE./bower_components/jquery-ui/jquery-ui.min', ['block' => 'script']);
 
 ?>
-
 
 <?php $this->Html->scriptStart(['block' => 'scriptBottom']); ?>
     (function ($) {
