@@ -24,6 +24,9 @@ class UsersControllerTest extends IntegrationTestCase
         'app.users',
         'plugin.Groups.groups',
         'plugin.Groups.groups_users',
+        'plugin.RolesCapabilities.groups_roles',
+        'plugin.RolesCapabilities.roles',
+        'plugin.roles_capabilities.capabilities',
         'plugin.Menu.menus',
         'plugin.Menu.menu_items',
     ];
