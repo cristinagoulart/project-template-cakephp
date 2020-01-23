@@ -63,9 +63,9 @@ echo $this->Html->script('AdminLTE./bower_components/jquery-ui/jquery-ui.min', [
                 </div>
                 <div class="box-body">
                     <ul class="dashboard-menu-items" style="display: block; list-style: none;">
-                    <?php foreach($dashboards as $dashboatdId => $dashboard) { ?>
+                    <?php foreach($dashboards as $dashboatdId => $dashboard) : ?>
                         <li style="height:50px;" class="dashboard-menu-item" id="<?=$dashboatdId?>"><a type="button" title="<?=$dashboard?>" class="btn btn-default btn-block"><?=$dashboard?></a></li>
-                    <?php } ?>
+                    <?php endforeach; ?>
                 </div>
             </div>
 
