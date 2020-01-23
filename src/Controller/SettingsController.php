@@ -144,7 +144,7 @@ class SettingsController extends AppController
         $dataUser = $this->query->find('dataApp', ['scope' => SettingsTable::SCOPE_USER, 'context' => $this->context]);
 
         $this->configureValue = Hash::merge($this->dataApp, $dataUser);
-        $this->viewBuilder()->template('menu_items_order');
+        $this->viewBuilder()->setTemplate('menu_items_order');
 
         $this->set('afterTitle', $this->Auth->user('username'));
 
@@ -161,7 +161,7 @@ class SettingsController extends AppController
         $this->context = SettingsTable::CONTEXT_APP;
         $this->configureValue = $this->dataApp;
         $this->set('afterTitle', 'App');
-        $this->viewBuilder()->template('menu_items_order');
+        $this->viewBuilder()->setTemplate('menu_items_order');
 
         return $this->settings();
     }

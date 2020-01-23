@@ -32,5 +32,19 @@ class SettingsFixture extends TestFixture
                 'scope' => 'app',
                 'context' => 'bb697cd7-c869-491d-8696-805b1af8c08f',
             ],
+            [
+                'id' => 3,
+                'key' => 'dashboard_menu_order_value',
+                'value' => '',
+                'scope' => 'user',
+                'context' => '00000000-0000-0000-0000-000000000001',
+            ],
+            [
+                'id' => 4,
+                'key' => 'dashboard_menu_order_value',
+                'value' => '',
+                'scope' => 'app',
+                'context' => 'app',
+            ],
         ];
 }

@@ -8,7 +8,7 @@ use Cake\ORM\TableRegistry;
 $fhf = new FieldHandlerFactory($this);
 
 // get all user dashboards
-$table = TableRegistry::get('Dashboards');
+$table = TableRegistry::get('Search.Dashboards');
 $dashboards = $table->find('list')->toArray();
 
 $currentDashboardOrder = $configure['dashboard_menu_order_value'];
