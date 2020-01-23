@@ -33,8 +33,6 @@ echo $this->Html->script('AdminLTE./bower_components/jquery-ui/jquery-ui.min', [
             update: function (event, ui) {
                 var jsonObj = [];
                 $("li.dashboard-menu-item").each(function(){
-                    var title_value = $(this).find('a').attr('title');
-
                     item = {}
                     item ["id"] = $(this).attr('id');
                     item ["order"] = $(this).index();
