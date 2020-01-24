@@ -68,4 +68,12 @@ class DbConfigTest extends TestCase
         $array = $this->configure->read('SettingsWrong');
         $this->assertEquals([], $array);
     }
+
+    public function testEncoded(): void
+    {
+        Cache::clear(false, 'settings');
+
+        $settings = $this->configure->read('Settings');
+        $this->assertEquals(['a' => 1, 'b' => 2], $settings['AssociativeArray']);
+    }
 }
