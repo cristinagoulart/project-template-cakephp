@@ -134,17 +134,23 @@ $(document).ready(function(){
 										<?php
 										// Fields
 										foreach ($fields as $field => $fieldValue) :
-											$value = $configure[$fieldValue['alias']];
+                                            $value = $configure[$fieldValue['alias']];
 											$alias = 'Settings.' . $fieldValue['alias'];
 											$definition = [
 												'type'  => $fieldValue['type'],
 												'value' => $value,
 												'name'  => $alias,
+                                                'disabled' => 'disabled',
 											];
                                             $fieldDefinition = [
                                                 'fieldDefinitions' => $definition,
-                                                'label' => $field
+                                                'label' => $field,
                                             ];
+                                            if (isset($fieldValue['editable']) && !$fieldValue['editable']) {
+                                                $fieldDefinition['attributes'] = [
+                                                    'readonly' => true,
+                                                ];
+                                            }
                                             if ($fieldValue['type'] === 'list' && !empty($fieldValue['selectOptions'])) {
                                                 $fieldDefinition['selectOptions'] = $fieldValue['selectOptions'];
                                             }
