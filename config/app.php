@@ -141,6 +141,14 @@ return [
             'path' => CACHE,
             'url' => env('CACHE_DEFAULT_URL', null),
         ],
+        'settings' => [
+            'className' => 'File',
+            'path' => CACHE,
+            'url' => env('CACHE_SETTINGS_URL', null),
+            'prefix' => 'myapp_settings',
+            'serialize' => true,
+            'duration' => '+1 week',
+        ],
 
         /**
          * Configure the cache used for general framework caching.

@@ -31,23 +31,24 @@ class DbConfig implements ConfigEngineInterface
      */
     public function read($key)
     {
-        $query = TableRegistry::get($key);
-        // App level costum settings
+        $query = TableRegistry::getTableLocator()->get($key);
 
-        $config = Cache::read('Settings');
-
-        if (!$config) {
-            try {
-                $data = $query->find('list', ['keyField' => 'key', 'valueField' => 'value'])
-                              ->where(['scope' => $this->scope, 'context' => $this->context])
-                              ->toArray();
-            } catch (\Cake\Database\Exception $e) {
-                return [];
-            }
-
-            $config = Hash::expand($data);
-            Cache::write('Settings', $config);
+        $cacheKey = sprintf('%s_%s', $this->scope, $this->context);
+        $config = Cache::read($cacheKey, 'settings');
+        if ($config !== false) {
+            return $config;
         }
+
+        try {
+            $data = $query->find('list', ['keyField' => 'key', 'valueField' => 'value'])
+                          ->where(['scope' => $this->scope, 'context' => $this->context])
+                          ->toArray();
+        } catch (\Cake\Database\Exception $e) {
+            return [];
+        }
+
+        $config = Hash::expand($data);
+        Cache::write($cacheKey, $config, 'settings');
 
         return $config;
     }
