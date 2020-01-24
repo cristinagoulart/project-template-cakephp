@@ -15,7 +15,11 @@ $currentDashboardOrder = $configure['dashboard_menu_order_value'];
 $currentDashboardOrderJson = json_decode($currentDashboardOrder) ?? [];
 
 foreach($currentDashboardOrderJson as $currentDashboardOrderJsonItem) {
-    //move element to buttom
+    if (empty($dashboards[$currentDashboardOrderJsonItem->id])) {
+        continue;
+    }
+
+    //move element to bottom
     $value = $dashboards[$currentDashboardOrderJsonItem->id];
     unset($dashboards[$currentDashboardOrderJsonItem->id]);
     $dashboards[$currentDashboardOrderJsonItem->id] = $value;
