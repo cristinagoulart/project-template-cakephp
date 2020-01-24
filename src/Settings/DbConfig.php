@@ -73,7 +73,7 @@ class DbConfig implements ConfigEngineInterface
     /**
      * Attempts to JSON decode each one of the provided items.
      *
-     * @param array[] $items
+     * @param array[] $items Items to be decoded
      * @return array[]
      */
     private function decode(array $items): array

@@ -187,14 +187,6 @@ return [
                             'app',
                         ],
                     ],
-                    'Test' => [
-                        'alias' => 'test',
-                        'type' => 'string',
-                        'help' => 'Use this with caution! All errors will be displayed and debug messages will be logged.',
-                        'scope' => [
-                            'app',
-                        ],
-                    ]
                 ],
             ],
         ],

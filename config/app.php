@@ -511,8 +511,4 @@ return [
     'Whoops' => [
         'editor' => true,
     ],
-
-    'test' => json_encode([
-        'a' => 1,
-    ]),
 ];
