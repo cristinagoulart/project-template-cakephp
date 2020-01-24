@@ -176,6 +176,22 @@ return [
                 ],
             ],
         ],
+        'Appearance' => [
+            'Menu' => [
+                'Main Menu' => [
+                    'Dashboard Items' => [
+                        'alias' => 'dashboard_menu_order_value',
+                        'type' => 'string',
+                        'help' => '',
+                        'editable' => false,
+                        'scope' => [
+                            'user',
+                            'app',
+                        ],
+                    ],
+                ],
+            ],
+        ],
         'Other' => [
             'Development' => [
                 'Troubleshooting' => [
@@ -184,21 +200,6 @@ return [
                         'type' => 'boolean',
                         'help' => 'Use this with caution! All errors will be displayed and debug messages will be logged.',
                         'scope' => [
-                            'app',
-                        ],
-                    ],
-                ],
-            ],
-        ],
-        'Menu Order' => [
-            'Menu' => [
-                'Main Menu' => [
-                    'Dashboard Menu Order Value' => [
-                        'alias' => 'dashboard_menu_order_value',
-                        'type' => 'string',
-                        'help' => '',
-                        'scope' => [
-                            'user',
                             'app',
                         ],
                     ],
