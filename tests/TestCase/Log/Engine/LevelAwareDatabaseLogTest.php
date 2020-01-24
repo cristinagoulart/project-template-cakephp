@@ -10,6 +10,8 @@ use Psr\Log\LogLevel;
 
 class LevelAwareDatabaseLogTest extends TestCase
 {
+    public $fixtures = ['plugin.DatabaseLog.database_logs'];
+
     public function testLog(): void
     {
         $table = TableRegistry::getTableLocator()->get('DatabaseLogs');
