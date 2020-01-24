@@ -3,6 +3,7 @@
 namespace App\Event\Plugin\Menu\View;
 
 use App\Menu\MenuName;
+use Cake\Core\Configure;
 use Cake\Datasource\EntityInterface;
 use Cake\Datasource\QueryInterface;
 use Cake\Event\Event;
@@ -123,6 +124,8 @@ class DashboardMenuListener implements EventListenerInterface
         $query = $table->getUserDashboards($user);
         Assert::isInstanceOf($query, QueryInterface::class);
 
+        $dashboardOrder = json_decode(Configure::read('dashboard_menu_order_value'), true);
+
         /**
          * @var int $i
          * @var \Cake\Datasource\EntityInterface $entity
@@ -132,7 +135,7 @@ class DashboardMenuListener implements EventListenerInterface
                 'label' => $entity->get('name'),
                 'url' => '/search/dashboards/view/' . $entity->get('id'),
                 'icon' => 'tachometer',
-                'order' => $startAt + $i,
+                'order' => $startAt + $dashboardOrder[$entity->get('id')],
             ]);
             $container->addMenuItem($entityItem);
         }
