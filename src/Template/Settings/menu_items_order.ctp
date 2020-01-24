@@ -12,17 +12,17 @@ $table = TableRegistry::get('Search.Dashboards');
 $dashboards = $table->find('list')->toArray();
 
 $currentDashboardOrder = $configure['dashboard_menu_order_value'];
-$currentDashboardOrderJson = json_decode($currentDashboardOrder) ?? [];
+$currentDashboardOrderJson = json_decode($currentDashboardOrder, true) ?? [];
 
-foreach($currentDashboardOrderJson as $currentDashboardOrderJsonItem) {
-    if (empty($dashboards[$currentDashboardOrderJsonItem->id])) {
+foreach($currentDashboardOrderJson as $id => $order) {
+    if (empty($dashboards[$id])) {
         continue;
     }
 
     //move element to bottom
-    $value = $dashboards[$currentDashboardOrderJsonItem->id];
-    unset($dashboards[$currentDashboardOrderJsonItem->id]);
-    $dashboards[$currentDashboardOrderJsonItem->id] = $value;
+    $value = $dashboards[$id];
+    unset($dashboards[$id]);
+    $dashboards[$id] = $value;
 }
 
 echo $this->Html->script('AdminLTE./bower_components/jquery-ui/jquery-ui.min', ['block' => 'script']);
@@ -35,15 +35,12 @@ echo $this->Html->script('AdminLTE./bower_components/jquery-ui/jquery-ui.min', [
         $("ul.dashboard-menu-items").sortable({
             containment: 'parent',
             update: function (event, ui) {
-                var jsonObj = [];
+                var items = {};
                 $("li.dashboard-menu-item").each(function(){
-                    item = {}
-                    item ["id"] = $(this).attr('id');
-                    item ["order"] = $(this).index();
-
-                    jsonObj.push(item);
+                    items [$(this).attr('id')] = $(this).index();
                 })
-                $('#settings-dashboard_menu_order_value').val(JSON.stringify(jsonObj));
+
+                $('#settings-dashboard_menu_order_value').val(JSON.stringify(items));
             }
         });
 
