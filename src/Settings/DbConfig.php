@@ -4,6 +4,7 @@ namespace App\Settings;
 
 use Cake\Cache\Cache;
 use Cake\Core\Configure\ConfigEngineInterface;
+use Cake\Database\Exception;
 use Cake\ORM\TableRegistry;
 use Cake\Utility\Hash;
 use RuntimeException;
@@ -31,23 +32,24 @@ class DbConfig implements ConfigEngineInterface
      */
     public function read($key)
     {
-        $query = TableRegistry::get($key);
-        // App level costum settings
+        $query = TableRegistry::getTableLocator()->get($key);
+        $cacheKey = $this->scope . '_' . $this->context;
+        $config = Cache::read($cacheKey, 'settings');
 
-        $config = Cache::read('Settings');
-
-        if (!$config) {
-            try {
-                $data = $query->find('list', ['keyField' => 'key', 'valueField' => 'value'])
-                              ->where(['scope' => $this->scope, 'context' => $this->context])
-                              ->toArray();
-            } catch (\Cake\Database\Exception $e) {
-                return [];
-            }
-
-            $config = Hash::expand($data);
-            Cache::write('Settings', $config);
+        if ($config !== false) {
+            return $config;
         }
+
+        try {
+            $data = $query->find('list', ['keyField' => 'key', 'valueField' => 'value'])
+                          ->where(['scope' => $this->scope, 'context' => $this->context])
+                          ->toArray();
+        } catch (Exception $e) {
+            return [];
+        }
+
+        $config = Hash::expand($data);
+        Cache::write($cacheKey, $config, 'settings');
 
         return $config;
     }
