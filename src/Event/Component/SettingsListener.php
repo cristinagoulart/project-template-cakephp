@@ -30,7 +30,7 @@ class SettingsListener implements EventListenerInterface
      * @param string|null $userId User ID
      * @return void
      */
-    public function loadUserSettings(Event $event, ?string $userId): void
+    public function loadUserSettings(Event $event, ?string $userId = null): void
     {
         $feature = FeatureFactory::get('Module' . DS . 'Settings');
         if (!$feature->isActive()) {
