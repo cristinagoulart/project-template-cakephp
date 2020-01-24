@@ -51,7 +51,7 @@ class DbConfigTest extends TestCase
      */
     public function testGetArray(): void
     {
-        Cache::delete('Settings');
+        Cache::clear(false, 'settings');
 
         $array = $this->configure->read('Settings');
         $this->assertInternalType('array', $array);
@@ -63,7 +63,7 @@ class DbConfigTest extends TestCase
      */
     public function testGetEmptyArray(): void
     {
-        Cache::delete('Settings');
+        Cache::clear(false, 'settings');
 
         $array = $this->configure->read('SettingsWrong');
         $this->assertEquals([], $array);
