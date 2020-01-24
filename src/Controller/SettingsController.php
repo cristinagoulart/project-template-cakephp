@@ -144,9 +144,15 @@ class SettingsController extends AppController
         $dataUser = $this->query->find('dataApp', ['scope' => SettingsTable::SCOPE_USER, 'context' => $this->context]);
 
         $this->configureValue = Hash::merge($this->dataApp, $dataUser);
-        $this->viewBuilder()->setTemplate('menu_items_order');
 
+        // get all user dashboards
+        $tableDashboards = TableRegistry::get('Search.Dashboards');
+        $dashboards = $tableDashboards->find('list');
+        $dashboards = $dashboards->toArray();
+
+        $this->set('dashboards', $dashboards);
         $this->set('afterTitle', $this->Auth->user('username'));
+        $this->viewBuilder()->setTemplate('menu_items_order');
 
         return $this->settings();
     }
@@ -160,6 +166,13 @@ class SettingsController extends AppController
         $this->scope = SettingsTable::SCOPE_APP;
         $this->context = SettingsTable::CONTEXT_APP;
         $this->configureValue = $this->dataApp;
+
+        // get all user dashboards
+        $tableDashboards = TableRegistry::get('Search.Dashboards');
+        $dashboards = $tableDashboards->find('list');
+        $dashboards = $dashboards->toArray();
+
+        $this->set('dashboards', $dashboards);
         $this->set('afterTitle', 'App');
         $this->viewBuilder()->setTemplate('menu_items_order');
 

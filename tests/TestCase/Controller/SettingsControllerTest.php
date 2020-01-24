@@ -35,6 +35,7 @@ class SettingsControllerTest extends IntegrationTestCase
     public $fixtures = [
         'app.settings',
         'app.users',
+        'plugin.search.dashboards',
     ];
 
     public function setUp(): void

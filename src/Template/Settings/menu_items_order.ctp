@@ -7,18 +7,16 @@ use Cake\ORM\TableRegistry;
 
 $fhf = new FieldHandlerFactory($this);
 
-// get all user dashboards
-$table = TableRegistry::get('Search.Dashboards');
-$dashboards = $table->find('list')->toArray();
-
 $currentDashboardOrder = $configure['dashboard_menu_order_value'];
 $currentDashboardOrderJson = json_decode($currentDashboardOrder) ?? [];
 
-foreach($currentDashboardOrderJson as $currentDashboardOrderJsonItem) {
-    //move element to buttom
-    $value = $dashboards[$currentDashboardOrderJsonItem->id];
-    unset($dashboards[$currentDashboardOrderJsonItem->id]);
-    $dashboards[$currentDashboardOrderJsonItem->id] = $value;
+if ($dashboards) {
+    foreach($currentDashboardOrderJson as $currentDashboardOrderJsonItem) {
+        //move element to buttom
+        $value = $dashboards[$currentDashboardOrderJsonItem->id];
+        unset($dashboards[$currentDashboardOrderJsonItem->id]);
+        $dashboards[$currentDashboardOrderJsonItem->id] = $value;
+    }
 }
 
 echo $this->Html->script('AdminLTE./bower_components/jquery-ui/jquery-ui.min', ['block' => 'script']);

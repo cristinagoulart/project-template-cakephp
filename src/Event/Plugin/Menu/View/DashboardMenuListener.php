@@ -3,6 +3,7 @@
 namespace App\Event\Plugin\Menu\View;
 
 use App\Menu\MenuName;
+use Cake\Core\Configure;
 use Cake\Datasource\EntityInterface;
 use Cake\Datasource\QueryInterface;
 use Cake\Event\Event;
@@ -120,6 +121,25 @@ class DashboardMenuListener implements EventListenerInterface
         $table = TableRegistry::get('Search.Dashboards');
         Assert::isInstanceOf($table, DashboardsTable::class);
 
+        $settinsTable = TableRegistry::get('Settings');
+        $whereClause = [
+            'key' => 'dashboard_menu_order_value',
+            'value IS NOT NULL',
+            'scope' => 'user',
+            'context' => isset($user['id']) ? $user['id'] : '',
+        ];
+
+        /**
+         * @var \Cake\Datasource\EntityInterface $userSettingsEntity
+         */
+        $userSettingsEntity = $settinsTable->find()->where($whereClause)->first();
+
+        $savedItemOrderArray = [];
+        if (is_object($userSettingsEntity)) {
+            $savedItemOrder = $userSettingsEntity->toArray();
+            $savedItemOrderArray = json_decode($savedItemOrder['value']) ?? [];
+        }
+
         $query = $table->getUserDashboards($user);
         Assert::isInstanceOf($query, QueryInterface::class);
 
@@ -132,9 +152,30 @@ class DashboardMenuListener implements EventListenerInterface
                 'label' => $entity->get('name'),
                 'url' => '/search/dashboards/view/' . $entity->get('id'),
                 'icon' => 'tachometer',
-                'order' => $startAt + $i,
+                'order' => $startAt + $this->returnMenuOrderPosition($savedItemOrderArray, $entity->get('id')),
             ]);
+
             $container->addMenuItem($entityItem);
         }
+    }
+
+    /**
+     * Returns the order position
+     * @param  mixed[] $items Items to search for
+     * @param  string $id ID to search
+     * @return int order position
+     */
+    private function returnMenuOrderPosition(array $items, string $id): int
+    {
+        $position = 0;
+
+        foreach ($items as $item) {
+            if ($item->id == $id) {
+                $position = $item->order;
+                break;
+            }
+        }
+
+        return $position;
     }
 }
