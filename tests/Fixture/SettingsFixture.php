@@ -32,5 +32,19 @@ class SettingsFixture extends TestFixture
                 'scope' => 'app',
                 'context' => 'bb697cd7-c869-491d-8696-805b1af8c08f',
             ],
-        ];
+            [
+                'id' => 3,
+                'key' => 'Timezone',
+                'value' => 'UTC',
+                'scope' => 'app',
+                'context' => 'app',
+            ],
+            [
+                'id' => 4,
+                'key' => 'Timezone',
+                'value' => 'EEST',
+                'scope' => 'user',
+                'context' => '00000000-0000-0000-0000-000000000001',
+            ],
+    ];
 }
