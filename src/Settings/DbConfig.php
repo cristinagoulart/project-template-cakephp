@@ -79,7 +79,7 @@ class DbConfig implements ConfigEngineInterface
     private function decode(array $items): array
     {
         foreach ($items as $key => $val) {
-            $decoded = json_decode($val);
+            $decoded = json_decode($val, true);
             if (json_last_error() !== JSON_ERROR_NONE) {
                 continue;
             }
