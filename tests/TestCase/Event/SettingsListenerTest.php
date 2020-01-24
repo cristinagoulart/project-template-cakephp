@@ -4,6 +4,7 @@ namespace App\Test\TestCase\Event;
 
 use App\Event\Component\SettingsListener;
 use App\Settings\DbConfig;
+use Cake\Cache\Cache;
 use Cake\Core\Configure;
 use Cake\Event\Event;
 use Cake\ORM\TableRegistry;
@@ -27,6 +28,7 @@ class SettingsListenerTest extends TestCase
 
     public function testUserOverwritesAppSettings() : void
     {
+        Cache::clear(false, 'settings');
         $userId = '00000000-0000-0000-0000-000000000001';
         $listener = new SettingsListener();
 
