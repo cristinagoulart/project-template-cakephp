@@ -318,7 +318,6 @@ class LookupBehavior extends Behavior
             true
         );
 
-
         $result = $query->first();
         Assert::nullOrIsInstanceOf($result, EntityInterface::class);
 
