@@ -42,7 +42,7 @@ class AuditStashShell extends Shell
         /**
          * @var \App\Model\Table\LogAuditTable $table
          */
-        $table = TableRegistry::get('LogAudit');
+        $table = TableRegistry::getTableLocator()->get('LogAudit');
         $this->table = $table;
 
         $count = $this->table->find()

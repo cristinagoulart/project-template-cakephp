@@ -31,7 +31,7 @@ class DbConfig implements ConfigEngineInterface
      */
     public function read($key)
     {
-        $query = TableRegistry::get($key);
+        $query = TableRegistry::getTableLocator()->get($key);
         // App level costum settings
 
         $config = Cache::read('Settings');

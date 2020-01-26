@@ -81,9 +81,9 @@ class EmailShell extends Shell
         $this->out("Sending message to $to ... ", 0);
         try {
             $email = new Email();
-            $email->domain($domain);
-            $email->to($to);
-            $email->subject($subject);
+            $email->setDomain($domain);
+            $email->setTo($to);
+            $email->setSubject($subject);
             $result = $email->send($message);
         } catch (Exception $e) {
             throw new RuntimeException("Couldn't send an email", 0, $e);

@@ -40,8 +40,8 @@ class DbConfigTest extends TestCase
     public function setUp()
     {
         parent::setUp();
-        $config = TableRegistry::exists('Settings') ? [] : ['className' => SettingsTable::class];
-        $this->Settings = TableRegistry::get('Settings', $config);
+        $config = TableRegistry::getTableLocator()->exists('Settings') ? [] : ['className' => SettingsTable::class];
+        $this->Settings = TableRegistry::getTableLocator()->get('Settings', $config);
         $this->configure = new DbConfig();
     }
 

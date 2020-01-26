@@ -65,7 +65,7 @@ class CleanModulesDataShell extends Shell
          * @var \Cake\Database\Connection $connection
          */
         $connection = ConnectionManager::get('default');
-        $tables = $connection->schemaCollection()->listTables();
+        $tables = $connection->getSchemaCollection()->listTables();
         $this->modules = $modules;
 
         //tranform module names into lowercase.
@@ -111,7 +111,7 @@ class CleanModulesDataShell extends Shell
         }
 
         try {
-            $table = TableRegistry::get($moduleName);
+            $table = TableRegistry::getTableLocator()->get($moduleName);
             $rowCount = $table->deleteAll([]);
         } catch (Exception $e) {
             $this->warn('Failed to clean ' . $moduleName . ': ' . $e->getMessage());

@@ -56,7 +56,7 @@ class ScheduledLogShell extends Shell
         $age = $this->getDaysConfig();
         // Delete before this day
         $date = new Time($age);
-        $query = TableRegistry::get('ScheduledJobLogs');
+        $query = TableRegistry::getTableLocator()->get('ScheduledJobLogs');
         // Count how many has been deleted
         $count = $query->deleteAll(['created <' => $date]);
         $this->info('Removed ' . number_format($count) . ' log records older than ' . ltrim($age, '-') . '.');

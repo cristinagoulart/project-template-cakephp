@@ -150,9 +150,9 @@ class LookupActionListener extends BaseActionListener
      */
     protected function _getRelatedModuleValues(CsvField $csvField, ServerRequest $request): array
     {
-        $table = TableRegistry::get((string)$csvField->getLimit());
+        $table = TableRegistry::getTableLocator()->get((string)$csvField->getLimit());
         $query = $table->find('list', [
-            'keyField' => $table->primaryKey(),
+            'keyField' => $table->getPrimaryKey(),
         ]);
 
         // recursive call
@@ -206,7 +206,7 @@ class LookupActionListener extends BaseActionListener
         }
 
         foreach ($event->result as $id => &$label) {
-            $label = $this->_prependParentModule($table->registryAlias(), $parentModule, $id, $label);
+            $label = $this->_prependParentModule($table->getRegistryAlias(), $parentModule, $id, $label);
         }
     }
 
@@ -304,7 +304,7 @@ class LookupActionListener extends BaseActionListener
             return $this->extractVirtualFields($table, $fields);
         }
 
-        $targetTable = $parentAssociation->target();
+        $targetTable = $parentAssociation->getTarget();
 
         // add parent display field to order-by fields
         array_unshift($fields, $targetTable->aliasField($targetTable->getDisplayField()));
@@ -354,8 +354,8 @@ class LookupActionListener extends BaseActionListener
         $foreignKey = $table->aliasField($parentForeignKey);
 
         $query->join([
-            'table' => $targetTable->table(),
-            'alias' => $parentAssociation->name(),
+            'table' => $targetTable->getTable(),
+            'alias' => $parentAssociation->getName(),
             'type' => 'LEFT',
             'conditions' => [$foreignKey => $primaryKey],
         ]);

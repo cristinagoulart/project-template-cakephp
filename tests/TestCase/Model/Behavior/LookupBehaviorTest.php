@@ -56,8 +56,8 @@ class LookupBehaviorTest extends TestCase
     {
         parent::setUp();
 
-        $this->things = TableRegistry::get('Things');
-        $this->users = TableRegistry::get('Users');
+        $this->things = TableRegistry::getTableLocator()->get('Things');
+        $this->users = TableRegistry::getTableLocator()->get('Users');
 
         $config = [
             'lookupFields' => [

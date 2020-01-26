@@ -44,9 +44,9 @@ class FakerShell extends Shell
         $this->hr();
 
         // get table
-        $table = TableRegistry::get($tableName);
+        $table = TableRegistry::getTableLocator()->get($tableName);
 
-        $columns = $table->schema()->columns();
+        $columns = $table->getSchema()->columns();
 
         if (empty($columns)) {
             $this->abort('Table [' . $tableName . '] has no columns.');

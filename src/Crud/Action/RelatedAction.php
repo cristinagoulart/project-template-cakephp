@@ -137,7 +137,7 @@ class RelatedAction extends BaseAction
          * @var string $tableName
          */
         $tableName = $association->getTarget()->getTable();
-        $table = TableRegistry::get(Inflector::camelize($tableName));
+        $table = TableRegistry::getTableLocator()->get(Inflector::camelize($tableName));
 
         // pagination hack to modify alias
         $association->setTarget($association->getTarget());

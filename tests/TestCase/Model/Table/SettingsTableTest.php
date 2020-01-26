@@ -39,7 +39,7 @@ class SettingsTableTest extends TestCase
     {
         parent::setUp();
 
-        TableRegistry::clear();
+        TableRegistry::getTableLocator()->clear();
         /**
          * @var \App\Model\Table\SettingsTable $table
          */
@@ -242,7 +242,7 @@ class SettingsTableTest extends TestCase
     public function testUpdateValidationWithErrors(): void
     {
         $key = 'FileStorage.defaultImageSize';
-        $entity = TableRegistry::get('Settings')->find('all')->where(['key' => $key])->first();
+        $entity = TableRegistry::getTableLocator()->get('Settings')->find('all')->where(['key' => $key])->first();
         $params = [
             'key' => $key,
             'value' => 'wrong value',
@@ -352,7 +352,7 @@ class SettingsTableTest extends TestCase
     public function testContextValidationValidUser(): void
     {
         $key = 'FileStorage.defaultImageSize';
-        $entity = TableRegistry::get('Settings')->find('all')->where(['key' => $key])->first();
+        $entity = TableRegistry::getTableLocator()->get('Settings')->find('all')->where(['key' => $key])->first();
         $params = [
             'key' => 'FileStorage.defaultImageSize',
             'value' => '1234',
@@ -374,7 +374,7 @@ class SettingsTableTest extends TestCase
     public function testContextValidationErrorUser(): void
     {
         $key = 'FileStorage.defaultImageSize';
-        $entity = TableRegistry::get('Settings')->find('all')->where(['key' => $key])->first();
+        $entity = TableRegistry::getTableLocator()->get('Settings')->find('all')->where(['key' => $key])->first();
         $params = [
             'key' => 'FileStorage.defaultImageSize',
             'value' => '1234',
@@ -396,7 +396,7 @@ class SettingsTableTest extends TestCase
     public function testContextValidationValidApp(): void
     {
         $key = 'FileStorage.defaultImageSize';
-        $entity = TableRegistry::get('Settings')->find('all')->where(['key' => $key])->first();
+        $entity = TableRegistry::getTableLocator()->get('Settings')->find('all')->where(['key' => $key])->first();
         $params = [
             'key' => 'FileStorage.defaultImageSize',
             'value' => '1234',
@@ -418,7 +418,7 @@ class SettingsTableTest extends TestCase
     public function testContextValidationErrorApp(): void
     {
         $key = 'FileStorage.defaultImageSize';
-        $entity = TableRegistry::get('Settings')->find('all')->where(['key' => $key])->first();
+        $entity = TableRegistry::getTableLocator()->get('Settings')->find('all')->where(['key' => $key])->first();
         $params = [
             'key' => 'FileStorage.defaultImageSize',
             'value' => '1234',

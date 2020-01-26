@@ -36,7 +36,7 @@ class ThingsControllerTest extends IntegrationTestCase
         $userId = '00000000-0000-0000-0000-000000000001';
         $this->session([
             'Auth' => [
-                'User' => TableRegistry::get('Users')->get($userId)->toArray(),
+                'User' => TableRegistry::getTableLocator()->get('Users')->get($userId)->toArray(),
             ],
         ]);
     }
@@ -154,7 +154,7 @@ class ThingsControllerTest extends IntegrationTestCase
         $this->assertResponseSuccess();
 
         // fetch new record
-        $query = TableRegistry::get('Things')->find()->where(['name' => $data['name']]);
+        $query = TableRegistry::getTableLocator()->get('Things')->find()->where(['name' => $data['name']]);
 
         $this->assertEquals(1, $query->count());
     }
@@ -215,7 +215,7 @@ class ThingsControllerTest extends IntegrationTestCase
         $this->assertResponseSuccess();
 
         // fetch modified record
-        $entity = TableRegistry::get('things')->get($id);
+        $entity = TableRegistry::getTableLocator()->get('things')->get($id);
 
         $this->assertEquals($data['name'], $entity->get('name'));
     }
@@ -239,7 +239,7 @@ class ThingsControllerTest extends IntegrationTestCase
         $this->assertResponseSuccess();
 
         // fetch modified record
-        $entity = TableRegistry::get('things')->get($id);
+        $entity = TableRegistry::getTableLocator()->get('things')->get($id);
 
         $this->assertEquals($data['name'], $entity->get('name'));
     }
@@ -286,7 +286,7 @@ class ThingsControllerTest extends IntegrationTestCase
         $this->assertResponseSuccess();
 
         // try to fetch deleted record
-        $query = TableRegistry::get('things')->find()->where(['id' => $id]);
+        $query = TableRegistry::getTableLocator()->get('things')->find()->where(['id' => $id]);
         $this->assertEquals(0, $query->count());
     }
 
@@ -304,7 +304,7 @@ class ThingsControllerTest extends IntegrationTestCase
         $this->assertResponseSuccess();
 
         // try to fetch deleted record
-        $query = TableRegistry::get('things')->find()->where(['id' => $id]);
+        $query = TableRegistry::getTableLocator()->get('things')->find()->where(['id' => $id]);
         $this->assertEquals(0, $query->count());
     }
 
@@ -328,7 +328,7 @@ class ThingsControllerTest extends IntegrationTestCase
             $this->markTestSkipped('Skipping, Things module is disabled');
         }
 
-        $table = TableRegistry::get('things');
+        $table = TableRegistry::getTableLocator()->get('things');
         $initialCount = $table->find('all')->count();
 
         $data = [

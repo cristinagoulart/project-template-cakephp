@@ -43,7 +43,7 @@ if (!empty($this->plugin)) {
 }
 
 // get table instance
-$table = TableRegistry::get($tableName);
+$table = TableRegistry::getTableLocator()->get($tableName);
 
 // generate title
 if (!$options['title']) {

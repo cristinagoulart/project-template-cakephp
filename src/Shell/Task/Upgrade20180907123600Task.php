@@ -118,7 +118,7 @@ class Upgrade20180907123600Task extends Shell
      */
     protected function createDatabaseListsByModule(array $lists): void
     {
-        $table = TableRegistry::get('CsvMigrations.Dblists');
+        $table = TableRegistry::getTableLocator()->get('CsvMigrations.Dblists');
 
         foreach ($lists as $list) {
             $count = $table->find('all')

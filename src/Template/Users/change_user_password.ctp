@@ -4,7 +4,7 @@ use Cake\ORM\TableRegistry;
 
 $fullname = '';
 if (!empty($this->passedArgs[0])) {
-    $entity = TableRegistry::get('Users')->get($this->passedArgs[0]);
+    $entity = TableRegistry::getTableLocator()->get('Users')->get($this->passedArgs[0]);
     $fullname = $entity->name;
 }
 ?>

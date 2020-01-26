@@ -38,8 +38,8 @@ class LogAuditTableTest extends TestCase
     public function setUp()
     {
         parent::setUp();
-        $config = TableRegistry::exists('LogAudit') ? [] : ['className' => 'App\Model\Table\LogAuditTable'];
-        $this->LogAudit = TableRegistry::get('LogAudit', $config);
+        $config = TableRegistry::getTableLocator()->exists('LogAudit') ? [] : ['className' => 'App\Model\Table\LogAuditTable'];
+        $this->LogAudit = TableRegistry::getTableLocator()->get('LogAudit', $config);
     }
 
     /**

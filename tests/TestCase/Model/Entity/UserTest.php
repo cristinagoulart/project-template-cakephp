@@ -20,7 +20,7 @@ class ContactTest extends TestCase
     {
         parent::setUp();
 
-        $this->table = TableRegistry::get('Users');
+        $this->table = TableRegistry::getTableLocator()->get('Users');
         $this->primaryKey = $this->table->getPrimaryKey();
         Assert::string($this->primaryKey);
     }
