@@ -40,8 +40,9 @@ module.exports = {
       },
       {
         test: /\.(svg)$/,
-        loader: 'svg-url-loader',
+        loader: 'file-loader',
         options: {
+          name: '[path][name].[ext]?[hash]'
         }
       },
       {
