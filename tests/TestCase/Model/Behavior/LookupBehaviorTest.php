@@ -103,7 +103,7 @@ class LookupBehaviorTest extends TestCase
         Assert::isInstanceOf($entity, EntityInterface::class);
 
         $this->assertSame('00000000-0000-0000-0000-000000000002', $entity->get('id'));
-        $this->assertRegExp('/WHERE \(\(`Things`.`name` = :c0\) AND \(`Things`.`trashed`\) IS NULL\)/', $query->sql());
+        $this->assertRegExp('/WHERE \(`Things`.`name` = :c0 AND \(`Things`.`trashed`\) IS NULL\)/', $query->sql());
         $this->assertSame([$expected], Hash::extract($query->getValueBinder()->bindings(), '{s}.value'));
         $this->assertSame(['string'], Hash::extract($query->getValueBinder()->bindings(), '{s}.type'));
     }
