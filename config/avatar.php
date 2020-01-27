@@ -3,8 +3,8 @@ return [
     'Avatar' => [
         'default' => App\Avatar\Type\Gravatar::class,
         'defaultImage' => '/img/user-image-160x160.png', // sets the default/fallback image
-        'directory' => '/uploads' . DS . 'avatars' . DS,
-        'customDirectory' => '/uploads' . DS . 'avatars' . DS . 'custom' . DS,
+        'directory' => DS . 'uploads' . DS . 'avatars' . DS,
+        'customDirectory' => DS . 'uploads' . DS . 'avatars' . DS . 'custom' . DS,
         'extension' => '.png',
         'fileSize' => 524288,
         'options' => [
