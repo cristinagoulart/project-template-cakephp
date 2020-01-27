@@ -50,7 +50,7 @@ before_script:
     fi
 
 script:
-  - if [[ $PHPCS = 1 ]]; then ./vendor/bin/phpcs --parallel=2; fi
+  - if [[ $PHPCS = 1 ]]; then ./vendor/bin/phpcs --parallel=1; fi
   - ./vendor/bin/phpunit --group example --no-coverage
   - if [[ $COVERAGE = 0 ]]; then ./vendor/bin/phpunit --exclude-group example --no-coverage; fi
   - if [[ $COVERAGE = 1 ]]; then ./vendor/bin/phpunit --exclude-group example; fi
