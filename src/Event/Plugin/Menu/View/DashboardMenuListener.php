@@ -121,7 +121,7 @@ class DashboardMenuListener implements EventListenerInterface
         $table = TableRegistry::get('Search.Dashboards');
         Assert::isInstanceOf($table, DashboardsTable::class);
 
-        $dashBoardMenuOrderValue = Configure::read('dashboard_menu_order_value');
+        $dashboardOrder = Configure::read('dashboard_menu_order_value');
 
         $query = $table->getUserDashboards($user);
         Assert::isInstanceOf($query, QueryInterface::class);
@@ -131,34 +131,19 @@ class DashboardMenuListener implements EventListenerInterface
          * @var \Cake\Datasource\EntityInterface $entity
          */
         foreach ($query->all() as $i => $entity) {
+            $order = $startAt;
+            if (isset($dashboardOrder[$entity->get('id')])) {
+                $order = $startAt + $dashboardOrder[$entity->get('id')];
+            }
+
             $entityItem = MenuItemFactory::createMenuItem([
                 'label' => $entity->get('name'),
                 'url' => '/search/dashboards/view/' . $entity->get('id'),
                 'icon' => 'tachometer',
-                'order' => $startAt + $this->returnMenuOrderPosition($dashBoardMenuOrderValue, $entity->get('id')),
+                'order' => $order,
             ]);
 
             $container->addMenuItem($entityItem);
         }
-    }
-
-    /**
-     * Returns the order position
-     * @param  mixed[] $items Items to search for
-     * @param  string $id ID to search
-     * @return int order position
-     */
-    private function returnMenuOrderPosition(array $items, string $id): int
-    {
-        $position = 0;
-
-        foreach ($items as $item) {
-            if ($item['id'] == $id) {
-                $position = $item['order'];
-                break;
-            }
-        }
-
-        return $position;
     }
 }
