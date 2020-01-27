@@ -8,13 +8,13 @@ return [
         'extension' => '.png',
         'fileSize' => 524288,
         'options' => [
-            'App\Avatar\Type\ImageSource' => [],
-            'App\Avatar\Type\Gravatar' => [
+            App\Avatar\Type\ImageSource::class => [],
+            App\Avatar\Type\Gravatar::class => [
                 'size' => 160, // sets the desired image size
                 'default' => '404', // sets the default/fallback themed image
                 'rating' => 'g', // sets the desired image appropriateness rating
             ],
-            'App\Avatar\Type\DynamicAvatar' => [
+            App\Avatar\Type\DynamicAvatar::class => [
                 'size' => 160,
                 'length' => 2,
                 'background' => ['#00c0ef', '#00a65a', '#d81b60', '#605ca8', '#39CCCC', '#f56954'],
