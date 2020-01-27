@@ -26,7 +26,9 @@ class LogActionsComponent extends Component
      */
     public function beforeFilter(Event $event): void
     {
-        if (!$this->request->is('get')) {
+        $controller = $this->getController();
+        $request = $controller->getRequest();
+        if (!$request->is('get')) {
             return;
         }
 
@@ -37,13 +39,11 @@ class LogActionsComponent extends Component
             return;
         }
 
-        if (!in_array(get_class($this->_registry->getController()), $controllers) || !in_array($this->request->getParam('action'), $actions)) {
+        if (!in_array(get_class($this->_registry->getController()), $controllers) || !in_array($request->getParam('action'), $actions)) {
             return;
         }
 
-        $controller = $this->getController();
-        $request = $controller->request;
-        $table = $this->getController()->loadModel();
+        $table = $controller->loadModel();
         Assert::isInstanceOf($table, Table::class);
 
         $primary = empty($request->getParam('pass')[0]) ? 'index' : $request->getParam('pass')[0];

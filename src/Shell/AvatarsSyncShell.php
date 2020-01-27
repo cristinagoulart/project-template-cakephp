@@ -39,7 +39,7 @@ class AvatarsSyncShell extends Shell
         /**
          * @var \App\Model\Table\UsersTable $table
          */
-        $table = TableRegistry::get('CakeDC/Users.Users');
+        $table = TableRegistry::getTableLocator()->get('CakeDC/Users.Users');
         $this->Users = $table;
         $generated = $updated = 0;
 

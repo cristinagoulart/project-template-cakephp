@@ -66,13 +66,13 @@ class CronShell extends Shell
         /**
          * @var \App\Model\Table\ScheduledJobsTable $scheduledJobs
          */
-        $scheduledJobs = TableRegistry::get('ScheduledJobs');
+        $scheduledJobs = TableRegistry::getTableLocator()->get('ScheduledJobs');
         $this->ScheduledJobs = $scheduledJobs;
 
         /**
          * @var \App\Model\Table\ScheduledJobLogsTable $scheduledJobsLogs
          */
-        $scheduledJobsLogs = TableRegistry::get('ScheduledJobLogs');
+        $scheduledJobsLogs = TableRegistry::getTableLocator()->get('ScheduledJobLogs');
         $this->ScheduledJobLogs = $scheduledJobsLogs;
 
         $jobs = $this->ScheduledJobs->getJobs(ScheduledJobsTable::JOB_ACTIVE);

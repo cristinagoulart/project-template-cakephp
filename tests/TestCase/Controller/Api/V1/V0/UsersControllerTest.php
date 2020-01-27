@@ -44,7 +44,7 @@ class UsersControllerTest extends IntegrationTestCase
         /**
          * @var \App\Model\Table\UsersTable $table
          */
-        $table = TableRegistry::get('Users');
+        $table = TableRegistry::getTableLocator()->get('Users');
         $this->Users = $table;
 
         // set headers without auth token by default.

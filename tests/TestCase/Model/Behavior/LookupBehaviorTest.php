@@ -56,8 +56,8 @@ class LookupBehaviorTest extends TestCase
     {
         parent::setUp();
 
-        $this->things = TableRegistry::get('Things');
-        $this->users = TableRegistry::get('Users');
+        $this->things = TableRegistry::getTableLocator()->get('Things');
+        $this->users = TableRegistry::getTableLocator()->get('Users');
 
         $config = [
             'lookupFields' => [
@@ -89,24 +89,23 @@ class LookupBehaviorTest extends TestCase
      */
     public function testBeforeFind(): void
     {
+        $expected = 'Thing #2';
         $query = $this->things->find();
-        $event = new Event('Model.beforeFind', $this->things, [
-            'query' => $query,
-        ]);
 
-        $options = new ArrayObject([
-            'lookup' => true,
-            'value' => 'Thing #2',
-        ]);
+        $this->Lookup->beforeFind(
+            new Event('Model.beforeFind', $this->things, ['query' => $query]),
+            $query,
+            new ArrayObject(['lookup' => true, 'value' => $expected]),
+            true
+        );
 
-        $primary = true;
-        $this->Lookup->beforeFind($event, $query, $options, $primary);
         $entity = $query->firstOrFail();
+        Assert::isInstanceOf($entity, EntityInterface::class);
 
-        $id = is_array($entity) ?: $entity->get('id');
-
-        $this->assertEquals('00000000-0000-0000-0000-000000000002', $id);
-        $this->assertRegExp('/`Things`.`name` = :c0/', $query->sql());
+        $this->assertSame('00000000-0000-0000-0000-000000000002', $entity->get('id'));
+        $this->assertRegExp('/WHERE \(`Things`.`name` = :c0 AND \(`Things`.`trashed`\) IS NULL\)/', $query->sql());
+        $this->assertSame([$expected], Hash::extract($query->getValueBinder()->bindings(), '{s}.value'));
+        $this->assertSame(['string'], Hash::extract($query->getValueBinder()->bindings(), '{s}.type'));
     }
 
     public function testBeforeFindWithoutPrimaryQuery(): void
@@ -123,7 +122,10 @@ class LookupBehaviorTest extends TestCase
         $entity = $query->firstOrFail();
         Assert::isInstanceOf($entity, EntityInterface::class);
 
-        $this->assertEquals('00000000-0000-0000-0000-000000000001', $entity->get('id'));
+        $this->assertSame('00000000-0000-0000-0000-000000000001', $entity->get('id'));
+        $this->assertRegExp('/WHERE \(`Things`.`trashed`\) IS NULL/', $query->sql());
+        $this->assertSame([], Hash::extract($query->getValueBinder()->bindings(), '{s}.value'));
+        $this->assertSame([], Hash::extract($query->getValueBinder()->bindings(), '{s}.type'));
     }
 
     public function testBeforeFindWithoutLookupValue(): void
@@ -140,7 +142,10 @@ class LookupBehaviorTest extends TestCase
         $entity = $query->firstOrFail();
         Assert::isInstanceOf($entity, EntityInterface::class);
 
-        $this->assertEquals('00000000-0000-0000-0000-000000000001', $entity->get('id'));
+        $this->assertSame('00000000-0000-0000-0000-000000000001', $entity->get('id'));
+        $this->assertRegExp('/WHERE \(`Things`.`trashed`\) IS NULL/', $query->sql());
+        $this->assertSame([], Hash::extract($query->getValueBinder()->bindings(), '{s}.value'));
+        $this->assertSame([], Hash::extract($query->getValueBinder()->bindings(), '{s}.type'));
     }
 
     public function testBeforeFindWithoutLookupFields(): void
@@ -157,10 +162,8 @@ class LookupBehaviorTest extends TestCase
         );
 
         $this->assertRegExp('/`Things`.`id` = :c0/', $query->sql());
-
-        $this->assertEquals(['Thing #2'], Hash::extract($query->getValueBinder()->bindings(), '{s}.value'));
-
-        $this->assertEquals(['uuid'], Hash::extract($query->getValueBinder()->bindings(), '{s}.type'));
+        $this->assertSame(['Thing #2'], Hash::extract($query->getValueBinder()->bindings(), '{s}.value'));
+        $this->assertSame(['uuid'], Hash::extract($query->getValueBinder()->bindings(), '{s}.type'));
     }
 
     public function testBeforeMarshal(): void
@@ -244,41 +247,72 @@ class LookupBehaviorTest extends TestCase
 
     public function testUsersLookup(): void
     {
-        $query = $this->users->find('all')->applyOptions(['lookup' => true, 'value' => 'user-1@test.com'])->firstOrFail();
+        $expected = 'user-1@test.com';
+        $query = $this->users->find('all')->applyOptions(['lookup' => true, 'value' => $expected]);
 
-        $email = is_array($query) ?: $query->get('email');
+        $entity = $query->firstOrFail();
+        Assert::isInstanceOf($entity, EntityInterface::class);
 
-        $this->assertSame('user-1@test.com', $email);
+        $this->assertSame($expected, $entity->get('email'));
+        $this->assertRegExp('/WHERE \(\(`Users`.`email` = :c0 OR `Users`.`username` = :c1\) AND/', $query->sql());
+        $this->assertSame([$expected, $expected], Hash::extract($query->getValueBinder()->bindings(), '{s}.value'));
+        $this->assertSame(['string', 'string'], Hash::extract($query->getValueBinder()->bindings(), '{s}.type'));
     }
 
     public function testfindLookup(): void
     {
-        $query = $this->users->find('lookup', ['value' => 'user-1@test.com'])->first();
-        $this->assertInstanceOf('App\Model\Entity\User', $query);
+        $query = $this->users->find('lookup', ['value' => 'user-1@test.com']);
+
+        $entity = $query->firstOrFail();
+        Assert::isInstanceOf($entity, EntityInterface::class);
+
+        $this->assertSame('user-1@test.com', $entity->get('email'));
+        $this->assertRegExp('/WHERE \(\(`Users`.`email` = :c0 OR `Users`.`username` = :c1\) AND/', $query->sql());
+        $this->assertSame(['user-1@test.com', 'user-1@test.com'], Hash::extract($query->getValueBinder()->bindings(), '{s}.value'));
+        $this->assertSame(['string', 'string'], Hash::extract($query->getValueBinder()->bindings(), '{s}.type'));
     }
 
     public function testfindLookupWithWhere(): void
     {
-        $query = $this->users->find('lookup', ['value' => 'user-1@test.com'])->where(['username' => 'user-1'])->first();
-        $this->assertInstanceOf('App\Model\Entity\User', $query);
+        $query = $this->users->find('lookup', ['value' => 'user-1@test.com'])->where(['username' => 'user-1']);
+
+        $entity = $query->firstOrFail();
+        Assert::isInstanceOf($entity, EntityInterface::class);
+
+        $this->assertSame('user-1@test.com', $entity->get('email'));
+        $this->assertRegExp('/WHERE \(\(`Users`.`email` = :c0 OR `Users`.`username` = :c1\) AND `username` = :c2/', $query->sql());
+        $this->assertSame(['user-1@test.com', 'user-1@test.com', 'user-1'], Hash::extract($query->getValueBinder()->bindings(), '{s}.value'));
+        $this->assertSame(['string', 'string', 'string'], Hash::extract($query->getValueBinder()->bindings(), '{s}.type'));
     }
 
     public function testfindLookupWithWhereFailed(): void
     {
-        $query = $this->users->find('lookup', ['value' => 'user-2@test.com'])->where(['username' => 'user-1'])->first();
-        $this->assertNull($query);
+        $query = $this->users->find('lookup', ['value' => 'user-2@test.com'])->where(['username' => 'user-1']);
+
+        $this->assertNull($query->first());
+        $this->assertRegExp('/WHERE \(\(`Users`.`email` = :c0 OR `Users`.`username` = :c1\) AND `username` = :c2/', $query->sql());
+        $this->assertSame(['user-2@test.com', 'user-2@test.com', 'user-1'], Hash::extract($query->getValueBinder()->bindings(), '{s}.value'));
+        $this->assertSame(['string', 'string', 'string'], Hash::extract($query->getValueBinder()->bindings(), '{s}.type'));
     }
 
     public function testfindLookupWithoutValueInOptions(): void
     {
-        $query = $this->users->find('lookup')->firstOrFail();
-        $this->assertInstanceOf('App\Model\Entity\User', $query);
+        $query = $this->users->find('lookup');
+
+        $this->assertInstanceOf(\App\Model\Entity\User::class, $query->firstOrFail());
+        $this->assertRegExp('/WHERE \(`Users`.`trashed`\) IS NULL/', $query->sql());
+        $this->assertSame([], Hash::extract($query->getValueBinder()->bindings(), '{s}.value'));
+        $this->assertSame([], Hash::extract($query->getValueBinder()->bindings(), '{s}.type'));
     }
 
     public function testfindLookupWithNonExistentRecord(): void
     {
-        $query = $this->users->find('lookup', ['value' => '00000000-0000-0000-0000-000000000002'])->first();
-        $this->assertNull($query);
+        $query = $this->users->find('lookup', ['value' => '00000000-0000-0000-0000-000000000002']);
+
+        $this->assertNull($query->first());
+        $this->assertRegExp('/WHERE \(\(`Users`.`email` = :c0 OR `Users`.`username` = :c1\) AND/', $query->sql());
+        $this->assertSame(['00000000-0000-0000-0000-000000000002', '00000000-0000-0000-0000-000000000002'], Hash::extract($query->getValueBinder()->bindings(), '{s}.value'));
+        $this->assertSame(['string', 'string'], Hash::extract($query->getValueBinder()->bindings(), '{s}.type'));
     }
 
     public function testFindLookupWithoutLookupFields(): void
@@ -290,9 +324,7 @@ class LookupBehaviorTest extends TestCase
         $behavior->findLookup($query, ['value' => 'Thing #2']);
 
         $this->assertRegExp('/`Things`.`id` = :c0/', $query->sql());
-
-        $this->assertEquals(['Thing #2'], Hash::extract($query->getValueBinder()->bindings(), '{s}.value'));
-
-        $this->assertEquals(['uuid'], Hash::extract($query->getValueBinder()->bindings(), '{s}.type'));
+        $this->assertSame(['Thing #2'], Hash::extract($query->getValueBinder()->bindings(), '{s}.value'));
+        $this->assertSame(['uuid'], Hash::extract($query->getValueBinder()->bindings(), '{s}.type'));
     }
 }

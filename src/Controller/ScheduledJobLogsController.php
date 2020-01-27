@@ -83,7 +83,7 @@ class ScheduledJobLogsController extends BaseModuleController
         }
 
         $date = new Time($age);
-        $query = TableRegistry::get('ScheduledJobLogs');
+        $query = TableRegistry::getTableLocator()->get('ScheduledJobLogs');
         // Count how many has been deleted
         $count = $query->deleteAll(['created <' => $date]);
         // Write in the Log

@@ -35,7 +35,7 @@ class UserIdentifyListener implements EventListenerInterface
             return;
         }
 
-        $table = TableRegistry::get($userModel);
+        $table = TableRegistry::getTableLocator()->get($userModel);
         // get user entity
         $entity = $table->get($user['id']);
 

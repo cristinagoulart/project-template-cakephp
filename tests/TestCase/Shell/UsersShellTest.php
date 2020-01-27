@@ -81,7 +81,7 @@ class UsersShellTest extends TestCase
             'active' => 1,
         ];
 
-        $entity = TableRegistry::get('CakeDC/Users.Users')->newEntity($data);
+        $entity = TableRegistry::getTableLocator()->get('CakeDC/Users.Users')->newEntity($data);
 
         $this->Shell->Users->expects($this->once())
             ->method('newEntity')

@@ -8,7 +8,7 @@ $this->Html->script(['/dist/vendor', '/dist/app'], ['block' => 'scriptBottom']);
 $this->Html->css('/dist/style', ['block' => 'css']);
 
 $tableName = $this->name . ($this->plugin ? '.' . $this->plugin : '');
-$table = TableRegistry::get($tableName);
+$table = TableRegistry::getTableLocator()->get($tableName);
 
 $accessFactory = new AccessFactory();
 $urlBatch = ['plugin' => $this->plugin, 'controller' => $this->name, 'action' => 'batch'];

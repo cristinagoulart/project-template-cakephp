@@ -38,7 +38,7 @@ class Upgrade20180726084300Task extends Shell
         /**
          * @var \App\Model\Table\UsersTable $usersTable
          */
-        $usersTable = TableRegistry::get('CakeDC/Users.Users');
+        $usersTable = TableRegistry::getTableLocator()->get('CakeDC/Users.Users');
         $this->Users = $usersTable;
 
         $query = $this->Users->find()

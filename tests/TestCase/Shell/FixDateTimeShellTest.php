@@ -22,7 +22,7 @@ class FixDateTimeShellTest extends TestCase
     {
         parent::setUp();
 
-        $this->table = TableRegistry::get('Things');
+        $this->table = TableRegistry::getTableLocator()->get('Things');
         $this->primaryKey = $this->table->getPrimaryKey();
         Assert::string($this->primaryKey);
     }

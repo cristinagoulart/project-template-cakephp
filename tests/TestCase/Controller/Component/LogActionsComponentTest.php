@@ -45,7 +45,7 @@ class LogActionsComponentTest extends IntegrationTestCase
         $userId = '00000000-0000-0000-0000-000000000001';
         $this->session([
             'Auth' => [
-                'User' => TableRegistry::get('Users')->get($userId)->toArray(),
+                'User' => TableRegistry::getTableLocator()->get('Users')->get($userId)->toArray(),
             ],
         ]);
     }
@@ -61,11 +61,11 @@ class LogActionsComponentTest extends IntegrationTestCase
         ];
         Configure::write($configure);
 
-        $query = TableRegistry::get('LogAudit')->find()->where(['source' => 'things', 'type' => 'read']);
+        $query = TableRegistry::getTableLocator()->get('LogAudit')->find()->where(['source' => 'things', 'type' => 'read']);
         $count_record = (int)$query->count();
 
         $this->get('/things/view/00000000-0000-0000-0000-000000000001');
-        $query = TableRegistry::get('LogAudit')->find()->where(['source' => 'things', 'type' => 'read']);
+        $query = TableRegistry::getTableLocator()->get('LogAudit')->find()->where(['source' => 'things', 'type' => 'read']);
 
         $this->assertEquals($count_record + 1, $query->count());
     }
@@ -81,7 +81,7 @@ class LogActionsComponentTest extends IntegrationTestCase
         ];
         Configure::write($configure);
 
-        $query = TableRegistry::get('LogAudit')->find()->where(['source' => 'things', 'type' => 'read']);
+        $query = TableRegistry::getTableLocator()->get('LogAudit')->find()->where(['source' => 'things', 'type' => 'read']);
         $count_record = (int)$query->count();
 
         $data = [
@@ -91,7 +91,7 @@ class LogActionsComponentTest extends IntegrationTestCase
 
         $this->post('/things/add', $data);
 
-        $query = TableRegistry::get('LogAudit')->find()->where(['source' => 'things', 'type' => 'read']);
+        $query = TableRegistry::getTableLocator()->get('LogAudit')->find()->where(['source' => 'things', 'type' => 'read']);
 
         $this->assertEquals($count_record, $query->count());
     }
@@ -107,11 +107,11 @@ class LogActionsComponentTest extends IntegrationTestCase
         ];
         Configure::write($configure);
 
-        $query = TableRegistry::get('LogAudit')->find()->where(['source' => 'things', 'type' => 'read']);
+        $query = TableRegistry::getTableLocator()->get('LogAudit')->find()->where(['source' => 'things', 'type' => 'read']);
         $count_record = (int)$query->count();
 
         $this->get('/things/view/00000000-0000-0000-0000-000000000001');
-        $query = TableRegistry::get('LogAudit')->find()->where(['source' => 'things', 'type' => 'read']);
+        $query = TableRegistry::getTableLocator()->get('LogAudit')->find()->where(['source' => 'things', 'type' => 'read']);
 
         $this->assertEquals($count_record, $query->count());
     }
@@ -127,11 +127,11 @@ class LogActionsComponentTest extends IntegrationTestCase
         ];
         Configure::write($configure);
 
-        $query = TableRegistry::get('LogAudit')->find()->where(['source' => 'things', 'type' => 'read']);
+        $query = TableRegistry::getTableLocator()->get('LogAudit')->find()->where(['source' => 'things', 'type' => 'read']);
         $count_record = (int)$query->count();
 
         $this->get('/things/view/00000000-0000-0000-0000-000000000001');
-        $query = TableRegistry::get('LogAudit')->find()->where(['source' => 'things', 'type' => 'read']);
+        $query = TableRegistry::getTableLocator()->get('LogAudit')->find()->where(['source' => 'things', 'type' => 'read']);
 
         $this->assertEquals($count_record, $query->count());
     }

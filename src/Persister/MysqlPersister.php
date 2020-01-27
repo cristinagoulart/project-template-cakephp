@@ -31,7 +31,7 @@ class MysqlPersister implements PersisterInterface
                 'user_id' => !empty($meta['user']) ? $meta['user'] : null,
             ];
             // save audit log
-            TableRegistry::get('LogAudit')->save(new Entity($data));
+            TableRegistry::getTableLocator()->get('LogAudit')->save(new Entity($data));
         }
     }
 }

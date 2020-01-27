@@ -82,7 +82,7 @@ class User extends BaseUser
             return false;
         }
 
-        $capabilities = TableRegistry::get('RolesCapabilities.Capabilities');
+        $capabilities = TableRegistry::getTableLocator()->get('RolesCapabilities.Capabilities');
         Assert::isInstanceOf($capabilities, CapabilitiesTable::class);
         $userGroups = $capabilities->getUserGroups((string)$this->get('id'));
         $userRoles = $capabilities->getGroupsRoles($userGroups);

@@ -11,7 +11,7 @@ use Search\Aggregate\AggregateInterface;
 $this->Html->script(['/dist/vendor', '/dist/app'], ['block' => 'scriptBottom']);
 $this->Html->css('/dist/style', ['block' => 'css']);
 
-$table = TableRegistry::get($savedSearch->get('model'));
+$table = TableRegistry::getTableLocator()->get($savedSearch->get('model'));
 $filters = $this->Search->getFilters($savedSearch->get('model'));
 
 $hasAggregate = false;

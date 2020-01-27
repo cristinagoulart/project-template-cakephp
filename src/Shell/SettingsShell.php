@@ -64,7 +64,7 @@ class SettingsShell extends Shell
         /**
          * @var \App\Model\Table\SettingsTable $query
          */
-        $query = TableRegistry::get('Settings');
+        $query = TableRegistry::getTableLocator()->get('Settings');
         $settings = $query->getAliasDiff(array_keys($alias));
 
         $data = [];
@@ -131,7 +131,7 @@ class SettingsShell extends Shell
      */
     public function reset(string $key = ''): void
     {
-        $query = TableRegistry::get('Settings');
+        $query = TableRegistry::getTableLocator()->get('Settings');
         if (empty($key)) {
             $this->out('Insert key to delete');
 
@@ -147,7 +147,7 @@ class SettingsShell extends Shell
      */
     public function resetAll(): void
     {
-        $query = TableRegistry::get('Settings');
+        $query = TableRegistry::getTableLocator()->get('Settings');
         $this->out('Truncate table Settings');
         $query->deleteAll([]);
     }

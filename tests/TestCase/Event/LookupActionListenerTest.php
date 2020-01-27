@@ -24,7 +24,7 @@ class LookupActionListenerTest extends TestCase
     {
         parent::setUp();
 
-        $this->Users = TableRegistry::get('Users');
+        $this->Users = TableRegistry::getTableLocator()->get('Users');
     }
 
     public function testBeforeLookupEmptyQuery(): void

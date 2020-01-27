@@ -44,7 +44,7 @@ trait ChangelogTrait
         for now we are using just the timestamp assuming that different will edit the same record at the same time is
         very unlikely.
          */
-        $query = TableRegistry::get($this->_tableLog)->find('all')
+        $query = TableRegistry::getTableLocator()->get($this->_tableLog)->find('all')
             ->where(['primary_key' => $id, 'source' => Inflector::underscore($this->name)])
             ->select(['timestamp', 'user_id', 'original', 'changed', 'type'])
             ->order(['timestamp' => 'DESC'])
@@ -67,7 +67,7 @@ trait ChangelogTrait
         $this->set('changelog', $this->paginate($query));
         $this->set('modelAlias', $modelAlias);
         $this->set('displayField', $table->getDisplayField());
-        $this->set('usersTable', TableRegistry::get(Configure::read('Users.table')));
+        $this->set('usersTable', TableRegistry::getTableLocator()->get(Configure::read('Users.table')));
         $this->set('entity', $entity);
 
         $this->render($this->_elementView);
