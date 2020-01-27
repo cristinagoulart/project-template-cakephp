@@ -67,7 +67,7 @@ class SettingsControllerTest extends IntegrationTestCase
      */
     public function testUserMenuOrder(): void
     {
-        $currentSettings = $this->settings->get(3)->toArray();
+        $currentSettings = $this->settings->get(6)->toArray();
 
         $dashboardsOrder = [
             ['id' => '00000000-0000-0000-0000-000000000002', 'order' => 0],
@@ -75,7 +75,7 @@ class SettingsControllerTest extends IntegrationTestCase
         ];
 
         $expected = [
-            'id' => 3,
+            'id' => 6,
             'key' => 'dashboard_menu_order_value',
             'value' => json_encode($dashboardsOrder),
             'scope' => 'user',
@@ -87,7 +87,7 @@ class SettingsControllerTest extends IntegrationTestCase
         ];
 
         $this->put('/settings/user-menu-order', $data);
-        $settings = $this->settings->get(3)->toArray();
+        $settings = $this->settings->get(6)->toArray();
 
         $this->assertEquals($expected, $settings);
     }
@@ -99,7 +99,7 @@ class SettingsControllerTest extends IntegrationTestCase
      */
     public function testAppMenuOrder(): void
     {
-        $currentSettings = $this->settings->get(4)->toArray();
+        $currentSettings = $this->settings->get(7)->toArray();
 
         $dashboardsOrder = [
             ['id' => '00000000-0000-0000-0000-000000000002', 'order' => 0],
@@ -107,7 +107,7 @@ class SettingsControllerTest extends IntegrationTestCase
         ];
 
         $expected = [
-            'id' => 4,
+            'id' => 7,
             'key' => 'dashboard_menu_order_value',
             'value' => json_encode($dashboardsOrder),
             'scope' => 'app',
@@ -119,7 +119,7 @@ class SettingsControllerTest extends IntegrationTestCase
         ];
 
         $this->put('/settings/app-menu-order', $data);
-        $settings = $this->settings->get(4)->toArray();
+        $settings = $this->settings->get(7)->toArray();
 
         $this->assertEquals($expected, $settings);
     }

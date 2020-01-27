@@ -67,5 +67,5 @@ class SettingsFixture extends TestFixture
                 'scope' => 'app',
                 'context' => 'app',
             ],
-    ]
+    ];
 }
