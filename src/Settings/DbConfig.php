@@ -41,14 +41,15 @@ class DbConfig implements ConfigEngineInterface
         }
 
         try {
-            $data = $query->find('list', ['keyField' => 'key', 'valueField' => 'value'])
+            $items = $query->find('list', ['keyField' => 'key', 'valueField' => 'value'])
                           ->where(['scope' => $this->scope, 'context' => $this->context])
                           ->toArray();
+            $items = $this->decode($items);
         } catch (Exception $e) {
             return [];
         }
 
-        $config = Hash::expand($data);
+        $config = Hash::expand($items);
         Cache::write($cacheKey, $config, 'settings');
 
         return $config;
@@ -67,5 +68,25 @@ class DbConfig implements ConfigEngineInterface
         }
 
         return false;
+    }
+
+    /**
+     * Attempts to JSON decode each one of the provided items.
+     *
+     * @param array[] $items Items to be decoded
+     * @return array[]
+     */
+    private function decode(array $items): array
+    {
+        foreach ($items as $key => $val) {
+            $decoded = json_decode($val, true);
+            if (json_last_error() !== JSON_ERROR_NONE) {
+                continue;
+            }
+
+            $items[$key] = $decoded;
+        }
+
+        return $items;
     }
 }

@@ -46,5 +46,12 @@ class SettingsFixture extends TestFixture
                 'scope' => 'user',
                 'context' => '00000000-0000-0000-0000-000000000001',
             ],
+            [
+                'id' => 5,
+                'key' => 'AssociativeArray',
+                'value' => '{"a": 1, "b":2}',
+                'scope' => 'app',
+                'context' => 'app',
+            ],
     ];
 }
