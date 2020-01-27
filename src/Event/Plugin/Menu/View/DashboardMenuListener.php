@@ -117,7 +117,7 @@ class DashboardMenuListener implements EventListenerInterface
      */
     private function addDashboardItemsFromTable(MenuItemContainerInterface $container, array $user, int $startAt): void
     {
-        $table = TableRegistry::get('Search.Dashboards');
+        $table = TableRegistry::getTableLocator()->get('Search.Dashboards');
         Assert::isInstanceOf($table, DashboardsTable::class);
 
         $query = $table->getUserDashboards($user);

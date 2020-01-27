@@ -205,7 +205,7 @@ class UsersController extends AppController
         /**
          * @var \App\Model\Table\GroupsTable $groupsTable
          */
-        $groupsTable = TableRegistry::get('Groups.Groups');
+        $groupsTable = TableRegistry::getTableLocator()->get('Groups.Groups');
         $userGroups = $groupsTable->getUserGroupsAll($id, [
             'fields' => ['id', 'name', 'description'],
             'contain' => [],

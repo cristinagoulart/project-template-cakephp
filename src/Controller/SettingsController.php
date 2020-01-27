@@ -70,7 +70,7 @@ class SettingsController extends AppController
         /**
          * @var \App\Model\Table\SettingsTable $table
          */
-        $table = TableRegistry::get('Settings');
+        $table = TableRegistry::getTableLocator()->get('Settings');
         $this->query = $table;
         $this->dataApp = (array)$table->find('dataApp', ['scope' => SettingsTable::SCOPE_APP, 'context' => SettingsTable::CONTEXT_APP]);
     }
@@ -88,9 +88,9 @@ class SettingsController extends AppController
 
         $this->configureValue = Hash::merge($this->dataApp, $dataUser);
         $this->dataSettings = Hash::merge($this->dataSettings, Hash::expand($this->dataApp), Hash::expand($dataUser));
-        $this->viewBuilder()->template('index');
+        $this->viewBuilder()->setTemplate('index');
 
-        $userName = TableRegistry::get('Users')->find('list')->where(['id' => $context])->toArray();
+        $userName = TableRegistry::getTableLocator()->get('Users')->find('list')->where(['id' => $context])->toArray();
         $this->set('afterTitle', $userName[$context]);
 
         return $this->settings();
@@ -105,7 +105,7 @@ class SettingsController extends AppController
         $this->scope = SettingsTable::SCOPE_APP;
         $this->context = SettingsTable::CONTEXT_APP;
         $this->configureValue = $this->dataApp;
-        $this->viewBuilder()->template('index');
+        $this->viewBuilder()->setTemplate('index');
         $this->set('afterTitle', 'App');
 
         if ($this->isLocalhost()) {
@@ -126,7 +126,7 @@ class SettingsController extends AppController
         $dataUser = $this->query->find('dataApp', ['scope' => SettingsTable::SCOPE_USER, 'context' => $this->context]);
 
         $this->configureValue = Hash::merge($this->dataApp, $dataUser);
-        $this->viewBuilder()->template('index');
+        $this->viewBuilder()->setTemplate('index');
 
         $this->set('afterTitle', $this->Auth->user('username'));
 
@@ -156,7 +156,7 @@ class SettingsController extends AppController
         $this->set('configure', $this->configureValue);
 
         if ($this->request->is('put')) {
-            $dataPut = Hash::flatten($this->request->data('Settings'));
+            $dataPut = Hash::flatten((array)$this->request->getData('Settings'));
             $type = Hash::combine($dataFiltered, '{s}.{s}.{s}.{s}.alias', '{s}.{s}.{s}.{s}.type');
             $scope = Hash::combine($dataFiltered, '{s}.{s}.{s}.{s}.alias', '{s}.{s}.{s}.{s}.scope');
             $links = Hash::filter(Hash::combine($dataFiltered, '{s}.{s}.{s}.{s}.alias', '{s}.{s}.{s}.{s}.links'));
@@ -230,7 +230,7 @@ class SettingsController extends AppController
 
         if ($this->request->is('post')) {
             $this->autoRender = false;
-            var_export($this->request->data());
+            var_export($this->request->getData());
         }
     }
 

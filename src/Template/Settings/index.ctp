@@ -145,6 +145,9 @@ $(document).ready(function(){
                                                 'fieldDefinitions' => $definition,
                                                 'label' => $field
                                             ];
+                                            if (json_decode($value) && json_last_error() === JSON_ERROR_NONE) {
+                                                $fieldDefinition['attributes'] = ['readonly' => true];
+                                            }
                                             if ($fieldValue['type'] === 'list' && !empty($fieldValue['selectOptions'])) {
                                                 $fieldDefinition['selectOptions'] = $fieldValue['selectOptions'];
                                             }

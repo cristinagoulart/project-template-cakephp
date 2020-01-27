@@ -3,6 +3,7 @@
 namespace App\Model\Behavior;
 
 use ArrayObject;
+use Cake\Database\Expression\QueryExpression;
 use Cake\Database\Schema\TableSchema;
 use Cake\Datasource\EntityInterface;
 use Cake\Event\Event;
@@ -76,6 +77,11 @@ class LookupBehavior extends Behavior
             return;
         }
 
+        $conditions = [];
+        if ($query->clause('where') !== null) {
+            $conditions[] = $query->clause('where');
+        }
+
         foreach ($this->lookupFields as $field) {
             $value = $this->castValueByFieldType($options['value'], (string)$table->getSchema()->getColumnType($field));
             // cast value back to string and do strict comparison,
@@ -84,10 +90,16 @@ class LookupBehavior extends Behavior
                 continue;
             }
 
-            $query->orWhere([
-                $table->aliasField($field) => $options['value'],
-            ]);
+            $conditions[] = [$table->aliasField($field) => $options['value']];
         }
+
+        $query->where(
+            [
+                'OR' => $conditions,
+            ],
+            [],
+            true
+        );
     }
 
     /**
@@ -289,9 +301,22 @@ class LookupBehavior extends Behavior
             ->enableHydration(true)
             ->limit(1);
 
-        foreach ($fields as $field) {
-            $query->orWhere([$field => $data[$association->getForeignKey()]]);
+        $conditions = [];
+        if ($query->clause('where') !== null) {
+            $conditions[] = $query->clause('where');
         }
+
+        foreach ($fields as $field) {
+            $conditions[] = [$field => $data[$association->getForeignKey()]];
+        }
+
+        $query->where(
+            [
+                'OR' => $conditions,
+            ],
+            [],
+            true
+        );
 
         $result = $query->first();
         Assert::nullOrIsInstanceOf($result, EntityInterface::class);
@@ -329,6 +354,11 @@ class LookupBehavior extends Behavior
             return $query;
         }
 
+        $conditions = [];
+        if ($query->clause('where') !== null) {
+            $conditions[] = $query->clause('where');
+        }
+
         foreach ($this->lookupFields as $field) {
             $value = $this->castValueByFieldType($options['value'], (string)$table->getSchema()->getColumnType($field));
             // cast value back to string and do strict comparison,
@@ -337,10 +367,16 @@ class LookupBehavior extends Behavior
                 continue;
             }
 
-            $query->orWhere([
-                $table->aliasField($field) => $options['value'],
-            ]);
+            $conditions[] = [$table->aliasField($field) => $options['value']];
         }
+
+        $query->where(
+            [
+                'OR' => $conditions,
+            ],
+            [],
+            true
+        );
 
         return $query;
     }

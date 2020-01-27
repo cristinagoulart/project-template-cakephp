@@ -40,8 +40,8 @@ class DbConfigTest extends TestCase
     public function setUp()
     {
         parent::setUp();
-        $config = TableRegistry::exists('Settings') ? [] : ['className' => SettingsTable::class];
-        $this->Settings = TableRegistry::get('Settings', $config);
+        $config = TableRegistry::getTableLocator()->exists('Settings') ? [] : ['className' => SettingsTable::class];
+        $this->Settings = TableRegistry::getTableLocator()->get('Settings', $config);
         $this->configure = new DbConfig();
     }
 
@@ -67,5 +67,13 @@ class DbConfigTest extends TestCase
 
         $array = $this->configure->read('SettingsWrong');
         $this->assertEquals([], $array);
+    }
+
+    public function testEncoded(): void
+    {
+        Cache::clear(false, 'settings');
+
+        $settings = $this->configure->read('Settings');
+        $this->assertEquals(['a' => 1, 'b' => 2], $settings['AssociativeArray']);
     }
 }

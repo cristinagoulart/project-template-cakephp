@@ -33,7 +33,7 @@ class TranslationsControllerTest extends BaseIntegrationTestCase
 
         $this->setApiHeaders(['user_id' => '00000000-0000-0000-0000-000000000002']);
 
-        $this->Translations = TableRegistry::get('Translations.Translations');
+        $this->Translations = TableRegistry::getTableLocator()->get('Translations.Translations');
 
         // enable event tracking
         $this->Translations->getEventManager()->setEventList(new EventList());

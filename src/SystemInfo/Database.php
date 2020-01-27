@@ -177,7 +177,7 @@ class Database
     {
         $result = 0;
 
-        $tableInstance = TableRegistry::get($table);
+        $tableInstance = TableRegistry::getTableLocator()->get($table);
         if ($tableInstance->hasField('trashed')) {
             $sth = ConnectionManager::get('default')->execute("SELECT COUNT(*) AS deleted FROM `$table` WHERE `trashed` IS NOT NULL AND `trashed` <> '0000-00-00 00:00:00'");
             $sth = $sth->fetch('assoc');

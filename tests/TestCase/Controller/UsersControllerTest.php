@@ -33,7 +33,7 @@ class UsersControllerTest extends IntegrationTestCase
         parent::setUp();
 
         $this->userId = '00000000-0000-0000-0000-000000000002';
-        $this->table = TableRegistry::get('Users');
+        $this->table = TableRegistry::getTableLocator()->get('Users');
     }
 
     public function tearDown()

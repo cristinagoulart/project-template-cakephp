@@ -89,7 +89,7 @@ class AppController extends Controller
 
         // enable LDAP authentication
         if ((bool)Configure::read('Ldap.enabled')) {
-            $this->Auth->config('authenticate', ['Ldap']);
+            $this->Auth->setConfig('authenticate', ['Ldap']);
         }
 
         // prevent access on disabled module
@@ -170,7 +170,7 @@ class AppController extends Controller
                 return $this->redirect('/login');
             } else {
                 // send empty response for embedded forms
-                if ($this->request->query('embedded')) {
+                if ($this->request->getQuery('embedded')) {
                     return $this->response;
                 }
                 throw new ForbiddenException($e->getMessage(), 0, $e);

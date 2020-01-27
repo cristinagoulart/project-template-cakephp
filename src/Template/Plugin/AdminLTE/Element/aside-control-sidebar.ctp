@@ -13,7 +13,7 @@ $factory = new FieldHandlerFactory();
 $cacheKey = 'recent_activity_' . $user['id'];
 $history = Cache::read($cacheKey);
 if (false === $history) {
-    $history = TableRegistry::get('LogAudit')
+    $history = TableRegistry::getTableLocator()->get('LogAudit')
         ->find('all')
         ->select(['source', 'primary_key', 'timestamp'])
         ->limit(10)
@@ -42,7 +42,7 @@ $hasActivity = false;
             <ul class="control-sidebar-menu">
                 <?php foreach ($history as $item) : ?>
                 <?php
-                $table = TableRegistry::get(Inflector::camelize($item['source']));
+                $table = TableRegistry::getTableLocator()->get(Inflector::camelize($item['source']));
                 try {
                     $entity = $table->get($item['primary_key']);
                 } catch (Exception $e) {

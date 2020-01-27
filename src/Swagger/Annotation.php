@@ -573,7 +573,7 @@ class Annotation
      */
     private function getDatabaseList(string $listName): array
     {
-        $table = TableRegistry::get('CsvMigrations.Dblists');
+        $table = TableRegistry::getTableLocator()->get('CsvMigrations.Dblists');
         Assert::isInstanceOf($table, DblistsTable::class);
 
         return $table->getOptions($listName);

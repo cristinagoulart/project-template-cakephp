@@ -23,19 +23,19 @@ $this->Html->css(
 );
 
 // get all users
-$table = TableRegistry::get('Users');
+$table = TableRegistry::getTableLocator()->get('Users');
 $users = $table->find('list')->where(['active' => true])->toArray();
 $users[''] = '';
 asort($users);
 
 // get all groups
-$table = TableRegistry::get('Groups.Groups');
+$table = TableRegistry::getTableLocator()->get('Groups.Groups');
 $groups = $table->find('list')->toArray();
 $groups[''] = '';
 asort($groups);
 
 // get existing permissions
-$table = TableRegistry::get('RolesCapabilities.Permissions');
+$table = TableRegistry::getTableLocator()->get('RolesCapabilities.Permissions');
 $query = $table->find()
     ->where(['model' => $this->name, 'foreign_key' => $id])
     ->limit(100);
@@ -142,7 +142,7 @@ foreach (PermissionsTable::ALLOWED_ACTIONS as $action) {
                     </thead>
                     <tbody>
                     <?php foreach ($permissions as $permission) : ?>
-                        <?php $table = TableRegistry::get($permission->get('owner_model')) ?>
+                        <?php $table = TableRegistry::getTableLocator()->get($permission->get('owner_model')) ?>
                         <?php $displayField = $table->getDisplayField() ?>
                         <?php $primaryKey = $table->getPrimaryKey() ?>
                         <?php $entity = $table->find()->where(['id' => $permission->get('owner_foreign_key')])->first(); ?>

@@ -79,7 +79,7 @@ trait MenuEntityTrait
         $controller = $request->getParam('controller');
         $id = $entity->get('id');
 
-        $table = TableRegistry::get($entity->getSource());
+        $table = TableRegistry::getTableLocator()->get($entity->getSource());
         $displayField = $table->getDisplayField();
         $displayName = $entity->has($displayField) ? $entity->get($displayField) : null;
 

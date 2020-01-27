@@ -43,7 +43,7 @@ class LdapAuthenticate extends BaseAuthenticate
         parent::__construct($registry, $config);
 
         // set LDAP configuration
-        $this->config(Configure::read('Ldap'));
+        $this->setConfig(Configure::read('Ldap'));
 
         if (empty($this->_config['host'])) {
             throw new InternalErrorException('LDAP Server not specified.');
@@ -163,7 +163,7 @@ class LdapAuthenticate extends BaseAuthenticate
 
         $data = $this->_mapData($data);
 
-        $table = TableRegistry::get($this->_config['userModel']);
+        $table = TableRegistry::getTableLocator()->get($this->_config['userModel']);
 
         // look for the user in the database
         $query = $table->find('all', [

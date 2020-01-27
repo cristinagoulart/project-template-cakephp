@@ -49,10 +49,10 @@ class CsvViewComponent extends Component
         $table = $controller->loadModel();
 
         // skip passing table fields if action is not supported by the plugin
-        if (in_array($this->request->getParam('action'), Configure::readOrFail('CsvMigrations.actions'))) {
+        if (in_array($this->getAction(), Configure::readOrFail('CsvMigrations.actions'))) {
             // if action requires panels, arrange the fields into the panels
-            $panels = in_array($this->request->getParam('action'), (array)Configure::read('CsvMigrations.panels.actions'));
-            $fields = Field::getCsvView($table, $this->request->getParam('action'), true, $panels);
+            $panels = in_array($this->getAction(), (array)Configure::read('CsvMigrations.panels.actions'));
+            $fields = Field::getCsvView($table, $this->getAction(), true, $panels);
 
             $controller->set('fields', $fields);
             $controller->set('_serialize', ['fields']);
@@ -80,7 +80,7 @@ class CsvViewComponent extends Component
     {
         $panelActions = (array)Configure::read('CsvMigrations.panels.actions');
         $dynamicPanelActions = (array)Configure::read('CsvMigrations.panels.dynamic_actions');
-        if (!in_array($this->request->getParam('action'), array_diff($panelActions, $dynamicPanelActions))) {
+        if (!in_array($this->getAction(), array_diff($panelActions, $dynamicPanelActions))) {
             return;
         }
 
@@ -98,7 +98,7 @@ class CsvViewComponent extends Component
 
         $panels = $this->getPanels($config, $controller->viewVars['entity']->toArray(), compact('request', 'table'));
 
-        $batchAction = (string)Configure::read('CsvMigrations.batch.action') === $this->request->getParam('action');
+        $batchAction = (string)Configure::read('CsvMigrations.batch.action') === $this->getAction();
 
         if (! empty($panels['fail']) && !$batchAction) {
             // filter out fields of hidden panels
@@ -121,7 +121,7 @@ class CsvViewComponent extends Component
      */
     protected function filterBatchFields(Event $event): void
     {
-        $config = new ModuleConfig(ConfigType::MIGRATION(), $this->request->getParam('controller'));
+        $config = new ModuleConfig(ConfigType::MIGRATION(), $this->getAction());
         $config = json_encode($config->parse());
         $fields = false === $config ? [] : json_decode($config, true);
 
@@ -158,5 +158,15 @@ class CsvViewComponent extends Component
         }
 
         $controller->viewVars['fields'] = $fields;
+    }
+
+    /**
+     * Returns the current actions based on the current request.
+     *
+     * @return string
+     */
+    protected function getAction(): string
+    {
+        return (string)$this->getController()->getRequest()->getParam('action');
     }
 }

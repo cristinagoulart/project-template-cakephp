@@ -559,7 +559,8 @@ class App extends AbstractCommand
             return;
         }
 
-        $this->taskExec('echo "* * * * * root ' . $projectPath . '/bin/cron.sh >> ' . $projectPath . '/logs/cron.log 2>&1" > /etc/cron.d/' . $env['NGINX_SITE_MAIN'])->run();
+        $redirectPath = ((bool)$env['CRON_LOG_ENABLED']) ? $projectPath . '/logs/cron.log' : '/dev/null';
+        $this->taskExec('echo "* * * * * root ' . $projectPath . '/bin/cron.sh >> ' . $redirectPath . ' 2>&1" > /etc/cron.d/' . $env['NGINX_SITE_MAIN'])->run();
         if (!is_dir("$projectPath/logs")) {
             $this->taskExec('mkdir ' . $projectPath . '/logs')->run();
         }

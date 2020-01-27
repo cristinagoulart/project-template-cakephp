@@ -35,7 +35,7 @@ class BaseModuleControllerTest extends IntegrationTestCase
 
         $this->session([
             'Auth' => [
-                'User' => TableRegistry::get('Users')->get('00000000-0000-0000-0000-000000000002')->toArray(),
+                'User' => TableRegistry::getTableLocator()->get('Users')->get('00000000-0000-0000-0000-000000000002')->toArray(),
             ],
         ]);
     }

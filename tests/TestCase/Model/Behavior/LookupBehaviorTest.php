@@ -56,8 +56,8 @@ class LookupBehaviorTest extends TestCase
     {
         parent::setUp();
 
-        $this->things = TableRegistry::get('Things');
-        $this->users = TableRegistry::get('Users');
+        $this->things = TableRegistry::getTableLocator()->get('Things');
+        $this->users = TableRegistry::getTableLocator()->get('Users');
 
         $config = [
             'lookupFields' => [
@@ -103,7 +103,7 @@ class LookupBehaviorTest extends TestCase
         Assert::isInstanceOf($entity, EntityInterface::class);
 
         $this->assertSame('00000000-0000-0000-0000-000000000002', $entity->get('id'));
-        $this->assertRegExp('/WHERE \(\(`Things`.`name` = :c0\) AND \(`Things`.`trashed`\) IS NULL\)/', $query->sql());
+        $this->assertRegExp('/WHERE \(`Things`.`name` = :c0 AND \(`Things`.`trashed`\) IS NULL\)/', $query->sql());
         $this->assertSame([$expected], Hash::extract($query->getValueBinder()->bindings(), '{s}.value'));
         $this->assertSame(['string'], Hash::extract($query->getValueBinder()->bindings(), '{s}.type'));
     }

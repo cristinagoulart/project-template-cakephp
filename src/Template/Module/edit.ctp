@@ -20,7 +20,7 @@ $config = (new ModuleConfig(ConfigType::MODULE(), $this->name))->parse();
 
 $alias = isset($config->table->alias) ? $config->table->alias : Inflector::humanize(Inflector::underscore($this->name));
 
-$table = TableRegistry::get(empty($this->plugin) ? $this->name : $this->plugin . '.' . $tableName);
+$table = TableRegistry::getTableLocator()->get(empty($this->plugin) ? $this->name : $this->plugin . '.' . $tableName);
 $displayField = (new FieldHandlerFactory($this))->renderValue(
     $table,
     $table->getDisplayField(),

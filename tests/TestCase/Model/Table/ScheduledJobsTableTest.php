@@ -39,11 +39,11 @@ class ScheduledJobsTableTest extends TestCase
     public function setUp()
     {
         parent::setUp();
-        $config = TableRegistry::exists('ScheduledJobs') ? [] : ['className' => ScheduledJobsTable::class];
+        $config = TableRegistry::getTableLocator()->exists('ScheduledJobs') ? [] : ['className' => ScheduledJobsTable::class];
         /**
          * @var \App\Model\Table\ScheduledJobsTable $table
          */
-        $table = TableRegistry::get('ScheduledJobs', $config);
+        $table = TableRegistry::getTableLocator()->get('ScheduledJobs', $config);
         $this->ScheduledJobsTable = $table;
     }
 
