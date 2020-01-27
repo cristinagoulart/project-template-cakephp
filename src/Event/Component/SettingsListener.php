@@ -4,10 +4,12 @@ namespace App\Event\Component;
 
 use App\Feature\Factory as FeatureFactory;
 use App\Settings\DbConfig;
+use Cake\Controller\Controller;
 use Cake\Core\Configure;
 use Cake\Event\Event;
 use Cake\Event\EventListenerInterface;
 use Cake\ORM\TableRegistry;
+use Webmozart\Assert\Assert;
 
 class SettingsListener implements EventListenerInterface
 {
@@ -25,30 +27,55 @@ class SettingsListener implements EventListenerInterface
      * Load User settings and overwrite defaults
      *
      * @param \Cake\Event\Event $event Event instance
+     * @param string|null $userId User ID
      * @return void
      */
-    public function loadUserSettings(Event $event): void
+    public function loadUserSettings(Event $event, ?string $userId = null): void
     {
         $feature = FeatureFactory::get('Module' . DS . 'Settings');
-
         if (!$feature->isActive()) {
             return;
         }
 
-        /**
-         * @var \App\Controller\SettingsController
-         */
-        $controller = $event->getSubject();
-        if (! $controller->components()->has('Auth')) {
+        if (!empty($userId)) {
+            $this->loadUserDbConfig($userId);
+
             return;
         }
 
-        $userId = $controller->Auth->user('id');
-
+        $subject = $event->getSubject();
+        Assert::isInstanceOf($subject, Controller::class);
+        $userId = $this->getUserFromController($subject);
         if (empty($userId)) {
             return;
         }
 
+        $this->loadUserDbConfig($userId);
+    }
+
+    /**
+     * Retrieves and returns the User ID from the provided Controller instance
+     *
+     * @param \Cake\Controller\Controller $controller Controller instance
+     * @return string|null
+     */
+    private function getUserFromController(Controller $controller): ?string
+    {
+        if ($controller->components()->has('Auth')) {
+            return $controller->Auth->user('id');
+        }
+
+        return null;
+    }
+
+    /**
+     * Loads the configuration for the specified User ID
+     *
+     * @param string $userId User ID
+     * @return void
+     */
+    private function loadUserDbConfig(string $userId): void
+    {
         Configure::config('dbconfig', new DbConfig('user', $userId));
         Configure::load('Settings', 'dbconfig', true);
     }

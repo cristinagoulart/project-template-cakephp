@@ -7,6 +7,8 @@ use DatabaseLog\Log\Engine\DatabaseLog;
 
 class LevelAwareDatabaseLog extends DatabaseLog
 {
+    use LevelScopeAwareTrait;
+
     /**
      * Write the log to database. Skip writing logs if log level is not supported.
      *
@@ -22,7 +24,7 @@ class LevelAwareDatabaseLog extends DatabaseLog
             return false;
         }
 
-        if (!in_array($level, $this->levels())) {
+        if (! $this->matchesLevelAndScope($level, $context)) {
             return false;
         }
 

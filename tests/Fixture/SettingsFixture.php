@@ -34,17 +34,38 @@ class SettingsFixture extends TestFixture
             ],
             [
                 'id' => 3,
+                'key' => 'Timezone',
+                'value' => 'UTC',
+                'scope' => 'app',
+                'context' => 'app',
+            ],
+            [
+                'id' => 4,
+                'key' => 'Timezone',
+                'value' => 'EEST',
+                'scope' => 'user',
+                'context' => '00000000-0000-0000-0000-000000000001',
+            ],
+            [
+                'id' => 5,
+                'key' => 'AssociativeArray',
+                'value' => '{"a": 1, "b":2}',
+                'scope' => 'app',
+                'context' => 'app',
+            ],
+            [
+                'id' => 6,
                 'key' => 'dashboard_menu_order_value',
                 'value' => '',
                 'scope' => 'user',
                 'context' => '00000000-0000-0000-0000-000000000001',
             ],
             [
-                'id' => 4,
+                'id' => 7,
                 'key' => 'dashboard_menu_order_value',
                 'value' => '',
                 'scope' => 'app',
                 'context' => 'app',
             ],
-        ];
+    ]
 }
