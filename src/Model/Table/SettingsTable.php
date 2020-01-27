@@ -262,6 +262,6 @@ class SettingsTable extends Table
      */
     public function afterSave(): void
     {
-        Cache::delete('Settings');
+        Cache::clear(false, 'settings');
     }
 }

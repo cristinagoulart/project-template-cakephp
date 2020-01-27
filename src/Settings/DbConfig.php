@@ -4,6 +4,7 @@ namespace App\Settings;
 
 use Cake\Cache\Cache;
 use Cake\Core\Configure\ConfigEngineInterface;
+use Cake\Database\Exception;
 use Cake\ORM\TableRegistry;
 use Cake\Utility\Hash;
 use RuntimeException;
@@ -32,22 +33,24 @@ class DbConfig implements ConfigEngineInterface
     public function read($key)
     {
         $query = TableRegistry::getTableLocator()->get($key);
-        // App level costum settings
+        $cacheKey = $this->scope . '_' . $this->context;
+        $config = Cache::read($cacheKey, 'settings');
 
-        $config = Cache::read('Settings');
-
-        if (!$config) {
-            try {
-                $data = $query->find('list', ['keyField' => 'key', 'valueField' => 'value'])
-                              ->where(['scope' => $this->scope, 'context' => $this->context])
-                              ->toArray();
-            } catch (\Cake\Database\Exception $e) {
-                return [];
-            }
-
-            $config = Hash::expand($data);
-            Cache::write('Settings', $config);
+        if ($config !== false) {
+            return $config;
         }
+
+        try {
+            $items = $query->find('list', ['keyField' => 'key', 'valueField' => 'value'])
+                          ->where(['scope' => $this->scope, 'context' => $this->context])
+                          ->toArray();
+            $items = $this->decode($items);
+        } catch (Exception $e) {
+            return [];
+        }
+
+        $config = Hash::expand($items);
+        Cache::write($cacheKey, $config, 'settings');
 
         return $config;
     }
@@ -65,5 +68,25 @@ class DbConfig implements ConfigEngineInterface
         }
 
         return false;
+    }
+
+    /**
+     * Attempts to JSON decode each one of the provided items.
+     *
+     * @param array[] $items Items to be decoded
+     * @return array[]
+     */
+    private function decode(array $items): array
+    {
+        foreach ($items as $key => $val) {
+            $decoded = json_decode($val, true);
+            if (json_last_error() !== JSON_ERROR_NONE) {
+                continue;
+            }
+
+            $items[$key] = $decoded;
+        }
+
+        return $items;
     }
 }

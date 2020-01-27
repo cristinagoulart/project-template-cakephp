@@ -129,6 +129,7 @@ if (Configure::read('debug')) {
 
     Configure::write('Cache._cake_swagger_.duration', '+2 seconds');
     Configure::write('Cache.default.duration', '+2 seconds');
+    Configure::write('Cache.settings.duration', '+2 seconds');
 }
 
 /*
