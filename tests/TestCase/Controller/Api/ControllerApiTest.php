@@ -2,9 +2,7 @@
 
 namespace App\Test\TestCase\Controller\Api;
 
-use App\Crud\Action\SchemaAction;
 use App\Feature\Factory;
-use Cake\Controller\Controller;
 use Cake\Core\App;
 use Cake\Core\Configure;
 use Cake\Filesystem\Folder;
@@ -145,12 +143,13 @@ class ControllerApiTest extends JsonIntegrationTestCase
 
     public function testSchema(): void
     {
-        $schema = new SchemaAction(new Controller(null, null, 'Things'));
-        $data = $this->invokeMethod($schema, 'getFields', [[]]);
-        $this->assertInternalType('array', $data);
+        $this->get('/api/things/schema');
+        $this->assertJsonResponseOk();
+
+        $response = json_decode((string)$this->_response->getBody(), true);
 
         // Check label
-        $this->assertEquals('label name', $data[1]['label']);
+        $this->assertEquals('label name', $response['data']['fields'][1]['label']);
 
         // Check two fields for money and metric
         $expected = [
@@ -201,25 +200,7 @@ class ControllerApiTest extends JsonIntegrationTestCase
             ],
         ];
 
-        $this->assertSame([], array_diff(Hash::flatten($expected), Hash::flatten($data)));
-    }
-
-    /**
-     * Call protected/private method of a class.
-     *
-     * @param SchemaAction $object Instantiated object that we will run method on.
-     * @param string $methodName Method name to call
-     * @param mixed[] $parameters Array of parameters to pass into method.
-     *
-     * @return mixed Method return.
-     */
-    private function invokeMethod(SchemaAction &$object, string $methodName, array $parameters = [])
-    {
-        $reflection = new \ReflectionClass(get_class($object));
-        $method = $reflection->getMethod($methodName);
-        $method->setAccessible(true);
-
-        return $method->invokeArgs($object, $parameters);
+        $this->assertSame([], array_diff(Hash::flatten($expected), Hash::flatten($response['data']['fields'])));
     }
 
     /**
