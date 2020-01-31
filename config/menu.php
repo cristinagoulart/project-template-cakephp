@@ -5,4 +5,5 @@ return [
         // call getMenu method only once
         'allControllers' => false,
     ],
+    'dashboard_menu_order_value' => '',
 ];
