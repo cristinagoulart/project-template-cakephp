@@ -47,7 +47,7 @@ $dtOptions = [
             $mc = new ModuleConfig(ConfigType::MODULE(), $module);
             $config = $mc->parse();
 
-            return (array)$config->virtualFields;
+            return property_exists($config, 'virtualFields') ? (array)$config->virtualFields : [];
         }),
         'combinedColumns' => call_user_func(function () use ($fields, $factory, $module) {
             $mc = new ModuleConfig(ConfigType::MIGRATION(), $module);
