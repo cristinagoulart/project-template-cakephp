@@ -34,6 +34,7 @@ matrix:
       env: PHPCS=1 COVERAGE=0 PHPSTAN=1
 
 install:
+  - ./bin/composer global require hirak/prestissimo
   - ./bin/composer validate --strict
   - ./bin/composer install --no-interaction --no-progress --no-suggest
   - mkdir -p build/test-coverage build/test-results
@@ -42,6 +43,7 @@ install:
 
 before_script:
   - ./bin/phpserv >/dev/null 2>&1 &
+  - if [[ $COVERAGE = 0 ]]; then phpenv config-rm xdebug.ini; fi
   # Add an IPv6 config - see the corresponding Travis issue
   # https://github.com/travis-ci/travis-ci/issues/8361
   - if [ "${TRAVIS_OS_NAME}" == "linux" ]; then
@@ -49,7 +51,7 @@ before_script:
     fi
 
 script:
-  - if [[ $PHPCS = 1 ]]; then ./vendor/bin/phpcs; fi
+  - if [[ $PHPCS = 1 ]]; then ./vendor/bin/phpcs --parallel=1; fi
   - ./vendor/bin/phpunit --group example --no-coverage
   - if [[ $COVERAGE = 0 ]]; then ./vendor/bin/phpunit --exclude-group example --no-coverage; fi
   - if [[ $COVERAGE = 1 ]]; then ./vendor/bin/phpunit --exclude-group example; fi
@@ -59,9 +61,9 @@ script:
   - npm run test
 
 after_success:
-  - curl -s https://codecov.io/bash > /tmp/codecov.sh
-  - chmod +x /tmp/codecov.sh
-  - /tmp/codecov.sh -s build/test-results
+  - if [[ $COVERAGE = 1 ]]; then curl -s https://codecov.io/bash > /tmp/codecov.sh; fi
+  - if [[ $COVERAGE = 1 ]]; then chmod +x /tmp/codecov.sh; fi
+  - if [[ $COVERAGE = 1 ]]; then /tmp/codecov.sh -s build/test-results; fi
 
 notifications:
   email:

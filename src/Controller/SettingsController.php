@@ -134,6 +134,52 @@ class SettingsController extends AppController
     }
 
     /**
+     * Give access to edit personal sidebar menu order
+     * @return \Cake\Http\Response|void|null
+     */
+    public function userMenuOrder()
+    {
+        $this->scope = SettingsTable::SCOPE_USER;
+        $this->context = $this->Auth->user('id');
+        $dataUser = $this->query->find('dataApp', ['scope' => SettingsTable::SCOPE_USER, 'context' => $this->context]);
+
+        $this->configureValue = Hash::merge($this->dataApp, $dataUser);
+
+        // get all user dashboards
+        $tableDashboards = TableRegistry::get('Search.Dashboards');
+        $dashboards = $tableDashboards->find('list');
+        $dashboards = $dashboards->toArray();
+
+        $this->set('dashboards', $dashboards);
+        $this->set('afterTitle', $this->Auth->user('username'));
+        $this->viewBuilder()->setTemplate('menu_items_order');
+
+        return $this->settings();
+    }
+
+    /**
+     * Give access to edit application sidebar menu order
+     * @return \Cake\Http\Response|void|null
+     */
+    public function appMenuOrder()
+    {
+        $this->scope = SettingsTable::SCOPE_APP;
+        $this->context = SettingsTable::CONTEXT_APP;
+        $this->configureValue = $this->dataApp;
+
+        // get all user dashboards
+        $tableDashboards = TableRegistry::get('Search.Dashboards');
+        $dashboards = $tableDashboards->find('list');
+        $dashboards = $dashboards->toArray();
+
+        $this->set('dashboards', $dashboards);
+        $this->set('afterTitle', 'App');
+        $this->viewBuilder()->setTemplate('menu_items_order');
+
+        return $this->settings();
+    }
+
+    /**
      * Redirect to my()
      * @return \Cake\Http\Response|void|null
      */
