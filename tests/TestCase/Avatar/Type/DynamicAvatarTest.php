@@ -14,7 +14,7 @@ class DynamicAvatarTest extends TestCase
 
         $config = array_merge(
             Configure::readOrFail('Avatar.options.' . DynamicAvatar::class),
-            ['name' => 'john', 'filename' => 'unit_tests_generated_avatar_dynamic'],
+            ['name' => 'john', 'filename' => 'unit_tests_generated_avatar_dynamic']
         );
 
         $this->assertSame('/uploads/avatars/' . $config['filename'], (new DynamicAvatar($config))->get());
