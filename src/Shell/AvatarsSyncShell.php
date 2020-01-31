@@ -4,6 +4,7 @@ namespace App\Shell;
 
 use Cake\Console\Shell;
 use Cake\ORM\TableRegistry;
+use Webmozart\Assert\Assert;
 
 /**
  * AvatarsSync shell command.
@@ -36,14 +37,11 @@ class AvatarsSyncShell extends Shell
      */
     public function main()
     {
-        /**
-         * @var \App\Model\Table\UsersTable $table
-         */
-        $table = TableRegistry::getTableLocator()->get('CakeDC/Users.Users');
-        $this->Users = $table;
+        $table = TableRegistry::getTableLocator()->get('Users');
+        Assert::isInstanceOf($table, \App\Model\Table\UsersTable::class);
         $generated = $updated = 0;
 
-        $query = $this->Users->find()->all();
+        $query = $table->find()->all();
         $usersCount = $query->count();
 
         if (!$usersCount) {
@@ -53,8 +51,8 @@ class AvatarsSyncShell extends Shell
         }
 
         foreach ($query as $entity) {
-            if ($this->Users->isCustomAvatarExists($entity)) {
-                if ($this->Users->copyCustomAvatar($entity)) {
+            if ($table->isCustomAvatarExists($entity)) {
+                if ($table->copyCustomAvatar($entity)) {
                     $updated++;
                 }
 
