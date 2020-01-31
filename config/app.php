@@ -511,5 +511,4 @@ return [
     'Whoops' => [
         'editor' => true,
     ],
-    'dashboard_menu_order_value' => '',
 ];
