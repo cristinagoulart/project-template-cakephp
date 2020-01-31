@@ -16,21 +16,46 @@ class FactoryTest extends TestCase
     /**
      * For now we just make sure the Factory can be initialized, no assertions are made.
      *
-     * @doesNotPerformAssertions
      */
     public function testInit(): void
     {
+        $reflection = new \ReflectionProperty(Factory::class, 'initialized');
+        $reflection->setAccessible(true);
+        $reflection->setValue(new \stdClass(), false);
+
         Factory::init();
+        $this->assertInstanceOf(BaseFeature::class, Factory::get('A feature'));
+
+        // cached
+        Factory::init();
+        $this->assertInstanceOf(BaseFeature::class, Factory::get('A feature'));
     }
 
     public function testGet(): void
     {
+        $reflection = new \ReflectionProperty(Factory::class, 'initialized');
+        $reflection->setAccessible(true);
+        $reflection->setValue(new \stdClass(), false);
+
         $feature = Factory::get('Foobar');
         $this->assertInstanceOf(FeatureInterface::class, $feature);
         $this->assertInstanceOf(BaseFeature::class, $feature);
 
         $feature = Factory::get('Not Existing Feature');
         $this->assertInstanceOf(BaseFeature::class, $feature);
+    }
+
+    public function testGetWithException(): void
+    {
+        $this->expectException(\RuntimeException::class);
+
+        $featureName = 'InvalidFeatureName';
+        $config = Configure::readOrFail('Features');
+        $config[$featureName] = ['active' => true];
+
+        Configure::write('Features', $config);
+
+        Factory::get($featureName);
     }
 
     public function testGetList(): void
