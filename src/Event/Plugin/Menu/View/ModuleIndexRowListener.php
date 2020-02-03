@@ -3,7 +3,6 @@
 namespace App\Event\Plugin\Menu\View;
 
 use App\Menu\MenuName;
-use Cake\Datasource\EntityInterface;
 use Cake\Event\Event;
 use Cake\Event\EventListenerInterface;
 use Cake\Routing\Router;
@@ -41,41 +40,38 @@ class ModuleIndexRowListener implements EventListenerInterface
      */
     public function getMenuItems(Event $event, string $name, array $user, bool $fullBaseUrl = false, array $modules = [], MenuInterface $menu = null): void
     {
-        $listens = [MenuName::MODULE_INDEX_ROW];
-        if (!in_array($name, $listens)) {
+        if (! $menu instanceof MenuInterface) {
             return;
         }
 
-        // Actions are available only for searching entities
+        if (MenuName::MODULE_INDEX_ROW !== $name) {
+            return;
+        }
+
         $entity = $event->getSubject();
-        if (!($entity instanceof EntityInterface)) {
+        if (! $entity instanceof \Cake\Datasource\EntityInterface) {
             return;
         }
 
-        /**
-         * @var \Cake\Http\ServerRequest $request
-         */
         $request = Router::getRequest();
-        /**
-         * @var \Menu\MenuBuilder\MenuInterface $menu
-         */
-        $menu = $menu;
+        if (! $request instanceof \Cake\Http\ServerRequest) {
+            return;
+        }
+
         $menu->addMenuItem($this->getViewMenuItem($entity, $request));
         $editMenuItem = $this->getEditMenuItem($entity, $request);
         $editMenuItem->disableIf(function () use ($request) {
             return 'Logs' === $request->getParam('controller');
         });
-
         $menu->addMenuItem($editMenuItem);
+
         $deleteMenuItem = $this->getDeleteMenuItem($entity, $request, true);
         $deleteMenuItem->setViewElement('Plugin/Menu/view-actions-delete', [
             'menuItem' => $deleteMenuItem,
         ]);
-
         $deleteMenuItem->disableIf(function () use ($request) {
             return 'Logs' === $request->getParam('controller');
         });
-
         $menu->addMenuItem($deleteMenuItem);
 
         $event->setResult($event);

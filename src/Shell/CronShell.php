@@ -77,7 +77,7 @@ class CronShell extends Shell
 
         $jobs = $this->ScheduledJobs->getJobs(ScheduledJobsTable::JOB_ACTIVE);
 
-        if (empty($jobs)) {
+        if ($jobs->isEmpty()) {
             $this->info("No active Scheduled Tasks found.  Nothing to do.");
 
             return true;

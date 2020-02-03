@@ -2,6 +2,7 @@
 
 namespace App\Test\TestCase\Shell;
 
+use Cake\Console\Shell;
 use Cake\Core\Configure;
 use Cake\Filesystem\Folder;
 use Cake\TestSuite\ConsoleIntegrationTestCase;
@@ -36,6 +37,7 @@ class ExportShellTest extends ConsoleIntegrationTestCase
         $this->assertSame([], $folder->find('.*\.csv'));
 
         $this->exec('export gc');
+        $this->assertExitCode(Shell::CODE_SUCCESS);
         $this->assertSame([], $folder->find('.*\.csv'));
         $this->assertOutputContains('<info>No export file(s) found before ');
 
@@ -51,6 +53,7 @@ class ExportShellTest extends ConsoleIntegrationTestCase
         $this->assertSame(['export-test-new.csv', 'export-test-old.csv'], $result);
 
         $this->exec('export gc');
+        $this->assertExitCode(Shell::CODE_SUCCESS);
         $this->assertOutputContains('<success>Successfully deleted 1 export file(s), last modified before ');
         $this->assertSame(['export-test-new.csv'], $folder->find('.*\.csv'));
 

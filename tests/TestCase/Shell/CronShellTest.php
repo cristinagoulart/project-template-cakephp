@@ -4,6 +4,8 @@ namespace App\Test\TestCase\Shell;
 
 use App\Shell\CronShell;
 use Cake\Console\Shell;
+use Cake\Core\Configure;
+use Cake\ORM\TableRegistry;
 use Cake\TestSuite\ConsoleIntegrationTestCase;
 
 /**
@@ -13,6 +15,7 @@ class CronShellTest extends ConsoleIntegrationTestCase
 {
 
     public $fixtures = [
+        'app.log_audit',
         'app.users',
         'app.scheduled_jobs',
         'app.scheduled_job_logs',
@@ -24,6 +27,8 @@ class CronShellTest extends ConsoleIntegrationTestCase
      * @var \App\Shell\CronShell
      */
     public $CronShell;
+
+    private $table;
 
     /**
      * setUp method
@@ -38,6 +43,7 @@ class CronShellTest extends ConsoleIntegrationTestCase
         $io = $this->getMockBuilder('Cake\Console\ConsoleIo')->getMock();
 
         $this->CronShell = new CronShell($io);
+        $this->table = TableRegistry::getTableLocator()->get('ScheduledJobs');
     }
 
     /**
@@ -47,6 +53,7 @@ class CronShellTest extends ConsoleIntegrationTestCase
      */
     public function tearDown()
     {
+        unset($this->table);
         unset($this->CronShell);
 
         parent::tearDown();
@@ -59,8 +66,50 @@ class CronShellTest extends ConsoleIntegrationTestCase
      */
     public function testMain(): void
     {
+        $this->table->deleteAll([]);
+        $scheduledJob = $this->table->newEntity([
+            'name' => 'Test job every second',
+            'job' => 'CakeShell::App:foobar',
+            'recurrence' => 'FREQ=SECONDLY',
+            'active' => 1,
+            'priority' => 10,
+            'start_date' => '2020-01-01 09:00:00',
+        ]);
+
+        $this->table->saveOrFail($scheduledJob);
+
         $this->exec('cron');
+
+        $expected = [
+            '<info>Running Scheduled Tasks...</info>',
+            '<info>Starting Scheduled Task [Test job every second]</info>',
+            '<info>Finished Scheduled Task [Test job every second]</info>',
+            '<info>Logged Scheduled Task [Test job every second]</info>',
+            '<info>Finished with all Schedule Tasks successfully</info>',
+        ];
+
         $this->assertExitCode(Shell::CODE_SUCCESS);
+        $this->assertOutputContains(implode(PHP_EOL, $expected));
+    }
+
+    public function testMainWithDisabledScheduledJobs(): void
+    {
+        Configure::write('Features.Module' . DS . 'ScheduledJobs.active', false);
+
+        $this->exec('cron');
+
+        $this->assertExitCode(Shell::CODE_SUCCESS);
+        $this->assertErrorContains('Scheduled Tasks are disabled.  Nothing to do.');
+    }
+
+    public function testMainWithoutJobs(): void
+    {
+        $this->table->deleteAll([]);
+
+        $this->exec('cron');
+
+        $this->assertExitCode(Shell::CODE_SUCCESS);
+        $this->assertOutputContains('No active Scheduled Tasks found.  Nothing to do.');
     }
 
     /**
@@ -73,6 +122,7 @@ class CronShellTest extends ConsoleIntegrationTestCase
     public function testLock(string $file, $class, string $normalized): void
     {
         $this->exec(sprintf('cron lock %s %s', $file, $class));
+        $this->assertExitCode(Shell::CODE_ERROR);
 
         $expected = sprintf('%s%s_%s.lock.lock', sys_get_temp_dir() . DS, $normalized, md5($file));
         $this->assertTrue(file_exists($expected));
