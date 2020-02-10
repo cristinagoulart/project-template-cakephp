@@ -3,8 +3,10 @@
 namespace App\Event\Plugin\Menu\View;
 
 use App\Menu\MenuName;
+use Cake\Datasource\EntityInterface;
 use Cake\Event\Event;
 use Cake\Event\EventListenerInterface;
+use Cake\Http\ServerRequest;
 use Cake\Routing\Router;
 use Menu\Event\EventName as MenuEventName;
 use Menu\MenuBuilder\MenuInterface;
@@ -49,12 +51,12 @@ class ModuleIndexRowListener implements EventListenerInterface
         }
 
         $entity = $event->getSubject();
-        if (! $entity instanceof \Cake\Datasource\EntityInterface) {
+        if (! $entity instanceof EntityInterface) {
             return;
         }
 
         $request = Router::getRequest();
-        if (! $request instanceof \Cake\Http\ServerRequest) {
+        if (! $request instanceof ServerRequest) {
             return;
         }
 
