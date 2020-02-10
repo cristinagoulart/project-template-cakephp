@@ -269,7 +269,7 @@ class ThingsControllerTest extends IntegrationTestCase
         }
 
         $this->get('/things/delete/00000000-0000-0000-0000-000000000001');
-        Configure::read("debug") ? $this->assertResponseError() : $this->assertRedirect();
+        $this->assertResponseError();
     }
 
     public function testDeleteData(): void
@@ -317,7 +317,7 @@ class ThingsControllerTest extends IntegrationTestCase
         }
 
         $this->get('/things/batch/edit');
-        Configure::read("debug") ? $this->assertResponseError() : $this->assertRedirect();
+        $this->assertResponseError();
     }
 
     public function testBatchDelete(): void

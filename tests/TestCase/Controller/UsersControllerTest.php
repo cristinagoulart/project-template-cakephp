@@ -13,10 +13,6 @@ class UsersControllerTest extends IntegrationTestCase
      * @var string User ID
      */
     private $userId;
-
-    /**
-     * @var \Cake\ORM\Table Table instance
-     */
     private $table;
 
     public $fixtures = [
