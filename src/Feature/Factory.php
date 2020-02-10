@@ -38,6 +38,16 @@ class Factory
     }
 
     /**
+     * Returns true only and only if this factory has been already initialised
+     *
+     * @return bool
+     */
+    public static function isInitialized(): bool
+    {
+        return static::$initialized;
+    }
+
+    /**
      * Get feature method.
      *
      * @param string $name Feature name

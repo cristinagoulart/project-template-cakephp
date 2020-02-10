@@ -29,6 +29,8 @@ class FactoryTest extends TestCase
         // cached
         Factory::init();
         $this->assertInstanceOf(BaseFeature::class, Factory::get('A feature'));
+
+        $this->assertTrue(Factory::isInitialized());
     }
 
     public function testGet(): void
