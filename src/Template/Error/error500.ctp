@@ -35,6 +35,9 @@ if (Configure::read('debug')) :
     $this->end();
 endif;
 ?>
+<section class="content-header">
+    <h4>&nbsp;</h4>
+</section>
 <div class="content">
 <div class="row">
     <div class="col-md-6 col-md-offset-3">
