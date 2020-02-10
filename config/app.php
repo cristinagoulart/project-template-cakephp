@@ -234,7 +234,7 @@ return [
      */
     'Error' => [
         'errorLevel' => $errorLevel,
-        'exceptionRenderer' => 'App\Error\AppExceptionRenderer',
+        'exceptionRenderer' => Cake\Error\ExceptionRenderer::class,
         'skipLog' => [],
         'log' => true,
         'trace' => true,
