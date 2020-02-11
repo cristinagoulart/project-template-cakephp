@@ -32,19 +32,6 @@ class SystemController extends AppController
     }
 
     /**
-     * Error method
-     *
-     * Default redirect method for loggedin users
-     * in case the system throws an error on switched off
-     * debug. Otherwise, it'll use native Cake Error pages.
-     *
-     * @return \Cake\Http\Response|void|null
-     */
-    public function error()
-    {
-    }
-
-    /**
      * Action responsible for listing all system searches.
      *
      * @return \Cake\Http\Response|void|null
