@@ -78,4 +78,4 @@ echo $this->fetch('pre_element');
     </div>
 </section>
 
-<?= echo $this->fetch('post_element'); ?>
+<?= $this->fetch('post_element'); ?>
