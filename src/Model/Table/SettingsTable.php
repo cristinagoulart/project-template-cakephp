@@ -67,7 +67,6 @@ class SettingsTable extends Table
 
         $validator
             ->scalar('value')
-            ->maxLength('value', 255)
             ->requirePresence('value', 'create')
             ->allowEmpty('value');
 
