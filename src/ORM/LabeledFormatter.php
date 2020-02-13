@@ -161,10 +161,12 @@ final class LabeledFormatter
     {
         $targetTable = $association->getTarget();
         $displayField = $targetTable->getDisplayField();
+        // for performance reasons we select only the display field, if it is a real one.
+        $selectClause = $targetTable->getSchema()->hasColumn($displayField) ? $displayField : [];
         $primaryKey = $targetTable->getPrimaryKey();
         Assert::string($primaryKey);
 
-        $entity = $targetTable->find()->select($displayField)->where([$primaryKey => $value])->first();
+        $entity = $targetTable->find()->select($selectClause)->where([$primaryKey => $value])->first();
         if (null === $entity) {
             return $value;
         }
