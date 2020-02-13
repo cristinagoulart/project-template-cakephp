@@ -38,6 +38,9 @@ $urlExport = ['plugin' => $plugin, 'controller' => $controller, 'action' => 'exp
 
 $config = (new ModuleConfig(ConfigType::MODULE(), $controller))->parse();
 $title = isset($config->table->alias) ? $config->table->alias : Inflector::humanize(Inflector::underscore($controller));
+
+echo $this->fetch('pre_element');
+
 ?>
 <section class="content-header">
     <div class="row">
@@ -74,3 +77,5 @@ $title = isset($config->table->alias) ? $config->table->alias : Inflector::human
         </div>
     </div>
 </section>
+
+<?= $this->fetch('post_element'); ?>

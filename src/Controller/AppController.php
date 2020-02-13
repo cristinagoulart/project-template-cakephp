@@ -34,6 +34,7 @@ use Cake\Http\Exception\NotFoundException;
 use Cake\ORM\TableRegistry;
 use Cake\Utility\Inflector;
 use Cake\Utility\Security;
+use Cake\View\Exception\MissingTemplateException;
 use Firebase\JWT\JWT;
 use Qobo\Utils\ModuleConfig\ConfigType;
 use Qobo\Utils\ModuleConfig\ModuleConfig;
@@ -202,7 +203,12 @@ class AppController extends Controller
         }
 
         $this->set('savedSearch', $savedSearch);
-        $this->render('/Module/index');
+
+        try {
+            $this->render();
+        } catch (MissingTemplateException $e) {
+            $this->render('/Module/index');
+        }
     }
 
     /**

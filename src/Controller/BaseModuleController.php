@@ -24,6 +24,7 @@ use Cake\ORM\TableRegistry;
 use Cake\Routing\Router;
 use Cake\Utility\Inflector;
 use Cake\Validation\Validation;
+use Cake\View\Exception\MissingTemplateException;
 use CsvMigrations\Controller\Traits\ImportTrait;
 use CsvMigrations\Event\EventName;
 use CsvMigrations\Exception\UnsupportedPrimaryKeyException;
@@ -82,7 +83,13 @@ class BaseModuleController extends AppController
         $entity = $this->fetchEntity($id);
 
         $this->set('entity', $entity);
-        $this->render('/Module/view');
+
+        try {
+            $this->render();
+        } catch (MissingTemplateException $e) {
+            $this->render('/Module/view');
+        }
+
         $this->set('_serialize', ['entity']);
     }
 
@@ -112,7 +119,13 @@ class BaseModuleController extends AppController
         }
 
         $this->set('entity', $entity);
-        $this->render('/Module/add');
+
+        try {
+            $this->render();
+        } catch (MissingTemplateException $e) {
+            $this->render('/Module/add');
+        }
+
         $this->set('_serialize', ['entity']);
     }
 
@@ -144,7 +157,13 @@ class BaseModuleController extends AppController
         }
 
         $this->set('entity', $entity);
-        $this->render('/Module/edit');
+
+        try {
+            $this->render();
+        } catch (MissingTemplateException $e) {
+            $this->render('/Module/edit');
+        }
+
         $this->set('_serialize', ['entity']);
     }
 

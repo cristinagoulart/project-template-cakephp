@@ -17,6 +17,7 @@ $options = [
     'fields' => $fields,
     'title' => null
 ];
-echo $this->element('Module/view', [
-    'options' => $options
-]);
+
+echo $this->fetch('pre_element');
+echo $this->element('Module/view', ['options' => $options]);
+echo $this->fetch('post_element');
