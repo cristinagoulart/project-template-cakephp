@@ -184,26 +184,23 @@ final class Field
         }
 
         $type = Hash::get($config, $this->field . '.type');
+        if (null !== $type) {
+            return 1 === preg_match(self::TYPE_PATTERN, $type, $matches) ? $matches[1] : $type;
+        }
 
-        if (null === $type) {
-            $combinedFields = ['_amount' => 'decimal', '_currency' => 'list', '_unit' => 'list'];
-            /**
-             * Handles the special cases of combined fields, this will go away
-             * once we properly separate database column and UI field definitions.
-             */
-            foreach ($combinedFields as $fieldSuffix => $fieldType) {
-                $strlen = strlen($fieldSuffix);
-                if ($fieldSuffix === substr($this->field, -$strlen, $strlen)) {
-                    return $fieldType;
-                }
+        $combinedFields = ['_amount' => 'decimal', '_currency' => 'list', '_unit' => 'list'];
+        /**
+         * Handles the special cases of combined fields, this will go away
+         * once we properly separate database column and UI field definitions.
+         */
+        foreach ($combinedFields as $fieldSuffix => $fieldType) {
+            $strlen = strlen($fieldSuffix);
+            if ($fieldSuffix === substr($this->field, -$strlen, $strlen)) {
+                return $fieldType;
             }
         }
 
-        if (null === $type) {
-            return '';
-        }
-
-        return 1 === preg_match(self::TYPE_PATTERN, $type, $matches) ? $matches[1] : $type;
+        return '';
     }
 
     /**
