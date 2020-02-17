@@ -183,6 +183,11 @@ final class Field
             return '';
         }
 
+        $type = Hash::get($config, $this->field . '.type');
+        if (null !== $type) {
+            return 1 === preg_match(self::TYPE_PATTERN, $type, $matches) ? $matches[1] : $type;
+        }
+
         $combinedFields = ['_amount' => 'decimal', '_currency' => 'list', '_unit' => 'list'];
         /**
          * Handles the special cases of combined fields, this will go away
@@ -195,12 +200,7 @@ final class Field
             }
         }
 
-        $type = Hash::get($config, $this->field . '.type');
-        if (null === $type) {
-            return '';
-        }
-
-        return 1 === preg_match(self::TYPE_PATTERN, $type, $matches) ? $matches[1] : $type;
+        return '';
     }
 
     /**
