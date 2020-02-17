@@ -78,9 +78,7 @@ final class Search
             $result[$index]['group'] = $group;
         }
 
-        usort($result, function ($x, $y) {
-            return strcasecmp($x['field'], $y['field']);
-        });
+        $result = array_values($result);
 
         Cache::write($cacheKey, $result);
 
