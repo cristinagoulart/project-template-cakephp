@@ -58,11 +58,11 @@ echo $this->fetch('pre_element');
     <div class="box box-solid">
         <div class="box-body">
             <table-ajax
-                :data='<?= json_encode([
+                :data='<?= h(json_encode([
                     'criteria' => $savedSearch->get('criteria'),
                     'group_by' => (string)$savedSearch->get('group_by')
-                ]) ?>'
-                :headers='<?= json_encode($headers) ?>'
+                ])) ?>'
+                :headers='<?= h(json_encode($headers)) ?>'
                 model="<?= Inflector::dasherize($savedSearch->get('model')) ?>"
                 order-direction="<?= (string)$savedSearch->get('order_by_direction') ?>"
                 order-field="<?= (string)$savedSearch->get('order_by_field') ?>"

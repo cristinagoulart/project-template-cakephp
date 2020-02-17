@@ -17,8 +17,8 @@ $urlExport = ['plugin' => $this->plugin, 'controller' => $this->name, 'action' =
 <section class="content-header"></section>
 <section class="content">
     <search
-        :display-fields='<?= json_encode($this->Search->getDisplayFields($tableName)) ?>'
-        filters='<?= h(json_encode($this->Search->getFilters($tableName))) ?>'
+        :display-fields='<?= h(json_encode($this->Search->getDisplayFields($tableName))) ?>'
+        :filters='<?= h(json_encode($this->Search->getFilters($tableName))) ?>'
         id="<?= $searchId ?>"
         search-query="<?= '' !== $searchId ? '' : $searchQuery ?>"
         model="<?= $this->name ?>"
