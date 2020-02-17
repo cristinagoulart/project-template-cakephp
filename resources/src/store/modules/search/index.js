@@ -137,7 +137,20 @@ export default {
       state.fields = value.length ? value : state.default_fields
     },
     filters (state, value) {
-      state.filters = value
+      state.filters = value.sort(function (a, b) {
+        const aLabel = a.label.toLowerCase()
+        const bLabel = b.label.toLowerCase()
+
+        if (aLabel < bLabel) {
+          return -1
+        }
+
+        if (aLabel > bLabel) {
+          return 1
+        }
+
+        return 0
+      })
     },
     groupBy (state, value) {
       state.group_by = value
