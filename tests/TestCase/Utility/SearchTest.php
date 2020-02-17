@@ -81,7 +81,7 @@ class SearchTest extends TestCase
         $table = TableRegistry::getTableLocator()->get('Search.SavedSearches');
         $table->deleteAll([]);
 
-        $expected = ['AssignedToUsers.activation_date'];
+        $expected = ['Things.name'];
         $this->assertSame(
             current($expected),
             Search::getFilters('Things')[0]['field'],
